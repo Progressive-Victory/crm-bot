@@ -12,7 +12,7 @@
     "start": "yarn build && yarn run run",
     "test": "jest",
     "dev": "yarn start | pino-pretty -i pid,hostname -t 'yyyy-mm-dd HH:MM:ss'",
-    "pm2": "yarn build && pm2 start dist/index.js --name pvbot"
+    "pm2": "yarn build && pm2 start dist/index.js --name crmbot"
   },
   "devDependencies": {
     "@swc/cli": "^0.1.57",
