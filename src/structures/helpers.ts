@@ -12,6 +12,15 @@ import fetch from 'node-fetch';
 
 config();
 
+export function isConnectEmoji(str: string) {
+	return [
+		process.env.VERIFY_EMOJI,
+		process.env.CONNECT_EMOJI,
+		process.env.LINKED_EMOJI,
+		process.env.REFUSED_EMOJI
+	].includes(str);
+}
+
 export function isOwner(user: User | GuildMember): boolean {
 	return process.env.OWNERS?.split(',').includes(user.id);
 }
@@ -67,12 +76,13 @@ export async function onConnect(
 	discordUserID: Snowflake,
 	discordHandle: string,
 	discordGuildID: Snowflake,
-	discordChannelID: Snowflake
+	discordChannelID: Snowflake,
+	path: string
 ) {
 	if (discordGuildID !== process.env.TRACKING_GUILD) return;
 	if (discordChannelID !== process.env.TRACKING_CHANNEL) return;
 
-	const response = await fetch(`${process.env.API_ENDPOINT}/verify`, {
+	const response = await fetch(`${process.env.API_ENDPOINT}/${path}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -87,7 +97,7 @@ export async function onConnect(
 		})
 	});
 
-	if (!response.ok) throw Error(`Failed to connect user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`);
+	if (!response.ok) throw Error(`Failed to ${path} user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`);
 }
 
 export function checkConnected(discordUserID: Snowflake|Snowflake[], discordGuildID: Snowflake): Promise<any> {
