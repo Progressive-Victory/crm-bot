@@ -24,5 +24,11 @@ export default async function onMessageReactionAdd(reaction: MessageReaction, us
 		}
 
 		await onConnect(reaction.message.author.id, reaction.message.author.tag, otherUser.id, otherUser.tag, reaction.message.guildId, reaction.message.channelId, path);
+
+		setTimeout(async () => {
+			await reaction.message.fetch();
+			if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) return;
+			await onConnect(reaction.message.author.id, reaction.message.author.tag, otherUser.id, otherUser.tag, reaction.message.guildId, reaction.message.channelId, 'timeout');
+		}, 1000 * 60 * 60 * 24)
 	}
 }
