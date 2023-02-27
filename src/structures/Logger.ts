@@ -29,8 +29,8 @@ const Logger = wrap(pino({
 	level: process.env.LOG_LEVEL || 'debug',
 	hooks: {
 		logMethod(inputArgs, method, level) {
-			if (level === 50 && inputArgs[0] instanceof Error) {
-				return method.apply(this, [inputArgs[0].stack]);
+			if (level === 50 && inputArgs[0] as any instanceof Error) {
+				return method.apply(this, [(inputArgs[0] as any as Error).stack]);
 			}
 
 			// Handles additional arguments being passed in

@@ -1,0 +1,50 @@
+{
+	"root": true,
+	"plugins": [
+	  "@typescript-eslint"
+	],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 8,
+		"requireConfigFile": false
+	},
+	"env": {
+		"node": true,
+		"es2020": true,
+		"browser": true
+	},
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"airbnb-base"
+	],
+	"rules": {
+		"indent": ["error", "tab"],
+		"no-tabs": "off",
+		"class-methods-use-this": 0,
+		"no-plusplus": 0,
+		"max-len": ["error", { "code": 160, "ignoreStrings": true, "ignoreComments": true, "ignoreTemplateLiterals": true }],
+		"no-param-reassign": 0,
+		"no-console": "off",
+		"no-await-in-loop": "off",
+		"max-classes-per-file": "off",
+		"no-underscore-dangle": "off",
+		"no-continue": "off",
+		"comma-dangle": ["error", "never"],
+		"no-multi-assign": "off",
+		"brace-style": ["error", "stroustrup", { "allowSingleLine": true }],
+		"no-extend-native": "off",
+		"no-restricted-syntax": "off",
+		"import/extensions": "off",
+		"import/no-unresolved": "off",
+		"no-unused-vars": "off",
+		"no-nested-ternary": "off",
+		"no-promise-executor-return": "off",
+		"import/prefer-default-export": "off",
+		"jsx-quotes": ["error", "prefer-single"],
+		"global-require": "off",
+		"import/no-dynamic-require": "off",
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"no-prototype-builtins": "off"
+	}
+}

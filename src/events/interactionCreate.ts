@@ -32,6 +32,7 @@ export default async function onInteractionCreate(interaction: BaseInteraction) 
 			}
 
 			await command.execute(interaction);
+			Logger.debug(`Executed command ${command.name} by ${interaction.user.tag} (${interaction.user.id}) in ${interaction.guild?.name} (${interaction.guild?.id})`);
 		}
 		catch (error) {
 			Logger.error(error);

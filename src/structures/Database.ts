@@ -1,14 +1,6 @@
 import { MongoClient } from 'mongodb';
 import { config } from 'dotenv';
-import {
-	Guild,
-	GuildMember,
-	GuildTextBasedChannel,
-	Snowflake,
-	TextBasedChannel,
-	User
-} from 'discord.js';
-import { StateCache } from 'src/declarations/typings';
+import { Snowflake } from 'discord.js';
 
 import Logger from './Logger';
 

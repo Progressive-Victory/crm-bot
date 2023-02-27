@@ -1,4 +1,4 @@
-import { CommandInteraction, PermissionFlagsBits } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
 import { isOwner } from './helpers';
 
 type Permissions = {
