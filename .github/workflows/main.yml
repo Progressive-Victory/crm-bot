@@ -1,0 +1,28 @@
+
+name: Deploy on push
+
+on:
+  workflow_run:
+      workflows: ["Lint"]
+      types: 
+        - completed
+  push:
+    paths:
+      - src/**
+      - .github/workflows/*
+    branches: [main]
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pull and install
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST_DEV }}
+        username: ${{ secrets.SSH_USERNAME_DEV }}
+        #key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
+        port: ${{ secrets.SSH_PORT_DEV }}
+        password: ${{ secrets.SSH_PASSWORD_DEV }}
+        script: cd crm-backend && git fetch --all && git reset --hard origin/main && yarn install && pm2 delete crm-backend && yarn pm2
