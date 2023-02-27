@@ -25,4 +25,4 @@ jobs:
         #key: ${{ secrets.SSH_PRIVATE_KEY_DEV }}
         port: ${{ secrets.SSH_PORT_DEV }}
         password: ${{ secrets.SSH_PASSWORD_DEV }}
-        script: cd crm-backend && git fetch --all && git reset --hard origin/main && yarn install && pm2 delete crm-backend && yarn pm2
+        script: cd crm-bot && git fetch --all && git reset --hard origin/main && yarn install && pm2 delete crm-bot && yarn pm2

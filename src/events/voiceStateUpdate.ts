@@ -1,5 +1,5 @@
 import { VoiceState } from 'discord.js';
-import Logger from 'src/structures/Logger';
+import Logger from '../structures/Logger';
 import Database from '../structures/Database';
 
 export default async function onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
