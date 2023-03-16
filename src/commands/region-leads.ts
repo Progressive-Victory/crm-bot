@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, GuildMember, Snowflake } from 'discord.js'
 import { State } from '../declarations/states';
 import Command from '../structures/Command';
 
-const stateLeadRoleID:Snowflake = 'STATE LEAD ROLE';
+const stateLeadRoleID:Snowflake = '1017107350437498972';
 const regionLeadRoleID:Snowflake = 'REGION LEAD ROLE ID';
 function memberState(member:GuildMember) {
 	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
