@@ -3,7 +3,7 @@ import { State } from '../declarations/states';
 import Command from '../structures/Command';
 
 const stateLeadRoleID:Snowflake = '1017107350437498972';
-const regionLeadRoleID:Snowflake = 'REGION LEAD ROLE ID';
+const regionLeadRoleID:Snowflake = '1039114169552748555';
 function memberState(member:GuildMember) {
 	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
 }
@@ -19,20 +19,20 @@ async function execute(interaction:ChatInputCommandInteraction) {
 	let content = 'Error';
 	switch (interaction.options.getSubcommand(true)) {
 	case 'add':
-		target.roles.add(regionLeadRoleID, `Region Leads role added by ${stateLead}`);
-		content = `Region Leads role added to ${target}`;
+		target.roles.add(regionLeadRoleID, `Regional Leads role added by ${stateLead}`);
+		content = `Regional Lead role added to ${target}`;
 		break;
 
 	case 'remove':
-		target.roles.remove(regionLeadRoleID, `Region Leads role removed by ${stateLead}`);
-		content = `Region Leads role removed to ${target}`;
+		target.roles.remove(regionLeadRoleID, `Regional Leads role removed by ${stateLead}`);
+		content = `Regional Lead role removed to ${target}`;
 		break;
 
 	default:
 		break;
 	}
 
-	interaction.reply({ ephemeral: true, content });
+	interaction.reply({ ephemeral: true, content: content });
 }
 
 export default new Command({
