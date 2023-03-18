@@ -1,4 +1,11 @@
-import { CommandInteraction } from 'discord.js';
+import {
+	CommandInteraction,
+	UserContextMenuCommandInteraction,
+	ContextMenuCommandBuilder,
+	MessageContextMenuCommandInteraction,
+	InteractionResponse,
+	Message
+} from 'discord.js';
 import { isOwner } from './helpers';
 
 type Permissions = {
@@ -12,10 +19,10 @@ type CommandOptions = {
 	perms?: Permissions
 	ownersOnly?: boolean
 	cooldown?: number
-	execute: (interaction: CommandInteraction) => Promise<any>;
+	execute: (interaction: CommandInteraction) => Promise<InteractionResponse>;
 }
 
-class Command {
+export class Command {
 	name?: string;
 
 	group?: string;
@@ -26,7 +33,7 @@ class Command {
 
 	perms: Permissions;
 
-	execute: (interaction: CommandInteraction) => Promise<any>;
+	execute: (interaction: CommandInteraction) => Promise<InteractionResponse>;
 
 	constructor(config: CommandOptions) {
 		this.cooldown = config.cooldown || 3;
@@ -94,4 +101,25 @@ class Command {
 	}
 }
 
-export default Command;
+type ReturnableInteraction = CommandInteraction
+	| UserContextMenuCommandInteraction
+	| MessageContextMenuCommandInteraction
+	| InteractionResponse<true>
+	| Message<true>;
+
+export type ContextMenuCommandOptions = {
+	data: ContextMenuCommandBuilder;
+
+	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
+}
+
+export class ContextMenuCommand {
+	data: ContextMenuCommandBuilder;
+
+	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
+
+	constructor(options: ContextMenuCommandOptions) {
+		this.data = options.data;
+		this.execute = options.execute;
+	}
+}

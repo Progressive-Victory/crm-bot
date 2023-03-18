@@ -7,10 +7,10 @@ import { Routes } from 'discord-api-types/v9';
 
 import { CustomClientOptions } from 'src/declarations/typings';
 import Database from './Database';
-import Command from './Command';
+import { Command, ContextMenuCommand } from './Command';
 
-import logger from './Logger';
 import { readFiles } from './helpers';
+import Logger from './Logger';
 
 let rest;
 
@@ -32,6 +32,8 @@ export default class CustomClient extends Discord.Client {
 	private previousEvents: Array<[string, (...a: any) => Promise<void>]>;
 
 	public interactions: Discord.Collection<string, any>;
+
+	public contextMenus: Discord.Collection<string, any>;
 
 	public commands: Discord.Collection<string, Command>;
 
@@ -55,10 +57,11 @@ export default class CustomClient extends Discord.Client {
 		this.previousEvents = [];
 		this.interactions = new Discord.Collection();
 		this.commands = new Discord.Collection();
+		this.contextMenus = new Discord.Collection();
 		this.commandPaths = new Map();
 		this.token = options.token;
 
-		rest = new REST({ version: '9' }).setToken(this.token);
+		rest = new REST({ version: '10' }).setToken(this.token);
 	}
 
 	async loadCommands() {
@@ -87,24 +90,80 @@ export default class CustomClient extends Discord.Client {
 
 		this.commands = newCommands;
 		this.commandPaths = newCommandPaths;
-		logger.info(`Loaded ${this.commands.size} commands.`);
+
+		Logger.info(`Loaded ${this.commands.size} commands.`);
 
 		return this.commands.size;
 	}
 
-	async loadInteractions() {
-		const commandFiles = (await readdir(this.interactionsDir)).filter((file) => file.endsWith('.js'));
+	async loadUserContextMenuCommandInteractions() {
+		const interactionsDir = join(__dirname, '..', 'interactions', 'contextmenus');
 
-		const newInteractions = new Discord.Collection<string, any>();
+		const commandFiles = (await readdir(interactionsDir)).filter((file) => file.endsWith('.js'));
+
 		for (const file of commandFiles) {
-			const command = (await reRequire(join(this.interactionsDir, file))).default;
-			newInteractions.set(command.data.name, command);
+			const command: ContextMenuCommand = (await import(join(interactionsDir, file))).default;
+			const name = file.slice(0, -3);
+
+			if (this.contextMenus.has(name)) {
+				throw Error(`Duplicate context menu command detected at: ${file}`);
+			}
+
+			this.contextMenus.set(name, command);
 		}
 
-		this.interactions = newInteractions;
-		logger.info(`Loaded ${this.interactions.size} interactions.`);
+		const localCommands = this.contextMenus.map((c) => c.data.toJSON());
 
-		return this.interactions.size;
+		return localCommands;
+	}
+
+	async loadCommandInteractions() {
+		const interactionsDir = join(__dirname, '..', 'interactions', 'commands');
+
+		const commandFiles = (await readdir(interactionsDir)).filter((file) => file.endsWith('.js'));
+
+		for (const file of commandFiles) {
+			const command = (await reRequire(join(interactionsDir, file))).default;
+
+			if (this.commands.has(command.name)) {
+				throw Error(`Duplicate command detected at: ${file}`);
+			}
+
+			this.interactions.set(command.data.name, command);
+		}
+
+		const localCommands = this.interactions.map((c) => c.data.toJSON());
+
+		return localCommands;
+	}
+
+	async putInteractions(commands) {
+		if (process.env.CLIENT_ID) {
+			Logger.info('Started refreshing local slash commands.');
+			await rest.put(
+				Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.TEST_GUILD),
+				{ body: commands }
+			);
+
+			// Delete after Testing
+			await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.TEST_GUILD), { body: [] });
+
+			Logger.info(`Successfully reloaded ${commands.length} local slash commands.`);
+		}
+		else {
+			Logger.info('Started refreshing global slash commands.');
+			await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
+				body: commands
+			});
+			Logger.info(`Successfully reloaded ${commands.length} global slash commands.`);
+		}
+	}
+
+	async loadInteractions() {
+		const commands = await Promise.all([this.loadCommandInteractions(), this.loadUserContextMenuCommandInteractions()]);
+		const flat = [].concat(...commands);
+		await this.putInteractions(flat);
+		Logger.info(`Loaded ${flat.length} interactions.`);
 	}
 
 	async loadEvents() {
@@ -119,7 +178,7 @@ export default class CustomClient extends Discord.Client {
 					await event.call(this, ...args);
 				}
 				catch (e) {
-					logger.error('Error handling event', name, e);
+					Logger.error('Error handling event', name, e);
 				}
 			}]);
 		}
@@ -131,28 +190,8 @@ export default class CustomClient extends Discord.Client {
 			this.on(name, event);
 		}
 		this.previousEvents = newEvents;
-		logger.info(`Loaded ${eventFiles.length} events.`);
+		Logger.info(`Loaded ${eventFiles.length} events.`);
 		return eventFiles.length;
-	}
-
-	async saveCommands() {
-		const localCommands = this.interactions.map((c) => c.data.toJSON());
-
-		// Used to reload commands faster, since without a specified server, commands may take up to an hour to reflect on Discord
-		if (process.env.TEST_GUILD) {
-			logger.info('Started refreshing local slash commands.');
-			await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.TEST_GUILD), { body: localCommands });
-
-			// Delete after Testing
-			// await rest.put(Routes.applicationGuildCommands(clientID, testGuild), { body: [] });
-
-			logger.info('Successfully reloaded local slash commands.');
-		}
-		else {
-			logger.info('Started refreshing global slash commands.');
-			await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: localCommands });
-			logger.info('Successfully reloaded global slash commands.');
-		}
 	}
 
 	async reloadAllCommands() {
@@ -161,8 +200,6 @@ export default class CustomClient extends Discord.Client {
 			this.loadCommands(),
 			this.loadEvents()
 		]);
-
-		await this.saveCommands();
 	}
 
 	async launch() {
