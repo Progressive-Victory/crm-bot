@@ -1,5 +1,4 @@
 import { join } from 'path';
-//
 
 import { config } from 'dotenv';
 import { GatewayIntentBits, Partials } from 'discord.js';
