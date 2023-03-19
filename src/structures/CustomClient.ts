@@ -146,7 +146,7 @@ export default class CustomClient extends Discord.Client {
 			);
 
 			// Delete after Testing
-			await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.TEST_GUILD), { body: [] });
+			// await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.TEST_GUILD), { body: [] });
 
 			Logger.info(`Successfully reloaded ${commands.length} local slash commands.`);
 		}
