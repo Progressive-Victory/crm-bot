@@ -1,5 +1,5 @@
 import { BaseInteraction, CommandInteraction } from 'discord.js';
-import Command from '../structures/Command';
+import { Command } from '../structures/Command';
 import Logger from '../structures/Logger';
 
 export default async function onInteractionCreate(interaction: BaseInteraction) {
@@ -38,5 +38,15 @@ export default async function onInteractionCreate(interaction: BaseInteraction) 
 			Logger.error(error);
 			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
 		}
+	}
+	else if (interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand()) {
+		const command = interaction.client.contextMenus.get(interaction.commandName);
+
+		if (!command) {
+			await interaction.reply({ content: 'Command not found.', ephemeral: true });
+			return;
+		}
+
+		await command.execute(interaction);
 	}
 }

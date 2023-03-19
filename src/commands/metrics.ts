@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { checkConnected } from '../structures/helpers';
 import Database from '../structures/Database';
-import Command from '../structures/Command';
+import { Command } from '../structures/Command';
 
 export default new Command({
 	execute: async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
