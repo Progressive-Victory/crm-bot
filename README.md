@@ -1,8 +1,6 @@
 # crm-bot
 
-![Logo](https://github.com/Progressive-Victory/crm-bot/blob/main/assets/badge.png?raw=true)
-
-Interval PVBot. Responsible for server utilities and metrics and the server-join action from filling the form
+![Logo](https://github.com/Progressive-Victory/crm-bot/blob/main/assets/badge.png?raw=true) Interval PVBot. Responsible for server utilities and metrics and the server-join action from filling the form
 
 ## External Resources
 
