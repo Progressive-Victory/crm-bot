@@ -16,9 +16,10 @@ Interval PVBot. Responsible for server utilities and metrics and the server-join
 3. `OWNERS` is a comma separated list of user IDs that should have administrator access to the bot. Basically, users in this list skip all permissions checks the bot might do to restrict command usage.
 4. `TRACKING_GUILD` is the guild ID for the server that should listen to member activity for the CRM database. For testing purposes, this would probably be equivalent to whatever you'd set in `TEST_GUILD`.
 5. `TRACKING_CHANNEL` is the logs channel ID, this needs to be a channel that only permits automated system join messages. Those are the kinds of messages you'll see with sticker prompts when someone joins, basically.
-6. `API_AUTH` is the authorization token from [this repo](https://github.com/Progressive-Victory/crm-backend/blob/main/.env.sample), and `API_ENDPOINT` should match the host for that project. You'll want both projects running.
-7. Install [MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
-8. The default for `DB_URI` is `mongodb://localhost:27017`, change as your settings are configured
+6. `API_ENDPOINT` is basically where the [other repo](https://github.com/Progressive-Victory/crm-backend/blob/main/.env.sample) is hosted. Leave as default if you haven't changed any config there.
+7. `API_AUTH` is the authorization token from [this repo](https://github.com/Progressive-Victory/crm-backend/blob/main/.env.sample), and `API_ENDPOINT` should match the host for that project. You'll want both projects running.
+8. Install [MongoDB](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-ubuntu/)
+9. The default for `DB_URI` is `mongodb://localhost:27017`, change as your settings are configured
 
 ## Codebase
 
