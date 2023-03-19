@@ -138,7 +138,7 @@ export default class CustomClient extends Discord.Client {
 	}
 
 	async putInteractions(commands) {
-		if (process.env.CLIENT_ID) {
+		if (process.env.TEST_GUILD) {
 			Logger.info('Started refreshing local slash commands.');
 			await rest.put(
 				Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.TEST_GUILD),
