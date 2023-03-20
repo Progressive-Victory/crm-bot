@@ -4,7 +4,7 @@ import {
 import { State } from '../declarations/states';
 import Command from '../structures/Command';
 
-const regionLeadRoleID:Snowflake = '1039114169552748555';
+const regionLeadRoleID:Snowflake = process.env.STATE_LEAD_ROLE_ID;
 
 function memberState(member:GuildMember) {
 	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
