@@ -20,6 +20,11 @@ export default async function onGuildMemberUpdate(before: GuildMember, after: Gu
 	const altDentifierRole = after.guild.roles.cache.get(process.env.ALTDENTIFIER_ROLE_ID);
 	const verifiedRole = after.guild.roles.cache.get(process.env.VERIFIED_ROLE_ID);
 
+	if (!websiteFormFilledRole || !pendingRulesRole || !altDentifierRole || !verifiedRole) {
+		console.warn('Missing one of the verification related roles');
+		return;
+	}
+
 	after.roles.cache.forEach((role) => {
 		if (role.name === websiteFormFilledRole.name) {
 			hasWebForm = true;
