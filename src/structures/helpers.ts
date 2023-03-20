@@ -2,6 +2,7 @@ import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 
 import {
+	ChatInputCommandInteraction,
 	CommandInteraction,
 	GuildMember,
 	GuildTextBasedChannel,
@@ -123,7 +124,7 @@ export function checkConnected(discordUserID: Snowflake|Snowflake[], discordGuil
 	}).then((r) => r.json());
 }
 
-export function trackingGuildChecks(interaction: CommandInteraction<'cached'>) {
+export function trackingGuildChecks(interaction: CommandInteraction| ChatInputCommandInteraction) {
 	if (!process.env.TRACKING_GUILD) {
 		return 'Tracking guild is missing from the configuration.';
 	}
@@ -135,14 +136,19 @@ export function trackingGuildChecks(interaction: CommandInteraction<'cached'>) {
 	return true;
 }
 
-export function isStateLead(interaction: CommandInteraction<'cached'>) {
+export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInputCommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
 	if (!process.env.STATE_LEAD_ROLE_ID) {
 		return 'State lead is missing from the configuration.';
 	}
+
 	if (!interaction.member.roles.cache.has(process.env.STATE_LEAD_ROLE_ID)) {
 		return `You must have <@&${process.env.STATE_LEAD_ROLE_ID}> to use this command.`;
+	}
+
+	if (!REGION_ABBREVIATION_MAP[interaction.channel.name]) {
+		return 'This command can only be used in a state channel.';
 	}
 
 	if (!interaction.member.roles.cache.some((r) => r.name === (REGION_ABBREVIATION_MAP[interaction.channel.name]))) {
