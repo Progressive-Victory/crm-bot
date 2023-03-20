@@ -1,5 +1,19 @@
-import { AutocompleteInteraction, CommandInteraction } from 'discord.js';
+import {
+  AutocompleteInteraction
+	CommandInteraction,
+	UserContextMenuCommandInteraction,
+	ContextMenuCommandBuilder,
+	MessageContextMenuCommandInteraction,
+	InteractionResponse,
+	Message
+} from 'discord.js';
 import { isOwner } from './helpers';
+
+type ReturnableInteraction = CommandInteraction
+	| UserContextMenuCommandInteraction
+	| MessageContextMenuCommandInteraction
+	| InteractionResponse<true>
+	| Message<true>;
 
 type Permissions = {
 	member?: bigint[]
@@ -12,11 +26,11 @@ type CommandOptions = {
 	perms?: Permissions
 	ownersOnly?: boolean
 	cooldown?: number
-	execute: (interaction: CommandInteraction) => Promise<any>,
+	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;,
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 }
 
-class Command {
+export class Command {
 	name?: string;
 
 	group?: string;
@@ -27,7 +41,7 @@ class Command {
 
 	perms: Permissions;
 
-	execute: (interaction: CommandInteraction) => Promise<any>;
+	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 
@@ -98,4 +112,19 @@ class Command {
 	}
 }
 
-export default Command;
+export type ContextMenuCommandOptions = {
+	data: ContextMenuCommandBuilder;
+
+	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
+}
+
+export class ContextMenuCommand {
+	data: ContextMenuCommandBuilder;
+
+	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
+
+	constructor(options: ContextMenuCommandOptions) {
+		this.data = options.data;
+		this.execute = options.execute;
+	}
+}

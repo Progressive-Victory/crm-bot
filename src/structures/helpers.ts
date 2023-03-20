@@ -2,13 +2,16 @@ import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 
 import {
+	CommandInteraction,
 	GuildMember,
+	GuildTextBasedChannel,
 	PermissionFlagsBits,
 	Snowflake,
 	User
 } from 'discord.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
+import { REGION_ABBREVIATION_MAP } from './Constants';
 
 config();
 
@@ -118,4 +121,47 @@ export function checkConnected(discordUserID: Snowflake|Snowflake[], discordGuil
 			Authorization: process.env.API_AUTH
 		}
 	}).then((r) => r.json());
+}
+
+export function trackingGuildChecks(interaction: CommandInteraction<'cached'>) {
+	if (!process.env.TRACKING_GUILD) {
+		return 'Tracking guild is missing from the configuration.';
+	}
+
+	if (interaction.guild.id !== process.env.TRACKING_GUILD) {
+		return 'This command can only be used in the tracking server.';
+	}
+
+	return true;
+}
+
+export function isStateLead(interaction: CommandInteraction<'cached'>) {
+	if (!trackingGuildChecks(interaction)) return null;
+
+	if (!process.env.STATE_LEAD_ROLE_ID) {
+		return 'State lead is missing from the configuration.';
+	}
+	if (!interaction.member.roles.cache.has(process.env.STATE_LEAD_ROLE_ID)) {
+		return `You must have <@&${process.env.STATE_LEAD_ROLE_ID}> to use this command.`;
+	}
+
+	if (!interaction.member.roles.cache.some((r) => r.name === (REGION_ABBREVIATION_MAP[interaction.channel.name]))) {
+		return 'You do not have the corresponding region role to run this command.';
+	}
+
+	return true;
+}
+
+export function hasSMERole(interaction: CommandInteraction<'cached'>) {
+	if (!trackingGuildChecks(interaction)) return null;
+
+	if (!process.env.SME_ROLE_IDS) {
+		return 'SME roles are missing from the configuration.';
+	}
+
+	if (!process.env.SME_ROLE_IDS.split(',').some((id) => interaction.member.roles.cache.has(id))) {
+		return `You must have one of the following roles to use this command: <@&${process.env.SME_ROLE_IDS.split(',').join('>, <@&')}>`;
+	}
+
+	return true;
 }

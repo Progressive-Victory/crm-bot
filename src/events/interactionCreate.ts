@@ -2,7 +2,7 @@
 import {
 	ApplicationCommandType, CommandInteraction, Interaction, InteractionType
 } from 'discord.js';
-import Command from '../structures/Command';
+import { Command } from '../structures/Command';
 import Logger from '../structures/Logger';
 
 export default async function onInteractionCreate(interaction: Interaction) {
@@ -52,10 +52,16 @@ export default async function onInteractionCreate(interaction: Interaction) {
 				break;
 
 				// Context Menu
-			// case ApplicationCommandType.Message:
-			// case ApplicationCommandType.User:
-			// 	client.contextMenus.get(interaction.commandName)?.execute(client, interaction);
-			// 	break;
+			case ApplicationCommandType.Message:
+			case ApplicationCommandType.User:
+			   const command = interaction.client.contextMenus.get(interaction.commandName);
+
+		     if (!command) {
+			     await interaction.reply({ content: 'Command not found.', ephemeral: true });
+			     return;
+		     }
+         await command.execute(interaction);
+			break;
 			default:
 				break;
 			}
