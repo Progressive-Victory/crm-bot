@@ -23,8 +23,9 @@
 ## Codebase
 
 - If you want to add a new command, you'll want to make 2 files at minimum. If you're adding a regular slash command, make a new file in `/src/commands/` and a new file in `/src/interactions/commands`. If you're adding a context menu comment (basically, a command that has features after right clicking a message or a user, for example), then you'll want to just make a file in `/src/interactions/contextmenus`. Look at the other files in those directories for example about how these commands should look. The bot will automatically update the commands on restart.
+  - Interaction commands support subgroups and subcommands. To make use of the feature here, you can use nested folders in the same context. For example, if you have a command called `/config profile add`, you will want to make a folder called `config`, then a folder called `profile` inside the original folder, then a file called `add.ts`, which has the actual function to run the command. Additionally, you'll need to specify two attributes inside the constructor there. You'll need `name`, which is the root name of the command, in this case, `config`, and `group` would be the next level down, which is `profile` in this case. This allows the bot to internally know the pathway to lead to that command when it's called by a user. For a similar working example, refer to `/src/commands/region-leads/`.
 - If you want to modify an event, just add a new file with the event name in `/src/events/` if it doesn't exist already. You can find a list of events [here](https://discord.js.org/#/docs/discord.js/main/class/Client?scrollTo=e-applicationCommandPermissionsUpdate).
-- If you want to communicate with the backend, refer to `/src/structures/helpers.ts - checkConnected` function.
+- If you want to communicate with the backend, refer to `/src/structures/helpers.ts` - `checkConnected` function.
 
 ## Running
 

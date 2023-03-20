@@ -11,15 +11,15 @@ Please, go through these steps before you submit a PR.
 
     c. You have only one commit (if not, squash them into one commit).
 
-    d. `npm test` doesn't throw any error. If it does, fix them first and amend your commit (`git commit --amend`).
+    d. `yarn test` doesn't throw any error. If it does, fix them first and amend your commit (`git commit --amend`).
 
 3. **After** these steps, you're ready to open a pull request.
 
-    a. Your pull request MUST NOT target the `master` branch on this repository. You probably want to target `staging` instead.
+    a. Give a descriptive title to your PR.
 
-    b. Give a descriptive title to your PR.
+    b. Provide a description of your changes.
 
-    c. Provide a description of your changes.
+    c. If applicable, indicate what issue your pull request closes. For example, add anywhere in the description the following: `closes #10`. This is done so the relevant issue is automatically closed when this is merged.
 
 IMPORTANT: Please review the [CONTRIBUTING.md](./CONTRIBUTING.md) file for detailed contributing guidelines.
 

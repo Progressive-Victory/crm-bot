@@ -6,7 +6,7 @@ In this guide you will get an overview of the contribution workflow from opening
 
 ## Issues
 
-Scan through our [existing issues](https://trello.com/b/70if94AU/crm) to find one that interests you. If you find an issue to work on, you are welcome to open a PR with a fix, as along as nobody else is assigned to that issue.
+Scan through our [existing issues](https://github.com/orgs/Progressive-Victory/projects/3) to find one that interests you. If you find an issue to work on, you are welcome to open a PR with a fix, as along as nobody else is assigned to that issue.
 
 ## Make Changes
 
@@ -24,5 +24,5 @@ Commit the changes once you are happy with them. Make sure to run the test comma
 When you're finished with the changes, create a pull request, also known as a PR.
 
 - Fill the "Ready for review" template so that we can review your PR. This template helps reviewers understand your changes as well as the purpose of your pull request.
-- Don't forget to link to the relevant Trello issue if you are solving one.
+- Don't forget to link to the relevant GitHub issue if you are solving one.
 Once you submit your PR, tests should run automatically to make sure the code passes basic tests.
