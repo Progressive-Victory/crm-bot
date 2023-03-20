@@ -1,4 +1,4 @@
-import { CommandInteraction } from 'discord.js';
+import { AutocompleteInteraction, CommandInteraction } from 'discord.js';
 import { isOwner } from './helpers';
 
 type Permissions = {
@@ -12,7 +12,8 @@ type CommandOptions = {
 	perms?: Permissions
 	ownersOnly?: boolean
 	cooldown?: number
-	execute: (interaction: CommandInteraction) => Promise<any>;
+	execute: (interaction: CommandInteraction) => Promise<any>,
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 }
 
 class Command {
@@ -28,6 +29,8 @@ class Command {
 
 	execute: (interaction: CommandInteraction) => Promise<any>;
 
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
+
 	constructor(config: CommandOptions) {
 		this.cooldown = config.cooldown || 3;
 		this.ownersOnly = config.ownersOnly || false;
@@ -35,6 +38,7 @@ class Command {
 		this.name = config.name || '';
 		this.group = config.group || '';
 		this.execute = config.execute;
+		this.autocomplete = config.autocomplete;
 	}
 
 	static async permissionsCheck(interaction: CommandInteraction<'cached'>, command: Command) {
