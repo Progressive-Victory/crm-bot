@@ -1,4 +1,5 @@
 import { ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction } from 'discord.js';
+import { isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../structures/Command';
 import { REGION_ABBREVIATION_MAP } from '../../structures/Constants';
 
@@ -14,17 +15,8 @@ export default new ContextMenuCommand({
 			return interaction.reply({ content: 'I cannot delete this message.', ephemeral: true });
 		}
 
-		if (interaction.guild.id !== process.env.TRACKING_GUILD) {
-			return interaction.reply({ content: 'This command can only be used in the tracking server.', ephemeral: true });
-		}
-
-		if (!process.env.STATE_LEAD_ROLE_ID) {
-			return interaction.reply({ content: 'State lead is missing from the configuration.', ephemeral: true });
-		}
-
-		if (!interaction.member.roles.cache.has(process.env.STATE_LEAD_ROLE_ID)) {
-			return interaction.reply({ content: `You must have <@&${process.env.STATE_LEAD_ROLE_ID}> to use this command.`, ephemeral: true });
-		}
+		const str = isStateLead(interaction);
+		if (str !== true) return interaction.reply({ content: str, ephemeral: true });
 
 		await interaction.deferReply({ ephemeral: true });
 
