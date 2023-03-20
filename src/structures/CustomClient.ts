@@ -54,6 +54,19 @@ export default class CustomClient extends Discord.Client {
 		this.interactionsDir = options.interactionsDir;
 		this.commandsDir = options.commandsDir;
 		this.eventsDir = options.eventsDir;
+
+		if (!this.interactionsDir) {
+			throw new Error('No interactions directory specified.');
+		}
+
+		if (!this.commandsDir) {
+			throw new Error('No commands directory specified.');
+		}
+
+		if (!this.eventsDir) {
+			throw new Error('No events directory specified.');
+		}
+
 		this.previousEvents = [];
 		this.interactions = new Discord.Collection();
 		this.commands = new Discord.Collection();
