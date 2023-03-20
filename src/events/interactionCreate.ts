@@ -1,52 +1,120 @@
-import { BaseInteraction, CommandInteraction } from 'discord.js';
+/* eslint-disable no-case-declarations */
+import {
+	ApplicationCommandType, CommandInteraction, Interaction, InteractionType
+} from 'discord.js';
 import { Command } from '../structures/Command';
 import Logger from '../structures/Logger';
 
-export default async function onInteractionCreate(interaction: BaseInteraction) {
-	if (interaction.isChatInputCommand()) {
-		const name = interaction.commandName;
-		const interactionData = interaction.client.interactions.get(name);
+export default async function onInteractionCreate(interaction: Interaction) {
+	let interactionName:string;
+	let key:string;
+	try {
+		switch (interaction.type) {
+		case InteractionType.ApplicationCommand:
 
-		if (!interactionData) return;
+			switch (interaction.commandType) {
+			// Chat Input Command
+			case ApplicationCommandType.ChatInput:
+				interactionName = interaction.commandName;
+				const interactionData = interaction.client.interactions.get(interactionName);
 
-		const subcommand = interaction.options.getSubcommand(false);
-		const subcommandgroup = interaction.options.getSubcommandGroup(false);
+				if (!interactionData) return;
 
-		let key = name;
-		if (subcommandgroup) key += `-${subcommandgroup}`;
-		if (subcommand) key += `-${subcommand}`;
+				const subcommand = interaction.options.getSubcommand(false);
+				const subcommandgroup = interaction.options.getSubcommandGroup(false);
 
-		const command = interaction.client.commands.get(key);
+				key = interactionName;
+				if (subcommandgroup) key += `-${subcommandgroup}`;
+				if (subcommand) key += `-${subcommand}`;
 
-		if (!command) {
-			await interaction.reply({ ephemeral: true, content: `Command \`${key}\` not found.` });
-			return;
-		}
+				const command = interaction.client.commands.get(key);
 
-		try {
-			const allowed = await Command.permissionsCheck(interaction as CommandInteraction<'cached'>, command);
+				if (!command) {
+					await interaction.reply({ ephemeral: true, content: `Command \`${key}\` not found.` });
+					return;
+				}
 
-			if (allowed !== true && allowed.error === true) {
-				await interaction.reply(allowed.message);
-				return;
+				try {
+					if (!interaction.inCachedGuild()) {
+						await interaction.channel.guild.fetch();
+					}
+
+					const allowed = await Command.permissionsCheck(interaction as CommandInteraction<'cached'>, command);
+
+					if (allowed !== true && allowed.error === true) {
+						await interaction.reply(allowed.message);
+						return;
+					}
+
+					await command.execute(interaction);
+					Logger.debug(`Executed command ${command.name} by ${interaction.user.tag} (${interaction.user.id}) in ${interaction.guild?.name} (${interaction.guild?.id})`);
+				}
+				catch (error) {
+					Logger.error(error);
+					await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+				}
+				break;
+
+				// Context Menu
+			case ApplicationCommandType.Message:
+			case ApplicationCommandType.User:
+				const contextCommand = interaction.client.contextMenus.get(interaction.commandName);
+				if (!contextCommand) {
+					await interaction.reply({ content: 'Command not found.', ephemeral: true });
+					return;
+				}
+				await contextCommand.execute(interaction);
+				break;
+			default:
+				break;
 			}
+			break;
+			// Component (Button | Select Menu)
+			// case InteractionType.MessageComponent:
 
-			await command.execute(interaction);
-			Logger.debug(`Executed command ${command.name} by ${interaction.user.tag} (${interaction.user.id}) in ${interaction.guild?.name} (${interaction.guild?.id})`);
-		}
-		catch (error) {
-			Logger.error(error);
-			await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+			// 	if (!client.config.interactions.receiveMessageComponents) return;
+			// 	interactionName = client.config.interactions.splitCustomId ? interaction.customId.split('_')[0] : interaction.customId;
+
+			// 	switch (interaction.componentType) {
+			// 	case ComponentType.Button:
+			// 		// Check if message components are enabled
+			// 		if (!client.config.interactions.receiveMessageComponents) return;
+			// 		client.buttons.get(interactionName)?.execute(client, interaction);
+			// 		break;
+
+			// 	case ComponentType.ChannelSelect:
+			// 	case ComponentType.RoleSelect:
+			// 	case ComponentType.UserSelect:
+			// 	case ComponentType.MentionableSelect:
+			// 	case ComponentType.StringSelect:
+			// 		client.selectMenus.get(interactionName)?.execute(client, interaction);
+			// 		break;
+			// 	default:
+			// 		break;
+			// 	}
+
+			// break;
+			// ModalSubmit
+		// case InteractionType.ModalSubmit:
+		// 	// Check if modal interactions are enabled
+		// 	if (!client.config.interactions.receiveModals) return;
+		// 	interactionName = client.config.interactions.splitCustomId ? interaction.customId.split('_')[0] : interaction.customId;
+		// 	client.modals.get(interactionName)?.execute(client, interaction);
+		// 	break;
+		case InteractionType.ApplicationCommandAutocomplete:
+			// Check if autocomplete interactions are enabled
+			// if (!client.config.interactions.receiveAutocomplete) return;
+			interactionName = interaction.commandName;
+			// eslint-disable-next-line no-case-declarations
+			const interactionData = interaction.client.commands.get(key);
+			if (!interactionData) { console.warn(`[Warning] Autocomplete for ${interactionName} was not Setup`); }
+			else { interactionData.autocomplete(interaction); }
+			break;
+		default:
+			break;
 		}
 	}
-	else if (interaction.isUserContextMenuCommand() || interaction.isMessageContextMenuCommand()) {
-		const command = interaction.client.contextMenus.get(interaction.commandName);
-
-		if (!command) {
-			await interaction.reply({ content: 'Command not found.', ephemeral: true });
-			return;
-		}
-
-		await command.execute(interaction);
+	catch (error) {
+		console.error(error);
 	}
 }

@@ -1,4 +1,5 @@
 import {
+	AutocompleteInteraction,
 	CommandInteraction,
 	UserContextMenuCommandInteraction,
 	ContextMenuCommandBuilder,
@@ -25,7 +26,8 @@ type CommandOptions = {
 	perms?: Permissions
 	ownersOnly?: boolean
 	cooldown?: number
-	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
+	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction,
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>,
 }
 
 export class Command {
@@ -41,6 +43,8 @@ export class Command {
 
 	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
+
 	constructor(config: CommandOptions) {
 		this.cooldown = config.cooldown || 3;
 		this.ownersOnly = config.ownersOnly || false;
@@ -48,6 +52,7 @@ export class Command {
 		this.name = config.name || '';
 		this.group = config.group || '';
 		this.execute = config.execute;
+		this.autocomplete = config.autocomplete;
 	}
 
 	static async permissionsCheck(interaction: CommandInteraction<'cached'>, command: Command) {
