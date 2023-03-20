@@ -54,14 +54,13 @@ export default async function onInteractionCreate(interaction: Interaction) {
 				// Context Menu
 			case ApplicationCommandType.Message:
 			case ApplicationCommandType.User:
-			   const command = interaction.client.contextMenus.get(interaction.commandName);
-
-		     if (!command) {
-			     await interaction.reply({ content: 'Command not found.', ephemeral: true });
-			     return;
-		     }
-         await command.execute(interaction);
-			break;
+				const contextCommand = interaction.client.contextMenus.get(interaction.commandName);
+				if (!contextCommand) {
+					await interaction.reply({ content: 'Command not found.', ephemeral: true });
+					return;
+				}
+				await contextCommand.execute(interaction);
+				break;
 			default:
 				break;
 			}

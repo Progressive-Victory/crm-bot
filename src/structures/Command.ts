@@ -1,5 +1,5 @@
 import {
-  AutocompleteInteraction
+	AutocompleteInteraction,
 	CommandInteraction,
 	UserContextMenuCommandInteraction,
 	ContextMenuCommandBuilder,
@@ -26,8 +26,8 @@ type CommandOptions = {
 	perms?: Permissions
 	ownersOnly?: boolean
 	cooldown?: number
-	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;,
-	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
+	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction,
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>,
 }
 
 export class Command {
