@@ -8,17 +8,17 @@ export default {
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
 		.addSubcommand((subcommand) => subcommand
 			.setName('add')
-			.setDescription('Add regonal leads role')
+			.setDescription('Add regional leads role')
 			.addUserOption((option) => option
 				.setName('user')
-				.setDescription('Traget user')
+				.setDescription('Target user')
 				.setRequired(true)))
 		.addSubcommand((subcommand) => subcommand
 			.setName('remove')
-			.setDescription('Remove regonal leads role')
+			.setDescription('Remove regional leads role')
 			.addUserOption((option) => option
 				.setName('user')
-				.setDescription('Traget user')
+				.setDescription('Target user')
 				.setRequired(true)))
 
 };
