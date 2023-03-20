@@ -1,5 +1,5 @@
 import {
-	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember, InteractionResponse, Snowflake
+	ChatInputCommandInteraction, GuildMember, InteractionResponse, Snowflake
 } from 'discord.js';
 import { State } from '../declarations/states';
 import { Command } from '../structures/Command';
@@ -34,17 +34,6 @@ function execute(interaction: ChatInputCommandInteraction): Promise<InteractionR
 	}
 	return interaction.reply({ ephemeral: true, content: reply });
 }
-async function autocomplete(interaction: AutocompleteInteraction) {
-	const focusedOption = interaction.options.getFocused(true);
-	const choices = ['Organizing VC 1', 'Organizing VC 2', 'Organizing VC 3'];
-
-	const filtered = choices.filter((choice) => choice.toLowerCase().startsWith(focusedOption.value.toLowerCase())
-		|| choice.toLowerCase().endsWith(focusedOption.value.toLowerCase()));
-	interaction.respond(
-		filtered.map((choice) => ({ name: choice, value: choice })).slice(0, 14)
-	);
-}
 export default new Command({
-	execute,
-	autocomplete
+	execute
 });
