@@ -1,21 +1,20 @@
 import {
-	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember, Snowflake
+	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember, InteractionResponse, Snowflake
 } from 'discord.js';
 import { State } from '../declarations/states';
-import Command from '../structures/Command';
+import { Command } from '../structures/Command';
 
 const regionLeadRoleID:Snowflake = process.env.STATE_LEAD_ROLE_ID;
 
 function memberState(member:GuildMember) {
 	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
 }
-async function execute(interaction: ChatInputCommandInteraction) {
+function execute(interaction: ChatInputCommandInteraction): Promise<InteractionResponse<boolean>> {
 	const target = interaction.options.getMember('user') as GuildMember;
 	const stateLead = interaction.member as GuildMember;
 
 	if (!memberState(stateLead).equals(memberState(target))) {
-		interaction.reply({ ephemeral: true, content: `You are not in the same state as ${target}` });
-		return;
+		return interaction.reply({ ephemeral: true, content: `You are not in the same state as ${target}` });
 	}
 
 	let reply = 'Error';
@@ -33,8 +32,7 @@ async function execute(interaction: ChatInputCommandInteraction) {
 	default:
 		break;
 	}
-
-	interaction.reply({ ephemeral: true, content: reply });
+	return interaction.reply({ ephemeral: true, content: reply });
 }
 async function autocomplete(interaction: AutocompleteInteraction) {
 	const focusedOption = interaction.options.getFocused(true);
