@@ -35,6 +35,10 @@ export default async function onInteractionCreate(interaction: Interaction) {
 				}
 
 				try {
+					if (!interaction.inCachedGuild()) {
+						await interaction.channel.guild.fetch();
+					}
+
 					const allowed = await Command.permissionsCheck(interaction as CommandInteraction<'cached'>, command);
 
 					if (allowed !== true && allowed.error === true) {
