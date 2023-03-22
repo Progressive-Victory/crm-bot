@@ -1,9 +1,9 @@
 # Pull Request Template
 
-[ ] - There are no unrelated changes
-[ ] - Running `yarn test` does not throw any errors
-[ ] - I ran `yarn lint` to make sure my codebase is consistent
-[ ] - I link to the relevant issues to be closed, if applicable
+- [ ] - There are no unrelated changes
+- [ ] - Running `yarn test` does not throw any errors
+- [ ] - I ran `yarn lint` to make sure my codebase is consistent
+- [ ] - I link to the relevant issues to be closed, if applicable
 
 ## **REVIEW THE FOLLOWING AND DELETE AFTER READING**
 
