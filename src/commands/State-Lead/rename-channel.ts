@@ -23,7 +23,7 @@ async function autocomplete(interaction: AutocompleteInteraction) {
 	const member = interaction.member as GuildMember;
 	const stateRole = member.roles.valueOf().filter((role) => Object.values(State).includes(role.name as State)).first();
 	const focusedOption = interaction.options.getFocused(true);
-	const choices = ['Organizing VC 1', 'Organizing VC 2', 'Organizing VC 3', `${stateRole.name} Meeting`];
+	const choices = [`${stateRole.name} Meeting`];
 
 	const filtered = choices.filter((choice) => choice.toLowerCase().startsWith(focusedOption.value.toLowerCase()));
 	return interaction.respond(
