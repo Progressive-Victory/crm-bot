@@ -4,7 +4,7 @@ export default {
 	data: new SlashCommandBuilder()
 		.setName('state-lead')
 		.setDescription('Commands for state Leads to help manager there state')
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels && PermissionFlagsBits.ManageChannels)
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles && PermissionFlagsBits.ManageChannels)
 		.setDMPermission(false)
 		.addSubcommandGroup((subcommandGroup) => subcommandGroup
 			.setName('region-lead')
