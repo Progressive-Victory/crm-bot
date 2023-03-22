@@ -4,13 +4,14 @@ import {
 import Logger from '../structures/Logger';
 import Database from '../structures/Database';
 
+const orgchannels = process.env.STATE_LEAD_RENAMEABLE_CHANNELIDS.split(', ');
 const VCChannels = new Collection<Snowflake, string>()
-	.set('928709708188102686', 'Organizing VC 1')
-	.set('1019969298577506415', 'Organizing VC 2')
-	.set('928709708188102687', 'Organizing VC 3');
+	.set(orgchannels[0], 'Organizing VC 1')
+	.set(orgchannels[1], 'Organizing VC 2')
+	.set(orgchannels[2], 'Organizing VC 3');
 async function renameOrganizing(channel:VoiceBasedChannel) {
 	if (VCChannels.has(channel.id) && channel.members.size === 0) {
-		channel.setName(VCChannels.find((id) => id === channel.id));
+		channel.setName(VCChannels.find((id) => id === channel.id)).catch((err) => console.error(err));
 	}
 }
 

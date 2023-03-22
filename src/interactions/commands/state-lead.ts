@@ -3,22 +3,23 @@ import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.j
 export default {
 	data: new SlashCommandBuilder()
 		.setName('state-lead')
-		.setDescription('Commands for state Leads to help manager there state')
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles && PermissionFlagsBits.ManageChannels)
+		.setDescription('Commands for State Leads to help manage their state')
+		// eslint-disable-next-line no-bitwise
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels)
 		.setDMPermission(false)
 		.addSubcommandGroup((subcommandGroup) => subcommandGroup
 			.setName('region-lead')
-			.setDescription('add and remove Region Leads roles')
+			.setDescription('Add or remove Region Lead role')
 			.addSubcommand((subcommand) => subcommand
 				.setName('add')
-				.setDescription('Add regional leads role')
+				.setDescription('Add Regional Lead role')
 				.addUserOption((option) => option
 					.setName('user')
 					.setDescription('Target user')
 					.setRequired(true)))
 			.addSubcommand((subcommand) => subcommand
 				.setName('remove')
-				.setDescription('Remove regional leads role')
+				.setDescription('Remove Regional Lead role')
 				.addUserOption((option) => option
 					.setName('user')
 					.setDescription('Target user')
@@ -33,10 +34,9 @@ export default {
 				.addChannelTypes(ChannelType.GuildVoice))
 			.addStringOption((option) => option
 				.setName('name')
-				.setDescription('Name to set the channel too')
+				.setDescription('Name to set the channel to')
 				.setRequired(true)
 				.setAutocomplete(true)
 				.setMinLength(5)
 				.setMaxLength(100)))
-
 };

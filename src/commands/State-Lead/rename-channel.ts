@@ -4,24 +4,26 @@ import {
 import { State } from '../../declarations/states';
 import { Command } from '../../structures/Command';
 
+const states = Object.values(State);
+
 async function execute(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
 	let reply:string;
-	const allowedChannels:Snowflake[] = ['928709708188102686', '1019969298577506415', '928709708188102687'];
+	const allowedChannels:Snowflake[] = process.env.STATE_LEAD_RENAMEABLE_CHANNELIDS.split(', ');
 	const channel = interaction.options.getChannel('channel', true) as VoiceChannel;
 	const name = interaction.options.getString('name', true);
 	if (!allowedChannels.includes(channel.id)) {
-		reply = `You are not allow to rename ${channel}`;
+		reply = `You are not allowed to rename ${channel}`;
 	}
 	else {
 		channel.setName(name, 'State Lead has renamed this channel');
-		reply = `${channel} has been successful renamed`;
+		reply = `${channel} has been Successfully renamed`;
 	}
 
 	return interaction.reply({ ephemeral: true, content: reply });
 }
 async function autocomplete(interaction: AutocompleteInteraction) {
 	const member = interaction.member as GuildMember;
-	const stateRole = member.roles.valueOf().filter((role) => Object.values(State).includes(role.name as State)).first();
+	const stateRole = member.roles.valueOf().find((role) => states.includes(role.name as State));
 	const focusedOption = interaction.options.getFocused(true);
 	const choices = [`${stateRole.name} Meeting`];
 
