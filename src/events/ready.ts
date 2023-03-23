@@ -1,6 +1,10 @@
+import { VoiceBasedChannel } from 'discord.js';
+import { VCChannelIDs } from '../structures/Constants';
+import { renameOrganizing } from '../structures/helpers';
+import CustomClient from '../structures/CustomClient';
 import Logger from '../structures/Logger';
 
-export default async function onReady() {
+export default async function onReady(this: CustomClient) {
 	Logger.info(`Ready! Logged in as ${this.user.tag}`);
 
 	if (!process.env.TRACKING_GUILD) {
@@ -11,5 +15,23 @@ export default async function onReady() {
 	if (!this.guilds.cache.has(process.env.TRACKING_GUILD)) {
 		Logger.error('Tracking guild not found. Exiting...');
 		process.exit(1);
+	}
+
+	const guild = this.guilds.cache.get(process.env.TRACKING_GUILD);
+	if (!guild) {
+		Logger.error('Tracking guild not found. Exiting...');
+		process.exit(1);
+	}
+
+	if (VCChannelIDs.length) {
+		const channels = guild.channels.cache.filter((c) => VCChannelIDs.includes(c.id) && c.isVoiceBased());
+		if (!channels.size || channels.size !== VCChannelIDs.length) {
+			Logger.error('One or more channels not found. Exiting...');
+			process.exit(1);
+		}
+
+		for (const channel of channels.values()) {
+			await renameOrganizing(channel as VoiceBasedChannel);
+		}
 	}
 }

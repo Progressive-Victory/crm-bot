@@ -5,14 +5,15 @@ import {
 	ChatInputCommandInteraction,
 	CommandInteraction,
 	GuildMember,
-	GuildTextBasedChannel,
 	PermissionFlagsBits,
 	Snowflake,
-	User
+	User,
+	VoiceBasedChannel
 } from 'discord.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
-import { REGION_ABBREVIATION_MAP } from './Constants';
+import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
+import Logger from './Logger';
 
 config();
 
@@ -170,4 +171,16 @@ export function hasSMERole(interaction: CommandInteraction<'cached'>) {
 	}
 
 	return true;
+}
+
+export async function renameOrganizing(channel: VoiceBasedChannel) {
+	if (!channel.guild.members.me.permissions.has('ManageChannels')) return;
+
+	if (VCChannelNames.has(channel.id) && !channel.members.size && channel.name !== VCChannelNames.get(channel.id)) {
+		Logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
+
+		await channel.setName(VCChannelNames.get(channel.id), 'Automatic undoing of meeting channel rename')
+			.then(() => Logger.debug(`Successfully renamed ${channel.name} (${channel.id})`))
+			.catch((err) => Logger.error(`Error renaming ${channel.name} (${channel.id})`, err));
+	}
 }

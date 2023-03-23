@@ -1,6 +1,12 @@
 import {
-	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember, InteractionResponse, Snowflake, VoiceChannel
+	AutocompleteInteraction,
+	ChatInputCommandInteraction,
+	GuildMember,
+	InteractionResponse,
+	Snowflake,
+	VoiceChannel
 } from 'discord.js';
+import { VCChannelIDs } from '../../structures/Constants';
 import { State } from '../../declarations/states';
 import { Command } from '../../structures/Command';
 
@@ -8,14 +14,19 @@ const states = Object.values(State);
 
 async function execute(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
 	let reply:string;
-	const allowedChannels:Snowflake[] = process.env.STATE_LEAD_RENAMEABLE_CHANNELIDS.split(', ');
+	const allowedChannels: Snowflake[] = VCChannelIDs;
 	const channel = interaction.options.getChannel('channel', true) as VoiceChannel;
 	const name = interaction.options.getString('name', true);
+
 	if (!allowedChannels.includes(channel.id)) {
 		reply = `You are not allowed to rename ${channel}`;
 	}
 	else {
-		channel.setName(name, 'State Lead has renamed this channel');
+		if (!channel.permissionsFor(interaction.client.user).has('ManageChannels')) {
+			return interaction.reply({ ephemeral: true, content: `I do not have permission to manage ${channel}.` });
+		}
+
+		await channel.setName(name, 'State Lead has renamed this channel');
 		reply = `${channel} has been Successfully renamed`;
 	}
 
