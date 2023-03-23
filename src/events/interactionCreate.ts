@@ -6,8 +6,8 @@ import { Command } from '../structures/Command';
 import Logger from '../structures/Logger';
 
 export default async function onInteractionCreate(interaction: Interaction) {
-	let interactionName:string;
-	let key:string;
+	let interactionName: string;
+	let key: string;
 	try {
 		switch (interaction.type) {
 		case InteractionType.ApplicationCommand:

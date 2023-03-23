@@ -13,7 +13,7 @@ import { Command } from '../../structures/Command';
 const states = Object.values(State);
 
 async function execute(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
-	let reply:string;
+	let reply: string;
 	const allowedChannels: Snowflake[] = VCChannelIDs;
 	const channel = interaction.options.getChannel('channel', true) as VoiceChannel;
 	const name = interaction.options.getString('name', true);
@@ -32,6 +32,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 
 	return interaction.reply({ ephemeral: true, content: reply });
 }
+
 async function autocomplete(interaction: AutocompleteInteraction) {
 	const member = interaction.member as GuildMember;
 	const stateRole = member.roles.valueOf().find((role) => states.includes(role.name as State));
@@ -43,8 +44,9 @@ async function autocomplete(interaction: AutocompleteInteraction) {
 		filtered.map((choice) => ({ name: choice, value: choice })).slice(0, 14)
 	);
 }
+
 export default new Command({
 	execute,
 	autocomplete,
-	name: 'state-lead'
+	name: 'lead'
 });
