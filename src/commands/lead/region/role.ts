@@ -18,7 +18,10 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 	const target = interaction.options.getMember('user');
 	const stateLead = interaction.member;
 
-	// Check if memberState of stateLead has any matching roles with memberState of target
+	if (!stateLead.guild.members.me.permissions.has('ManageRoles')) {
+		return interaction.reply({ ephemeral: true, content: 'I do not have permission to manage roles.' });
+	}
+
 	if (!memberState(stateLead).some((role) => memberState(target).has(role.id))) {
 		return interaction.reply({ ephemeral: true, content: `You are not in the same state as ${target}!` });
 	}

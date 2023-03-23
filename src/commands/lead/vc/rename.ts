@@ -13,9 +13,14 @@ import { Command } from '../../../structures/Command';
 const states = Object.values(State);
 
 async function execute(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
+	const channel = interaction.options.getChannel('channel', true) as VoiceChannel;
+
+	if (!channel.permissionsFor(interaction.client.user).has('ManageChannels')) {
+		return interaction.reply({ ephemeral: true, content: `I do not have permission to manage ${channel}.` });
+	}
+
 	let reply: string;
 	const allowedChannels: Snowflake[] = VCChannelIDs;
-	const channel = interaction.options.getChannel('channel', true) as VoiceChannel;
 	const name = interaction.options.getString('name', true);
 	const stateLead = interaction.member;
 
@@ -23,10 +28,6 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 		reply = `You are not allowed to rename ${channel}. However, you can rename any of the following channels: ${allowedChannels.map((id) => `<#${id}>`).join(', ')}.`;
 	}
 	else {
-		if (!channel.permissionsFor(interaction.client.user).has('ManageChannels')) {
-			return interaction.reply({ ephemeral: true, content: `I do not have permission to manage ${channel}.` });
-		}
-
 		await channel.setName(name, `${stateLead.user.tag} renamed ${channel.name}`);
 		reply = `${channel} has been successfully renamed!`;
 	}
