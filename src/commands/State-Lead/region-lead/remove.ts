@@ -1,10 +1,10 @@
 import {
 	ChatInputCommandInteraction, GuildMember, InteractionResponse, Snowflake
 } from 'discord.js';
-import { isStateLead } from '../../structures/helpers';
-import { State } from '../../declarations/states';
-import { Command } from '../../structures/Command';
-import Logger from '../../structures/Logger';
+import { isStateLead } from '../../../structures/helpers';
+import { State } from '../../../declarations/states';
+import { Command } from '../../../structures/Command';
+import Logger from '../../../structures/Logger';
 
 const regionLeadRoleID: Snowflake = process.env.REGIONAL_ROLE_ID;
 
@@ -36,5 +36,5 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 }
 export default new Command({
 	execute,
-	name: 'region-leads'
+	name: 'state-lead'
 });

@@ -1,3 +1,5 @@
+import { Collection, Snowflake } from 'discord.js';
+
 export const REGION_ABBREVIATION_MAP = {
 	california: 'CA',
 	florida: 'FL',
@@ -52,3 +54,9 @@ export const REGION_ABBREVIATION_MAP = {
 	'district-of-columbia': 'DC',
 	'puerto-rico': 'PR'
 };
+
+export const VCChannelIDs = process.env.STATE_LEAD_RENAMEABLE_CHANNELIDS.split(',');
+export const VCChannelNames = new Collection<Snowflake, string>();
+VCChannelIDs.forEach((id, index) => {
+	VCChannelNames.set(id, `Organizing VC ${index + 1}`);
+});

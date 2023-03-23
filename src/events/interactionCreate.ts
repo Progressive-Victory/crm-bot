@@ -105,6 +105,13 @@ export default async function onInteractionCreate(interaction: Interaction) {
 			// Check if autocomplete interactions are enabled
 			// if (!client.config.interactions.receiveAutocomplete) return;
 			interactionName = interaction.commandName;
+			const subcommand = interaction.options.getSubcommand(false);
+			const subcommandgroup = interaction.options.getSubcommandGroup(false);
+
+			key = interactionName;
+			if (subcommandgroup) key += `-${subcommandgroup}`;
+			if (subcommand) key += `-${subcommand}`;
+
 			// eslint-disable-next-line no-case-declarations
 			const interactionData = interaction.client.commands.get(key);
 			if (!interactionData) { console.warn(`[Warning] Autocomplete for ${interactionName} was not Setup`); }

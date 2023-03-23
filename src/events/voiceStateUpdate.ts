@@ -1,4 +1,5 @@
 import { VoiceState } from 'discord.js';
+import { renameOrganizing } from '../structures/helpers';
 import Logger from '../structures/Logger';
 import Database from '../structures/Database';
 
@@ -12,5 +13,7 @@ export default async function onVoiceStateUpdate(oldState: VoiceState, newState:
 			await Database.addVCLeave(newState.member.id, newState.guild.id, oldState.channel.id);
 			Logger.debug(`Added ${newState.member.id} to the VC leave database.`);
 		}
+
+		await renameOrganizing(newState.channel || oldState.channel);
 	}
 }
