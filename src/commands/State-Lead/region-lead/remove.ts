@@ -1,5 +1,8 @@
 import {
-	ChatInputCommandInteraction, GuildMember, InteractionResponse, Snowflake
+	ChatInputCommandInteraction,
+	GuildMember,
+	InteractionResponse,
+	Snowflake
 } from 'discord.js';
 import { isStateLead } from '../../../structures/helpers';
 import { State } from '../../../declarations/states';
@@ -34,7 +37,9 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 
 	return interaction.reply({ ephemeral: true, content: reply });
 }
+
 export default new Command({
 	execute,
-	name: 'state-lead'
+	name: 'state-lead',
+	group: 'region-lead'
 });

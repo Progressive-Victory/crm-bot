@@ -34,7 +34,9 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 
 	return interaction.reply({ ephemeral: true, content: reply });
 }
+
 export default new Command({
 	execute,
-	name: 'state-lead'
+	name: 'state-lead',
+	group: 'region-lead'
 });
