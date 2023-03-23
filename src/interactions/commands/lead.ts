@@ -17,8 +17,8 @@ export default {
 					.setDescription('Target user')
 					.setRequired(true))))
 		.addSubcommandGroup((subcommandGroup) => subcommandGroup
-			.setName('state')
-			.setDescription('State Lead utilities')
+			.setName('vc')
+			.setDescription('Manage voice channels')
 			.addSubcommand((subcommand) => subcommand
 				.setName('rename')
 				.setDescription('Rename organizing voice channels')
