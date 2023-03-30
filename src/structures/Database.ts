@@ -38,18 +38,10 @@ export default class Database {
 		return Database.db.collection('messages').updateOne({
 			userID, guildID, channelID
 		}, {
-			$inc: {
-				count: 1
-			},
-			$set: {
-				updatedAt: new Date()
-			},
-			$setOnInsert: {
-				createdAt: new Date()
-			}
-		}, {
-			upsert: true
-		});
+			$inc: { count: 1 },
+			$set: { updatedAt: new Date() },
+			$setOnInsert: { createdAt: new Date() }
+		}, { upsert: true });
 	}
 
 	static addVCJoin(userID: Snowflake, guildID: Snowflake, channelID: Snowflake) {

@@ -2,6 +2,7 @@ import { ChatInputCommandInteraction } from 'discord.js';
 import { checkConnected } from '../structures/helpers';
 import Database from '../structures/Database';
 import { Command } from '../structures/Command';
+import Languages from '../assets/languages';
 
 export default new Command({
 	execute: async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
@@ -12,21 +13,23 @@ export default new Command({
 
 		const metrics = await Database.getMetrics(guild.id, user?.id);
 
-		let str = 'Metrics ';
+		const commandLanguage = Languages[interaction.language].Commands.Metrics;
+
+		let str = `${commandLanguage.Title()}\n `;
 
 		if (user) {
-			str += `For User: **${user.tag}** (${user.id})\n`;
-			str += `**VC Joins**: ${metrics?.vcJoins?.length ?? 0}\n`;
-			str += `**VC Leaves**: ${metrics?.vcLeaves?.length ?? 0}\n`;
+			str += `${commandLanguage.User()}: **${user.tag}** (${user.id})\n`;
+			str += `**${commandLanguage.VCJoins()}**: ${metrics?.vcJoins?.length ?? 0}\n`;
+			str += `**${commandLanguage.VCLeaves()}**: ${metrics?.vcLeaves?.length ?? 0}\n`;
 			// str += `**VC Time**: ${metrics?.vcTime ?? 0} seconds\n`; // TODO
-			str += `**Messages**: ${metrics?.messages?.count ?? 0}\n`;
-			str += `**Server Joins**: ${metrics?.joins?.length ?? 0}\n`;
-			str += `**Server Leaves**: ${metrics?.leaves?.length ?? 0}\n`;
-			str += `**Connected Thru Form?**: ${await checkConnected(user.id, guild.id) ? 'Yes' : 'No'}\n`;
+			str += `**${commandLanguage.Messages()}**: ${metrics?.messages?.count ?? 0}\n`;
+			str += `**${commandLanguage.ServerJoins()}**: ${metrics?.joins?.length ?? 0}\n`;
+			str += `**${commandLanguage.ServerLeaves()}**: ${metrics?.leaves?.length ?? 0}\n`;
+			str += `**${commandLanguage.ConnectedForm()}?**: ${await checkConnected(user.id, guild.id) ? 'Yes' : 'No'}\n`;
 		}
 		else {
-			str += `For Server **${guild.name}** (${guild.id})\n`;
-			str += `**Leaves/Members**: ${metrics?.leaves?.length ?? 0}/${guild.memberCount}\n`;
+			str += `${commandLanguage.Server()} **${guild.name}** (${guild.id})\n`;
+			str += `**${commandLanguage.LeavesToMemberCount()}**: ${metrics?.leaves?.length ?? 0}/${guild.memberCount}\n`;
 
 			const memberIDs = await guild.members.fetch()
 				.then((members) => members.map((member) => member.id))
@@ -56,20 +59,20 @@ export default new Command({
 				}
 			}
 
-			str += '**Users In Server**\n';
-			str += `**Connected**: ${usersInServerButConnected.length}\n`;
-			str += `**NOT Connected**: ${usersInServerButNotConnected.length}\n`;
-			str += `**VC Joins**: ${metrics.vcJoins.filter((row) => memberIDs.includes(row.userID)).length}\n`;
-			str += `**VC Leaves**: ${metrics.vcLeaves.filter((row) => memberIDs.includes(row.userID)).length}\n`;
-			str += `**Sent Messages?**: ${metrics.messages.filter((row) => memberIDs.includes(row.userID)).length}\n`;
+			str += `**${commandLanguage.UsersInServer()}**\n`;
+			str += `**${commandLanguage.Connected()}**: ${usersInServerButConnected.length}\n`;
+			str += `**${commandLanguage.NotConnected()}**: ${usersInServerButNotConnected.length}\n`;
+			str += `**${commandLanguage.VCJoins()}**: ${metrics.vcJoins.filter((row) => memberIDs.includes(row.userID)).length}\n`;
+			str += `**${commandLanguage.VCLeaves()}**: ${metrics.vcLeaves.filter((row) => memberIDs.includes(row.userID)).length}\n`;
+			str += `**${commandLanguage.Messages()}?**: ${metrics.messages.filter((row) => memberIDs.includes(row.userID)).length}\n`;
 			str += '\n';
 
-			str += '**Users NOT In Server**\n';
-			str += `**Connected**: ${usersNotInServerButConnected.length}\n`;
-			str += `**NOT Connected**: ${usersNotInServerButNotConnected.length}\n`;
-			str += `**VC Joins**: ${metrics.vcJoins.filter((row) => !memberIDs.includes(row.userID)).length}\n`;
-			str += `**VC Leaves**: ${metrics.vcLeaves.filter((row) => !memberIDs.includes(row.userID)).length}\n`;
-			str += `**Sent Messages?**: ${metrics.messages.filter((row) => !memberIDs.includes(row.userID)).length}\n`;
+			str += `**${commandLanguage.NotInServer()}**\n`;
+			str += `**${commandLanguage.Connected()}**: ${usersNotInServerButConnected.length}\n`;
+			str += `**${commandLanguage.NotConnected()}**: ${usersNotInServerButNotConnected.length}\n`;
+			str += `**${commandLanguage.VCJoins()}**: ${metrics.vcJoins.filter((row) => !memberIDs.includes(row.userID)).length}\n`;
+			str += `**${commandLanguage.VCLeaves()}**: ${metrics.vcLeaves.filter((row) => !memberIDs.includes(row.userID)).length}\n`;
+			str += `**${commandLanguage.Messages()}?**: ${metrics.messages.filter((row) => !memberIDs.includes(row.userID)).length}\n`;
 		}
 
 		return interaction.editReply(str);

@@ -165,9 +165,7 @@ export default class CustomClient extends Discord.Client {
 		}
 		else {
 			Logger.info('Started refreshing global slash commands.');
-			await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {
-				body: commands
-			});
+			await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
 			Logger.info(`Successfully reloaded ${commands.length} global slash commands.`);
 		}
 	}

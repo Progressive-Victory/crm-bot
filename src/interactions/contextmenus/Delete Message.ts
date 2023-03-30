@@ -1,4 +1,6 @@
-import { ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction } from 'discord.js';
+import {
+	ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction
+} from 'discord.js';
 import { isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../structures/Command';
 import { REGION_ABBREVIATION_MAP } from '../../structures/Constants';
@@ -16,7 +18,9 @@ export default new ContextMenuCommand({
 		}
 
 		const str = isStateLead(interaction);
-		if (str !== true) return interaction.reply({ content: str, ephemeral: true });
+		if (str !== true) {
+			return interaction.reply({ content: str, ephemeral: true });
+		}
 
 		await interaction.deferReply({ ephemeral: true });
 

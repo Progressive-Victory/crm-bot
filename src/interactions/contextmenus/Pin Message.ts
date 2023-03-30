@@ -1,4 +1,6 @@
-import { ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction } from 'discord.js';
+import {
+	ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction
+} from 'discord.js';
 import { hasSMERole, isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../structures/Command';
 
@@ -12,6 +14,7 @@ export default new ContextMenuCommand({
 			return interaction.reply({ content: 'I cannot pin this message.', ephemeral: true });
 		}
 
+		// TODO: bad error message. if someone uses this outside of a state channel, they have no idea
 		if (isStateLead(interaction) !== true && hasSMERole(interaction) !== true) {
 			return interaction.reply({ content: 'You must either be a State Lead or have a SME role to use this command', ephemeral: true });
 		}

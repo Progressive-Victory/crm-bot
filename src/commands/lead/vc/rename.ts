@@ -3,33 +3,30 @@ import {
 	ChatInputCommandInteraction,
 	GuildMember,
 	InteractionResponse,
+	PermissionFlagsBits,
 	Snowflake,
 	VoiceChannel
 } from 'discord.js';
 import { REGION_ABBREVIATION_MAP, VCChannelIDs } from '../../../structures/Constants';
 import { State } from '../../../declarations/states';
 import { Command } from '../../../structures/Command';
+import Languages from '../../../assets/languages';
 
 const states = Object.values(State);
 
 async function execute(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
 	const channel = interaction.options.getChannel('channel', true) as VoiceChannel;
 
-	if (!channel.permissionsFor(interaction.client.user).has('ManageChannels')) {
-		return interaction.reply({ ephemeral: true, content: `I do not have permission to manage ${channel}.` });
-	}
-
 	let reply: string;
 	const allowedChannels: Snowflake[] = VCChannelIDs;
 	const name = interaction.options.getString('name', true);
-	const stateLead = interaction.member;
 
 	if (!allowedChannels.includes(channel.id)) {
-		reply = `You are not allowed to rename ${channel}. However, you can rename any of the following channels: ${allowedChannels.map((id) => `<#${id}>`).join(', ')}.`;
+		reply = Languages[interaction.language].Commands.Lead.VC.Rename.WrongChannel(channel, allowedChannels);
 	}
 	else {
-		await channel.setName(name, `${stateLead.user.tag} renamed ${channel.name}`);
-		reply = `${channel} has been successfully renamed!`;
+		await channel.setName(name, Languages[interaction.guild.preferredLanguage].Commands.Lead.VC.Rename.AuditLogRename(channel, interaction.user));
+		reply = Languages[interaction.language].Commands.Lead.VC.Rename.Success(channel);
 	}
 
 	return interaction.reply({ ephemeral: true, content: reply });
@@ -42,8 +39,8 @@ async function autocomplete(interaction: AutocompleteInteraction) {
 	const focusedOption = interaction.options.getFocused(true);
 
 	const choices = [];
-	if (stateChannel) choices.push(`${stateChannel} Meeting`);
-	choices.push(`${stateRole.name} Meeting`);
+	if (stateChannel) choices.push(`${stateChannel} ${Languages[interaction.guild.preferredLanguage].Objects.Meeting}`);
+	choices.push(`${stateRole.name} ${Languages[interaction.guild.preferredLanguage].Objects.Meeting}`);
 
 	const filtered = choices.filter((choice) => choice.toLowerCase().startsWith(focusedOption.value.toLowerCase()));
 	return interaction.respond(
@@ -55,5 +52,6 @@ export default new Command({
 	execute,
 	autocomplete,
 	name: 'lead',
-	group: 'vc'
+	group: 'vc',
+	perms: { client: [PermissionFlagsBits.ManageChannels] }
 });

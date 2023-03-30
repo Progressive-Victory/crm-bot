@@ -5,8 +5,10 @@ import {
 	ContextMenuCommandBuilder,
 	MessageContextMenuCommandInteraction,
 	InteractionResponse,
-	Message
+	Message,
+	Interaction
 } from 'discord.js';
+import Languages from '../assets/languages';
 import { isOwner } from './helpers';
 
 type ReturnableInteraction = CommandInteraction
@@ -26,6 +28,7 @@ type CommandOptions = {
 	perms?: Permissions
 	ownersOnly?: boolean
 	cooldown?: number
+	guildOnly?: boolean
 	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction,
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>,
 }
@@ -38,6 +41,8 @@ export class Command {
 	cooldown: number;
 
 	ownersOnly: boolean;
+
+	guildOnly: boolean;
 
 	perms: Permissions;
 
@@ -53,9 +58,10 @@ export class Command {
 		this.group = config.group || '';
 		this.execute = config.execute;
 		this.autocomplete = config.autocomplete;
+		this.guildOnly = config.guildOnly || false;
 	}
 
-	static async permissionsCheck(interaction: CommandInteraction<'cached'>, command: Command) {
+	static async permissionsCheck(interaction: Interaction<'cached'>, command: Command) {
 		let type = ''; let serverWideType = '';
 		const clientMember = await interaction.guild.members.fetch(interaction.client.user);
 		const perms = command.perms || {};
@@ -79,31 +85,26 @@ export class Command {
 
 		const clientMissingPermissions = interaction.channel.permissionsFor(clientMember).missing(perms.client);
 		const memberMissingPermissions = interaction.channel.permissionsFor(interaction.member).missing(perms.member);
-		let permissions: string;
 
 		if ('client' in perms && clientMissingPermissions.length) {
 			type = 'client';
-			permissions = clientMissingPermissions.map((p) => `\`${p}\``).join(', ');
 		}
 		if (!isOwner(interaction.user) && 'member' in perms && memberMissingPermissions.length) {
 			type = 'member';
-			permissions = memberMissingPermissions.map((p) => `\`${p}\``).join(', ');
 		}
 		if (!type) return true;
 
-		let str: string;
-
-		if (serverWideType) {
-			str = `${type === 'client' ? 'I' : 'You'} need the following **${serverWideType === type ? 'server-wide' : 'channel-wide'}** permissions: ${permissions} to execute the command \`${command}\`!`;
-		}
-		if (type) {
-			str = `${type === 'client' ? 'I' : 'You'} don't have enough permissions: ${permissions} to execute the command \`${command}\`!`;
-		}
-		else str = `You do not have permissions to execute the command \`${command}\`.`;
+		const permissions = perms[type].map((perm) => {
+			const name = perm.toString().replace(/_/g, ' ').toLowerCase().toTitleCase();
+			return `\`${name}\``;
+		}).join(', ');
 
 		return {
 			error: true,
-			message: str
+			message: [
+				Languages[interaction.language].Permissions.NoCommandPermissions(command.name, permissions, type),
+				Languages[interaction.language].Permissions.NoCommandPermissions(command.name, permissions, type, serverWideType)
+			].join('\n')
 		};
 	}
 

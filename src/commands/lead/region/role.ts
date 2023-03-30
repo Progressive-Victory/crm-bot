@@ -2,8 +2,10 @@ import {
 	ChatInputCommandInteraction,
 	GuildMember,
 	InteractionResponse,
+	PermissionFlagsBits,
 	Snowflake
 } from 'discord.js';
+import Languages from '../../../assets/languages';
 import { State } from '../../../declarations/states';
 import { Command } from '../../../structures/Command';
 import Logger from '../../../structures/Logger';
@@ -18,40 +20,37 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 	const target = interaction.options.getMember('user');
 	const stateLead = interaction.member;
 
-	if (!stateLead.guild.members.me.permissions.has('ManageRoles')) {
-		return interaction.reply({ ephemeral: true, content: 'I do not have permission to manage roles.' });
-	}
-
 	if (!memberState(stateLead).some((role) => memberState(target).has(role.id))) {
-		return interaction.reply({ ephemeral: true, content: `You are not in the same state as ${target}!` });
+		return interaction.reply({
+			ephemeral: true,
+			content: Languages[interaction.language].Generics.StateRegionMismatch(target.user)
+		});
 	}
 
 	const regionLeadRole = stateLead.guild.roles.cache.get(regionLeadRoleID);
 	if (!regionLeadRole) {
-		return interaction.reply({ ephemeral: true, content: 'Regional Lead role not found.' });
+		return interaction.reply({
+			ephemeral: true,
+			content: Languages[interaction.language].Generics.NoRole()
+		});
 	}
 
 	const addRole = !target.roles.cache.has(regionLeadRoleID);
-	let reply = 'Error';
+	let reply: string = null;
+	const auditReason: string = Languages[interaction.guild.preferredLanguage].Commands.Lead.Region.Role.AuditLog(regionLeadRole, interaction.user, addRole);
 
 	try {
 		if (addRole) {
-			await target.roles.add(regionLeadRoleID, `${regionLeadRole.name} role added by ${stateLead.user.tag}`);
-			reply = `${regionLeadRole} added to ${target}.`;
+			await target.roles.add(regionLeadRoleID, auditReason);
 		}
 		else {
-			await target.roles.remove(regionLeadRoleID, `${regionLeadRole.name} role removed by ${stateLead.user.tag}`);
-			reply = `${regionLeadRole} removed from ${target}.`;
-		}
-	}
-	catch (e) {
-		if (addRole) {
-			reply = `Error adding ${regionLeadRole} to ${target}.`;
-		}
-		else {
-			reply = `Error removing ${regionLeadRole} from ${target}.`;
+			await target.roles.remove(regionLeadRoleID, auditReason);
 		}
 
+		reply = Languages[interaction.language].Commands.Lead.Region.Role.Success(regionLeadRole, target.user, addRole);
+	}
+	catch (e) {
+		reply = Languages[interaction.language].Commands.Lead.Region.Role.Error(regionLeadRole, target.user, addRole);
 		Logger.error(e);
 	}
 
@@ -61,5 +60,6 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 export default new Command({
 	execute,
 	name: 'lead',
-	group: 'region'
+	group: 'region',
+	perms: { client: [PermissionFlagsBits.ManageRoles] }
 });

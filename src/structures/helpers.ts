@@ -12,6 +12,7 @@ import {
 } from 'discord.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
+import Languages from 'src/assets/languages';
 import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
 import Logger from './Logger';
 
@@ -69,7 +70,9 @@ export async function onJoin(discordUserID: Snowflake, discordHandle: string, di
 			'Content-Type': 'application/json',
 			Authorization: process.env.API_AUTH
 		},
-		body: JSON.stringify({ discordUserID, discordGuildID, discordHandle })
+		body: JSON.stringify({
+			discordUserID, discordGuildID, discordHandle
+		})
 	});
 
 	if (!response.ok) throw Error(`Failed to join user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`);
@@ -108,11 +111,7 @@ export async function onConnect(
 export function checkConnected(discordUserID: Snowflake|Snowflake[], discordGuildID: Snowflake): Promise<any> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) return Promise.resolve(false);
 	if (typeof discordUserID === 'string') {
-		return fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, {
-			headers: {
-				Authorization: process.env.API_AUTH
-			}
-		}).then((r) => (r.ok ? r.json() : null));
+		return fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } }).then((r) => (r.ok ? r.json() : null));
 	}
 
 	return fetch(`${process.env.API_ENDPOINT}/users`, {
@@ -179,7 +178,9 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 	if (VCChannelNames.has(channel.id) && !channel.members.size && channel.name !== VCChannelNames.get(channel.id)) {
 		Logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
 
-		await channel.setName(VCChannelNames.get(channel.id), 'Automatic undoing of meeting channel rename')
+		const auditReason = Languages[channel.guild.preferredLanguage].Commands.Lead.VC.Rename.AuditLogUndo();
+
+		await channel.setName(VCChannelNames.get(channel.id), auditReason)
 			.then(() => Logger.debug(`Successfully renamed ${channel.name} (${channel.id})`))
 			.catch((err) => Logger.error(`Error renaming ${channel.name} (${channel.id})`, err));
 	}

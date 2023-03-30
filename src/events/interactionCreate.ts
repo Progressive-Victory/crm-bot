@@ -1,13 +1,19 @@
 /* eslint-disable no-case-declarations */
+
 import {
-	ApplicationCommandType, CommandInteraction, Interaction, InteractionType
+	ApplicationCommandType,
+	Interaction,
+	InteractionType
 } from 'discord.js';
+import Languages from '../assets/languages';
+import { isOwner } from '../structures/helpers';
 import { Command } from '../structures/Command';
 import Logger from '../structures/Logger';
 
 export default async function onInteractionCreate(interaction: Interaction) {
 	let interactionName: string;
 	let key: string;
+
 	try {
 		switch (interaction.type) {
 		case InteractionType.ApplicationCommand:
@@ -30,8 +36,31 @@ export default async function onInteractionCreate(interaction: Interaction) {
 				const command = interaction.client.commands.get(key);
 
 				if (!command) {
-					await interaction.reply({ ephemeral: true, content: `Command \`${key}\` not found.` });
+					await interaction.reply({
+						ephemeral: true,
+						content: Languages[interaction.language].Generics.NotImplemented(key)
+					});
 					return;
+				}
+
+				if (command.guildOnly) {
+					if (!interaction.guild) {
+						await interaction.reply({
+							ephemeral: true,
+							content: Languages[interaction.language].Permissions.ServerOnly(command.name)
+						});
+						return;
+					}
+				}
+
+				if (command.ownersOnly) {
+					if (!isOwner(interaction.user)) {
+						await interaction.reply({
+							ephemeral: true,
+							content: Languages[interaction.language].Permissions.BotOwners(command.name)
+						});
+						return;
+					}
 				}
 
 				try {
@@ -39,7 +68,7 @@ export default async function onInteractionCreate(interaction: Interaction) {
 						await interaction.channel.guild.fetch();
 					}
 
-					const allowed = await Command.permissionsCheck(interaction as CommandInteraction<'cached'>, command);
+					const allowed = await Command.permissionsCheck(interaction as Interaction<'cached'>, command);
 
 					if (allowed !== true && allowed.error === true) {
 						await interaction.reply(allowed.message);
@@ -51,7 +80,10 @@ export default async function onInteractionCreate(interaction: Interaction) {
 				}
 				catch (error) {
 					Logger.error(error);
-					await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
+					await interaction.followUp({
+						content: Languages[interaction.language].Generics.Error(),
+						ephemeral: true
+					}).catch(() => null);
 				}
 				break;
 
@@ -60,7 +92,10 @@ export default async function onInteractionCreate(interaction: Interaction) {
 			case ApplicationCommandType.User:
 				const contextCommand = interaction.client.contextMenus.get(interaction.commandName);
 				if (!contextCommand) {
-					await interaction.reply({ content: 'Command not found.', ephemeral: true });
+					await interaction.reply({
+						content: Languages[interaction.language].Generics.NotImplemented(interaction.commandName),
+						ephemeral: true
+					});
 					return;
 				}
 				await contextCommand.execute(interaction);
@@ -114,8 +149,12 @@ export default async function onInteractionCreate(interaction: Interaction) {
 
 			// eslint-disable-next-line no-case-declarations
 			const interactionData = interaction.client.commands.get(key);
-			if (!interactionData) { console.warn(`[Warning] Autocomplete for ${interactionName} was not Setup`); }
-			else { interactionData.autocomplete(interaction); }
+			if (!interactionData) {
+				console.warn(`[Warning] Autocomplete for ${interactionName} was not Setup`);
+			}
+			else {
+				interactionData.autocomplete(interaction);
+			}
 			break;
 		default:
 			break;
