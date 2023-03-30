@@ -6,7 +6,7 @@ import {
 	Snowflake,
 	VoiceChannel
 } from 'discord.js';
-import { VCChannelIDs } from '../../../structures/Constants';
+import { REGION_ABBREVIATION_MAP, VCChannelIDs } from '../../../structures/Constants';
 import { State } from '../../../declarations/states';
 import { Command } from '../../../structures/Command';
 
@@ -38,8 +38,12 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 async function autocomplete(interaction: AutocompleteInteraction) {
 	const member = interaction.member as GuildMember;
 	const stateRole = member.roles.valueOf().find((role) => states.includes(role.name as State));
+	const stateChannel = REGION_ABBREVIATION_MAP[interaction.channel.name];
 	const focusedOption = interaction.options.getFocused(true);
-	const choices = [`${stateRole.name} Meeting`];
+
+	const choices = [];
+	if (stateChannel) choices.push(`${stateChannel} Meeting`);
+	choices.push(`${stateRole.name} Meeting`);
 
 	const filtered = choices.filter((choice) => choice.toLowerCase().startsWith(focusedOption.value.toLowerCase()));
 	return interaction.respond(
