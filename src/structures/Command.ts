@@ -6,7 +6,8 @@ import {
 	MessageContextMenuCommandInteraction,
 	InteractionResponse,
 	Message,
-	Interaction
+	Interaction,
+	PermissionResolvable
 } from 'discord.js';
 import Languages from '../assets/languages';
 import { isOwner } from './helpers';
@@ -18,12 +19,12 @@ type ReturnableInteraction = CommandInteraction
 	| Message<true>;
 
 type Permissions = {
-	member?: bigint[]
-	client?: bigint[]
+	member?: PermissionResolvable[]
+	client?: PermissionResolvable[]
 };
 
-type CommandOptions = {
-	name?: string;
+interface CommandOptions {
+	name: string;
 	group?: string;
 	perms?: Permissions
 	ownersOnly?: boolean
@@ -33,35 +34,23 @@ type CommandOptions = {
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>,
 }
 
-export class Command {
+abstract class BaseCommand {
 	name?: string;
 
-	group?: string;
-
-	cooldown: number;
+	perms?: Permissions;
 
 	ownersOnly: boolean;
 
-	guildOnly: boolean;
-
-	perms: Permissions;
-
 	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
-	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
-
 	constructor(config: CommandOptions) {
-		this.cooldown = config.cooldown || 3;
-		this.ownersOnly = config.ownersOnly || false;
+		this.name = config.name;
 		this.perms = config.perms || {};
-		this.name = config.name || '';
-		this.group = config.group || '';
+		this.ownersOnly = config.ownersOnly || false;
 		this.execute = config.execute;
-		this.autocomplete = config.autocomplete;
-		this.guildOnly = config.guildOnly || false;
 	}
 
-	static async permissionsCheck(interaction: Interaction<'cached'>, command: Command) {
+	static async permissionsCheck(interaction: Interaction<'cached'>, command: BaseCommand) {
 		let type = ''; let serverWideType = '';
 		const clientMember = await interaction.guild.members.fetch(interaction.client.user);
 		const perms = command.perms || {};
@@ -94,10 +83,7 @@ export class Command {
 		}
 		if (!type) return true;
 
-		const permissions = perms[type].map((perm) => {
-			const name = perm.toString().replace(/_/g, ' ').toLowerCase().toTitleCase();
-			return `\`${name}\``;
-		}).join(', ');
+		const permissions = perms[type].map((perm: string) => `\`${perm.replace(/_/g, ' ')}\``).join(', ');
 
 		return {
 			error: true,
@@ -113,18 +99,38 @@ export class Command {
 	}
 }
 
-export type ContextMenuCommandOptions = {
+export class Command extends BaseCommand {
+	group?: string;
+
+	cooldown: number;
+
+	guildOnly: boolean;
+
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
+
+	constructor(config: CommandOptions) {
+		super(config);
+		this.cooldown = config.cooldown || 3;
+		this.group = config.group || '';
+		this.autocomplete = config.autocomplete;
+		this.guildOnly = config.guildOnly || false;
+	}
+}
+
+interface ContextMenuCommandOptions extends CommandOptions {
 	data: ContextMenuCommandBuilder;
 
 	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
 }
 
-export class ContextMenuCommand {
+export class ContextMenuCommand extends BaseCommand {
 	data: ContextMenuCommandBuilder;
 
-	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
+	declare execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction)
+		=> ReturnableInteraction | Promise<ReturnableInteraction>;
 
 	constructor(options: ContextMenuCommandOptions) {
+		super(options);
 		this.data = options.data;
 		this.execute = options.execute;
 	}

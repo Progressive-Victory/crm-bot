@@ -26,14 +26,7 @@ export default async function onInteractionCreate(interaction: Interaction) {
 
 				if (!interactionData) return;
 
-				const subcommand = interaction.options.getSubcommand(false);
-				const subcommandgroup = interaction.options.getSubcommandGroup(false);
-
-				key = interactionName;
-				if (subcommandgroup) key += `-${subcommandgroup}`;
-				if (subcommand) key += `-${subcommand}`;
-
-				const command = interaction.client.commands.get(key);
+				const command = interaction.client.commands.get(interaction.key);
 
 				if (!command) {
 					await interaction.reply({
@@ -71,7 +64,7 @@ export default async function onInteractionCreate(interaction: Interaction) {
 					const allowed = await Command.permissionsCheck(interaction as Interaction<'cached'>, command);
 
 					if (allowed !== true && allowed.error === true) {
-						await interaction.reply(allowed.message);
+						await interaction.reply({ content: allowed.message, ephemeral: true });
 						return;
 					}
 
@@ -98,7 +91,25 @@ export default async function onInteractionCreate(interaction: Interaction) {
 					});
 					return;
 				}
-				await contextCommand.execute(interaction);
+
+				try {
+					const allowed = await Command.permissionsCheck(interaction as Interaction<'cached'>, contextCommand);
+
+					if (allowed !== true && allowed.error === true) {
+						await interaction.reply({ content: allowed.message, ephemeral: true });
+						break;
+					}
+
+					await contextCommand.execute(interaction);
+				}
+				catch (error) {
+					Logger.error(error);
+					await interaction.followUp({
+						content: Languages[interaction.language].Generics.Error(),
+						ephemeral: true
+					}).catch(() => null);
+				}
+
 				break;
 			default:
 				break;
@@ -139,21 +150,13 @@ export default async function onInteractionCreate(interaction: Interaction) {
 		case InteractionType.ApplicationCommandAutocomplete:
 			// Check if autocomplete interactions are enabled
 			// if (!client.config.interactions.receiveAutocomplete) return;
-			interactionName = interaction.commandName;
-			const subcommand = interaction.options.getSubcommand(false);
-			const subcommandgroup = interaction.options.getSubcommandGroup(false);
 
-			key = interactionName;
-			if (subcommandgroup) key += `-${subcommandgroup}`;
-			if (subcommand) key += `-${subcommand}`;
-
-			// eslint-disable-next-line no-case-declarations
-			const interactionData = interaction.client.commands.get(key);
+			const interactionData = interaction.client.commands.get(interaction.key);
 			if (!interactionData) {
-				console.warn(`[Warning] Autocomplete for ${interactionName} was not Setup`);
+				console.warn(`[Warning] Autocomplete for ${interaction.key} was not Setup`);
 			}
 			else {
-				interactionData.autocomplete(interaction);
+				await interactionData.autocomplete(interaction);
 			}
 			break;
 		default:

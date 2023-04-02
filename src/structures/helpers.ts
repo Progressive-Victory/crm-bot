@@ -12,7 +12,7 @@ import {
 } from 'discord.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
-import Languages from 'src/assets/languages';
+import Languages from '../assets/languages';
 import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
 import Logger from './Logger';
 

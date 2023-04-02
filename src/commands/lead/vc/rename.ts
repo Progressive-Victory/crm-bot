@@ -3,7 +3,6 @@ import {
 	ChatInputCommandInteraction,
 	GuildMember,
 	InteractionResponse,
-	PermissionFlagsBits,
 	Snowflake,
 	VoiceChannel
 } from 'discord.js';
@@ -53,5 +52,5 @@ export default new Command({
 	autocomplete,
 	name: 'lead',
 	group: 'vc',
-	perms: { client: [PermissionFlagsBits.ManageChannels] }
+	perms: { client: ['ManageChannels'] }
 });

@@ -33,7 +33,7 @@ export default class CustomClient extends Discord.Client {
 
 	public interactions: Discord.Collection<string, any>;
 
-	public contextMenus: Discord.Collection<string, any>;
+	public contextMenus: Discord.Collection<string, ContextMenuCommand>;
 
 	public commands: Discord.Collection<string, Command>;
 

@@ -23,6 +23,7 @@ declare module 'discord.js' {
 	interface BaseInteraction {
 		client: CustomClient
 		language: SupportedLanguage
+		key: string
 	}
 
 	interface Message {
@@ -51,6 +52,10 @@ declare global {
 		discordTimestamp: string
 		discordDuration: string
 		discordDay: string
+	}
+
+	interface String {
+		toTitleCase(): string
 	}
 }
 

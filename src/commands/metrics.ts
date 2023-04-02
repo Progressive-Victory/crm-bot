@@ -5,6 +5,7 @@ import { Command } from '../structures/Command';
 import Languages from '../assets/languages';
 
 export default new Command({
+	name: 'metrics',
 	execute: async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 		await interaction.deferReply({ ephemeral: true });
 

@@ -1,10 +1,14 @@
 import {
-	ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction
+	ContextMenuCommandBuilder,
+	ApplicationCommandType,
+	MessageContextMenuCommandInteraction
 } from 'discord.js';
 import { hasSMERole, isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../structures/Command';
 
 export default new ContextMenuCommand({
+	name: 'Pin Message',
+	perms: { client: ['ManageMessages', 'ReadMessageHistory'] },
 	// name: 'pin',
 	data: new ContextMenuCommandBuilder()
 		.setName('Pin Message')
@@ -20,14 +24,6 @@ export default new ContextMenuCommand({
 		}
 
 		await interaction.deferReply({ ephemeral: true });
-
-		// TODO: Permissions structure for context menu interactions
-		const clientMember = await interaction.guild.members.fetch(interaction.client.user);
-		const clientMissingPermissions = interaction.channel.permissionsFor(clientMember).missing(['ManageMessages', 'ReadMessageHistory']);
-
-		if (clientMissingPermissions.length) {
-			return interaction.editReply(`I don't have enough permissions: ${clientMissingPermissions.map((p) => `\`${p}\``).join(', ')} to delete this message!`);
-		}
 
 		try {
 			if (!interaction.targetMessage.pinned) {

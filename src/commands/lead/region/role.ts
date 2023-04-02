@@ -2,7 +2,6 @@ import {
 	ChatInputCommandInteraction,
 	GuildMember,
 	InteractionResponse,
-	PermissionFlagsBits,
 	Snowflake
 } from 'discord.js';
 import Languages from '../../../assets/languages';
@@ -61,5 +60,5 @@ export default new Command({
 	execute,
 	name: 'lead',
 	group: 'region',
-	perms: { client: [PermissionFlagsBits.ManageRoles] }
+	perms: { client: ['ManageRoles'] }
 });
