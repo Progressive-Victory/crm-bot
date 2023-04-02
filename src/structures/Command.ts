@@ -5,8 +5,11 @@ import {
 	ContextMenuCommandBuilder,
 	MessageContextMenuCommandInteraction,
 	InteractionResponse,
-	Message
+	Message,
+	Interaction,
+	PermissionResolvable
 } from 'discord.js';
+import Languages from '../assets/languages';
 import { isOwner } from './helpers';
 
 type ReturnableInteraction = CommandInteraction
@@ -16,46 +19,41 @@ type ReturnableInteraction = CommandInteraction
 	| Message<true>;
 
 type Permissions = {
-	member?: bigint[]
-	client?: bigint[]
+	member?: PermissionResolvable[]
+	client?: PermissionResolvable[]
 };
 
-type CommandOptions = {
-	name?: string;
+interface CommandOptions {
+	name: string;
 	group?: string;
 	perms?: Permissions
 	ownersOnly?: boolean
 	cooldown?: number
+	guildOnly?: boolean
 	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction,
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>,
 }
 
-export class Command {
+abstract class BaseCommand {
 	name?: string;
 
-	group?: string;
-
-	cooldown: number;
+	perms?: Permissions;
 
 	ownersOnly: boolean;
 
-	perms: Permissions;
+	guildOnly: boolean;
 
 	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
-	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
-
 	constructor(config: CommandOptions) {
-		this.cooldown = config.cooldown || 3;
-		this.ownersOnly = config.ownersOnly || false;
+		this.name = config.name;
 		this.perms = config.perms || {};
-		this.name = config.name || '';
-		this.group = config.group || '';
+		this.ownersOnly = config.ownersOnly || false;
+		this.guildOnly = config.guildOnly || false;
 		this.execute = config.execute;
-		this.autocomplete = config.autocomplete;
 	}
 
-	static async permissionsCheck(interaction: CommandInteraction<'cached'>, command: Command) {
+	static async permissionsCheck(interaction: Interaction<'cached'>, command: BaseCommand) {
 		let type = ''; let serverWideType = '';
 		const clientMember = await interaction.guild.members.fetch(interaction.client.user);
 		const perms = command.perms || {};
@@ -63,7 +61,14 @@ export class Command {
 		if (command.ownersOnly && !isOwner(interaction.user)) {
 			return {
 				error: true,
-				message: 'Only bot owners can use this command!'
+				message: Languages[interaction.language].Permissions.BotOwners(command.name)
+			};
+		}
+
+		if (command.guildOnly && !interaction.guildId) {
+			return {
+				error: true,
+				message: Languages[interaction.language].Permissions.ServerOnly(command.name)
 			};
 		}
 
@@ -79,31 +84,23 @@ export class Command {
 
 		const clientMissingPermissions = interaction.channel.permissionsFor(clientMember).missing(perms.client);
 		const memberMissingPermissions = interaction.channel.permissionsFor(interaction.member).missing(perms.member);
-		let permissions: string;
 
 		if ('client' in perms && clientMissingPermissions.length) {
 			type = 'client';
-			permissions = clientMissingPermissions.map((p) => `\`${p}\``).join(', ');
 		}
 		if (!isOwner(interaction.user) && 'member' in perms && memberMissingPermissions.length) {
 			type = 'member';
-			permissions = memberMissingPermissions.map((p) => `\`${p}\``).join(', ');
 		}
 		if (!type) return true;
 
-		let str: string;
-
-		if (serverWideType) {
-			str = `${type === 'client' ? 'I' : 'You'} need the following **${serverWideType === type ? 'server-wide' : 'channel-wide'}** permissions: ${permissions} to execute the command \`${command}\`!`;
-		}
-		if (type) {
-			str = `${type === 'client' ? 'I' : 'You'} don't have enough permissions: ${permissions} to execute the command \`${command}\`!`;
-		}
-		else str = `You do not have permissions to execute the command \`${command}\`.`;
+		const permissions = perms[type].map((perm: string) => `\`${perm.replace(/_/g, ' ')}\``).join(', ');
 
 		return {
 			error: true,
-			message: str
+			message: [
+				Languages[interaction.language].Permissions.NoCommandPermissions(command.name, permissions, type),
+				Languages[interaction.language].Permissions.NoCommandPermissions(command.name, permissions, type, serverWideType)
+			].join('\n')
 		};
 	}
 
@@ -112,18 +109,35 @@ export class Command {
 	}
 }
 
-export type ContextMenuCommandOptions = {
+export class Command extends BaseCommand {
+	group?: string;
+
+	cooldown: number;
+
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
+
+	constructor(config: CommandOptions) {
+		super(config);
+		this.cooldown = config.cooldown || 3;
+		this.group = config.group || '';
+		this.autocomplete = config.autocomplete;
+	}
+}
+
+interface ContextMenuCommandOptions extends CommandOptions {
 	data: ContextMenuCommandBuilder;
 
 	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
 }
 
-export class ContextMenuCommand {
+export class ContextMenuCommand extends BaseCommand {
 	data: ContextMenuCommandBuilder;
 
-	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
+	declare execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction)
+		=> ReturnableInteraction | Promise<ReturnableInteraction>;
 
 	constructor(options: ContextMenuCommandOptions) {
+		super(options);
 		this.data = options.data;
 		this.execute = options.execute;
 	}

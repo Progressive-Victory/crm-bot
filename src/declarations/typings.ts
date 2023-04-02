@@ -1,9 +1,11 @@
 import Discord from 'discord.js';
 import CustomClient from '../structures/CustomClient';
+import { SupportedLanguage } from '../assets/languages';
 
 declare module 'discord.js' {
 	interface Guild {
 		client: CustomClient
+		preferredLanguage: SupportedLanguage
 	}
 
 	interface User {
@@ -18,20 +20,10 @@ declare module 'discord.js' {
 		client: CustomClient
 	}
 
-	interface ButtonInteraction {
+	interface BaseInteraction {
 		client: CustomClient
-	}
-
-	interface CommandInteraction {
-		client: CustomClient
-	}
-
-	interface SelectMenuInteraction {
-		client: CustomClient
-	}
-
-	interface AutocompleteInteraction {
-		client: CustomClient
+		language: SupportedLanguage
+		key: string
 	}
 
 	interface Message {
@@ -60,6 +52,10 @@ declare global {
 		discordTimestamp: string
 		discordDuration: string
 		discordDay: string
+	}
+
+	interface String {
+		toTitleCase(): string
 	}
 }
 

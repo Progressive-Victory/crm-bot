@@ -1,44 +1,43 @@
-import { ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction } from 'discord.js';
+import {
+	ContextMenuCommandBuilder,
+	ApplicationCommandType,
+	MessageContextMenuCommandInteraction,
+	PermissionFlagsBits
+} from 'discord.js';
+import Languages from '../../assets/languages';
 import { isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../structures/Command';
-import { REGION_ABBREVIATION_MAP } from '../../structures/Constants';
 
 export default new ContextMenuCommand({
+	name: 'Delete Message',
+	perms: { client: ['ManageMessages', 'ReadMessageHistory'] },
 	// TODO: Map file name to proper name - such as "delete" to "Delete Message"
 	// name: 'delete',
 	data: new ContextMenuCommandBuilder()
 		.setName('Delete Message')
-		.setType(ApplicationCommandType.Message),
-	// We don't want to set the default permissions here because this is intended to be a different level of permission management
+		.setType(ApplicationCommandType.Message)
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 	execute: async (interaction: MessageContextMenuCommandInteraction<'cached'>) => {
+		const language = Languages[interaction.language].Commands.Delete;
+
 		if (!interaction.targetMessage.deletable) {
-			return interaction.reply({ content: 'I cannot delete this message.', ephemeral: true });
+			return interaction.reply({ content: language.CannotDelete(interaction.targetMessage), ephemeral: true });
 		}
 
 		const str = isStateLead(interaction);
-		if (str !== true) return interaction.reply({ content: str, ephemeral: true });
+		if (str !== true) {
+			return interaction.reply({ content: str, ephemeral: true });
+		}
 
 		await interaction.deferReply({ ephemeral: true });
 
-		// TODO: Permissions structure for context menu interactions
-		const clientMember = await interaction.guild.members.fetch(interaction.client.user);
-		const clientMissingPermissions = interaction.channel.permissionsFor(clientMember).missing(['ManageMessages', 'ReadMessageHistory']);
-
-		if (clientMissingPermissions.length) {
-			return interaction.editReply(`I don't have enough permissions: ${clientMissingPermissions.map((p) => `\`${p}\``).join(', ')} to delete this message!`);
-		}
-
-		if (!interaction.member.roles.cache.some((r) => r.name === (REGION_ABBREVIATION_MAP[interaction.targetMessage.channel.name]))) {
-			return interaction.editReply('You cannot delete messages from other regions.');
-		}
-
 		try {
 			await interaction.targetMessage.delete();
-			return interaction.editReply('Message deleted.');
+			return interaction.editReply(language.Success(interaction.targetMessage));
 		}
 		catch (e) {
 			console.error('Error deleting message', e);
-			return interaction.editReply('An error occurred while deleting the message.');
+			return interaction.editReply(language.Error(interaction.targetMessage));
 		}
 	}
 });

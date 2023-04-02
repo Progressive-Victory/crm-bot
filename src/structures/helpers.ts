@@ -12,6 +12,7 @@ import {
 } from 'discord.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
+import Languages from '../assets/languages';
 import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
 import Logger from './Logger';
 
@@ -69,7 +70,9 @@ export async function onJoin(discordUserID: Snowflake, discordHandle: string, di
 			'Content-Type': 'application/json',
 			Authorization: process.env.API_AUTH
 		},
-		body: JSON.stringify({ discordUserID, discordGuildID, discordHandle })
+		body: JSON.stringify({
+			discordUserID, discordGuildID, discordHandle
+		})
 	});
 
 	if (!response.ok) throw Error(`Failed to join user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`);
@@ -108,11 +111,7 @@ export async function onConnect(
 export function checkConnected(discordUserID: Snowflake|Snowflake[], discordGuildID: Snowflake): Promise<any> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) return Promise.resolve(false);
 	if (typeof discordUserID === 'string') {
-		return fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, {
-			headers: {
-				Authorization: process.env.API_AUTH
-			}
-		}).then((r) => (r.ok ? r.json() : null));
+		return fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } }).then((r) => (r.ok ? r.json() : null));
 	}
 
 	return fetch(`${process.env.API_ENDPOINT}/users`, {
@@ -127,11 +126,11 @@ export function checkConnected(discordUserID: Snowflake|Snowflake[], discordGuil
 
 export function trackingGuildChecks(interaction: CommandInteraction| ChatInputCommandInteraction) {
 	if (!process.env.TRACKING_GUILD) {
-		return 'Tracking guild is missing from the configuration.';
+		return Languages[interaction.language].Generics.MissingConfiguration('TRACKING_GUILD');
 	}
 
-	if (interaction.guild.id !== process.env.TRACKING_GUILD) {
-		return 'This command can only be used in the tracking server.';
+	if (interaction.guild?.id !== process.env.TRACKING_GUILD) {
+		return Languages[interaction.language].Permissions.TrackingServer(interaction.key);
 	}
 
 	return true;
@@ -140,20 +139,12 @@ export function trackingGuildChecks(interaction: CommandInteraction| ChatInputCo
 export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInputCommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
-	if (!process.env.STATE_LEAD_ROLE_ID) {
-		return 'State lead is missing from the configuration.';
-	}
-
-	if (!interaction.member.roles.cache.has(process.env.STATE_LEAD_ROLE_ID)) {
-		return `You must have <@&${process.env.STATE_LEAD_ROLE_ID}> to use this command.`;
-	}
-
 	if (!REGION_ABBREVIATION_MAP[interaction.channel.name]) {
-		return 'This command can only be used in a state channel.';
+		return Languages[interaction.language].Permissions.WrongRegionChannel(interaction.channel, Object.keys(REGION_ABBREVIATION_MAP));
 	}
 
 	if (!interaction.member.roles.cache.some((r) => r.name === (REGION_ABBREVIATION_MAP[interaction.channel.name]))) {
-		return 'You do not have the corresponding region role to run this command.';
+		return Languages[interaction.language].Permissions.StateRegionMismatchChannel(REGION_ABBREVIATION_MAP[interaction.channel.name]);
 	}
 
 	return true;
@@ -163,12 +154,14 @@ export function hasSMERole(interaction: CommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
 	if (!process.env.SME_ROLE_IDS) {
-		return 'SME roles are missing from the configuration.';
+		return Languages[interaction.language].Generics.MissingConfiguration('SME_ROLE_IDS');
 	}
 
 	if (!process.env.SME_ROLE_IDS.split(',').some((id) => interaction.member.roles.cache.has(id))) {
-		return `You must have one of the following roles to use this command: <@&${process.env.SME_ROLE_IDS.split(',').join('>, <@&')}>`;
+		return Languages[interaction.language].Permissions.MissingSMERole(process.env.SME_ROLE_IDS.split(','));
 	}
+
+	// TODO: Map roles to list of channels
 
 	return true;
 }
@@ -179,7 +172,9 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 	if (VCChannelNames.has(channel.id) && !channel.members.size && channel.name !== VCChannelNames.get(channel.id)) {
 		Logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
 
-		await channel.setName(VCChannelNames.get(channel.id), 'Automatic undoing of meeting channel rename')
+		const auditReason = Languages[channel.guild.preferredLanguage].Commands.Lead.VC.Rename.AuditLogUndo();
+
+		await channel.setName(VCChannelNames.get(channel.id), auditReason)
 			.then(() => Logger.debug(`Successfully renamed ${channel.name} (${channel.id})`))
 			.catch((err) => Logger.error(`Error renaming ${channel.name} (${channel.id})`, err));
 	}
