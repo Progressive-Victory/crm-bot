@@ -4,9 +4,9 @@ import {
 	MessageContextMenuCommandInteraction,
 	PermissionFlagsBits
 } from 'discord.js';
+import Languages from '../../assets/languages';
 import { isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../structures/Command';
-import { REGION_ABBREVIATION_MAP } from '../../structures/Constants';
 
 export default new ContextMenuCommand({
 	name: 'Delete Message',
@@ -18,8 +18,10 @@ export default new ContextMenuCommand({
 		.setType(ApplicationCommandType.Message)
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 	execute: async (interaction: MessageContextMenuCommandInteraction<'cached'>) => {
+		const language = Languages[interaction.language].Commands.Delete;
+
 		if (!interaction.targetMessage.deletable) {
-			return interaction.reply({ content: 'I cannot delete this message.', ephemeral: true });
+			return interaction.reply({ content: language.CannotDelete(interaction.targetMessage), ephemeral: true });
 		}
 
 		const str = isStateLead(interaction);
@@ -29,17 +31,13 @@ export default new ContextMenuCommand({
 
 		await interaction.deferReply({ ephemeral: true });
 
-		if (!interaction.member.roles.cache.some((r) => r.name === (REGION_ABBREVIATION_MAP[interaction.targetMessage.channel.name]))) {
-			return interaction.editReply('You cannot delete messages from other regions.');
-		}
-
 		try {
 			await interaction.targetMessage.delete();
-			return interaction.editReply('Message deleted.');
+			return interaction.editReply(language.Success(interaction.targetMessage));
 		}
 		catch (e) {
 			console.error('Error deleting message', e);
-			return interaction.editReply('An error occurred while deleting the message.');
+			return interaction.editReply(language.Error(interaction.targetMessage));
 		}
 	}
 });

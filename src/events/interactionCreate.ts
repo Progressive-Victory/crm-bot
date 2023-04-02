@@ -36,26 +36,6 @@ export default async function onInteractionCreate(interaction: Interaction) {
 					return;
 				}
 
-				if (command.guildOnly) {
-					if (!interaction.guild) {
-						await interaction.reply({
-							ephemeral: true,
-							content: Languages[interaction.language].Permissions.ServerOnly(command.name)
-						});
-						return;
-					}
-				}
-
-				if (command.ownersOnly) {
-					if (!isOwner(interaction.user)) {
-						await interaction.reply({
-							ephemeral: true,
-							content: Languages[interaction.language].Permissions.BotOwners(command.name)
-						});
-						return;
-					}
-				}
-
 				try {
 					if (!interaction.inCachedGuild()) {
 						await interaction.channel.guild.fetch();

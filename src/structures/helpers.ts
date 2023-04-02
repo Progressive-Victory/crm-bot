@@ -126,11 +126,11 @@ export function checkConnected(discordUserID: Snowflake|Snowflake[], discordGuil
 
 export function trackingGuildChecks(interaction: CommandInteraction| ChatInputCommandInteraction) {
 	if (!process.env.TRACKING_GUILD) {
-		return 'Tracking guild is missing from the configuration.';
+		return Languages[interaction.language].Generics.MissingConfiguration('TRACKING_GUILD');
 	}
 
-	if (interaction.guild.id !== process.env.TRACKING_GUILD) {
-		return 'This command can only be used in the tracking server.';
+	if (interaction.guild?.id !== process.env.TRACKING_GUILD) {
+		return Languages[interaction.language].Permissions.TrackingServer(interaction.key);
 	}
 
 	return true;
@@ -139,20 +139,12 @@ export function trackingGuildChecks(interaction: CommandInteraction| ChatInputCo
 export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInputCommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
-	if (!process.env.STATE_LEAD_ROLE_ID) {
-		return 'State lead is missing from the configuration.';
-	}
-
-	if (!interaction.member.roles.cache.has(process.env.STATE_LEAD_ROLE_ID)) {
-		return `You must have <@&${process.env.STATE_LEAD_ROLE_ID}> to use this command.`;
-	}
-
 	if (!REGION_ABBREVIATION_MAP[interaction.channel.name]) {
-		return 'This command can only be used in a state channel.';
+		return Languages[interaction.language].Permissions.WrongRegionChannel(interaction.channel, Object.keys(REGION_ABBREVIATION_MAP));
 	}
 
 	if (!interaction.member.roles.cache.some((r) => r.name === (REGION_ABBREVIATION_MAP[interaction.channel.name]))) {
-		return 'You do not have the corresponding region role to run this command.';
+		return Languages[interaction.language].Permissions.StateRegionMismatchChannel(REGION_ABBREVIATION_MAP[interaction.channel.name]);
 	}
 
 	return true;
@@ -162,12 +154,14 @@ export function hasSMERole(interaction: CommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
 	if (!process.env.SME_ROLE_IDS) {
-		return 'SME roles are missing from the configuration.';
+		return Languages[interaction.language].Generics.MissingConfiguration('SME_ROLE_IDS');
 	}
 
 	if (!process.env.SME_ROLE_IDS.split(',').some((id) => interaction.member.roles.cache.has(id))) {
-		return `You must have one of the following roles to use this command: <@&${process.env.SME_ROLE_IDS.split(',').join('>, <@&')}>`;
+		return Languages[interaction.language].Permissions.MissingSMERole(process.env.SME_ROLE_IDS.split(','));
 	}
+
+	// TODO: Map roles to list of channels
 
 	return true;
 }

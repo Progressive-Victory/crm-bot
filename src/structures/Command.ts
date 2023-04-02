@@ -41,12 +41,15 @@ abstract class BaseCommand {
 
 	ownersOnly: boolean;
 
+	guildOnly: boolean;
+
 	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
 	constructor(config: CommandOptions) {
 		this.name = config.name;
 		this.perms = config.perms || {};
 		this.ownersOnly = config.ownersOnly || false;
+		this.guildOnly = config.guildOnly || false;
 		this.execute = config.execute;
 	}
 
@@ -58,7 +61,14 @@ abstract class BaseCommand {
 		if (command.ownersOnly && !isOwner(interaction.user)) {
 			return {
 				error: true,
-				message: 'Only bot owners can use this command!'
+				message: Languages[interaction.language].Permissions.BotOwners(command.name)
+			};
+		}
+
+		if (command.guildOnly && !interaction.guildId) {
+			return {
+				error: true,
+				message: Languages[interaction.language].Permissions.ServerOnly(command.name)
 			};
 		}
 
@@ -104,8 +114,6 @@ export class Command extends BaseCommand {
 
 	cooldown: number;
 
-	guildOnly: boolean;
-
 	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 
 	constructor(config: CommandOptions) {
@@ -113,7 +121,6 @@ export class Command extends BaseCommand {
 		this.cooldown = config.cooldown || 3;
 		this.group = config.group || '';
 		this.autocomplete = config.autocomplete;
-		this.guildOnly = config.guildOnly || false;
 	}
 }
 

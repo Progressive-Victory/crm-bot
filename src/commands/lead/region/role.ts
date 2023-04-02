@@ -22,7 +22,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 	if (!memberState(stateLead).some((role) => memberState(target).has(role.id))) {
 		return interaction.reply({
 			ephemeral: true,
-			content: Languages[interaction.language].Generics.StateRegionMismatch(target.user)
+			content: Languages[interaction.language].Permissions.StateRegionMismatchUser(target.user)
 		});
 	}
 
