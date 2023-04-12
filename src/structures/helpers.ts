@@ -139,12 +139,13 @@ export function trackingGuildChecks(interaction: CommandInteraction| ChatInputCo
 export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInputCommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
-	if (!REGION_ABBREVIATION_MAP[interaction.channel.name]) {
-		return Languages[interaction.language].Permissions.WrongRegionChannel(interaction.channel, Object.keys(REGION_ABBREVIATION_MAP));
+	const channel = interaction.channel.parent ?? interaction.channel;
+	if (!REGION_ABBREVIATION_MAP[channel.name]) {
+		return Languages[interaction.language].Permissions.WrongRegionChannel(channel, Object.keys(REGION_ABBREVIATION_MAP));
 	}
 
-	if (!interaction.member.roles.cache.some((r) => r.name === (REGION_ABBREVIATION_MAP[interaction.channel.name]))) {
-		return Languages[interaction.language].Permissions.StateRegionMismatchChannel(REGION_ABBREVIATION_MAP[interaction.channel.name]);
+	if (!interaction.member.roles.cache.some((r) => r.name === (REGION_ABBREVIATION_MAP[channel.name]))) {
+		return Languages[interaction.language].Permissions.StateRegionMismatchChannel(REGION_ABBREVIATION_MAP[channel.name]);
 	}
 
 	return true;
