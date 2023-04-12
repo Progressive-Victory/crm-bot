@@ -29,7 +29,7 @@ const English: Language = {
 	},
 	Commands: {
 		Pin: {
-			Success: (message, pinned) => `Successfully ${!pinned && 'un'}pinned message ${message.url}.`,
+			Success: (message, pinned) => `Successfully ${pinned ? '' : 'un'}pinned message ${message.url}.`,
 			Error: (message) => `Failed to pin message ${message.url}.`,
 			CannotPin: (message) => `Cannot pin message ${message.url}.`
 		},
