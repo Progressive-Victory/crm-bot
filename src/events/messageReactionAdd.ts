@@ -1,9 +1,28 @@
-import { MessageReaction, User } from 'discord.js';
+import {
+	GuildMember, Message, MessageReaction, User
+} from 'discord.js';
 import Logger from '../structures/Logger';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
 
+function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember, message: Message<true>) {
+	const mentionedRoles = message.mentions.roles;
+	let hasRole = false;
+
+	mentionedRoles.forEach((_r, k) => {
+		if (hasRole === false && member.roles.cache.has(k)) {
+			hasRole = true;
+		}
+	});
+	if (!hasRole) {
+		reaction.remove();
+	}
+}
+
 export default async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
-	if (reaction.message.inGuild() && isConnectEmoji(reaction.emoji.name) && !reaction.message.content) {
+	if (!reaction.message.inGuild()) return;
+	const member = await reaction.message.guild.members.fetch(user);
+
+	if (isConnectEmoji(reaction.emoji.name) && !reaction.message.content) {
 		if (!reaction.message.author) await reaction.message.fetch();
 		const users = await reaction.users.fetch();
 		const otherUser = users.find((u) => u.id !== user.id) || user;
@@ -48,4 +67,5 @@ export default async function onMessageReactionAdd(reaction: MessageReaction, us
 			}
 		}, 1000 * 60 * 60 * 24);
 	}
+	if (reaction.message.channelId === process.env.PROPOSALS_CHANNEL_ID) proposalsChannelReaction(reaction, member, reaction.message);
 }
