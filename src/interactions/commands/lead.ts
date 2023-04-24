@@ -36,4 +36,17 @@ export default {
 					.setAutocomplete(true)
 					.setMinLength(5)
 					.setMaxLength(100))))
+		.addSubcommand((subcommand) => subcommand
+			.setName('ping')
+			.setDescription('Ping Your State Role')
+			.addChannelOption((option) => option
+				.setName('channel')
+				.setDescription('Channel where ping will be sent')
+				.addChannelTypes(ChannelType.GuildText)
+				.setRequired(false))
+			.addStringOption((option) => option
+				.setName('message')
+				.setDescription('Message you wish to add to ping')
+				.setRequired(false)
+				.setMaxLength(150)))
 };
