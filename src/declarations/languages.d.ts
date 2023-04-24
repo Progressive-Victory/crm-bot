@@ -47,6 +47,11 @@ interface Language {
                     AuditLogRename: (channel: Discord.VoiceChannel, user: Discord.User) => string
                     AuditLogUndo: () => string
                 }
+            },
+            Ping: {
+                CantSend: () => string,
+                BotNoPerms: (user: Discord.User) => string,
+                Success: (message: Discord.Message<true>) => string
             }
         },
         Metrics: {

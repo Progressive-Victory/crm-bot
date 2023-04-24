@@ -8,6 +8,9 @@ import { Command } from 'src/structures/Command';
 const states = Object.values(State);
 
 async function execute(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
+	const lang = Languages[interaction.language];
+	const response = lang.Commands.Lead.Ping;
+	const errorRes = lang.Generics.Error();
 	let channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
 
 	// Check to see if channel is defined
@@ -15,7 +18,10 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 		// Checks to see if channel the command was sent from is a type GuildText
 		if (interaction.channel.type !== ChannelType.GuildText) {
 			// If the check fails an error state occurs
-			return interaction.reply({ content: 'Message Can\'t be sent in this Channel', ephemeral: true });
+			return interaction.reply({
+				content: response.CantSend(),
+				ephemeral: true
+			});
 		}
 		// Else channel is set to where the command was used
 		channel = interaction.channel;
@@ -23,7 +29,10 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 
 	// Checks to see if bot has perms to send message in channel
 	if (channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
-		return interaction.reply({ content: `${interaction.client.user} Does not have permission to send message`, ephemeral: true });
+		return interaction.reply({
+			content: response.BotNoPerms(interaction.client.user),
+			ephemeral: true
+		});
 	}
 
 	// Adds Message if the message peramitor was entered
@@ -36,12 +45,12 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 
 	// Sends message to channel
 	return channel.send(pingMessage).then((sentMessage) => interaction.reply({
-		content: `Ping message has been sent ${sentMessage.url}`,
+		content: response.Success(sentMessage),
 		ephemeral: true
 	})).catch((err) => {
 		console.error(err);
 		return interaction.reply({
-			content: 'An error has accored and the ping message has faild to send',
+			content: errorRes,
 			ephemeral: true
 		});
 	});

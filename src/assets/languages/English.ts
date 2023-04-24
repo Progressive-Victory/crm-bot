@@ -69,6 +69,11 @@ const English: Language = {
 					AuditLogRename: (channel, user) => `Channel ${channel.name} renamed by ${user.tag}`,
 					AuditLogUndo: () => 'Automatic undoing of meeting channel rename'
 				}
+			},
+			Ping: {
+				CantSend: () => 'Message Can\'t be sent in this Channel',
+				BotNoPerms: (user) => `${user} Does not have permission to send message`,
+				Success: (message) => `Ping message has been sent ${message.url}`
 			}
 		},
 		Metrics: {
