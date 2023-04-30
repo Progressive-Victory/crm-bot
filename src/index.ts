@@ -3,7 +3,7 @@ import { join } from 'path';
 import { config } from 'dotenv';
 import { GatewayIntentBits, Partials } from 'discord.js';
 
-import CustomClient from './structures/CustomClient';
+import CustomClient from './structures/Client';
 import prototypes from './structures/prototypes';
 import { CustomClientOptions } from './declarations/typings';
 

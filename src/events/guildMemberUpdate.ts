@@ -1,6 +1,7 @@
-import { GuildMember } from 'discord.js';
+import { Events, GuildMember } from 'discord.js';
+import Event from '../structures/Event';
 
-export default async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
+async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
 	if (after.guild.id !== process.env.TRACKING_GUILD) return;
 	if (before.roles.cache.size === after.roles.cache.size) return;
 
@@ -55,3 +56,7 @@ export default async function onGuildMemberUpdate(before: GuildMember, after: Gu
 		await after.roles.add(websiteFormFilledRole);
 	}
 }
+
+export default new Event()
+	.setName(Events.GuildMemberUpdate)
+	.setExecute(onGuildMemberUpdate);

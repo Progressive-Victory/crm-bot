@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import CustomClient from '../structures/CustomClient';
+import CustomClient from '../structures/Client';
 import { SupportedLanguage } from '../assets/languages';
 
 declare module 'discord.js' {

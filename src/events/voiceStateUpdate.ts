@@ -1,9 +1,10 @@
-import { VoiceState } from 'discord.js';
+import { Events, VoiceState } from 'discord.js';
 import { renameOrganizing } from '../structures/helpers';
 import Logger from '../structures/Logger';
 import Database from '../structures/Database';
+import Event from '../structures/Event';
 
-export default async function onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
+async function onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
 	if (newState.guild.id === process.env.TRACKING_GUILD) {
 		if (!oldState.channel && newState.channel) {
 			await Database.addVCJoin(newState.member.id, newState.guild.id, newState.channel.id);
@@ -17,3 +18,7 @@ export default async function onVoiceStateUpdate(oldState: VoiceState, newState:
 		await renameOrganizing(newState.channel || oldState.channel);
 	}
 }
+
+export default new Event()
+	.setName(Events.MessageReactionAdd)
+	.setExecute(onVoiceStateUpdate);

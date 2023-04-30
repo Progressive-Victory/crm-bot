@@ -1,10 +1,11 @@
-import { VoiceBasedChannel } from 'discord.js';
+import { Events, VoiceBasedChannel } from 'discord.js';
 import { VCChannelIDs } from '../structures/Constants';
 import { renameOrganizing } from '../structures/helpers';
-import CustomClient from '../structures/CustomClient';
+import CustomClient from '../structures/Client';
+import Event from '../structures/Event';
 import Logger from '../structures/Logger';
 
-export default async function onReady(this: CustomClient) {
+async function onReady(this: CustomClient) {
 	Logger.info(`Ready! Logged in as ${this.user.tag}`);
 
 	if (!process.env.TRACKING_GUILD) {
@@ -35,3 +36,8 @@ export default async function onReady(this: CustomClient) {
 		}
 	}
 }
+
+export default new Event()
+	.setName(Events.MessageReactionAdd)
+	.setOnce(true)
+	.setExecute(onReady);
