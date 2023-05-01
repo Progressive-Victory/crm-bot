@@ -54,6 +54,7 @@
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"no-prototype-builtins": "off",
 		"no-bitwise": "off",
+		"linebreak-style": ["error", "windows"],
 		"@typescript-eslint/type-annotation-spacing": ["error", {
 			"before": false,
 			"after": true,
