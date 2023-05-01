@@ -1,13 +1,14 @@
 import {
-	ChatInputCommandInteraction, InteractionResponse, ChannelType, MessageCreateOptions, PermissionFlagsBits
+	ChatInputCommandInteraction, ChannelType, MessageCreateOptions, PermissionFlagsBits
 } from 'discord.js';
-import Languages from 'src/assets/languages';
-import { State } from 'src/declarations/states';
-import { Command } from 'src/structures/Command';
+import Languages from '../../assets/languages';
+import { State } from '../../declarations/states';
+import { Command } from '../../structures/Command';
 
 const states = Object.values(State);
 
-async function execute(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
+async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
+	interaction.deferReply({ ephemeral: true });
 	const lang = Languages[interaction.language];
 	const response = lang.Commands.Lead.Ping;
 	const errorRes = lang.Generics.Error();
@@ -18,10 +19,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 		// Checks to see if channel the command was sent from is a type GuildText
 		if (interaction.channel.type !== ChannelType.GuildText) {
 			// If the check fails an error state occurs
-			return interaction.reply({
-				content: response.CantSend(),
-				ephemeral: true
-			});
+			return interaction.followUp({ content: response.CantSend() });
 		}
 		// Else channel is set to where the command was used
 		channel = interaction.channel;
@@ -29,10 +27,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 
 	// Checks to see if bot has perms to send message in channel
 	if (channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
-		return interaction.reply({
-			content: response.BotNoPerms(interaction.client.user),
-			ephemeral: true
-		});
+		return interaction.followUp({ content: response.BotNoPerms(interaction.client.user) });
 	}
 
 	// Adds Message if the message peramitor was entered
@@ -44,15 +39,9 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 	}
 
 	// Sends message to channel
-	return channel.send(pingMessage).then((sentMessage) => interaction.reply({
-		content: response.Success(sentMessage),
-		ephemeral: true
-	})).catch((err) => {
+	return channel.send(pingMessage).then((sentMessage) => interaction.followUp({ content: response.Success(sentMessage) })).catch((err) => {
 		console.error(err);
-		return interaction.reply({
-			content: errorRes,
-			ephemeral: true
-		});
+		return interaction.followUp({ content: errorRes });
 	});
 }
 
