@@ -1,10 +1,9 @@
 /* eslint-disable no-shadow */
 import {
-	ChatInputCommandInteraction, InteractionResponse, VoiceChannel, Snowflake, AutocompleteInteraction, GuildMember, PermissionFlagsBits, ChannelType
+	ChatInputCommandInteraction, VoiceChannel, Snowflake, AutocompleteInteraction, GuildMember, PermissionFlagsBits, ChannelType, InteractionResponse
 } from 'discord.js';
 import i18n from 'i18next';
 import { localize } from '../i18n';
-import Languages from '../assets/languages';
 import { State } from '../declarations/states';
 import { VCChannelIDs, REGION_ABBREVIATION_MAP } from '../structures/Constants';
 import { ChatInputCommand } from '../structures/Command';
@@ -22,7 +21,7 @@ const ns = 'lead';
  * @param interaction command interaction
  * @returns interaction response
  */
-async function renameVc(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
+async function renameVc(interaction: ChatInputCommandInteraction<'cached'>) {
 	const channel = interaction.options.getChannel('channel', true) as VoiceChannel;
 
 	let reply: string;
@@ -38,7 +37,9 @@ async function renameVc(interaction: ChatInputCommandInteraction<'cached'>): Pro
 		});
 	}
 	else {
-		await channel.setName(name, Languages[interaction.guild.preferredLanguage].Commands.Lead.VC.Rename.AuditLogRename(channel, interaction.user));
+		await channel.setName(name, i18n.t('vc-rename-Audit-Log-Rename', {
+			lng: interaction.locale, ns, name: channel.name, tag: interaction.user.tag
+		}));
 		reply = i18n.t('vc-rename-success', {
 			lng: interaction.locale,
 			ns,
@@ -59,10 +60,7 @@ async function autocomplete(interaction: AutocompleteInteraction<'cached'>) {
 	const stateRole = member.roles.cache.find((role) => states.includes(role.name as State));
 	const stateChannel = REGION_ABBREVIATION_MAP[interaction.channel.name];
 	const focusedOption = interaction.options.getFocused(true);
-	const meeting = i18n.t('metting', {
-		lng: interaction.guild.preferredLocale,
-		ns
-	});
+	const meeting = i18n.t('metting', { lng: interaction.guild.preferredLocale, ns });
 	const choices = [];
 	if (stateChannel) choices.push(`${stateChannel} ${meeting}`);
 	choices.push(`${stateRole.name} ${meeting}`);
@@ -77,11 +75,19 @@ function memberState(member: GuildMember) {
 	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
 }
 
-async function role(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
-	if (!interaction.inGuild()) throw Error;
+/**
+ * Function for toggling regoinlead role on and off
+ * @param interaction command interaction
+ * @returns interaction response
+ */
+async function role(interaction: ChatInputCommandInteraction<'cached'>) {
+	// gets member from interation
 	const target = interaction.options.getMember('user');
+
+	// state lead is the user who used the command
 	const stateLead = interaction.member;
 
+	// if the state lead and the target member do not have thet same state role
 	if (!memberState(stateLead).some((role) => memberState(target).has(role.id))) {
 		return interaction.reply({
 			ephemeral: true,
@@ -143,6 +149,7 @@ async function role(interaction: ChatInputCommandInteraction<'cached'>): Promise
 
 	return interaction.reply({ ephemeral: true, content: reply });
 }
+
 /**
  * Command objects to be exported
  */
@@ -196,19 +203,21 @@ export default new ChatInputCommand()
 					.setAutocomplete(true)
 					.setMinLength(5)
 					.setMaxLength(100)))))
-	.setExecute(async (interaction) => {
-		if (!interaction.inCachedGuild()) return;
+	.setExecute(async (interaction): Promise<InteractionResponse<true>> => {
+		// Type check that interaction is in guild
+		if (!interaction.inCachedGuild()) throw Error;
+
+		// Gets subcommand
 		const subcommand = interaction.options.getSubcommand(true);
 
+		// runs fuctions based on subcommand
 		switch (subcommand) {
 		case 'rename':
-			renameVc(interaction);
-			break;
+			return renameVc(interaction);
 		case 'role':
-			role(interaction);
-			break;
+			return role(interaction);
 		default:
-			break;
+			throw Error;
 		}
 	})
 	.setAutocomplete(autocomplete);
