@@ -1,7 +1,6 @@
 import {
 	ChatInputCommandInteraction,
 	GuildMember,
-	InteractionResponse,
 	Snowflake
 } from 'discord.js';
 import Languages from '../../../assets/languages';
@@ -15,23 +14,18 @@ function memberState(member: GuildMember) {
 	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
 }
 
-async function execute(interaction: ChatInputCommandInteraction<'cached'>): Promise<InteractionResponse<boolean>> {
+async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
+	interaction.deferReply({ ephemeral: true });
 	const target = interaction.options.getMember('user');
 	const stateLead = interaction.member;
 
 	if (!memberState(stateLead).some((role) => memberState(target).has(role.id))) {
-		return interaction.reply({
-			ephemeral: true,
-			content: Languages[interaction.language].Permissions.StateRegionMismatchUser(target.user)
-		});
+		return interaction.followUp({ content: Languages[interaction.language].Permissions.StateRegionMismatchUser(target.user) });
 	}
 
 	const regionLeadRole = stateLead.guild.roles.cache.get(regionLeadRoleID);
 	if (!regionLeadRole) {
-		return interaction.reply({
-			ephemeral: true,
-			content: Languages[interaction.language].Generics.NoRole()
-		});
+		return interaction.followUp({ content: Languages[interaction.language].Generics.NoRole() });
 	}
 
 	const addRole = !target.roles.cache.has(regionLeadRoleID);
@@ -53,7 +47,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>): Prom
 		Logger.error(e);
 	}
 
-	return interaction.reply({ ephemeral: true, content: reply });
+	return interaction.followUp({ content: reply });
 }
 
 export default new Command({
