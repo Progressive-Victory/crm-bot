@@ -1,12 +1,19 @@
 import {
 	Events,
-	GuildMember, Message, MessageReaction, User
+	GuildMember,
+	Message,
+	MessageReaction,
+	User
 } from 'discord.js';
 import Event from '../structures/Event';
 import Logger from '../structures/Logger';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
 
-function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember, message: Message<true>) {
+function proposalsChannelReaction(
+	reaction: MessageReaction,
+	member: GuildMember,
+	message: Message<true>
+) {
 	const mentionedRoles = message.mentions.roles;
 	let hasRole = false;
 
@@ -59,17 +66,34 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 
 		setTimeout(async () => {
 			await reaction.message.fetch();
-			if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) return;
+			if (
+				reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)
+			) {
+				return;
+			}
 			try {
-				await onConnect(reaction.message.author.id, reaction.message.author.tag, otherUser.id, otherUser.tag, reaction.message.guildId, reaction.message.channelId, 'timeout');
+				await onConnect(
+					reaction.message.author.id,
+					reaction.message.author.tag,
+					otherUser.id,
+					otherUser.tag,
+					reaction.message.guildId,
+					reaction.message.channelId,
+					'timeout'
+				);
 				Logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
 			}
 			catch (e) {
-				Logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
+				Logger.error(
+					`Failed to connect ${otherUser.tag} (${otherUser.id})`,
+					e
+				);
 			}
 		}, 1000 * 60 * 60 * 24);
 	}
-	if (reaction.message.channelId === process.env.PROPOSALS_CHANNEL_ID) proposalsChannelReaction(reaction, member, reaction.message);
+	if (reaction.message.channelId === process.env.PROPOSALS_CHANNEL_ID) {
+		proposalsChannelReaction(reaction, member, reaction.message);
+	}
 }
 
 export default new Event()

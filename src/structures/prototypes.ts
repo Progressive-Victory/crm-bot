@@ -1,5 +1,7 @@
 import {
-	AutocompleteInteraction, BaseInteraction, ChatInputCommandInteraction
+	AutocompleteInteraction,
+	BaseInteraction,
+	ChatInputCommandInteraction
 } from 'discord.js';
 
 export default () => {
@@ -21,7 +23,11 @@ export default () => {
 		}
 	});
 
-	function getInteractionKey(this: ChatInputCommandInteraction<'cached'> | AutocompleteInteraction<'cached'>) {
+	function getInteractionKey(
+		this:
+			| ChatInputCommandInteraction<'cached'>
+			| AutocompleteInteraction<'cached'>
+	) {
 		const name = this.commandName;
 
 		const subCommand = this.options.getSubcommand(false);
@@ -41,6 +47,8 @@ export default () => {
 	});
 
 	String.prototype.toTitleCase = function toTitleCase() {
-		return this.split(' ').map((a) => a[0].toUpperCase() + a.slice(1)).join(' ');
+		return this.split(' ')
+			.map((a) => a[0].toUpperCase() + a.slice(1))
+			.join(' ');
 	};
 };

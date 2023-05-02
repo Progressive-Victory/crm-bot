@@ -24,35 +24,67 @@ export default class Database {
 
 	static addLeave(userID: Snowflake, guildID: Snowflake) {
 		return Database.db.collection('leaves').insertOne({
-			userID, guildID, createdAt: new Date(), updatedAt: new Date()
+			userID,
+			guildID,
+			createdAt: new Date(),
+			updatedAt: new Date()
 		});
 	}
 
 	static addJoin(userID: Snowflake, guildID: Snowflake) {
 		return Database.db.collection('joins').insertOne({
-			userID, guildID, createdAt: new Date(), updatedAt: new Date()
+			userID,
+			guildID,
+			createdAt: new Date(),
+			updatedAt: new Date()
 		});
 	}
 
-	static incrementMessages(userID: Snowflake, guildID: Snowflake, channelID: Snowflake) {
-		return Database.db.collection('messages').updateOne({
-			userID, guildID, channelID
-		}, {
-			$inc: { count: 1 },
-			$set: { updatedAt: new Date() },
-			$setOnInsert: { createdAt: new Date() }
-		}, { upsert: true });
+	static incrementMessages(
+		userID: Snowflake,
+		guildID: Snowflake,
+		channelID: Snowflake
+	) {
+		return Database.db.collection('messages').updateOne(
+			{
+				userID,
+				guildID,
+				channelID
+			},
+			{
+				$inc: { count: 1 },
+				$set: { updatedAt: new Date() },
+				$setOnInsert: { createdAt: new Date() }
+			},
+			{ upsert: true }
+		);
 	}
 
-	static addVCJoin(userID: Snowflake, guildID: Snowflake, channelID: Snowflake) {
+	static addVCJoin(
+		userID: Snowflake,
+		guildID: Snowflake,
+		channelID: Snowflake
+	) {
 		return Database.db.collection('vcjoins').insertOne({
-			userID, guildID, channelID, createdAt: new Date(), updatedAt: new Date()
+			userID,
+			guildID,
+			channelID,
+			createdAt: new Date(),
+			updatedAt: new Date()
 		});
 	}
 
-	static addVCLeave(userID: Snowflake, guildID: Snowflake, channelID: Snowflake) {
+	static addVCLeave(
+		userID: Snowflake,
+		guildID: Snowflake,
+		channelID: Snowflake
+	) {
 		return Database.db.collection('vcleaves').insertOne({
-			userID, guildID, channelID, createdAt: new Date(), updatedAt: new Date()
+			userID,
+			guildID,
+			channelID,
+			createdAt: new Date(),
+			updatedAt: new Date()
 		});
 	}
 
@@ -60,15 +92,18 @@ export default class Database {
 		const query: any = { guildID };
 		if (userID) query.userID = userID;
 
-		const [joins, leaves, messagesList, vcJoins, vcLeaves] = await Promise.all([
-			Database.db.collection('joins').find(query).toArray(),
-			Database.db.collection('leaves').find(query).toArray(),
-			Database.db.collection('messages').find(query).toArray(),
-			Database.db.collection('vcjoins').find(query).toArray(),
-			Database.db.collection('vcleaves').find(query).toArray()
-		]);
+		const [joins, leaves, messagesList, vcJoins, vcLeaves] =
+			await Promise.all([
+				Database.db.collection('joins').find(query).toArray(),
+				Database.db.collection('leaves').find(query).toArray(),
+				Database.db.collection('messages').find(query).toArray(),
+				Database.db.collection('vcjoins').find(query).toArray(),
+				Database.db.collection('vcleaves').find(query).toArray()
+			]);
 
-		const messages = userID ? messagesList.find((row) => row.userID === userID)?.count : messagesList;
+		const messages = userID
+			? messagesList.find((row) => row.userID === userID)?.count
+			: messagesList;
 
 		return {
 			messages,
