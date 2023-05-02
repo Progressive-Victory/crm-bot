@@ -74,6 +74,11 @@ interface Language {
 					AuditLogUndo: () => string;
 				};
 			};
+			Ping: {
+				CantSend: () => string;
+				BotNoPerms: (user: Discord.User) => string;
+				Success: (message: Discord.Message<true>) => string;
+			};
 		};
 		Metrics: {
 			Title: () => string;

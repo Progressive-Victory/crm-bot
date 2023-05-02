@@ -64,7 +64,9 @@ export default async function onMessageReactionAdd(
 
 		setTimeout(async () => {
 			await reaction.message.fetch();
-			if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) {
+			if (
+				reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)
+			) {
 				return;
 			}
 			try {
