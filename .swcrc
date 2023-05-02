@@ -10,7 +10,7 @@
 			"decoratorMetadata": true,
 			"legacyDecorator": true
 		},
-		"target": "es2020",
+		"target": "es2021",
 		"keepClassNames": true,
 		"loose": true
 	},

@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 import Languages from '../../assets/languages';
 import { State } from '../../declarations/states';
-import { Command } from '../../structures/Command';
+import Command from '../../structures/Command';
 
 const states = Object.values(State);
 

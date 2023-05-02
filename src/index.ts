@@ -7,7 +7,7 @@ import {
 } from 'discord.js';
 import { config } from 'dotenv';
 import path from 'path';
-import './i18n';
+import './i18n.js';
 import ExtendedClient from './structures/Client';
 
 // Load .env file contents

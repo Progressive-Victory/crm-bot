@@ -1,9 +1,11 @@
 import Discord from 'discord.js';
 import CustomClient from '../structures/Client';
+import { SupportedLanguage } from '../assets/languages';
 
 declare module 'discord.js' {
 	interface Guild {
 		client: CustomClient;
+		preferredLanguage: SupportedLanguage;
 	}
 
 	interface User {
@@ -20,6 +22,7 @@ declare module 'discord.js' {
 
 	interface BaseInteraction {
 		client: CustomClient;
+		language: SupportedLanguage;
 		key: string;
 	}
 
