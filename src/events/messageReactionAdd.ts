@@ -4,11 +4,7 @@ import {
 import Logger from '../structures/Logger';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
 
-function proposalsChannelReaction(
-	reaction: MessageReaction,
-	member: GuildMember,
-	message: Message<true>
-) {
+function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember, message: Message<true>) {
 	const mentionedRoles = message.mentions.roles;
 	let hasRole = false;
 
@@ -22,10 +18,7 @@ function proposalsChannelReaction(
 	}
 }
 
-export default async function onMessageReactionAdd(
-	reaction: MessageReaction,
-	user: User
-) {
+export default async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 	if (!reaction.message.inGuild()) return;
 	const member = await reaction.message.guild.members.fetch(user);
 
@@ -64,9 +57,7 @@ export default async function onMessageReactionAdd(
 
 		setTimeout(async () => {
 			await reaction.message.fetch();
-			if (
-				reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)
-			) {
+			if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) {
 				return;
 			}
 			try {
@@ -82,10 +73,7 @@ export default async function onMessageReactionAdd(
 				Logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
 			}
 			catch (e) {
-				Logger.error(
-					`Failed to connect ${otherUser.tag} (${otherUser.id})`,
-					e
-				);
+				Logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
 			}
 		}, 1000 * 60 * 60 * 24);
 	}

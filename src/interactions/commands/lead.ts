@@ -1,18 +1,12 @@
 import {
-	ChannelType,
-	PermissionFlagsBits,
-	SlashCommandBuilder
+	ChannelType, PermissionFlagsBits, SlashCommandBuilder 
 } from 'discord.js';
 
 export default {
 	data: new SlashCommandBuilder()
 		.setName('lead')
-		.setDescription(
-			'Commands for leads to help manage their respective regions'
-		)
-		.setDefaultMemberPermissions(
-			PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels
-		)
+		.setDescription('Commands for leads to help manage their respective regions')
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels)
 		.setDMPermission(false)
 		.addSubcommandGroup((subcommandGroup) =>
 			subcommandGroup
@@ -22,12 +16,7 @@ export default {
 					subcommand
 						.setName('role')
 						.setDescription('Toggle Regional Lead role')
-						.addUserOption((option) =>
-							option
-								.setName('user')
-								.setDescription('Target user')
-								.setRequired(true)
-						)
+						.addUserOption((option) => option.setName('user').setDescription('Target user').setRequired(true))
 				)
 		)
 		.addSubcommandGroup((subcommandGroup) =>
@@ -39,11 +28,7 @@ export default {
 						.setName('rename')
 						.setDescription('Rename organizing voice channels')
 						.addChannelOption((options) =>
-							options
-								.setName('channel')
-								.setDescription('The channel to rename')
-								.setRequired(true)
-								.addChannelTypes(ChannelType.GuildVoice)
+							options.setName('channel').setDescription('The channel to rename').setRequired(true).addChannelTypes(ChannelType.GuildVoice)
 						)
 						.addStringOption((option) =>
 							option
@@ -61,18 +46,8 @@ export default {
 				.setName('ping')
 				.setDescription('Ping Your State Role')
 				.addChannelOption((option) =>
-					option
-						.setName('channel')
-						.setDescription('Channel where ping will be sent')
-						.addChannelTypes(ChannelType.GuildText)
-						.setRequired(false)
+					option.setName('channel').setDescription('Channel where ping will be sent').addChannelTypes(ChannelType.GuildText).setRequired(false)
 				)
-				.addStringOption((option) =>
-					option
-						.setName('message')
-						.setDescription('Message you wish to add to ping')
-						.setRequired(false)
-						.setMaxLength(150)
-				)
+				.addStringOption((option) => option.setName('message').setDescription('Message you wish to add to ping').setRequired(false).setMaxLength(150))
 		)
 };

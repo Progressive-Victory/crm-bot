@@ -1,9 +1,5 @@
 import {
-	AutocompleteInteraction,
-	BaseInteraction,
-	ChatInputCommandInteraction,
-	CommandInteraction,
-	Guild
+	AutocompleteInteraction, BaseInteraction, ChatInputCommandInteraction, CommandInteraction, Guild 
 } from 'discord.js';
 import { DefaultLanguage, localeToLanguage } from '../assets/languages';
 
@@ -38,11 +34,7 @@ export default () => {
 		}
 	});
 
-	function getInteractionKey(
-		this:
-			| ChatInputCommandInteraction<'cached'>
-			| AutocompleteInteraction<'cached'>
-	) {
+	function getInteractionKey(this: ChatInputCommandInteraction<'cached'> | AutocompleteInteraction<'cached'>) {
 		const name = this.commandName;
 
 		const subCommand = this.options.getSubcommand(false);

@@ -1,8 +1,5 @@
 import {
-	ChatInputCommandInteraction,
-	ChannelType,
-	MessageCreateOptions,
-	PermissionFlagsBits
+	ChatInputCommandInteraction, ChannelType, MessageCreateOptions, PermissionFlagsBits 
 } from 'discord.js';
 import Languages from '../../assets/languages';
 import { State } from '../../declarations/states';
@@ -15,9 +12,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 	const lang = Languages[interaction.language];
 	const response = lang.Commands.Lead.Ping;
 	const errorRes = lang.Generics.Error();
-	let channel = interaction.options.getChannel('channel', false, [
-		ChannelType.GuildText
-	]);
+	let channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
 
 	// Check to see if channel is defined
 	if (!channel) {
@@ -31,18 +26,12 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 	}
 
 	// Checks to see if bot has perms to send message in channel
-	if (
-		!channel
-			.permissionsFor(interaction.client.user)
-			.has(PermissionFlagsBits.SendMessages)
-	) {
-		return interaction.followUp({content: response.BotNoPerms(interaction.client.user)});
+	if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
+		return interaction.followUp({ content: response.BotNoPerms(interaction.client.user) });
 	}
 
 	// Adds Message if the message peramitor was entered
-	const stateRole = interaction.member.roles
-		.valueOf()
-		.find((role) => states.includes(role.name as State));
+	const stateRole = interaction.member.roles.valueOf().find((role) => states.includes(role.name as State));
 	const pingMessage: MessageCreateOptions = { content: stateRole.toString() };
 	const message = interaction.options.getString('message');
 	if (message) {
@@ -52,9 +41,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 	// Sends message to channel
 	return channel
 		.send(pingMessage)
-		.then((sentMessage) =>
-			interaction.followUp({ content: response.Success(sentMessage) })
-		)
+		.then((sentMessage) => interaction.followUp({ content: response.Success(sentMessage) }))
 		.catch((err) => {
 			console.error(err);
 			return interaction.followUp({ content: errorRes });

@@ -1,7 +1,5 @@
 import {
-	ContextMenuCommandBuilder,
-	ApplicationCommandType,
-	MessageContextMenuCommandInteraction
+	ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction 
 } from 'discord.js';
 import { hasSMERole, isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../structures/Command';
@@ -11,12 +9,8 @@ export default new ContextMenuCommand({
 	name: 'Pin Message',
 	perms: { client: ['ManageMessages', 'ReadMessageHistory'] },
 	// name: 'pin',
-	data: new ContextMenuCommandBuilder()
-		.setName('Pin Message')
-		.setType(ApplicationCommandType.Message),
-	execute: async (
-		interaction: MessageContextMenuCommandInteraction<'cached'>
-	) => {
+	data: new ContextMenuCommandBuilder().setName('Pin Message').setType(ApplicationCommandType.Message),
+	execute: async (interaction: MessageContextMenuCommandInteraction<'cached'>) => {
 		const language = Languages[interaction.language].Commands.Pin;
 
 		if (!interaction.targetMessage.pinnable) {
@@ -41,21 +35,15 @@ export default new ContextMenuCommand({
 		try {
 			if (!interaction.targetMessage.pinned) {
 				await interaction.targetMessage.pin();
-				return interaction.editReply(
-					language.Success(interaction.targetMessage, true)
-				);
+				return interaction.editReply(language.Success(interaction.targetMessage, true));
 			}
 
 			await interaction.targetMessage.unpin();
-			return interaction.editReply(
-				language.Success(interaction.targetMessage, false)
-			);
+			return interaction.editReply(language.Success(interaction.targetMessage, false));
 		}
 		catch (e) {
 			console.error('Error deleting message', e);
-			return interaction.editReply(
-				language.Error(interaction.targetMessage)
-			);
+			return interaction.editReply(language.Error(interaction.targetMessage));
 		}
 	}
 });

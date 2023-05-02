@@ -7,15 +7,15 @@
 	"private": true,
 	"scripts": {
 		"run": "node ./dist/index.js",
-		"lint": "eslint . --fix --ext .ts",
 		"build": "rimraf dist && swc ./src --out-dir dist",
 		"start": "yarn build && yarn run run",
 		"test": "jest",
 		"dev": "yarn start | pino-pretty -i pid,hostname -t 'yyyy-mm-dd HH:MM:ss'",
-		"pm2": "yarn build && pm2 start dist/index.js --name crm-bot",
-		"format": "prettier -w .",
+		"prepm2": "yarn build",
+		"pm2": "pm2 start dist/index.js --name crm-bot",
 		"prepare": "husky install",
-		"precommit": "lint-staged"
+		"lint": "eslint {src,test}/**/*.{js,ts,jsx,tsx} --fix --no-error-on-unmatched-pattern",
+		"style": "prettier-eslint \"src/**/*.ts\" --write && yarn lint"
 	},
 	"engines": {
 		"node": ">=16.9.0"
@@ -51,15 +51,11 @@
 		"eslint-plugin-import": "^2.27.5",
 		"husky": "^8.0.3",
 		"jest": "^29.5.0",
-		"lint-staged": "^13.2.2",
-		"next-sitemap": "^4.0.9",
 		"prettier": "^2.8.8",
+		"prettier-eslint": "^15.0.1",
+		"prettier-eslint-cli": "^7.1.0",
 		"ts-jest": "^29.1.0",
 		"ts-node": "^10.9.1",
 		"typescript": "^5.0.4"
-	},
-	"lint-staged": {
-		"src/**/*.{js,jsx,ts,tsx}": "eslint --cache --fix",
-		"src/**/*.{js,jsx,ts,tsx,css,scss,md}": "prettier --write --ignore-unknown"
 	}
 }

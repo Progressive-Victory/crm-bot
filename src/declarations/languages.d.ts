@@ -11,20 +11,12 @@ interface Language {
 		MissingConfiguration: (name?: string) => string;
 	};
 	Permissions: {
-		NoCommandPermissions: (
-			command: string,
-			permissions?: string[],
-			type?: string,
-			serverwideType?: string
-		) => string;
+		NoCommandPermissions: (command: string, permissions?: string[], type?: string, serverwideType?: string) => string;
 		BotOwners: (command: string) => string;
 		ServerOnly: (command: string) => string;
 		StateRegionMismatchUser: (user: Discord.User) => string;
 		StateRegionMismatchChannel: (name: string) => string;
-		WrongRegionChannel: (
-			channel: Discord.Channel,
-			allowed: string[]
-		) => string;
+		WrongRegionChannel: (channel: Discord.Channel, allowed: string[]) => string;
 		TrackingServer: (command: string) => string;
 		MissingSMERole: (roles: string[]) => string;
 	};
@@ -42,35 +34,17 @@ interface Language {
 		Lead: {
 			Region: {
 				Role: {
-					Success: (
-						role: Discord.Role,
-						user: Discord.User,
-						add: boolean
-					) => string;
-					Error: (
-						role: Discord.Role,
-						user: Discord.User,
-						add: boolean
-					) => string;
-					AuditLog: (
-						role: Discord.Role,
-						user: Discord.User,
-						add: boolean
-					) => string;
+					Success: (role: Discord.Role, user: Discord.User, add: boolean) => string;
+					Error: (role: Discord.Role, user: Discord.User, add: boolean) => string;
+					AuditLog: (role: Discord.Role, user: Discord.User, add: boolean) => string;
 				};
 			};
 			VC: {
 				Rename: {
 					Success: (channel: Discord.VoiceChannel) => string;
 					Error: (channel: Discord.VoiceChannel) => string;
-					WrongChannel: (
-						channel: Discord.VoiceChannel,
-						allowed: string[]
-					) => string;
-					AuditLogRename: (
-						channel: Discord.VoiceChannel,
-						user: Discord.User
-					) => string;
+					WrongChannel: (channel: Discord.VoiceChannel, allowed: string[]) => string;
+					AuditLogRename: (channel: Discord.VoiceChannel, user: Discord.User) => string;
 					AuditLogUndo: () => string;
 				};
 			};

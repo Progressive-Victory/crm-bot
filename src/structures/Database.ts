@@ -40,11 +40,7 @@ export default class Database {
 		});
 	}
 
-	static incrementMessages(
-		userID: Snowflake,
-		guildID: Snowflake,
-		channelID: Snowflake
-	) {
+	static incrementMessages(userID: Snowflake, guildID: Snowflake, channelID: Snowflake) {
 		return Database.db.collection('messages').updateOne(
 			{
 				userID,
@@ -60,11 +56,7 @@ export default class Database {
 		);
 	}
 
-	static addVCJoin(
-		userID: Snowflake,
-		guildID: Snowflake,
-		channelID: Snowflake
-	) {
+	static addVCJoin(userID: Snowflake, guildID: Snowflake, channelID: Snowflake) {
 		return Database.db.collection('vcjoins').insertOne({
 			userID,
 			guildID,
@@ -74,11 +66,7 @@ export default class Database {
 		});
 	}
 
-	static addVCLeave(
-		userID: Snowflake,
-		guildID: Snowflake,
-		channelID: Snowflake
-	) {
+	static addVCLeave(userID: Snowflake, guildID: Snowflake, channelID: Snowflake) {
 		return Database.db.collection('vcleaves').insertOne({
 			userID,
 			guildID,
@@ -92,18 +80,15 @@ export default class Database {
 		const query: any = { guildID };
 		if (userID) query.userID = userID;
 
-		const [joins, leaves, messagesList, vcJoins, vcLeaves] =
-			await Promise.all([
-				Database.db.collection('joins').find(query).toArray(),
-				Database.db.collection('leaves').find(query).toArray(),
-				Database.db.collection('messages').find(query).toArray(),
-				Database.db.collection('vcjoins').find(query).toArray(),
-				Database.db.collection('vcleaves').find(query).toArray()
-			]);
+		const [joins, leaves, messagesList, vcJoins, vcLeaves] = await Promise.all([
+			Database.db.collection('joins').find(query).toArray(),
+			Database.db.collection('leaves').find(query).toArray(),
+			Database.db.collection('messages').find(query).toArray(),
+			Database.db.collection('vcjoins').find(query).toArray(),
+			Database.db.collection('vcleaves').find(query).toArray()
+		]);
 
-		const messages = userID
-			? messagesList.find((row) => row.userID === userID)?.count
-			: messagesList;
+		const messages = userID ? messagesList.find((row) => row.userID === userID)?.count : messagesList;
 
 		return {
 			messages,

@@ -1,9 +1,7 @@
 /* eslint-disable no-case-declarations */
 
 import {
-	ApplicationCommandType,
-	Interaction,
-	InteractionType
+	ApplicationCommandType, Interaction, InteractionType 
 } from 'discord.js';
 import Languages from '../assets/languages';
 import { isOwner } from '../structures/helpers';
@@ -21,24 +19,16 @@ export default async function onInteractionCreate(interaction: Interaction) {
 			// Chat Input Command
 			case ApplicationCommandType.ChatInput:
 				interactionName = interaction.commandName;
-				const interactionData =
-							interaction.client.interactions.get(
-								interactionName
-							);
+				const interactionData = interaction.client.interactions.get(interactionName);
 
 				if (!interactionData) return;
 
-				const command = interaction.client.commands.get(
-					interaction.key
-				);
+				const command = interaction.client.commands.get(interaction.key);
 
 				if (!command) {
 					await interaction.reply({
 						ephemeral: true,
-						content:
-									Languages[
-										interaction.language
-									].Generics.NotImplemented(key)
+						content: Languages[interaction.language].Generics.NotImplemented(key)
 					});
 					return;
 				}
@@ -48,10 +38,7 @@ export default async function onInteractionCreate(interaction: Interaction) {
 						await interaction.channel.guild.fetch();
 					}
 
-					const allowed = await Command.permissionsCheck(
-								interaction as Interaction<'cached'>,
-								command
-					);
+					const allowed = await Command.permissionsCheck(interaction as Interaction<'cached'>, command);
 
 					if (allowed !== true && allowed.error === true) {
 						await interaction.reply({
@@ -70,10 +57,7 @@ export default async function onInteractionCreate(interaction: Interaction) {
 					Logger.error(error);
 					await interaction
 						.followUp({
-							content:
-										Languages[
-											interaction.language
-										].Generics.Error(),
+							content: Languages[interaction.language].Generics.Error(),
 							ephemeral: true
 						})
 						.catch(() => null);
@@ -83,27 +67,17 @@ export default async function onInteractionCreate(interaction: Interaction) {
 				// Context Menu
 			case ApplicationCommandType.Message:
 			case ApplicationCommandType.User:
-				const contextCommand =
-							interaction.client.contextMenus.get(
-								interaction.commandName
-							);
+				const contextCommand = interaction.client.contextMenus.get(interaction.commandName);
 				if (!contextCommand) {
 					await interaction.reply({
-						content: Languages[
-							interaction.language
-						].Generics.NotImplemented(
-							interaction.commandName
-						),
+						content: Languages[interaction.language].Generics.NotImplemented(interaction.commandName),
 						ephemeral: true
 					});
 					return;
 				}
 
 				try {
-					const allowed = await Command.permissionsCheck(
-								interaction as Interaction<'cached'>,
-								contextCommand
-					);
+					const allowed = await Command.permissionsCheck(interaction as Interaction<'cached'>, contextCommand);
 
 					if (allowed !== true && allowed.error === true) {
 						await interaction.reply({
@@ -119,10 +93,7 @@ export default async function onInteractionCreate(interaction: Interaction) {
 					Logger.error(error);
 					await interaction
 						.followUp({
-							content:
-										Languages[
-											interaction.language
-										].Generics.Error(),
+							content: Languages[interaction.language].Generics.Error(),
 							ephemeral: true
 						})
 						.catch(() => null);
@@ -169,13 +140,9 @@ export default async function onInteractionCreate(interaction: Interaction) {
 			// Check if autocomplete interactions are enabled
 			// if (!client.config.interactions.receiveAutocomplete) return;
 
-			const interactionData = interaction.client.commands.get(
-				interaction.key
-			);
+			const interactionData = interaction.client.commands.get(interaction.key);
 			if (!interactionData) {
-				console.warn(
-					`[Warning] Autocomplete for ${interaction.key} was not Setup`
-				);
+				console.warn(`[Warning] Autocomplete for ${interaction.key} was not Setup`);
 			}
 			else {
 				await interactionData.autocomplete(interaction);
