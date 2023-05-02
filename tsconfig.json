@@ -17,15 +17,8 @@
 		"baseUrl": ".",
 		"esModuleInterop": true,
 		"sourceMap": true,
-   		"inlineSources": true
+		"inlineSources": true
 	},
-	"exclude": [
-		"**/__tests__/*.ts",
-		"node_modules",
-		"jest.config.ts"
-	],
-	"include": [
-		"**/*.ts",
-		"__tests__/test.ts"
-	]
+	"exclude": ["**/__tests__/*.ts", "node_modules", "jest.config.ts"],
+	"include": ["**/*.ts", "__tests__/test.ts"]
 }

@@ -5,31 +5,55 @@ const English: Language = {
 	Generics: {
 		NotImplemented: (command) => `${command} is not implemented.`,
 		Error: () => 'An error occurred.',
-		MissingConfiguration: (name) => `The configuration \`${name}\` is missing. Please contact the bot owner(s).`,
-		NoRole: (name) => (name ? `A role with the name **${name}** was not found.` : 'No role found.')
+		MissingConfiguration: (name) =>
+			`The configuration \`${name}\` is missing. Please contact the bot owner(s).`,
+		NoRole: (name) =>
+			name
+				? `A role with the name **${name}** was not found.`
+				: 'No role found.'
 	},
 	Permissions: {
 		NoCommandPermissions: (command, permissions, type, serverWideType) => {
 			if (serverWideType) {
-				return `${type === 'client' ? 'I' : 'You'} need the following **${serverWideType === type ? 'server-wide' : 'channel-wide'}** permissions: ${permissions} to execute the command \`${command}\`!`;
+				return `${
+					type === 'client' ? 'I' : 'You'
+				} need the following **${
+					serverWideType === type ? 'server-wide' : 'channel-wide'
+				}** permissions: ${permissions} to execute the command \`${command}\`!`;
 			}
 			if (type) {
-				return `${type === 'client' ? 'I' : 'You'} don't have enough permissions to execute the command \`${command}\`!`;
+				return `${
+					type === 'client' ? 'I' : 'You'
+				} don't have enough permissions to execute the command \`${command}\`!`;
 			}
 
 			return `You do not have permissions to execute the command \`${command}\`.`;
 		},
-		BotOwners: (command) => `Only the bot owners may use the \`${command}\` command!`,
-		ServerOnly: (command) => `The command \`${command}\` can only be used in a server.`,
-		StateRegionMismatchUser: (user) => `You are not in the same state as ${user}!`,
-		StateRegionMismatchChannel: (name) => `You do not have the corresponding region role ${name} to run this command.`,
-		WrongRegionChannel: (channel, allowed) => `You are not allowed to run this command in ${channel}. However, you can from one of the following channels: ${allowed.map((id) => `<#${id}>`).join(', ')}.`,
-		TrackingServer: (command) => `The command \`${command}\` can only be used in the tracking server.`,
-		MissingSMERole: (roles) => `You are missing one of the following roles: ${roles.map((id) => `<@&${id}>`).join(', ')}.`
+		BotOwners: (command) =>
+			`Only the bot owners may use the \`${command}\` command!`,
+		ServerOnly: (command) =>
+			`The command \`${command}\` can only be used in a server.`,
+		StateRegionMismatchUser: (user) =>
+			`You are not in the same state as ${user}!`,
+		StateRegionMismatchChannel: (name) =>
+			`You do not have the corresponding region role ${name} to run this command.`,
+		WrongRegionChannel: (channel, allowed) =>
+			`You are not allowed to run this command in ${channel}. However, you can from one of the following channels: ${allowed
+				.map((id) => `<#${id}>`)
+				.join(', ')}.`,
+		TrackingServer: (command) =>
+			`The command \`${command}\` can only be used in the tracking server.`,
+		MissingSMERole: (roles) =>
+			`You are missing one of the following roles: ${roles
+				.map((id) => `<@&${id}>`)
+				.join(', ')}.`
 	},
 	Commands: {
 		Pin: {
-			Success: (message, pinned) => `Successfully ${pinned ? '' : 'un'}pinned message ${message.url}.`,
+			Success: (message, pinned) =>
+				`Successfully ${pinned ? '' : 'un'}pinned message ${
+					message.url
+				}.`,
 			Error: (message) => `Failed to pin message ${message.url}.`,
 			CannotPin: (message) => `Cannot pin message ${message.url}.`
 		},
@@ -63,17 +87,26 @@ const English: Language = {
 			},
 			VC: {
 				Rename: {
-					Success: (channel) => `Successfully renamed the channel ${channel}.`,
-					Error: (channel) => `Failed to rename the channel ${channel}.`,
-					WrongChannel: (channel, allowed) => `You are not allowed to rename ${channel}. However, you can rename any of the following channels: ${allowed.map((id) => `<#${id}>`).join(', ')}.`,
-					AuditLogRename: (channel, user) => `Channel ${channel.name} renamed by ${user.tag}`,
-					AuditLogUndo: () => 'Automatic undoing of meeting channel rename'
+					Success: (channel) =>
+						`Successfully renamed the channel ${channel}.`,
+					Error: (channel) =>
+						`Failed to rename the channel ${channel}.`,
+					WrongChannel: (channel, allowed) =>
+						`You are not allowed to rename ${channel}. However, you can rename any of the following channels: ${allowed
+							.map((id) => `<#${id}>`)
+							.join(', ')}.`,
+					AuditLogRename: (channel, user) =>
+						`Channel ${channel.name} renamed by ${user.tag}`,
+					AuditLogUndo: () =>
+						'Automatic undoing of meeting channel rename'
 				}
 			},
 			Ping: {
-				CantSend: () => 'Message Can\'t be sent in this Channel',
-				BotNoPerms: (user) => `${user} Does not have permission to send message`,
-				Success: (message) => `Ping message has been sent ${message.url}`
+				CantSend: () => "Message Can't be sent in this Channel",
+				BotNoPerms: (user) =>
+					`${user} Does not have permission to send message`,
+				Success: (message) =>
+					`Ping message has been sent ${message.url}`
 			}
 		},
 		Metrics: {

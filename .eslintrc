@@ -1,8 +1,6 @@
 {
 	"root": true,
-	"plugins": [
-	  "@typescript-eslint"
-	],
+	"plugins": ["@typescript-eslint"],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
 		"ecmaVersion": 8,
@@ -16,14 +14,23 @@
 	"extends": [
 		"eslint:recommended",
 		"plugin:@typescript-eslint/recommended",
-		"airbnb-base"
+		"airbnb-base",
+		"prettier"
 	],
 	"rules": {
 		"indent": ["error", "tab"],
 		"no-tabs": "off",
 		"class-methods-use-this": 0,
 		"no-plusplus": 0,
-		"max-len": ["error", { "code": 160, "ignoreStrings": true, "ignoreComments": true, "ignoreTemplateLiterals": true }],
+		"max-len": [
+			"error",
+			{
+				"code": 160,
+				"ignoreStrings": true,
+				"ignoreComments": true,
+				"ignoreTemplateLiterals": true
+			}
+		],
 		"no-param-reassign": 0,
 		"no-console": "off",
 		"no-await-in-loop": "off",
@@ -32,14 +39,8 @@
 		"no-continue": "off",
 		"comma-dangle": ["error", "never"],
 		"no-multi-assign": "off",
-		"brace-style": [
-			"error",
-			"stroustrup"
-		],
-		"curly": [
-			"error",
-			"multi-line"
-		],
+		"brace-style": ["error", "stroustrup"],
+		"curly": ["error", "multi-line"],
 		"no-extend-native": "off",
 		"no-restricted-syntax": "off",
 		"import/extensions": "off",
@@ -54,16 +55,20 @@
 		"@typescript-eslint/no-non-null-assertion": "off",
 		"no-prototype-builtins": "off",
 		"no-bitwise": "off",
-		"@typescript-eslint/type-annotation-spacing": ["error", {
-			"before": false,
-			"after": true,
-			"overrides": {
-				"arrow": {
-					"before": true,
-					"after": true
+		"linebreak-style": ["error", "unix"],
+		"@typescript-eslint/type-annotation-spacing": [
+			"error",
+			{
+				"before": false,
+				"after": true,
+				"overrides": {
+					"arrow": {
+						"before": true,
+						"after": true
+					}
 				}
 			}
-		}],
+		],
 		"object-curly-newline": [
 			"error",
 			{

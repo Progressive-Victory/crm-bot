@@ -1,10 +1,14 @@
 import {
-	GuildMember, Message, MessageReaction, User
+	GuildMember, Message, MessageReaction, User 
 } from 'discord.js';
 import Logger from '../structures/Logger';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
 
-function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember, message: Message<true>) {
+function proposalsChannelReaction(
+	reaction: MessageReaction,
+	member: GuildMember,
+	message: Message<true>
+) {
 	const mentionedRoles = message.mentions.roles;
 	let hasRole = false;
 
@@ -18,7 +22,10 @@ function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember
 	}
 }
 
-export default async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
+export default async function onMessageReactionAdd(
+	reaction: MessageReaction,
+	user: User
+) {
 	if (!reaction.message.inGuild()) return;
 	const member = await reaction.message.guild.members.fetch(user);
 
@@ -57,15 +64,32 @@ export default async function onMessageReactionAdd(reaction: MessageReaction, us
 
 		setTimeout(async () => {
 			await reaction.message.fetch();
-			if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) return;
+			if (
+				reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)
+			) {
+				return;
+			}
 			try {
-				await onConnect(reaction.message.author.id, reaction.message.author.tag, otherUser.id, otherUser.tag, reaction.message.guildId, reaction.message.channelId, 'timeout');
+				await onConnect(
+					reaction.message.author.id,
+					reaction.message.author.tag,
+					otherUser.id,
+					otherUser.tag,
+					reaction.message.guildId,
+					reaction.message.channelId,
+					'timeout'
+				);
 				Logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
 			}
 			catch (e) {
-				Logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
+				Logger.error(
+					`Failed to connect ${otherUser.tag} (${otherUser.id})`,
+					e
+				);
 			}
 		}, 1000 * 60 * 60 * 24);
 	}
-	if (reaction.message.channelId === process.env.PROPOSALS_CHANNEL_ID) proposalsChannelReaction(reaction, member, reaction.message);
+	if (reaction.message.channelId === process.env.PROPOSALS_CHANNEL_ID) {
+		proposalsChannelReaction(reaction, member, reaction.message);
+	}
 }

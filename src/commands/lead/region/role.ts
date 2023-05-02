@@ -11,7 +11,9 @@ import Logger from '../../../structures/Logger';
 const regionLeadRoleID: Snowflake = process.env.REGIONAL_ROLE_ID;
 
 function memberState(member: GuildMember) {
-	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
+	return member.roles.cache.filter((role) =>
+		Object.values(State).includes(role.name as State)
+	);
 }
 
 async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
@@ -19,18 +21,30 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 	const target = interaction.options.getMember('user');
 	const stateLead = interaction.member;
 
-	if (!memberState(stateLead).some((role) => memberState(target).has(role.id))) {
-		return interaction.followUp({ content: Languages[interaction.language].Permissions.StateRegionMismatchUser(target.user) });
+	if (
+		!memberState(stateLead).some((role) => memberState(target).has(role.id))
+	) {
+		return interaction.followUp({
+			content: Languages[
+				interaction.language
+			].Permissions.StateRegionMismatchUser(target.user)
+		});
 	}
 
 	const regionLeadRole = stateLead.guild.roles.cache.get(regionLeadRoleID);
 	if (!regionLeadRole) {
-		return interaction.followUp({ content: Languages[interaction.language].Generics.NoRole() });
+		return interaction.followUp({content: Languages[interaction.language].Generics.NoRole()});
 	}
 
 	const addRole = !target.roles.cache.has(regionLeadRoleID);
 	let reply: string = null;
-	const auditReason: string = Languages[interaction.guild.preferredLanguage].Commands.Lead.Region.Role.AuditLog(regionLeadRole, interaction.user, addRole);
+	const auditReason: string = Languages[
+		interaction.guild.preferredLanguage
+	].Commands.Lead.Region.Role.AuditLog(
+		regionLeadRole,
+		interaction.user,
+		addRole
+	);
 
 	try {
 		if (addRole) {
@@ -40,10 +54,20 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 			await target.roles.remove(regionLeadRoleID, auditReason);
 		}
 
-		reply = Languages[interaction.language].Commands.Lead.Region.Role.Success(regionLeadRole, target.user, addRole);
+		reply = Languages[
+			interaction.language
+		].Commands.Lead.Region.Role.Success(
+			regionLeadRole,
+			target.user,
+			addRole
+		);
 	}
 	catch (e) {
-		reply = Languages[interaction.language].Commands.Lead.Region.Role.Error(regionLeadRole, target.user, addRole);
+		reply = Languages[interaction.language].Commands.Lead.Region.Role.Error(
+			regionLeadRole,
+			target.user,
+			addRole
+		);
 		Logger.error(e);
 	}
 

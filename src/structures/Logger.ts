@@ -25,27 +25,31 @@ function wrap(logger: pino.Logger) {
 	return logger;
 }
 
-const Logger = wrap(pino({
-	level: process.env.LOG_LEVEL || 'debug',
-	hooks: {
-		logMethod(inputArgs, method, level) {
-			if (level === 50 && inputArgs[0] as any instanceof Error) {
-				return method.apply(this, [(inputArgs[0] as any as Error).stack]);
-			}
-
-			// Handles additional arguments being passed in
-			for (let i = 0; i < inputArgs.length; ++i) {
-				if (Array.isArray(inputArgs[i])) {
-					inputArgs[i] = inputArgs[i].join(' ');
+const Logger = wrap(
+	pino({
+		level: process.env.LOG_LEVEL || 'debug',
+		hooks: {
+			logMethod(inputArgs, method, level) {
+				if (level === 50 && (inputArgs[0] as any) instanceof Error) {
+					return method.apply(this, [
+						(inputArgs[0] as any as Error).stack
+					]);
 				}
 
-				if (i !== 0) {
-					inputArgs[0] += ` ${inputArgs[i]}`;
+				// Handles additional arguments being passed in
+				for (let i = 0; i < inputArgs.length; ++i) {
+					if (Array.isArray(inputArgs[i])) {
+						inputArgs[i] = inputArgs[i].join(' ');
+					}
+
+					if (i !== 0) {
+						inputArgs[0] += ` ${inputArgs[i]}`;
+					}
 				}
+				return method.apply(this, inputArgs);
 			}
-			return method.apply(this, inputArgs);
 		}
-	}
-}));
+	})
+);
 
 export default Logger;

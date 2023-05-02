@@ -1,5 +1,9 @@
 import {
-	AutocompleteInteraction, BaseInteraction, ChatInputCommandInteraction, CommandInteraction, Guild
+	AutocompleteInteraction,
+	BaseInteraction,
+	ChatInputCommandInteraction,
+	CommandInteraction,
+	Guild
 } from 'discord.js';
 import { DefaultLanguage, localeToLanguage } from '../assets/languages';
 
@@ -34,7 +38,11 @@ export default () => {
 		}
 	});
 
-	function getInteractionKey(this: ChatInputCommandInteraction<'cached'> | AutocompleteInteraction<'cached'>) {
+	function getInteractionKey(
+		this:
+			| ChatInputCommandInteraction<'cached'>
+			| AutocompleteInteraction<'cached'>
+	) {
 		const name = this.commandName;
 
 		const subCommand = this.options.getSubcommand(false);
@@ -54,6 +62,8 @@ export default () => {
 	});
 
 	String.prototype.toTitleCase = function toTitleCase() {
-		return this.split(' ').map((a) => a[0].toUpperCase() + a.slice(1)).join(' ');
+		return this.split(' ')
+			.map((a) => a[0].toUpperCase() + a.slice(1))
+			.join(' ');
 	};
 };
