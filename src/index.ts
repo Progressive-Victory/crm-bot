@@ -15,7 +15,12 @@ const clientOptions: CustomClientOptions = {
 	eventsDir: join(__dirname, 'events'),
 	commandsDir: join(__dirname, 'commands'),
 	interactionsDir: join(__dirname, 'interactions'),
-	partials: [Partials.Reaction, Partials.User, Partials.Channel, Partials.Message],
+	partials: [
+		Partials.Reaction,
+		Partials.User,
+		Partials.Channel,
+		Partials.Message
+	],
 	intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMembers,

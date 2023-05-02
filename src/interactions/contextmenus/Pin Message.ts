@@ -14,11 +14,16 @@ export default new ContextMenuCommand({
 	data: new ContextMenuCommandBuilder()
 		.setName('Pin Message')
 		.setType(ApplicationCommandType.Message),
-	execute: async (interaction: MessageContextMenuCommandInteraction<'cached'>) => {
+	execute: async (
+		interaction: MessageContextMenuCommandInteraction<'cached'>
+	) => {
 		const language = Languages[interaction.language].Commands.Pin;
 
 		if (!interaction.targetMessage.pinnable) {
-			return interaction.reply({ content: language.CannotPin(interaction.targetMessage), ephemeral: true });
+			return interaction.reply({
+				content: language.CannotPin(interaction.targetMessage),
+				ephemeral: true
+			});
 		}
 
 		const stateLeadCheck = isStateLead(interaction);
@@ -36,15 +41,21 @@ export default new ContextMenuCommand({
 		try {
 			if (!interaction.targetMessage.pinned) {
 				await interaction.targetMessage.pin();
-				return interaction.editReply(language.Success(interaction.targetMessage, true));
+				return interaction.editReply(
+					language.Success(interaction.targetMessage, true)
+				);
 			}
 
 			await interaction.targetMessage.unpin();
-			return interaction.editReply(language.Success(interaction.targetMessage, false));
+			return interaction.editReply(
+				language.Success(interaction.targetMessage, false)
+			);
 		}
 		catch (e) {
 			console.error('Error deleting message', e);
-			return interaction.editReply(language.Error(interaction.targetMessage));
+			return interaction.editReply(
+				language.Error(interaction.targetMessage)
+			);
 		}
 	}
 });

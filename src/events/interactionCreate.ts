@@ -17,21 +17,28 @@ export default async function onInteractionCreate(interaction: Interaction) {
 	try {
 		switch (interaction.type) {
 		case InteractionType.ApplicationCommand:
-
 			switch (interaction.commandType) {
 			// Chat Input Command
 			case ApplicationCommandType.ChatInput:
 				interactionName = interaction.commandName;
-				const interactionData = interaction.client.interactions.get(interactionName);
+				const interactionData =
+							interaction.client.interactions.get(
+								interactionName
+							);
 
 				if (!interactionData) return;
 
-				const command = interaction.client.commands.get(interaction.key);
+				const command = interaction.client.commands.get(
+					interaction.key
+				);
 
 				if (!command) {
 					await interaction.reply({
 						ephemeral: true,
-						content: Languages[interaction.language].Generics.NotImplemented(key)
+						content:
+									Languages[
+										interaction.language
+									].Generics.NotImplemented(key)
 					});
 					return;
 				}
@@ -41,42 +48,68 @@ export default async function onInteractionCreate(interaction: Interaction) {
 						await interaction.channel.guild.fetch();
 					}
 
-					const allowed = await Command.permissionsCheck(interaction as Interaction<'cached'>, command);
+					const allowed = await Command.permissionsCheck(
+								interaction as Interaction<'cached'>,
+								command
+					);
 
 					if (allowed !== true && allowed.error === true) {
-						await interaction.reply({ content: allowed.message, ephemeral: true });
+						await interaction.reply({
+							content: allowed.message,
+							ephemeral: true
+						});
 						return;
 					}
 
 					await command.execute(interaction);
-					Logger.debug(`Executed command ${command.name} by ${interaction.user.tag} (${interaction.user.id}) in ${interaction.guild?.name} (${interaction.guild?.id})`);
+					Logger.debug(
+						`Executed command ${command.name} by ${interaction.user.tag} (${interaction.user.id}) in ${interaction.guild?.name} (${interaction.guild?.id})`
+					);
 				}
 				catch (error) {
 					Logger.error(error);
-					await interaction.followUp({
-						content: Languages[interaction.language].Generics.Error(),
-						ephemeral: true
-					}).catch(() => null);
+					await interaction
+						.followUp({
+							content:
+										Languages[
+											interaction.language
+										].Generics.Error(),
+							ephemeral: true
+						})
+						.catch(() => null);
 				}
 				break;
 
 				// Context Menu
 			case ApplicationCommandType.Message:
 			case ApplicationCommandType.User:
-				const contextCommand = interaction.client.contextMenus.get(interaction.commandName);
+				const contextCommand =
+							interaction.client.contextMenus.get(
+								interaction.commandName
+							);
 				if (!contextCommand) {
 					await interaction.reply({
-						content: Languages[interaction.language].Generics.NotImplemented(interaction.commandName),
+						content: Languages[
+							interaction.language
+						].Generics.NotImplemented(
+							interaction.commandName
+						),
 						ephemeral: true
 					});
 					return;
 				}
 
 				try {
-					const allowed = await Command.permissionsCheck(interaction as Interaction<'cached'>, contextCommand);
+					const allowed = await Command.permissionsCheck(
+								interaction as Interaction<'cached'>,
+								contextCommand
+					);
 
 					if (allowed !== true && allowed.error === true) {
-						await interaction.reply({ content: allowed.message, ephemeral: true });
+						await interaction.reply({
+							content: allowed.message,
+							ephemeral: true
+						});
 						break;
 					}
 
@@ -84,10 +117,15 @@ export default async function onInteractionCreate(interaction: Interaction) {
 				}
 				catch (error) {
 					Logger.error(error);
-					await interaction.followUp({
-						content: Languages[interaction.language].Generics.Error(),
-						ephemeral: true
-					}).catch(() => null);
+					await interaction
+						.followUp({
+							content:
+										Languages[
+											interaction.language
+										].Generics.Error(),
+							ephemeral: true
+						})
+						.catch(() => null);
 				}
 
 				break;
@@ -121,19 +159,23 @@ export default async function onInteractionCreate(interaction: Interaction) {
 
 			// break;
 			// ModalSubmit
-		// case InteractionType.ModalSubmit:
-		// 	// Check if modal interactions are enabled
-		// 	if (!client.config.interactions.receiveModals) return;
-		// 	interactionName = client.config.interactions.splitCustomId ? interaction.customId.split('_')[0] : interaction.customId;
-		// 	client.modals.get(interactionName)?.execute(client, interaction);
-		// 	break;
+			// case InteractionType.ModalSubmit:
+			// 	// Check if modal interactions are enabled
+			// 	if (!client.config.interactions.receiveModals) return;
+			// 	interactionName = client.config.interactions.splitCustomId ? interaction.customId.split('_')[0] : interaction.customId;
+			// 	client.modals.get(interactionName)?.execute(client, interaction);
+			// 	break;
 		case InteractionType.ApplicationCommandAutocomplete:
 			// Check if autocomplete interactions are enabled
 			// if (!client.config.interactions.receiveAutocomplete) return;
 
-			const interactionData = interaction.client.commands.get(interaction.key);
+			const interactionData = interaction.client.commands.get(
+				interaction.key
+			);
 			if (!interactionData) {
-				console.warn(`[Warning] Autocomplete for ${interaction.key} was not Setup`);
+				console.warn(
+					`[Warning] Autocomplete for ${interaction.key} was not Setup`
+				);
 			}
 			else {
 				await interactionData.autocomplete(interaction);

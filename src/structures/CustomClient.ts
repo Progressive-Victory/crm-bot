@@ -78,7 +78,9 @@ export default class CustomClient extends Discord.Client {
 	}
 
 	async loadCommands() {
-		const files = await readFiles(this.commandsDir).then((list) => list.filter((f) => f.endsWith('.js')));
+		const files = await readFiles(this.commandsDir).then((list) =>
+			list.filter((f) => f.endsWith('.js'))
+		);
 
 		// Load commands into temporary Collections so:
 		// - comamnds are always fully consistent (internal `await`s break this
@@ -110,16 +112,27 @@ export default class CustomClient extends Discord.Client {
 	}
 
 	async loadUserContextMenuCommandInteractions() {
-		const interactionsDir = join(__dirname, '..', 'interactions', 'contextmenus');
+		const interactionsDir = join(
+			__dirname,
+			'..',
+			'interactions',
+			'contextmenus'
+		);
 
-		const commandFiles = (await readdir(interactionsDir)).filter((file) => file.endsWith('.js'));
+		const commandFiles = (await readdir(interactionsDir)).filter((file) =>
+			file.endsWith('.js')
+		);
 
 		for (const file of commandFiles) {
-			const command: ContextMenuCommand = (await import(join(interactionsDir, file))).default;
+			const command: ContextMenuCommand = (
+				await import(join(interactionsDir, file))
+			).default;
 			const name = file.slice(0, -3);
 
 			if (this.contextMenus.has(name)) {
-				throw Error(`Duplicate context menu command detected at: ${file}`);
+				throw Error(
+					`Duplicate context menu command detected at: ${file}`
+				);
 			}
 
 			this.contextMenus.set(name, command);
@@ -131,12 +144,20 @@ export default class CustomClient extends Discord.Client {
 	}
 
 	async loadCommandInteractions() {
-		const interactionsDir = join(__dirname, '..', 'interactions', 'commands');
+		const interactionsDir = join(
+			__dirname,
+			'..',
+			'interactions',
+			'commands'
+		);
 
-		const commandFiles = (await readdir(interactionsDir)).filter((file) => file.endsWith('.js'));
+		const commandFiles = (await readdir(interactionsDir)).filter((file) =>
+			file.endsWith('.js')
+		);
 
 		for (const file of commandFiles) {
-			const command = (await reRequire(join(interactionsDir, file))).default;
+			const command = (await reRequire(join(interactionsDir, file)))
+				.default;
 
 			if (this.commands.has(command.name)) {
 				throw Error(`Duplicate command detected at: ${file}`);
@@ -154,44 +175,59 @@ export default class CustomClient extends Discord.Client {
 		if (process.env.TEST_GUILD) {
 			Logger.info('Started refreshing local slash commands.');
 			await rest.put(
-				Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.TEST_GUILD),
+				Routes.applicationGuildCommands(
+					process.env.CLIENT_ID,
+					process.env.TEST_GUILD
+				),
 				{ body: commands }
 			);
 
 			// Delete after Testing
 			// await rest.put(Routes.applicationGuildCommands(process.env.CLIENT_ID, process.env.TEST_GUILD), { body: [] });
 
-			Logger.info(`Successfully reloaded ${commands.length} local slash commands.`);
+			Logger.info(
+				`Successfully reloaded ${commands.length} local slash commands.`
+			);
 		}
 		else {
 			Logger.info('Started refreshing global slash commands.');
-			await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
-			Logger.info(`Successfully reloaded ${commands.length} global slash commands.`);
+			await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), {body: commands});
+			Logger.info(
+				`Successfully reloaded ${commands.length} global slash commands.`
+			);
 		}
 	}
 
 	async loadInteractions() {
-		const commands = await Promise.all([this.loadCommandInteractions(), this.loadUserContextMenuCommandInteractions()]);
+		const commands = await Promise.all([
+			this.loadCommandInteractions(),
+			this.loadUserContextMenuCommandInteractions()
+		]);
 		const flat = [].concat(...commands);
 		await this.putInteractions(flat);
 		Logger.info(`Loaded ${flat.length} interactions.`);
 	}
 
 	async loadEvents() {
-		const eventFiles = (await readdir(this.eventsDir)).filter((file) => file.endsWith('.js'));
+		const eventFiles = (await readdir(this.eventsDir)).filter((file) =>
+			file.endsWith('.js')
+		);
 
 		const newEvents = [];
 		for (const file of eventFiles) {
 			const event = (await reRequire(join(this.eventsDir, file))).default;
 			const name = file.split('.')[0];
-			newEvents.push([name, async (...args) => {
-				try {
-					await event.call(this, ...args);
+			newEvents.push([
+				name,
+				async (...args) => {
+					try {
+						await event.call(this, ...args);
+					}
+					catch (e) {
+						Logger.error('Error handling event', name, e);
+					}
 				}
-				catch (e) {
-					Logger.error('Error handling event', name, e);
-				}
-			}]);
+			]);
 		}
 
 		for (const [name, event] of this.previousEvents) {
@@ -214,10 +250,7 @@ export default class CustomClient extends Discord.Client {
 	}
 
 	async launch() {
-		await Promise.all([
-			this.reloadAllCommands(),
-			Database.connect()
-		]);
+		await Promise.all([this.reloadAllCommands(), Database.connect()]);
 		await this.login(this.token);
 	}
 }

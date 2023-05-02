@@ -24,7 +24,9 @@ export default async function onReady(this: CustomClient) {
 	}
 
 	if (VCChannelIDs.length) {
-		const channels = guild.channels.cache.filter((c) => VCChannelIDs.includes(c.id) && c.isVoiceBased());
+		const channels = guild.channels.cache.filter(
+			(c) => VCChannelIDs.includes(c.id) && c.isVoiceBased()
+		);
 		if (!channels.size || channels.size !== VCChannelIDs.length) {
 			Logger.error('One or more channels not found. Exiting...');
 			process.exit(1);

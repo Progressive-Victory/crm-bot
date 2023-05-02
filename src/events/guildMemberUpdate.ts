@@ -1,6 +1,9 @@
 import { GuildMember } from 'discord.js';
 
-export default async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
+export default async function onGuildMemberUpdate(
+	before: GuildMember,
+	after: GuildMember
+) {
 	if (after.guild.id !== process.env.TRACKING_GUILD) return;
 	if (before.roles.cache.size === after.roles.cache.size) return;
 
@@ -15,12 +18,25 @@ export default async function onGuildMemberUpdate(before: GuildMember, after: Gu
 	let hasAltDentifierPending = false;
 	let justFinishedAltDentifier = false;
 
-	const websiteFormFilledRole = after.guild.roles.cache.get(process.env.WEBSITE_FORM_FILLED_ROLE_ID);
-	const pendingRulesRole = after.guild.roles.cache.get(process.env.PENDING_RULES_AGREEMENT_ROLE_ID);
-	const altDentifierRole = after.guild.roles.cache.get(process.env.ALTDENTIFIER_ROLE_ID);
-	const verifiedRole = after.guild.roles.cache.get(process.env.VERIFIED_ROLE_ID);
+	const websiteFormFilledRole = after.guild.roles.cache.get(
+		process.env.WEBSITE_FORM_FILLED_ROLE_ID
+	);
+	const pendingRulesRole = after.guild.roles.cache.get(
+		process.env.PENDING_RULES_AGREEMENT_ROLE_ID
+	);
+	const altDentifierRole = after.guild.roles.cache.get(
+		process.env.ALTDENTIFIER_ROLE_ID
+	);
+	const verifiedRole = after.guild.roles.cache.get(
+		process.env.VERIFIED_ROLE_ID
+	);
 
-	if (!websiteFormFilledRole || !pendingRulesRole || !altDentifierRole || !verifiedRole) {
+	if (
+		!websiteFormFilledRole ||
+		!pendingRulesRole ||
+		!altDentifierRole ||
+		!verifiedRole
+	) {
 		console.warn('Missing one of the verification related roles');
 		return;
 	}
@@ -51,7 +67,12 @@ export default async function onGuildMemberUpdate(before: GuildMember, after: Gu
 		}
 	});
 
-	if (!hasWebForm && hasRulePending && !hasAltDentifierPending && justFinishedAltDentifier) {
+	if (
+		!hasWebForm &&
+		hasRulePending &&
+		!hasAltDentifierPending &&
+		justFinishedAltDentifier
+	) {
 		await after.roles.add(websiteFormFilledRole);
 	}
 }

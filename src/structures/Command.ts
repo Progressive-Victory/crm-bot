@@ -12,26 +12,29 @@ import {
 import Languages from '../assets/languages';
 import { isOwner } from './helpers';
 
-type ReturnableInteraction = CommandInteraction
+type ReturnableInteraction =
+	| CommandInteraction
 	| UserContextMenuCommandInteraction
 	| MessageContextMenuCommandInteraction
 	| InteractionResponse<true>
 	| Message<true>;
 
 type Permissions = {
-	member?: PermissionResolvable[]
-	client?: PermissionResolvable[]
+	member?: PermissionResolvable[];
+	client?: PermissionResolvable[];
 };
 
 interface CommandOptions {
 	name: string;
 	group?: string;
-	perms?: Permissions
-	ownersOnly?: boolean
-	cooldown?: number
-	guildOnly?: boolean
-	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction,
-	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>,
+	perms?: Permissions;
+	ownersOnly?: boolean;
+	cooldown?: number;
+	guildOnly?: boolean;
+	execute: (
+		interaction: CommandInteraction
+	) => Promise<ReturnableInteraction> | ReturnableInteraction;
+	autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 }
 
 abstract class BaseCommand {
@@ -43,7 +46,9 @@ abstract class BaseCommand {
 
 	guildOnly: boolean;
 
-	execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
+	execute: (
+		interaction: CommandInteraction
+	) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
 	constructor(config: CommandOptions) {
 		this.name = config.name;
@@ -53,27 +58,40 @@ abstract class BaseCommand {
 		this.execute = config.execute;
 	}
 
-	static async permissionsCheck(interaction: Interaction<'cached'>, command: BaseCommand) {
-		let type = ''; let serverWideType = '';
-		const clientMember = await interaction.guild.members.fetch(interaction.client.user);
+	static async permissionsCheck(
+		interaction: Interaction<'cached'>,
+		command: BaseCommand
+	) {
+		let type = '';
+		let serverWideType = '';
+		const clientMember = await interaction.guild.members.fetch(
+			interaction.client.user
+		);
 		const perms = command.perms || {};
 
 		if (command.ownersOnly && !isOwner(interaction.user)) {
 			return {
 				error: true,
-				message: Languages[interaction.language].Permissions.BotOwners(command.name)
+				message: Languages[interaction.language].Permissions.BotOwners(
+					command.name
+				)
 			};
 		}
 
 		if (command.guildOnly && !interaction.guildId) {
 			return {
 				error: true,
-				message: Languages[interaction.language].Permissions.ServerOnly(command.name)
+				message: Languages[interaction.language].Permissions.ServerOnly(
+					command.name
+				)
 			};
 		}
 
-		const clientMissingPermissionsServer = clientMember.permissions.missing(perms.client);
-		const memberMissingPermissionsServer = interaction.member.permissions.missing(perms.member);
+		const clientMissingPermissionsServer = clientMember.permissions.missing(
+			perms.client
+		);
+		const memberMissingPermissionsServer =
+			interaction.member.permissions.missing(perms.member);
 
 		if (clientMissingPermissionsServer.length) {
 			serverWideType = 'client';
@@ -82,24 +100,47 @@ abstract class BaseCommand {
 			serverWideType = 'member';
 		}
 
-		const clientMissingPermissions = interaction.channel.permissionsFor(clientMember).missing(perms.client);
-		const memberMissingPermissions = interaction.channel.permissionsFor(interaction.member).missing(perms.member);
+		const clientMissingPermissions = interaction.channel
+			.permissionsFor(clientMember)
+			.missing(perms.client);
+		const memberMissingPermissions = interaction.channel
+			.permissionsFor(interaction.member)
+			.missing(perms.member);
 
 		if ('client' in perms && clientMissingPermissions.length) {
 			type = 'client';
 		}
-		if (!isOwner(interaction.user) && 'member' in perms && memberMissingPermissions.length) {
+		if (
+			!isOwner(interaction.user) &&
+			'member' in perms &&
+			memberMissingPermissions.length
+		) {
 			type = 'member';
 		}
 		if (!type) return true;
 
-		const permissions = perms[type].map((perm: string) => `\`${perm.replace(/_/g, ' ')}\``).join(', ');
+		const permissions = perms[type]
+			.map((perm: string) => `\`${perm.replace(/_/g, ' ')}\``)
+			.join(', ');
 
 		return {
 			error: true,
 			message: [
-				Languages[interaction.language].Permissions.NoCommandPermissions(command.name, permissions, type),
-				Languages[interaction.language].Permissions.NoCommandPermissions(command.name, permissions, type, serverWideType)
+				Languages[
+					interaction.language
+				].Permissions.NoCommandPermissions(
+					command.name,
+					permissions,
+					type
+				),
+				Languages[
+					interaction.language
+				].Permissions.NoCommandPermissions(
+					command.name,
+					permissions,
+					type,
+					serverWideType
+				)
 			].join('\n')
 		};
 	}
@@ -127,14 +168,21 @@ export class Command extends BaseCommand {
 interface ContextMenuCommandOptions extends CommandOptions {
 	data: ContextMenuCommandBuilder;
 
-	execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction) => ReturnableInteraction | Promise<ReturnableInteraction>;
+	execute: (
+		interaction:
+			| UserContextMenuCommandInteraction
+			| MessageContextMenuCommandInteraction
+	) => ReturnableInteraction | Promise<ReturnableInteraction>;
 }
 
 export class ContextMenuCommand extends BaseCommand {
 	data: ContextMenuCommandBuilder;
 
-	declare execute: (interaction: UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction)
-		=> ReturnableInteraction | Promise<ReturnableInteraction>;
+	declare execute: (
+		interaction:
+			| UserContextMenuCommandInteraction
+			| MessageContextMenuCommandInteraction
+	) => ReturnableInteraction | Promise<ReturnableInteraction>;
 
 	constructor(options: ContextMenuCommandOptions) {
 		super(options);

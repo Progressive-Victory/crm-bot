@@ -17,11 +17,16 @@ export default new ContextMenuCommand({
 		.setName('Delete Message')
 		.setType(ApplicationCommandType.Message)
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
-	execute: async (interaction: MessageContextMenuCommandInteraction<'cached'>) => {
+	execute: async (
+		interaction: MessageContextMenuCommandInteraction<'cached'>
+	) => {
 		const language = Languages[interaction.language].Commands.Delete;
 
 		if (!interaction.targetMessage.deletable) {
-			return interaction.reply({ content: language.CannotDelete(interaction.targetMessage), ephemeral: true });
+			return interaction.reply({
+				content: language.CannotDelete(interaction.targetMessage),
+				ephemeral: true
+			});
 		}
 
 		const str = isStateLead(interaction);
@@ -33,11 +38,15 @@ export default new ContextMenuCommand({
 
 		try {
 			await interaction.targetMessage.delete();
-			return interaction.editReply(language.Success(interaction.targetMessage));
+			return interaction.editReply(
+				language.Success(interaction.targetMessage)
+			);
 		}
 		catch (e) {
 			console.error('Error deleting message', e);
-			return interaction.editReply(language.Error(interaction.targetMessage));
+			return interaction.editReply(
+				language.Error(interaction.targetMessage)
+			);
 		}
 	}
 });
