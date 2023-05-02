@@ -9,7 +9,6 @@ import {
 	RepliableInteraction
 } from 'discord.js';
 import Event from '../structures/Event';
-import Languages from '../assets/languages';
 import Logger from '../structures/Logger';
 
 const errorMessage =
@@ -17,18 +16,14 @@ const errorMessage =
 
 async function replyError(error: unknown, interaction: RepliableInteraction) {
 	if (error instanceof Error) {
-		console.error(error);
+		Logger.error(error);
 		if (interaction.client.replyOnError) return;
 
 		if (interaction.deferred) {
-			await interaction
-				.followUp({ content: errorMessage })
-				.catch(console.error);
+			await interaction.followUp({ content: errorMessage });
 		}
 		else {
-			await interaction
-				.reply({ content: errorMessage, ephemeral: true })
-				.catch(console.error);
+			await interaction.reply({ content: errorMessage, ephemeral: true });
 		}
 	}
 }
@@ -71,8 +66,10 @@ async function onInteractionCreate(interaction: Interaction) {
 			// Component (Button | Select Menu)
 		case InteractionType.MessageComponent:
 			if (!interaction.client.receiveMessageComponents) return;
-			interactionName = interaction.client.splitCustomId
-				? interaction.customId.split('_')[0]
+			interactionName = interaction.client.splitCustomID
+				? interaction.customId.split(
+					interaction.client.splitCustomIDOn
+					  )[0]
 				: interaction.customId;
 
 			switch (interaction.componentType) {
@@ -104,8 +101,10 @@ async function onInteractionCreate(interaction: Interaction) {
 		case InteractionType.ModalSubmit:
 			// Check if modal interactions are enabled
 			if (!interaction.client.receiveModals) return;
-			interactionName = interaction.client.splitCustomId
-				? interaction.customId.split('_')[0]
+			interactionName = interaction.client.splitCustomID
+				? interaction.customId.split(
+					interaction.client.splitCustomIDOn
+					  )[0]
 				: interaction.customId;
 			interaction.client.modals
 				.get(interactionName)
@@ -121,8 +120,8 @@ async function onInteractionCreate(interaction: Interaction) {
 						interactionName
 					)?.autocomplete;
 			if (!autocomplete) {
-				console.warn(
-					`[Warning] Autocomplete for ${interactionName} was not Setup`
+				Logger.warn(
+					`Autocomplete for ${interactionName} was not Setup`
 				);
 			}
 			else {
@@ -134,8 +133,10 @@ async function onInteractionCreate(interaction: Interaction) {
 		}
 	}
 	catch (error) {
-		if (interaction.isRepliable()) replyError(error, interaction);
-		else console.error(error);
+		if (interaction.isRepliable()) {
+			replyError(error, interaction).catch(() => null);
+		}
+		else Logger.error(error);
 	}
 }
 

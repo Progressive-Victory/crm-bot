@@ -1,17 +1,26 @@
 import 'source-map-support/register';
 
+import { config } from 'dotenv';
+import path from 'path';
+
+import './i18n.js';
+import prototypes from './structures/prototypes';
+import ExtendedClient from './structures/Client';
+import Logger from './structures/Logger';
+
+// We need to call the prototypes file before any discord.js structures get imported
+/* eslint-disable import/order */
+// @ts-ignore
 import {
 	DiscordjsError,
 	GatewayIntentBits as Intents,
 	Partials
 } from 'discord.js';
-import { config } from 'dotenv';
-import path from 'path';
-import './i18n.js';
-import ExtendedClient from './structures/Client';
+/* eslint-enable import/order */
 
 // Load .env file contents
 config();
+prototypes();
 
 // Initialization (specify intents and partials)
 const client = new ExtendedClient({
@@ -40,25 +49,28 @@ const client = new ExtendedClient({
 	receiveModals: true,
 	receiveAutocomplete: true,
 	replyOnError: true,
-	splitCustomId: true,
-	splitCustomIdOn: '_',
+	splitCustomID: true,
+	splitCustomIDOn: '_',
 	useGuildCommands: false
 });
-client.login(process.env.TOKEN).catch((err: unknown) => {
-	if (err instanceof DiscordjsError) {
-		if (err.code === 'TokenMissing') {
-			console.warn(
-				`\n[Error] ${err.name}: ${err.message} Did you create a .env file?\n`
-			);
+
+client.init().then(() => {
+	client.login(process.env.TOKEN).catch((err: unknown) => {
+		if (err instanceof DiscordjsError) {
+			if (err.code === 'TokenMissing') {
+				Logger.warn(
+					`${err.name}: ${err.message} Did you create a .env file?\n`
+				);
+			}
+			else if (err.code === 'TokenInvalid') {
+				Logger.warn(
+					`${err.name}: ${err.message} Check your .env file\n`
+				);
+			}
+			else throw err;
 		}
-		else if (err.code === 'TokenInvalid') {
-			console.warn(
-				`\n[Error] ${err.name}: ${err.message} Check your .env file\n`
-			);
+		else {
+			throw err;
 		}
-		else throw err;
-	}
-	else {
-		throw err;
-	}
+	});
 });
