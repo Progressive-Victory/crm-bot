@@ -30,7 +30,7 @@ export interface ExtendedClientOptions extends ClientOptions {
     buttonPath?: string
     selectMenuPath?: string
     modalPath?: string
-    eventPath: string
+    eventsPath: string
 	receiveMessageComponents?: boolean
 	receiveModals?: boolean
 	receiveAutocomplete?: boolean
@@ -156,7 +156,7 @@ export default class ExtendedClient extends Client {
 
 		// Paths
 		const {
-			restVersion, commandPath, contextMenuPath, buttonPath, selectMenuPath, modalPath, eventPath, receiveMessageComponents, receiveModals,
+			restVersion, commandPath, contextMenuPath, buttonPath, selectMenuPath, modalPath, eventsPath, receiveMessageComponents, receiveModals,
 			receiveAutocomplete, replyOnError, splitCustomId, splitCustomIdOn, useGuildCommands
 		} = options;
 
@@ -189,7 +189,7 @@ export default class ExtendedClient extends Client {
 		this.useGuildCommands = useGuildCommands === undefined ? false : useGuildCommands;
 
 		// Event Handler
-		readdirSync(eventPath).filter((dir) => dir.endsWith(tsNodeRun ? '.ts' : '.js')).forEach((file) => import(path.join(eventPath, file))
+		readdirSync(eventsPath).filter((dir) => dir.endsWith(tsNodeRun ? '.ts' : '.js')).forEach((file) => import(path.join(eventsPath, file))
 			.then((event: { default: Event }) => {
 				// console.log(event.default);
 
@@ -228,15 +228,4 @@ export default class ExtendedClient extends Client {
 
 		return console.log(`[INFO] Deployed ${applicationCommands.length} global command(s)`);
 	}
-}
-
-declare module 'discord.js' {
-    interface BaseInteraction { client: ExtendedClient}
-    interface Component { client: ExtendedClient }
-    interface Message { client: ExtendedClient }
-    interface BaseChannel { client: ExtendedClient }
-    interface Role { client: ExtendedClient }
-    interface Guild { client: ExtendedClient }
-	interface User { client: ExtendedClient }
-	interface GuildMember { client: ExtendedClient }
 }
