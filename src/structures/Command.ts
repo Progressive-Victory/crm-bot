@@ -1,5 +1,9 @@
 import {
-	SlashCommandBuilder, ContextMenuCommandBuilder, ChatInputCommandInteraction, AutocompleteInteraction, ContextMenuCommandInteraction,
+	SlashCommandBuilder,
+	ContextMenuCommandBuilder,
+	ChatInputCommandInteraction,
+	AutocompleteInteraction,
+	ContextMenuCommandInteraction,
 	CommandInteraction,
 	SlashCommandSubcommandsOnlyBuilder,
 	InteractionResponse,
@@ -9,29 +13,37 @@ import {
 } from 'discord.js';
 
 type Mutable<T> = { -readonly [P in keyof T]: T[P] };
-type ReturnableInteraction = CommandInteraction
+type ReturnableInteraction =
+	| CommandInteraction
 	| UserContextMenuCommandInteraction
 	| MessageContextMenuCommandInteraction
 	| InteractionResponse
 	| Message;
 
-export type ChatInputCommandBuilders = SlashCommandBuilder
-    | SlashCommandSubcommandsOnlyBuilder
-    | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>
+export type ChatInputCommandBuilders =
+	| SlashCommandBuilder
+	| SlashCommandSubcommandsOnlyBuilder
+	| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
 
-export interface CommandOptions{
-    builder: ChatInputCommandBuilders | ContextMenuCommandBuilder,
-    execute: (interaction: CommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction,
+export interface CommandOptions {
+	builder: ChatInputCommandBuilders | ContextMenuCommandBuilder;
+	execute: (
+		interaction: CommandInteraction
+	) => Promise<ReturnableInteraction> | ReturnableInteraction;
 }
 
 export class ChatInputCommand implements CommandOptions {
 	readonly builder: ChatInputCommandBuilders;
 
-	public execute: (interaction: ChatInputCommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
+	public execute: (
+		interaction: ChatInputCommandInteraction
+	) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
-	public autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
+	public autocomplete?: (
+		interaction: AutocompleteInteraction
+	) => Promise<void>;
 
-	constructor()
+	constructor();
 
 	constructor(options?: Partial<ChatInputCommand>) {
 		if (options) {
@@ -41,9 +53,17 @@ export class ChatInputCommand implements CommandOptions {
 		}
 	}
 
-	public setBuilder(input: SlashCommandBuilder | ((subcommandBuilder: SlashCommandBuilder) => ChatInputCommandBuilders)): this {
+	public setBuilder(
+		input:
+			| SlashCommandBuilder
+			| ((
+					subcommandBuilder: SlashCommandBuilder
+			  ) => ChatInputCommandBuilders)
+	): this {
 		if (typeof input === 'function') {
-			(this as Mutable<ChatInputCommand>).builder = input(new SlashCommandBuilder());
+			(this as Mutable<ChatInputCommand>).builder = input(
+				new SlashCommandBuilder()
+			);
 		}
 		else {
 			(this as Mutable<ChatInputCommand>).builder = input;
@@ -51,12 +71,18 @@ export class ChatInputCommand implements CommandOptions {
 		return this;
 	}
 
-	public setExecute(execute:((interaction: ChatInputCommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction)) {
+	public setExecute(
+		execute: (
+			interaction: ChatInputCommandInteraction
+		) => Promise<ReturnableInteraction> | ReturnableInteraction
+	) {
 		this.execute = execute;
 		return this;
 	}
 
-	public setAutocomplete(autocomplete:((interaction: AutocompleteInteraction) => Promise<void>)) {
+	public setAutocomplete(
+		autocomplete: (interaction: AutocompleteInteraction) => Promise<void>
+	) {
 		this.autocomplete = autocomplete;
 		return this;
 	}
@@ -65,9 +91,11 @@ export class ChatInputCommand implements CommandOptions {
 export class ContextMenuCommand implements CommandOptions {
 	readonly builder: ContextMenuCommandBuilder;
 
-	public execute: (interaction: ContextMenuCommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
+	public execute: (
+		interaction: ContextMenuCommandInteraction
+	) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
-	constructor()
+	constructor();
 
 	constructor(options?: Partial<ContextMenuCommand>) {
 		if (options) {
@@ -76,9 +104,17 @@ export class ContextMenuCommand implements CommandOptions {
 		}
 	}
 
-	public setBuilder(input: ContextMenuCommandBuilder | ((subcommandBuilder: ContextMenuCommandBuilder) => ContextMenuCommandBuilder)): this {
+	public setBuilder(
+		input:
+			| ContextMenuCommandBuilder
+			| ((
+					subcommandBuilder: ContextMenuCommandBuilder
+			  ) => ContextMenuCommandBuilder)
+	): this {
 		if (typeof input === 'function') {
-			(this as Mutable<ContextMenuCommand>).builder = input(new ContextMenuCommandBuilder());
+			(this as Mutable<ContextMenuCommand>).builder = input(
+				new ContextMenuCommandBuilder()
+			);
 		}
 		else {
 			(this as Mutable<ContextMenuCommand>).builder = input;
@@ -86,7 +122,11 @@ export class ContextMenuCommand implements CommandOptions {
 		return this;
 	}
 
-	public setExecute(execute:((interaction: ContextMenuCommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction)) {
+	public setExecute(
+		execute: (
+			interaction: ContextMenuCommandInteraction
+		) => Promise<ReturnableInteraction> | ReturnableInteraction
+	) {
 		this.execute = execute;
 		return this;
 	}

@@ -1,7 +1,9 @@
 import 'source-map-support/register';
 
-import { 
-	DiscordjsError, GatewayIntentBits as Intents, Partials
+import {
+	DiscordjsError,
+	GatewayIntentBits as Intents,
+	Partials
 } from 'discord.js';
 import { config } from 'dotenv';
 import path from 'path';
@@ -42,14 +44,21 @@ const client = new ExtendedClient({
 	splitCustomIdOn: '_',
 	useGuildCommands: false
 });
-client.login(process.env.TOKEN)
-	.catch((err: unknown) => {
-		if (err instanceof DiscordjsError) {
-			if (err.code === 'TokenMissing') console.warn(`\n[Error] ${err.name}: ${err.message} Did you create a .env file?\n`);
-			else if (err.code === 'TokenInvalid') console.warn(`\n[Error] ${err.name}: ${err.message} Check your .env file\n`);
-			else throw err;
+client.login(process.env.TOKEN).catch((err: unknown) => {
+	if (err instanceof DiscordjsError) {
+		if (err.code === 'TokenMissing') {
+			console.warn(
+				`\n[Error] ${err.name}: ${err.message} Did you create a .env file?\n`
+			);
 		}
-		else {
-			throw err;
+		else if (err.code === 'TokenInvalid') {
+			console.warn(
+				`\n[Error] ${err.name}: ${err.message} Check your .env file\n`
+			);
 		}
-	});
+		else throw err;
+	}
+	else {
+		throw err;
+	}
+});
