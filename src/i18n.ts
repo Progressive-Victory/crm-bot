@@ -2,7 +2,7 @@ import { join } from 'path';
 import { readdirSync, lstatSync } from 'fs';
 import i18n from 'i18next';
 import Fluent from 'i18next-fluent';
-import FluentBackend from 'i18next-fluent-backend';
+// import FluentBackend from 'i18next-fluent-backend';
 import { FluentVariable } from '@fluent/bundle';
 import { LocaleString, Locale as dLocale } from 'discord.js';
 
@@ -12,7 +12,7 @@ const localesDirs = readdirSync(join(__dirname, '../locales')).filter((path) => 
 
 export default () => i18n
 	.use(Fluent)
-	.use(FluentBackend)
+	// .use(FluentBackend)
 	.init({
 		initImmediate: false,
 		fallbackLng: dLocale.EnglishUS,

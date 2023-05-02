@@ -1,4 +1,6 @@
-import {
+import 'source-map-support/register';
+
+import { 
 	DiscordjsError, GatewayIntentBits as Intents, Partials
 } from 'discord.js';
 import { config } from 'dotenv';

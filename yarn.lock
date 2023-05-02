@@ -1040,6 +1040,11 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.39.0.tgz"
   integrity sha512-kf9RB0Fg7NZfap83B3QOqOGg9QmD9yBudqQXzzOtn3i4y7ZUXe5ONeW34Gwi+TxhH4mvj72R1Zc300KUMa9Bng==
 
+"@fluent/bundle@^0.13.0":
+  version "0.13.0"
+  resolved "https://registry.yarnpkg.com/@fluent/bundle/-/bundle-0.13.0.tgz#9efe0d0cfee5de725be47013d32d1aa3bae63ea8"
+  integrity sha512-Q3XQSoeCvptsWXdu4H3pJZLp45FX8JnhQ7A9OV9w6dU+czKJnuKJkC5xLv19N0OG/NRnVFKqhcQBrx+IWAk09g==
+
 "@fluent/bundle@^0.18.0":
   version "0.18.0"
   resolved "https://registry.npmjs.org/@fluent/bundle/-/bundle-0.18.0.tgz"
@@ -3142,6 +3147,14 @@ i18next-fluent-backend@^1.0.0:
   dependencies:
     fluent_conv "^3.1.0"
 
+i18next-fluent@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/i18next-fluent/-/i18next-fluent-2.0.0.tgz#a926756f9734bb40fdd463a6d83a733e791ba87e"
+  integrity sha512-k69kvftj02YNMtls1oy5TkbsjEDUlkfXcApBIv3gCnQTTDPTNVekweIGC6V5m/yC2ce6SNqkzlPpdB24OgEEgg==
+  dependencies:
+    "@fluent/bundle" "^0.13.0"
+    fluent_conv "^3.1.0"
+
 i18next@^22.4.15:
   version "22.4.15"
   resolved "https://registry.npmjs.org/i18next/-/i18next-22.4.15.tgz"
@@ -4714,6 +4727,14 @@ source-map-support@0.5.13:
   version "0.5.13"
   resolved "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.13.tgz"
   integrity sha512-SHSKFHadjVA5oR4PPqhtAVdcBWwRYVd6g6cAXnIbRiIwc2EhPrTuKUBdSLvlEKyIP3GCf89fltvcZiP9MMFA1w==
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
+source-map-support@^0.5.21:
+  version "0.5.21"
+  resolved "https://registry.yarnpkg.com/source-map-support/-/source-map-support-0.5.21.tgz#04fe7c7f9e1ed2d662233c28cb2b35b9f63f6e4f"
+  integrity sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==
   dependencies:
     buffer-from "^1.0.0"
     source-map "^0.6.0"
