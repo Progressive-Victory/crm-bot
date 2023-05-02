@@ -15,7 +15,7 @@ function memberState(member: GuildMember) {
 }
 
 async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
-	interaction.deferReply({ ephemeral: true });
+	await interaction.deferReply({ ephemeral: true });
 	const target = interaction.options.getMember('user');
 	const stateLead = interaction.member;
 

@@ -8,7 +8,7 @@ import { Command } from '../../structures/Command';
 const states = Object.values(State);
 
 async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
-	interaction.deferReply({ ephemeral: true });
+	await interaction.deferReply({ ephemeral: true });
 	const lang = Languages[interaction.language];
 	const response = lang.Commands.Lead.Ping;
 	const errorRes = lang.Generics.Error();
@@ -26,7 +26,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 	}
 
 	// Checks to see if bot has perms to send message in channel
-	if (channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
+	if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
 		return interaction.followUp({ content: response.BotNoPerms(interaction.client.user) });
 	}
 
