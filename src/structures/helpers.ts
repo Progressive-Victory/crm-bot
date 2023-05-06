@@ -140,9 +140,9 @@ export function trackingGuildChecks(interaction: CommandInteraction | ChatInputC
 export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInputCommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
-	const channel = interaction.channel.parent ?? interaction.channel;
+	const channel = interaction.channel.isThread() ? interaction.channel.parent : interaction.channel;
 	if (!REGION_ABBREVIATION_MAP[channel.name]) {
-		return Languages[interaction.language].Permissions.WrongRegionChannel(channel, Object.keys(REGION_ABBREVIATION_MAP));
+		return Languages[interaction.language].Permissions.WrongRegionChannel(channel);
 	}
 
 	if (!interaction.member.roles.cache.some((r) => r.name === REGION_ABBREVIATION_MAP[channel.name])) {

@@ -24,11 +24,8 @@ const English: Language = {
 		BotOwners: (command) => `Only the bot owners may use the \`${command}\` command!`,
 		ServerOnly: (command) => `The command \`${command}\` can only be used in a server.`,
 		StateRegionMismatchUser: (user) => `You are not in the same state as ${user}!`,
-		StateRegionMismatchChannel: (name) => `You do not have the corresponding region role ${name} to run this command.`,
-		WrongRegionChannel: (channel, allowed) =>
-			`You are not allowed to run this command in ${channel}. However, you can from one of the following channels: ${allowed
-				.map((id) => `<#${id}>`)
-				.join(', ')}.`,
+		StateRegionMismatchChannel: (name) => `You do not have the corresponding region role **${name}** to run this command.`,
+		WrongRegionChannel: (channel) => `You are not allowed to run this command in ${channel}.`,
 		TrackingServer: (command) => `The command \`${command}\` can only be used in the tracking server.`,
 		MissingSMERole: (roles) => `You are missing one of the following roles: ${roles.map((id) => `<@&${id}>`).join(', ')}.`
 	},

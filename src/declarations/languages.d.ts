@@ -16,7 +16,7 @@ interface Language {
 		ServerOnly: (command: string) => string;
 		StateRegionMismatchUser: (user: Discord.User) => string;
 		StateRegionMismatchChannel: (name: string) => string;
-		WrongRegionChannel: (channel: Discord.Channel, allowed: string[]) => string;
+		WrongRegionChannel: (channel: Discord.Channel) => string;
 		TrackingServer: (command: string) => string;
 		MissingSMERole: (roles: string[]) => string;
 	};
