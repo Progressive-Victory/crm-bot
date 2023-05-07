@@ -1,7 +1,5 @@
 import {
-	AutocompleteInteraction,
-	BaseInteraction,
-	ChatInputCommandInteraction
+	AutocompleteInteraction, BaseInteraction, ChatInputCommandInteraction 
 } from 'discord.js';
 
 export default () => {
@@ -23,11 +21,7 @@ export default () => {
 		}
 	});
 
-	function getInteractionKey(
-		this:
-			| ChatInputCommandInteraction<'cached'>
-			| AutocompleteInteraction<'cached'>
-	) {
+	function getInteractionKey(this: ChatInputCommandInteraction<'cached'> | AutocompleteInteraction<'cached'>) {
 		const name = this.commandName;
 
 		const subCommand = this.options.getSubcommand(false);

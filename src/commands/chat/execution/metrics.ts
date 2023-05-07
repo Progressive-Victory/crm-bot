@@ -1,14 +1,11 @@
-import {
-	ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits 
-} from 'discord.js';
-import i18n from 'i18next';
-import { checkConnected } from '../structures/helpers';
-import Database from '../structures/Database';
-import { ChatInputCommand } from '../structures/Command';
+import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
+import { checkConnected } from '../../../structures/helpers';
+import Database from '../../../structures/Database';
+import { t } from '../../../i18n';
 
-const ns = 'meteric';
+const ns = 'metric';
 
-async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
+export async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 	await interaction.deferReply({ ephemeral: true });
 
 	const user = interaction.options.getUser('user');
@@ -16,60 +13,36 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 
 	const metrics = await Database.getMetrics(guild.id, user?.id);
 
-	const reply = new EmbedBuilder();
+	const embed = new EmbedBuilder();
 
 	if (user) {
-		const userPFP = user.avatarURL({ forceStatic: true, size: 512 });
-		reply
-			.setTitle(i18n.t('user-embed-title', { lng: interaction.locale, ns }))
+		const userPFP = user.avatarURL({ size: 512 });
+		embed
+			.setTitle(t('user-embed-title', interaction.locale, ns))
 			.setThumbnail(userPFP)
 			.setAuthor({ iconURL: userPFP, name: user.tag })
 			.setFields(
 				{
-					name: i18n.t('user-embed-vc-name', {
-						lng: interaction.locale,
-						ns
-					}),
-					value: i18n.t('user-embed-vc-value', {
-						lng: interaction.locale,
-						ns,
+					name: t('user-embed-vc-name', interaction.locale, ns),
+					value: t('user-embed-vc-value', interaction.locale, ns, {
 						joins: `${metrics?.vcJoins?.length ?? 0}`,
 						leaves: `${metrics?.vcLeaves?.length ?? 0}`
 					})
 				},
 				{
-					name: i18n.t('user-embed-messages-name', {
-						lng: interaction.locale,
-						ns
-					}),
-					value: i18n.t('user-embed-messages-value', {
-						lng: interaction.locale,
-						ns,
-						messages: `${metrics?.messages?.count ?? 0}`
-					})
+					name: t('user-embed-messages-name', interaction.locale, ns),
+					value: t('user-embed-messages-value', interaction.locale, ns, { messages: `${metrics?.messages?.count ?? 0}` })
 				},
 				{
-					name: i18n.t('user-embed-server-name', {
-						lng: interaction.locale,
-						ns
-					}),
-					value: i18n.t('user-embed-server-value', {
-						lng: interaction.locale,
-						ns,
+					name: t('user-embed-server-name', interaction.locale, ns),
+					value: t('user-embed-server-value', interaction.locale, ns, {
 						joins: `${metrics?.joins?.length ?? 0}`,
 						leaves: `${metrics?.leaves?.length ?? 0}`
 					})
 				},
 				{
-					name: i18n.t('user-embed-connected-name', {
-						lng: interaction.locale,
-						ns
-					}),
-					value: i18n.t('user-embed-connected-value', {
-						lng: interaction.locale,
-						ns,
-						connected: `${(await checkConnected(user.id, guild.id)) ? 'Yes' : 'No'}`
-					})
+					name: t('user-embed-connected-name', interaction.locale, ns),
+					value: t('user-embed-connected-value', interaction.locale, ns, { connected: `${(await checkConnected(user.id, guild.id)) ? 'Yes' : 'No'}` })
 				}
 			)
 			.setTimestamp();
@@ -104,30 +77,20 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 			}
 		}
 
-		reply
-			.setTitle(i18n.t('server-embed-title', { lng: interaction.locale, ns }))
+		embed
+			.setTitle(t('server-embed-title', interaction.locale, ns))
 			.setThumbnail(guild.iconURL({ forceStatic: true, size: 1024 }))
 			.setFields(
 				{
-					name: i18n.t('server-embed-members-count-name', {
-						lng: interaction.locale,
-						ns
-					}),
-					value: i18n.t('server-embed-members-count-value', {
-						lng: interaction.locale,
-						ns,
+					name: t('server-embed-members-count-name', interaction.locale, ns),
+					value: t('server-embed-members-count-value', interaction.locale, ns, {
 						leaves: `${metrics?.leaves?.length ?? 0}`,
 						membercount: `${guild.memberCount}`
 					})
 				},
 				{
-					name: i18n.t('server-embed-in-name', {
-						lng: interaction.locale,
-						ns
-					}),
-					value: i18n.t('server-embed-user-value', {
-						lng: interaction.locale,
-						ns,
+					name: t('server-embed-in-name', interaction.locale, ns),
+					value: t('server-embed-user-value', interaction.locale, ns, {
 						connected: `${usersInServerButConnected.length}`,
 						notconnected: `${usersInServerButNotConnected.length}`,
 						joins: `${metrics.vcJoins.filter((row) => memberIDs.includes(row.userID)).length}`,
@@ -136,13 +99,8 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 					})
 				},
 				{
-					name: i18n.t('server-embed-out-name', {
-						lng: interaction.locale,
-						ns
-					}),
-					value: i18n.t('server-embed-user-value', {
-						lng: interaction.locale,
-						ns,
+					name: t('server-embed-out-name', interaction.locale, ns),
+					value: t('server-embed-user-value', interaction.locale, ns, {
 						connected: `${usersInServerButConnected.length}`,
 						notconnected: `${usersInServerButNotConnected.length}`,
 						joins: `${metrics.vcJoins.filter((row) => !memberIDs.includes(row.userID)).length}`,
@@ -153,15 +111,5 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 			);
 	}
 
-	return interaction.editReply({ embeds: [reply] });
+	return interaction.editReply({ embeds: [embed] });
 }
-
-export default new ChatInputCommand()
-	.setBuilder((command) =>
-		command
-			.setName('metrics')
-			.setDescription('Shows general metrics for the server or a specific user.')
-			.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-			.addUserOption((option) => option.setName('user').setDescription('The user to get metrics for.').setRequired(false))
-	)
-	.setExecute(execute);

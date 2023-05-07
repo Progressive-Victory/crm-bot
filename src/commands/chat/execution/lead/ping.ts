@@ -1,17 +1,16 @@
 import {
 	ChatInputCommandInteraction, ChannelType, MessageCreateOptions, PermissionFlagsBits 
 } from 'discord.js';
-import Languages from '../../assets/languages';
-import { State } from '../../declarations/states';
-import Command from '../../structures/Command';
+import Logger from '../../../../structures/Logger';
+import { State } from '../../../../declarations/states';
+import { t } from '../../../../i18n';
+import { ns } from './index';
 
 const states = Object.values(State);
 
-async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
+export default async function ping(interaction: ChatInputCommandInteraction<'cached'>) {
 	await interaction.deferReply({ ephemeral: true });
-	const lang = Languages[interaction.language];
-	const response = lang.Commands.Lead.Ping;
-	const errorRes = lang.Generics.Error();
+	const errorRes = t('error', interaction.locale, ns);
 	let channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
 
 	// Check to see if channel is defined
@@ -19,7 +18,7 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 		// Checks to see if channel the command was sent from is a type GuildText
 		if (interaction.channel.type !== ChannelType.GuildText) {
 			// If the check fails an error state occurs
-			return interaction.followUp({ content: response.CantSend() });
+			return interaction.followUp({ content: t('ping-cant-send ', interaction.locale, ns, { channel: channel.toString() }) });
 		}
 		// Else channel is set to where the command was used
 		channel = interaction.channel;
@@ -27,10 +26,9 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 
 	// Checks to see if bot has perms to send message in channel
 	if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
-		return interaction.followUp({ content: response.BotNoPerms(interaction.client.user) });
+		return interaction.followUp({ content: t('ping-not-no-perms', interaction.locale, ns, { user: interaction.client.user.toString() }) });
 	}
 
-	// Adds Message if the message peramitor was entered
 	const stateRole = interaction.member.roles.valueOf().find((role) => states.includes(role.name as State));
 	const pingMessage: MessageCreateOptions = { content: stateRole.toString() };
 	const message = interaction.options.getString('message');
@@ -41,15 +39,9 @@ async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 	// Sends message to channel
 	return channel
 		.send(pingMessage)
-		.then((sentMessage) => interaction.followUp({ content: response.Success(sentMessage) }))
+		.then((sentMessage) => interaction.followUp({ content: t('ping-success', interaction.locale, ns, { url: sentMessage.url }) }))
 		.catch((err) => {
-			console.error(err);
+			Logger.error(err);
 			return interaction.followUp({ content: errorRes });
 		});
 }
-
-export default new Command({
-	name: 'lead',
-	execute,
-	perms: { client: ['MentionEveryone'] }
-});

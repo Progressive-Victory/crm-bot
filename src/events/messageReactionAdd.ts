@@ -1,19 +1,11 @@
 import {
-	Events,
-	GuildMember,
-	Message,
-	MessageReaction,
-	User
+	Events, GuildMember, Message, MessageReaction, User 
 } from 'discord.js';
-import Event from '../structures/Event';
+import { Event } from '../Client';
 import Logger from '../structures/Logger';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
 
-function proposalsChannelReaction(
-	reaction: MessageReaction,
-	member: GuildMember,
-	message: Message<true>
-) {
+function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember, message: Message<true>) {
 	const mentionedRoles = message.mentions.roles;
 	let hasRole = false;
 
@@ -66,9 +58,7 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 
 		setTimeout(async () => {
 			await reaction.message.fetch();
-			if (
-				reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)
-			) {
+			if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) {
 				return;
 			}
 			try {
@@ -84,10 +74,7 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 				Logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
 			}
 			catch (e) {
-				Logger.error(
-					`Failed to connect ${otherUser.tag} (${otherUser.id})`,
-					e
-				);
+				Logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
 			}
 		}, 1000 * 60 * 60 * 24);
 	}
@@ -96,6 +83,4 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 	}
 }
 
-export default new Event()
-	.setName(Events.MessageReactionAdd)
-	.setExecute(onMessageReactionAdd);
+export default new Event().setName(Events.MessageReactionAdd).setExecute(onMessageReactionAdd);

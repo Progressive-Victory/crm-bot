@@ -31,9 +31,7 @@ const Logger = wrap(
 		hooks: {
 			logMethod(inputArgs, method, level) {
 				if (level === 50 && (inputArgs[0] as any) instanceof Error) {
-					return method.apply(this, [
-						(inputArgs[0] as any as Error).stack
-					]);
+					return method.apply(this, [(inputArgs[0] as any as Error).stack]);
 				}
 
 				// Handles additional arguments being passed in

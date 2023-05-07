@@ -29,10 +29,7 @@ const ns = 'lead';
  * @returns interaction response
  */
 async function renameVc(interaction: ChatInputCommandInteraction<'cached'>) {
-	const channel = interaction.options.getChannel(
-		'channel',
-		true
-	) as VoiceChannel;
+	const channel = interaction.options.getChannel('channel', true) as VoiceChannel;
 
 	let reply: string;
 	const allowedChannels: Snowflake[] = VCChannelIDs;
@@ -73,9 +70,7 @@ async function renameVc(interaction: ChatInputCommandInteraction<'cached'>) {
  */
 async function autocomplete(interaction: AutocompleteInteraction<'cached'>) {
 	const member = interaction.member as GuildMember;
-	const stateRole = member.roles.cache.find((role) =>
-		states.includes(role.name as State)
-	);
+	const stateRole = member.roles.cache.find((role) => states.includes(role.name as State));
 	const stateChannel = REGION_ABBREVIATION_MAP[interaction.channel.name];
 	const focusedOption = interaction.options.getFocused(true);
 	const meeting = i18n.t('metting', {
@@ -86,18 +81,12 @@ async function autocomplete(interaction: AutocompleteInteraction<'cached'>) {
 	if (stateChannel) choices.push(`${stateChannel} ${meeting}`);
 	choices.push(`${stateRole.name} ${meeting}`);
 
-	const filtered = choices.filter((choice) =>
-		choice.toLowerCase().startsWith(focusedOption.value.toLowerCase())
-	);
-	return interaction.respond(
-		filtered.map((choice) => ({ name: choice, value: choice })).slice(0, 14)
-	);
+	const filtered = choices.filter((choice) => choice.toLowerCase().startsWith(focusedOption.value.toLowerCase()));
+	return interaction.respond(filtered.map((choice) => ({ name: choice, value: choice })).slice(0, 14));
 }
 
 function memberState(member: GuildMember) {
-	return member.roles.cache.filter((role) =>
-		Object.values(State).includes(role.name as State)
-	);
+	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
 }
 
 /**
@@ -113,9 +102,7 @@ async function role(interaction: ChatInputCommandInteraction<'cached'>) {
 	const stateLead = interaction.member;
 
 	// if the state lead and the target member do not have thet same state role
-	if (
-		!memberState(stateLead).some((role) => memberState(target).has(role.id))
-	) {
+	if (!memberState(stateLead).some((role) => memberState(target).has(role.id))) {
 		return interaction.reply({
 			ephemeral: true,
 			content: i18n.t('role-region-mismatch', {
@@ -184,49 +171,29 @@ export default new ChatInputCommand()
 	.setBuilder((builder) =>
 		builder
 			.setName('lead')
-			.setDescription(
-				'Commands for leads to help manage their respective regions'
-			)
+			.setDescription('Commands for leads to help manage their respective regions')
 			.setNameLocalizations(localize('command-name', { ns }))
-			.setDescriptionLocalizations(
-				localize('command-description', { ns })
-			)
-			.setDefaultMemberPermissions(
-				PermissionFlagsBits.ManageRoles |
-					PermissionFlagsBits.ManageChannels
-			)
+			.setDescriptionLocalizations(localize('command-description', { ns }))
+			.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels)
 			.setDMPermission(false)
 			.addSubcommandGroup((subcommandGroup) =>
 				subcommandGroup
 					.setName('region')
 					.setDescription('Region Lead utilities')
 					.setNameLocalizations(localize('region-name', { ns }))
-					.setDescriptionLocalizations(
-						localize('region-description', { ns })
-					)
+					.setDescriptionLocalizations(localize('region-description', { ns }))
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName('role')
 							.setDescription('Toggle Regional Lead role')
-							.setNameLocalizations(
-								localize('region-role-name', { ns })
-							)
-							.setDescriptionLocalizations(
-								localize('region-role-description', { ns })
-							)
+							.setNameLocalizations(localize('region-role-name', { ns }))
+							.setDescriptionLocalizations(localize('region-role-description', { ns }))
 							.addUserOption((option) =>
 								option
 									.setName('user')
 									.setDescription('Target user')
-									.setNameLocalizations(
-										localize('region-role-user-name', {ns})
-									)
-									.setDescriptionLocalizations(
-										localize(
-											'region-role-user-description',
-											{ ns }
-										)
-									)
+									.setNameLocalizations(localize('region-role-user-name', { ns }))
+									.setDescriptionLocalizations(localize('region-role-user-description', { ns }))
 									.setRequired(true)
 							)
 					)
@@ -236,47 +203,28 @@ export default new ChatInputCommand()
 					.setName('vc')
 					.setDescription('Manage voice channels')
 					.setNameLocalizations(localize('vc-name', { ns }))
-					.setDescriptionLocalizations(
-						localize('vc-description', { ns })
-					)
+					.setDescriptionLocalizations(localize('vc-description', { ns }))
 					.addSubcommand((subcommand) =>
 						subcommand
 							.setName('rename')
 							.setDescription('Rename organizing voice channels')
-							.setNameLocalizations(
-								localize('vc-rename-name', { ns })
-							)
-							.setDescriptionLocalizations(
-								localize('vc-rename-description', { ns })
-							)
+							.setNameLocalizations(localize('vc-rename-name', { ns }))
+							.setDescriptionLocalizations(localize('vc-rename-description', { ns }))
 							.addChannelOption((options) =>
 								options
 									.setName('channel')
 									.setDescription('The channel to rename')
-									.setNameLocalizations(
-										localize('vc-rename-channel-name', {ns})
-									)
-									.setDescriptionLocalizations(
-										localize(
-											'vc-rename-channel-description',
-											{ ns }
-										)
-									)
+									.setNameLocalizations(localize('vc-rename-channel-name', { ns }))
+									.setDescriptionLocalizations(localize('vc-rename-channel-description', { ns }))
 									.setRequired(true)
 									.addChannelTypes(ChannelType.GuildVoice)
 							)
 							.addStringOption((option) =>
 								option
 									.setName('name')
-									.setDescription(
-										'Name to set the channel to'
-									)
-									.setNameLocalizations(
-										localize('vc-rename-name-name', { ns })
-									)
-									.setDescriptionLocalizations(
-										localize('vc-rename-name-description', {ns})
-									)
+									.setDescription('Name to set the channel to')
+									.setNameLocalizations(localize('vc-rename-name-name', { ns }))
+									.setDescriptionLocalizations(localize('vc-rename-name-description', { ns }))
 									.setRequired(true)
 									.setAutocomplete(true)
 									.setMinLength(5)

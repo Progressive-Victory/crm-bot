@@ -2,33 +2,49 @@ import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 
 import {
-	ChatInputCommandInteraction,
-	CommandInteraction,
-	GuildMember,
-	PermissionFlagsBits,
-	Snowflake,
-	User,
-	VoiceBasedChannel
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
-import Languages from '../assets/languages';
 import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
 import Logger from './Logger';
+import {} from '../Client';
+import { State } from '../declarations/states';
+import { t } from '../i18n';
 
 config();
 
+// TypeScript or JavaScript environment (thanks to https://github.com/stijnvdkolk)
+// eslint-disable-next-line import/no-mutable-exports
+export let tsNodeRun = false;
+try {
+	// @ts-ignore
+	if (process[Symbol.for('ts-node.register.instance')]) {
+		tsNodeRun = true;
+	}
+}
+catch (e) {
+	/* empty */
+}
+
+export async function reRequire(path: string) {
+	delete require.cache[require.resolve(path)];
+	const result = await require(path);
+	return result;
+}
+
 export function isConnectEmoji(str: string) {
-	return [
-		process.env.VERIFY_EMOJI,
-		process.env.CONNECT_EMOJI,
-		process.env.LINKED_EMOJI,
-		process.env.REFUSED_EMOJI
-	].includes(str);
+	return [process.env.VERIFY_EMOJI, process.env.CONNECT_EMOJI, process.env.LINKED_EMOJI, process.env.REFUSED_EMOJI].includes(str);
 }
 
 export function isOwner(user: User | GuildMember): boolean {
 	return process.env.OWNERS?.split(',').includes(user.id);
+}
+
+export const states = Object.values(State);
+
+export function memberState(member: GuildMember) {
+	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
 }
 
 export function isStaff(member: GuildMember): boolean {
@@ -62,12 +78,7 @@ export async function readFiles(dir): Promise<string[]> {
 	return Array.prototype.concat(...files);
 }
 
-// TODO: This should be on a different bot eventually
-export async function onJoin(
-	discordUserID: Snowflake,
-	discordHandle: string,
-	discordGuildID: Snowflake
-) {
+export async function onJoin(discordUserID: Snowflake, discordHandle: string, discordGuildID: Snowflake) {
 	if (discordGuildID !== process.env.TRACKING_GUILD) return;
 
 	const response = await fetch(`${process.env.API_ENDPOINT}/join`, {
@@ -84,9 +95,7 @@ export async function onJoin(
 	});
 
 	if (!response.ok) {
-		throw Error(
-			`Failed to join user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`
-		);
+		throw Error(`Failed to join user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`);
 	}
 }
 
@@ -118,21 +127,18 @@ export async function onConnect(
 	});
 
 	if (!response.ok) {
-		throw Error(
-			`Failed to ${path} user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`
-		);
+		throw Error(`Failed to ${path} user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`);
 	}
 }
 
-export function checkConnected(
-	discordUserID: Snowflake | Snowflake[],
-	discordGuildID: Snowflake
-): Promise<any> {
+export function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) {
 		return Promise.resolve(false);
 	}
 	if (typeof discordUserID === 'string') {
-		return fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, {headers: { Authorization: process.env.API_AUTH }}).then((r) => (r.ok ? r.json() : null));
+		return fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } }).then((r) =>
+			r.ok ? r.json() : null
+		);
 	}
 
 	return fetch(`${process.env.API_ENDPOINT}/users`, {
@@ -145,49 +151,28 @@ export function checkConnected(
 	}).then((r) => r.json());
 }
 
-export function trackingGuildChecks(
-	interaction: CommandInteraction | ChatInputCommandInteraction
-) {
+export function trackingGuildChecks(interaction: CommandInteraction | ChatInputCommandInteraction) {
 	if (!process.env.TRACKING_GUILD) {
-		return Languages[interaction.language].Generics.MissingConfiguration(
-			'TRACKING_GUILD'
-		);
+		return t('MissingConfiguration', interaction.locale, 'comman', { name: 'TRACKING_GUILD' });
 	}
 
 	if (interaction.guild?.id !== process.env.TRACKING_GUILD) {
-		return Languages[interaction.language].Permissions.TrackingServer(
-			interaction.key
-		);
+		return t('TrackingServer', interaction.locale, 'comman', { command: interaction.commandName });
 	}
 
 	return true;
 }
 
-export function isStateLead(
-	interaction:
-		| CommandInteraction<'cached'>
-		| ChatInputCommandInteraction<'cached'>
-) {
+export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInputCommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
 	const channel = interaction.channel.parent ?? interaction.channel;
 	if (!REGION_ABBREVIATION_MAP[channel.name]) {
-		return Languages[interaction.language].Permissions.WrongRegionChannel(
-			channel,
-			Object.keys(REGION_ABBREVIATION_MAP)
-		);
+		return t('WrongRegionChannel', interaction.locale, 'comman', { channel: channel.toString() });
 	}
 
-	if (
-		!interaction.member.roles.cache.some(
-			(r) => r.name === REGION_ABBREVIATION_MAP[channel.name]
-		)
-	) {
-		return Languages[
-			interaction.language
-		].Permissions.StateRegionMismatchChannel(
-			REGION_ABBREVIATION_MAP[channel.name]
-		);
+	if (!interaction.member.roles.cache.some((r) => r.name === REGION_ABBREVIATION_MAP[channel.name])) {
+		return t('StateRegionMismatchChannel', interaction.locale, 'comman', { name: REGION_ABBREVIATION_MAP[channel.name] });
 	}
 
 	return true;
@@ -195,21 +180,18 @@ export function isStateLead(
 
 export function hasSMERole(interaction: CommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
-
-	if (!process.env.SME_ROLE_IDS) {
-		return Languages[interaction.language].Generics.MissingConfiguration(
-			'SME_ROLE_IDS'
-		);
+	const roleIDs = process.env.SME_ROLE_IDS;
+	if (!roleIDs) {
+		return t('MissingConfiguration', interaction.locale, 'comman', { name: 'SME_ROLE_IDS' });
 	}
 
-	if (
-		!process.env.SME_ROLE_IDS.split(',').some((id) =>
-			interaction.member.roles.cache.has(id)
-		)
-	) {
-		return Languages[interaction.language].Permissions.MissingSMERole(
-			process.env.SME_ROLE_IDS.split(',')
-		);
+	if (!roleIDs.split(',').some((id) => interaction.member.roles.cache.has(id))) {
+		return t('StateRegionMismatchChannel', interaction.locale, 'comman', {
+			roles: `${roleIDs
+				.split(',')
+				.map((id) => `<@&${id}>`)
+				.join(', ')}`
+		});
 	}
 
 	// TODO: Map roles to list of channels
@@ -220,34 +202,24 @@ export function hasSMERole(interaction: CommandInteraction<'cached'>) {
 export async function renameOrganizing(channel: VoiceBasedChannel) {
 	if (!channel.guild.members.me.permissions.has('ManageChannels')) return;
 
-	if (
-		VCChannelNames.has(channel.id) &&
-		!channel.members.size &&
-		channel.name !== VCChannelNames.get(channel.id)
-	) {
-		Logger.debug(
-			`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(
-				channel.id
-			)}`
-		);
+	if (VCChannelNames.has(channel.id) && !channel.members.size && channel.name !== VCChannelNames.get(channel.id)) {
+		Logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
 
-		const auditReason =
-			Languages[
-				channel.guild.preferredLanguage
-			].Commands.Lead.VC.Rename.AuditLogUndo();
+		const auditReason = t('vc-rename-error', channel.guild.preferredLocale, 'lead');
 
 		await channel
 			.setName(VCChannelNames.get(channel.id), auditReason)
-			.then(() =>
-				Logger.debug(
-					`Successfully renamed ${channel.name} (${channel.id})`
-				)
-			)
-			.catch((err) =>
-				Logger.error(
-					`Error renaming ${channel.name} (${channel.id})`,
-					err
-				)
-			);
+			.then(() => Logger.debug(`Successfully renamed ${channel.name} (${channel.id})`))
+			.catch((err) => Logger.error(`Error renaming ${channel.name} (${channel.id})`, err));
 	}
+}
+
+/**
+ * Returns a boolean and Types a unknown as ErrnoException if the object is an error
+ * @param error Any unknown object
+ * @returns A boolean value if the the object is a ErrnoException
+ */
+// eslint-disable-next-line no-undef
+export function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+	return error instanceof Error;
 }

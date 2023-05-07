@@ -1,4 +1,11 @@
-# temp need translation
+# en-US
+
+## command
+command-name = metrics
+command-description = Shows general metrics for the server or a specific user
+user-option-name = user
+user-option-description = The user to get metrics for
+
 ## user stats
 user-embed-title = User Metrics
 user-embed-vc-name = VC Stats

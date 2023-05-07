@@ -1,50 +1,28 @@
-import 'source-map-support/register';
-
 import { config } from 'dotenv';
-import path from 'path';
+import { join } from 'path';
 
-import './i18n.js';
-import prototypes from './structures/prototypes';
-import ExtendedClient from './structures/Client';
-import Logger from './structures/Logger';
-
-// We need to call the prototypes file before any discord.js structures get imported
-/* eslint-disable import/order */
-// @ts-ignore
 import {
-	DiscordjsError,
-	GatewayIntentBits as Intents,
-	Partials
+	GatewayIntentBits as Intents, Locale, Partials 
 } from 'discord.js';
-/* eslint-enable import/order */
+import { Client } from './Client';
+import { init } from './i18n';
 
 // Load .env file contents
 config();
-prototypes();
+
+// i18n Initialization
+init(join(__dirname, '../locales'), { fallback: Locale.EnglishUS, hasGlobal: true });
 
 // Initialization (specify intents and partials)
-const client = new ExtendedClient({
-	intents: [
-		Intents.Guilds,
-		Intents.GuildMessages,
-		Intents.GuildVoiceStates,
-		Intents.MessageContent,
-		Intents.GuildMembers,
-		Intents.GuildModeration
-	],
-	partials: [
-		Partials.Message,
-		Partials.Channel,
-		Partials.Reaction,
-		Partials.GuildMember
-	],
-	eventsPath: path.join(__dirname, 'events'),
-	commandPath: path.join(__dirname, 'commands'),
-	contextMenuPath: path.join(__dirname, 'context_menus'),
-	buttonPath: path.join(__dirname, 'interactions', 'buttons'),
-	selectMenuPath: path.join(__dirname, 'interactions', 'select_menus'),
-	modalPath: path.join(__dirname, 'interactions', 'modals'),
-	restVersion: '10',
+const client = new Client({
+	intents: [Intents.Guilds, Intents.GuildMessages, Intents.GuildVoiceStates, Intents.MessageContent, Intents.GuildMembers, Intents.GuildModeration],
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember],
+	eventPath: join(__dirname, 'events'),
+	commandPath: join(__dirname, 'commands', 'chat', 'builders'),
+	contextMenuPath: join(__dirname, 'commands', 'context_menu'),
+	buttonPath: join(__dirname, 'interactions', 'buttons'),
+	selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
+	modalPath: join(__dirname, 'interactions', 'modals'),
 	receiveMessageComponents: true,
 	receiveModals: true,
 	receiveAutocomplete: true,
@@ -54,23 +32,8 @@ const client = new ExtendedClient({
 	useGuildCommands: false
 });
 
-client.init().then(() => {
-	client.login(process.env.TOKEN).catch((err: unknown) => {
-		if (err instanceof DiscordjsError) {
-			if (err.code === 'TokenMissing') {
-				Logger.warn(
-					`${err.name}: ${err.message} Did you create a .env file?\n`
-				);
-			}
-			else if (err.code === 'TokenInvalid') {
-				Logger.warn(
-					`${err.name}: ${err.message} Check your .env file\n`
-				);
-			}
-			else throw err;
-		}
-		else {
-			throw err;
-		}
-	});
+client.login(process.env.TOKEN).then(() => {
+	if (!process.argv.includes('--no-deployment')) {
+		client.deploy();
+	}
 });

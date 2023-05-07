@@ -1,14 +1,10 @@
-import { Interaction as DiscordInteraction } from 'discord.js';
+import { Interaction as DiscordInteraction, PermissionFlags } from 'discord.js';
+import { Mutable } from './types';
 
-type Mutable<T> = { -readonly [P in keyof T]: T[P] };
-
-export interface InteractionOptions {
-    name: string,
-    execute: (interaction: DiscordInteraction) => Promise<void>;
-}
-
-export class Interaction<E extends DiscordInteraction> implements InteractionOptions {
+export class Interaction<E extends DiscordInteraction> {
 	readonly name: string;
+
+	readonly permission: PermissionFlags;
 
 	public execute: (interaction: E) => Promise<void>;
 
@@ -23,7 +19,7 @@ export class Interaction<E extends DiscordInteraction> implements InteractionOpt
 		return this;
 	}
 
-	public setExecute(execute:((interaction: E) => Promise<void>)) {
+	public setExecute(execute: (interaction: E) => Promise<void>) {
 		this.execute = execute;
 		return this;
 	}

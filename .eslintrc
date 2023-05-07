@@ -11,12 +11,7 @@
 		"es2020": true,
 		"browser": true
 	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended",
-		"airbnb-base",
-		"prettier"
-	],
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "airbnb-base", "prettier"],
 	"rules": {
 		"indent": ["error", "tab"],
 		"no-tabs": "off",
@@ -32,7 +27,7 @@
 			}
 		],
 		"no-param-reassign": 0,
-		"no-console": "error",
+		"no-console": "warn",
 		"no-await-in-loop": "off",
 		"max-classes-per-file": "off",
 		"no-underscore-dangle": "off",
@@ -89,6 +84,7 @@
 					"multiline": true
 				}
 			}
-		]
+		],
+		"object-curly-spacing": ["error", "always"]
 	}
 }
