@@ -8,7 +8,9 @@
 	},
 	"license": "MIT",
 	"private": true,
+	"main": "./dist/index.js",
 	"scripts": {
+		"run": "node .",
 		"build": "rimraf dist && swc ./src --out-dir dist",
 		"prestart": "yarn build",
 		"start": "yarn run run",

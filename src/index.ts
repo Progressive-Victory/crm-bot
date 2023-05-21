@@ -25,9 +25,20 @@ const client = new Client({
 	splitCustomIDOn: '_',
 	useGuildCommands: false
 });
-
-client.login(process.env.TOKEN).then(() => {
-	if (!process.argv.includes('--no-deployment')) {
-		client.deploy();
-	}
-});
+client
+	.init({
+		eventPath: join(__dirname, 'events'),
+		// buttonPath: join(__dirname, 'interactions', 'buttons'),
+		// selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
+		// modalPath: join(__dirname, 'interactions', 'modals')
+		commandPath: join(__dirname, 'commands', 'chat', 'builders'),
+		contextMenuPath: join(__dirname, 'commands', 'context_menu')
+	})
+	.then(() => {
+		client.login(process.env.TOKEN).then(async () => {
+			// Skip if no-deployment flag is set, else deploys commands
+			if (!process.argv.includes('--no-deployment')) {
+				await client.deploy();
+			}
+		});
+	});
