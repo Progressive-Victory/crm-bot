@@ -27,7 +27,7 @@
 			}
 		],
 		"no-param-reassign": 0,
-		"no-console": "warn",
+		"no-console": "error",
 		"no-await-in-loop": "off",
 		"max-classes-per-file": "off",
 		"no-underscore-dangle": "off",

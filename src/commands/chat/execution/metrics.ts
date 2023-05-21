@@ -15,34 +15,78 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 
 	const embed = new EmbedBuilder();
 
+	const { locale } = interaction;
+
 	if (user) {
 		const userPFP = user.avatarURL({ size: 512 });
 		embed
-			.setTitle(t('user-embed-title', interaction.locale, ns))
+			.setTitle(
+				t({
+					key: 'user-embed-title',
+					locale,
+					ns
+				})
+			)
 			.setThumbnail(userPFP)
 			.setAuthor({ iconURL: userPFP, name: user.tag })
 			.setFields(
 				{
-					name: t('user-embed-vc-name', interaction.locale, ns),
-					value: t('user-embed-vc-value', interaction.locale, ns, {
-						joins: `${metrics?.vcJoins?.length ?? 0}`,
-						leaves: `${metrics?.vcLeaves?.length ?? 0}`
+					name: t({
+						key: 'user-embed-vc-name',
+						locale,
+						ns
+					}),
+					value: t({
+						key: 'user-embed-vc-value',
+						locale,
+						ns,
+						args: {
+							joins: `${metrics?.vcJoins?.length ?? 0}`,
+							leaves: `${metrics?.vcLeaves?.length ?? 0}`
+						}
 					})
 				},
 				{
-					name: t('user-embed-messages-name', interaction.locale, ns),
-					value: t('user-embed-messages-value', interaction.locale, ns, { messages: `${metrics?.messages?.count ?? 0}` })
-				},
-				{
-					name: t('user-embed-server-name', interaction.locale, ns),
-					value: t('user-embed-server-value', interaction.locale, ns, {
-						joins: `${metrics?.joins?.length ?? 0}`,
-						leaves: `${metrics?.leaves?.length ?? 0}`
+					name: t({
+						key: 'user-embed-messages-name',
+						locale,
+						ns
+					}),
+					value: t({
+						key: 'user-embed-messages-value',
+						locale,
+						ns,
+						args: { messages: `${metrics?.messages?.count ?? 0}` }
 					})
 				},
 				{
-					name: t('user-embed-connected-name', interaction.locale, ns),
-					value: t('user-embed-connected-value', interaction.locale, ns, { connected: `${(await checkConnected(user.id, guild.id)) ? 'Yes' : 'No'}` })
+					name: t({
+						key: 'user-embed-server-name',
+						locale,
+						ns
+					}),
+					value: t({
+						key: 'user-embed-server-value',
+						locale,
+						ns,
+						args: {
+							joins: `${metrics?.joins?.length ?? 0}`,
+							leaves: `${metrics?.leaves?.length ?? 0}`
+						}
+					})
+				},
+				{
+					name: t({
+						key: 'user-embed-connected-name',
+						locale,
+						ns
+					}),
+					value: t({
+						key: 'user-embed-connected-value',
+						locale,
+						ns,
+						args: { connected: `${(await checkConnected(user.id, guild.id)) ? 'Yes' : 'No'}` }
+					})
 				}
 			)
 			.setTimestamp();
@@ -78,34 +122,67 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 		}
 
 		embed
-			.setTitle(t('server-embed-title', interaction.locale, ns))
+			.setTitle(
+				t({
+					key: 'server-embed-title',
+					locale,
+					ns
+				})
+			)
 			.setThumbnail(guild.iconURL({ forceStatic: true, size: 1024 }))
 			.setFields(
 				{
-					name: t('server-embed-members-count-name', interaction.locale, ns),
-					value: t('server-embed-members-count-value', interaction.locale, ns, {
-						leaves: `${metrics?.leaves?.length ?? 0}`,
-						membercount: `${guild.memberCount}`
+					name: t({
+						key: 'server-embed-members-count-name',
+						locale,
+						ns
+					}),
+					value: t({
+						key: 'server-embed-members-count-value',
+						locale,
+						ns,
+						args: {
+							leaves: `${metrics?.leaves?.length ?? 0}`,
+							membercount: `${guild.memberCount}`
+						}
 					})
 				},
 				{
-					name: t('server-embed-in-name', interaction.locale, ns),
-					value: t('server-embed-user-value', interaction.locale, ns, {
-						connected: `${usersInServerButConnected.length}`,
-						notconnected: `${usersInServerButNotConnected.length}`,
-						joins: `${metrics.vcJoins.filter((row) => memberIDs.includes(row.userID)).length}`,
-						leaves: `${metrics.vcLeaves.filter((row) => memberIDs.includes(row.userID)).length}`,
-						messages: `${metrics.messages.filter((row) => memberIDs.includes(row.userID)).length}`
+					name: t({
+						key: 'server-embed-in-name',
+						locale,
+						ns
+					}),
+					value: t({
+						key: 'server-embed-user-value',
+						locale,
+						ns,
+						args: {
+							connected: `${usersInServerButConnected.length}`,
+							notconnected: `${usersInServerButNotConnected.length}`,
+							joins: `${metrics.vcJoins.filter((row) => memberIDs.includes(row.userID)).length}`,
+							leaves: `${metrics.vcLeaves.filter((row) => memberIDs.includes(row.userID)).length}`,
+							messages: `${metrics.messages.filter((row) => memberIDs.includes(row.userID)).length}`
+						}
 					})
 				},
 				{
-					name: t('server-embed-out-name', interaction.locale, ns),
-					value: t('server-embed-user-value', interaction.locale, ns, {
-						connected: `${usersInServerButConnected.length}`,
-						notconnected: `${usersInServerButNotConnected.length}`,
-						joins: `${metrics.vcJoins.filter((row) => !memberIDs.includes(row.userID)).length}`,
-						leaves: `${metrics.vcLeaves.filter((row) => !memberIDs.includes(row.userID)).length}`,
-						messages: `${metrics.messages.filter((row) => !memberIDs.includes(row.userID)).length}`
+					name: t({
+						key: 'server-embed-out-name',
+						locale,
+						ns
+					}),
+					value: t({
+						key: 'server-embed-user-value',
+						locale,
+						ns,
+						args: {
+							connected: `${usersInServerButConnected.length}`,
+							notconnected: `${usersInServerButNotConnected.length}`,
+							joins: `${metrics.vcJoins.filter((row) => !memberIDs.includes(row.userID)).length}`,
+							leaves: `${metrics.vcLeaves.filter((row) => !memberIDs.includes(row.userID)).length}`,
+							messages: `${metrics.messages.filter((row) => !memberIDs.includes(row.userID)).length}`
+						}
 					})
 				}
 			);

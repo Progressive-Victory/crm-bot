@@ -4,5 +4,5 @@ export { ChatInputCommand, ContextMenuCommand } from './Command';
 export type { ReturnableInteraction, ChatInputCommandBuilders, Command } from './Command';
 export { Event } from './Event';
 export { Interaction } from './Interaction';
-export { timeFormate } from './time';
-export type { TimeCode } from './time';
+export { TimeFormat, ExtraColor } from './types';
+export type { TimeCode } from './types';

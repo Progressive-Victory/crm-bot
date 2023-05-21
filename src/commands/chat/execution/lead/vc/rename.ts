@@ -18,23 +18,46 @@ export default async function rename(interaction: ChatInputCommandInteraction<'c
 	let content: string;
 	const allowedChannels: Snowflake[] = VCChannelIDs;
 	const name = interaction.options.getString('name', true);
+	const { locale } = interaction;
 
 	if (!allowedChannels.includes(channel.id)) {
-		content = t('vc-rename-wrong-channel', interaction.locale, ns, {
-			channel: channel.toString(),
-			channels: `${allowedChannels.map((id) => `<#${id}>`).join(', ')}`
+		content = t({
+			key: 'vc-rename-wrong-channel',
+			locale,
+			ns,
+			args: {
+				channel: channel.toString(),
+				channels: `${allowedChannels.map((id) => `<#${id}>`).join(', ')}`
+			}
 		});
 	}
 	else {
-		const reason = t('vc-rename-Audit-Log-Rename', interaction.locale, ns, {
-			name: channel.name,
-			tag: interaction.user.tag
+		const reason = t({
+			key: 'vc-rename-Audit-Log-Rename',
+			locale,
+			ns,
+			args: {
+				name: channel.name,
+				tag: interaction.user.tag
+			}
 		});
 		await channel.setName(name, reason).catch((err) => {
 			Logger.error(err, ' could not rename channel');
-			return interaction.followUp({ content: t('vc-rename-error', interaction.locale, ns, { channel: channel.toString() }) });
+			return interaction.followUp({
+				content: t({
+					key: 'vc-rename-error',
+					locale,
+					ns,
+					args: { channel: channel.toString() }
+				})
+			});
 		});
-		content = t('vc-rename-success', interaction.locale, ns, { channel: channel.toString() });
+		content = t({
+			key: 'vc-rename-success',
+			locale,
+			ns,
+			args: { channel: channel.toString() }
+		});
 	}
 
 	return interaction.followUp({ content });

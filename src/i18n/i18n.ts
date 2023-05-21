@@ -8,9 +8,18 @@ import { readdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 const locales = Object.values(Locale);
+
 export interface i18nOptions {
 	hasGlobal?: boolean;
 	fallback: Locale;
+}
+
+export interface tOptions {
+	key: string;
+	ns?: string;
+	ons?: string;
+	locale?: Locale | LocaleString;
+	args?: Record<string, FluentVariable>;
 }
 
 export class i18n {
@@ -42,30 +51,87 @@ export class i18n {
 			});
 	}
 
-	public t(key: string, locale: Locale | LocaleString, ns: string, args?: Record<string, FluentVariable>) {
+	public t(options: tOptions) {
+		const {
+			key, ons, args 
+		} = options;
+		const ns = options.ns === undefined ? 'comman' : options.ns;
+		const locale = options.locale === undefined ? this.fallback : options.locale;
+
+		// check locle exsits
 		if (!this.lang.has(locale)) {
-			if (locale !== this.fallback) return this.t(key, this.fallback, ns, args);
-			return `{{${locale}}}`;
+			if (locale === this.fallback) {
+				throw Error(`Fallback locale [${locale}] Not present`);
+			}
+			return this.t({
+				key,
+				ns,
+				locale: this.fallback,
+				args
+			});
 		}
+
 		const local = this.lang.get(locale);
+		// Checks id namespace is present
 		if (!local.has(ns)) {
-			if (ns !== 'comman') return this.t(key, locale, 'comman', args);
-			return `{{${ns}}}`;
+			if (locale === this.fallback && ns === 'comman') {
+				throw Error('comman.ftl not found in fallback locale');
+			}
+			else if (ns === 'comman') {
+				return this.t({
+					key,
+					ns: ons,
+					locale: this.fallback,
+					args
+				});
+			}
+			return this.t({
+				key,
+				ns: 'comman',
+				ons: ns,
+				locale,
+				args
+			});
 		}
+
 		const bundle = local.get(ns);
 		const msg = bundle.getMessage(key);
+
+		// check if key value is present
 		if (!msg || !msg.value) {
-			if (ns !== 'comman') return this.t(key, locale, 'comman', args);
-			if (locale !== this.fallback) return this.t(key, this.fallback, ns, args);
-			console.log(`[warning] i18n - Could not resolve key: ${key}`);
-			return `{{${key}}}`;
+			if (ns === 'comman' && locale === this.fallback) {
+				throw Error(`${key} not found in comman.ftl in fallback locale`);
+			}
+			else if (ns === 'comman') {
+				return this.t({
+					key,
+					ns: ons,
+					locale: this.fallback,
+					args
+				});
+			}
+			else if (locale === this.fallback) {
+				return this.t({
+					key,
+					ns: 'comman',
+					locale,
+					args
+				});
+			}
+			return this.t({
+				key,
+				ns: 'comman',
+				ons: ns,
+				locale,
+				args
+			});
 		}
+
 		const errors: Error[] = [];
 		const res = bundle.formatPattern(msg.value, args, errors);
+
 		if (errors.length) {
-			console.warn(`[Error] i18n - Errors with ${key}`);
-			console.log(args);
-			console.error(errors);
+			throw Error(`i18n - Errors with ${key}`, { cause: errors });
 		}
 
 		return res;

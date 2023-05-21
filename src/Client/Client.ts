@@ -27,11 +27,13 @@ import { Interaction } from './Interaction';
 
 import { Mutable } from './types';
 import { onInteractionCreate } from './interactionCreate';
+import Logger from '../structures/Logger';
 
 // TypeScript or JavaScript environment (thanks to https://github.com/stijnvdkolk)
 // eslint-disable-next-line import/no-mutable-exports
 export let tsNodeRun = false;
 try {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	if (process[Symbol.for('ts-node.register.instance')]) {
 		tsNodeRun = true;
@@ -92,7 +94,7 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 	}
 	catch (error) {
 		if (isErrnoException(error) && error.code === 'ENOENT' && error.syscall === 'scandir') {
-			console.warn(`[Warning] Directory not found at ${error.path}`);
+			Logger.warn(`[Warning] Directory not found at ${error.path}`);
 		}
 		else {
 			throw error;
@@ -102,12 +104,6 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 }
 
 export interface ExtendedClientOptions extends ClientOptions {
-	commandPath?: string;
-	contextMenuPath?: string;
-	buttonPath?: string;
-	selectMenuPath?: string;
-	modalPath?: string;
-	eventPath: string;
 	receiveMessageComponents?: boolean;
 	receiveModals?: boolean;
 	receiveAutocomplete?: boolean;
@@ -115,6 +111,15 @@ export interface ExtendedClientOptions extends ClientOptions {
 	splitCustomID?: boolean;
 	splitCustomIDOn?: string;
 	useGuildCommands?: boolean;
+}
+
+export interface initOptions {
+	commandPath?: string;
+	contextMenuPath?: string;
+	buttonPath?: string;
+	selectMenuPath?: string;
+	modalPath?: string;
+	eventPath: string;
 }
 
 /**
@@ -173,13 +178,25 @@ export class ExtendedClient extends Client {
 	 */
 	readonly replyOnError: boolean;
 
+	/**
+	 * Whether the bot should split interactions' custom ids (Recommended `true`)
+	 */
 	readonly splitCustomID: boolean;
 
+	/**
+	 * The sting that is used to split the custom id
+	 */
 	readonly splitCustomIDOn: string;
 
+	/**
+	 * Should bot push guild specific commands at start up
+	 */
 	readonly useGuildCommands: boolean;
 
-	private readonly extendedOptions: ExtendedClientOptions;
+	/**
+	 * Checks if the init function has run
+	 */
+	private hasInitRun = false;
 
 	/**
 	 *
@@ -193,22 +210,8 @@ export class ExtendedClient extends Client {
 
 		// Paths
 		const {
-			receiveMessageComponents,
-			receiveModals,
-			receiveAutocomplete,
-			replyOnError,
-			splitCustomID,
-			splitCustomIDOn,
-			useGuildCommands,
-			eventPath,
-			selectMenuPath,
-			buttonPath,
-			modalPath,
-			commandPath,
-			contextMenuPath
+			receiveMessageComponents, receiveModals, receiveAutocomplete, replyOnError, splitCustomID, splitCustomIDOn, useGuildCommands 
 		} = options;
-
-		this.extendedOptions = options;
 
 		// MICS configuration
 		this.receiveMessageComponents = receiveMessageComponents === undefined ? false : receiveMessageComponents;
@@ -221,15 +224,20 @@ export class ExtendedClient extends Client {
 
 		this.on(Events.InteractionCreate, onInteractionCreate);
 		this.events.set(Events.InteractionCreate, new Event({ name: Events.InteractionCreate, execute: onInteractionCreate }));
+	}
 
-		Promise.all([
-			this.loadEvents(eventPath),
-			this.loadCommands(commandPath),
-			this.loadContextMenus(contextMenuPath),
-			this.loadButtons(buttonPath),
-			this.loadSelectMenus(selectMenuPath),
-			this.loadModals(modalPath)
-		]);
+	public async init(options: initOptions) {
+		await Promise.all([
+			this.loadEvents(options.eventPath),
+			this.loadCommands(options.commandPath),
+			this.loadContextMenus(options.contextMenuPath),
+			this.loadButtons(options.buttonPath),
+			this.loadSelectMenus(options.selectMenuPath),
+			this.loadModals(options.modalPath)
+		]).then(() => {
+			this.hasInitRun = true;
+		});
+		return this;
 	}
 
 	private async loadEvents(eventPath: string) {
@@ -249,7 +257,7 @@ export class ExtendedClient extends Client {
 		}
 
 		const numberOfEvents = this.events.size;
-		console.log(`[INFO] Loaded ${this.events.size} events.`);
+		Logger.info(`[INFO] Loaded ${this.events.size} events.`);
 		return numberOfEvents;
 	}
 
@@ -309,7 +317,7 @@ export class ExtendedClient extends Client {
 				.put(Routes.applicationCommands(this.user.id), { body: globalDeploy })
 				.catch(console.error)) as ApplicationCommand[];
 
-			console.log(`[INFO] Deployed ${pushedCommands.length} global command(s)`);
+			Logger.info(`[INFO] Deployed ${pushedCommands.length} global command(s)`);
 		}
 		else if (this.useGuildCommands) {
 			/** TODO: Guild commands */
@@ -317,6 +325,10 @@ export class ExtendedClient extends Client {
 	}
 
 	public async login(token?: string): Promise<string> {
+		if (!this.hasInitRun) {
+			throw Error('[ERROR] client.init() has not been completed');
+		}
+
 		(this as Mutable<ExtendedClient>).rest = this.rest.setToken(token);
 		try {
 			return super.login(token);
@@ -324,14 +336,14 @@ export class ExtendedClient extends Client {
 		catch (err) {
 			if (err instanceof DiscordjsError) {
 				if (err.code === DiscordjsErrorCodes.TokenMissing) {
-					console.error(`[ERROR] ${err.name}: ${err.message} Did you create a .env file?\n`);
+					throw Error(`[ERROR] ${err.name}: ${err.message} Did you create a .env file?\n`);
 				}
 				else if (err.code === DiscordjsErrorCodes.TokenInvalid) {
-					console.error(`[ERROR] ${err.name}: ${err.message} Check your .env file\n`);
+					throw Error(`[ERROR] ${err.name}: ${err.message} Check your .env file\n`);
 				}
-				else throw err;
+				throw err;
 			}
-			return err.code;
+			throw err;
 		}
 	}
 }

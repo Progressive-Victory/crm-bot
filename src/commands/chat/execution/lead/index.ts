@@ -7,6 +7,7 @@ import { states } from '../../../../structures/helpers';
 import { t } from '../../../../i18n';
 import rename from './vc/rename';
 import ping from './ping';
+import role from './region/role';
 
 export const ns = 'lead';
 
@@ -17,8 +18,9 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 	case 'vc':
 		if (subcommand === 'rename') return rename(interaction);
 		break;
-		// case 'region':
-		// if (subcommand === 'role') return role(interaction)
+	case 'region':
+		if (subcommand === 'role') return role(interaction);
+		break;
 	default:
 		if (subcommand === 'ping') return ping(interaction);
 	}
@@ -32,10 +34,14 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
  */
 export function autoComplete(interaction: AutocompleteInteraction<'cached'>) {
 	const member = interaction.member as GuildMember;
-	const stateRole = member.roles.cache.find((role) => states.includes(role.name as State));
+	const stateRole = member.roles.cache.find((r) => states.includes(r.name as State));
 	const stateChannel = REGION_ABBREVIATION_MAP[interaction.channel.name];
 	const focusedOption = interaction.options.getFocused(true);
-	const meeting = t('meeting', interaction.guildLocale, ns);
+	const meeting = t({
+		key: 'meeting',
+		locale: interaction.guildLocale,
+		ns
+	});
 	const choices = [];
 	if (stateChannel) choices.push(`${stateChannel} ${meeting}`);
 	choices.push(`${stateRole.name} ${meeting}`);

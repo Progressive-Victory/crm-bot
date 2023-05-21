@@ -11,7 +11,7 @@ import {
 } from 'discord.js';
 import { Mutable } from './types';
 
-export type ReturnableInteraction = CommandInteraction | ContextMenuCommandInteraction | InteractionResponse | Message;
+export type ReturnableInteraction = void | CommandInteraction | ContextMenuCommandInteraction | InteractionResponse | Message;
 
 export type ChatInputCommandBuilders =
 	| SlashCommandBuilder

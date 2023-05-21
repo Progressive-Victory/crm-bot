@@ -1,26 +1,32 @@
 import {
-	ApplicationCommandType, Locale, MessageContextMenuCommandInteraction, PermissionFlagsBits 
+	ApplicationCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';
 import { isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../Client';
 import Logger from '../../structures/Logger';
-import { t } from '../../i18n';
+import { localization, t } from '../../i18n';
 
-const locale = Locale.EnglishUS;
 const ns = 'delete';
 
 export default new ContextMenuCommand()
 	.setBuilder((builder) =>
 		builder
-			.setName(t('command-name', locale, ns))
+			.setName(t({ key: 'command-name', ns }))
+			.setNameLocalizations(localization('command-name', ns))
 			.setType(ApplicationCommandType.Message)
 			.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
 			.setDMPermission(false)
 	)
 	.setExecute(async (interaction: MessageContextMenuCommandInteraction<'cached'>) => {
+		const { locale } = interaction;
 		if (!interaction.targetMessage.deletable) {
 			return interaction.reply({
-				content: t('CannotDelete', interaction.locale, ns, { url: interaction.targetMessage.url }),
+				content: t({
+					key: 'CannotDelete',
+					locale,
+					ns,
+					args: { url: interaction.targetMessage.url }
+				}),
 				ephemeral: true
 			});
 		}
@@ -34,10 +40,24 @@ export default new ContextMenuCommand()
 
 		try {
 			await interaction.targetMessage.delete();
-			return interaction.followUp(t('Success', interaction.locale, ns, { url: interaction.targetMessage.url }));
+			return interaction.followUp(
+				t({
+					key: 'Success',
+					locale,
+					ns,
+					args: { url: interaction.targetMessage.url }
+				})
+			);
 		}
 		catch (e) {
 			Logger.error('Error deleting message', e);
-			return interaction.followUp(t('Error', interaction.locale, ns, { url: interaction.targetMessage.url }));
+			return interaction.followUp(
+				t({
+					key: 'Error',
+					locale,
+					ns,
+					args: { url: interaction.targetMessage.url }
+				})
+			);
 		}
 	});

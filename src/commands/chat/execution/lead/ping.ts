@@ -9,8 +9,13 @@ import { ns } from './index';
 const states = Object.values(State);
 
 export default async function ping(interaction: ChatInputCommandInteraction<'cached'>) {
+	const { locale } = interaction;
 	await interaction.deferReply({ ephemeral: true });
-	const errorRes = t('error', interaction.locale, ns);
+	const errorRes = t({
+		key: 'error',
+		locale,
+		ns
+	});
 	let channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
 
 	// Check to see if channel is defined
@@ -18,7 +23,14 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 		// Checks to see if channel the command was sent from is a type GuildText
 		if (interaction.channel.type !== ChannelType.GuildText) {
 			// If the check fails an error state occurs
-			return interaction.followUp({ content: t('ping-cant-send ', interaction.locale, ns, { channel: channel.toString() }) });
+			return interaction.followUp({
+				content: t({
+					key: 'ping-cant-send ',
+					locale,
+					ns,
+					args: { channel: channel.toString() }
+				})
+			});
 		}
 		// Else channel is set to where the command was used
 		channel = interaction.channel;
@@ -26,7 +38,14 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 
 	// Checks to see if bot has perms to send message in channel
 	if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
-		return interaction.followUp({ content: t('ping-not-no-perms', interaction.locale, ns, { user: interaction.client.user.toString() }) });
+		return interaction.followUp({
+			content: t({
+				key: 'ping-not-no-perms',
+				locale,
+				ns,
+				args: { user: interaction.client.user.toString() }
+			})
+		});
 	}
 
 	const stateRole = interaction.member.roles.valueOf().find((role) => states.includes(role.name as State));
@@ -39,7 +58,16 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	// Sends message to channel
 	return channel
 		.send(pingMessage)
-		.then((sentMessage) => interaction.followUp({ content: t('ping-success', interaction.locale, ns, { url: sentMessage.url }) }))
+		.then((sentMessage) =>
+			interaction.followUp({
+				content: t({
+					key: 'ping-success',
+					locale,
+					ns,
+					args: { url: sentMessage.url }
+				})
+			})
+		)
 		.catch((err) => {
 			Logger.error(err);
 			return interaction.followUp({ content: errorRes });

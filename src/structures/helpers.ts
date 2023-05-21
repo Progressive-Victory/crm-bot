@@ -153,11 +153,19 @@ export function checkConnected(discordUserID: Snowflake | Snowflake[], discordGu
 
 export function trackingGuildChecks(interaction: CommandInteraction | ChatInputCommandInteraction) {
 	if (!process.env.TRACKING_GUILD) {
-		return t('MissingConfiguration', interaction.locale, 'comman', { name: 'TRACKING_GUILD' });
+		return t({
+			key: 'MissingConfiguration',
+			locale: interaction.locale,
+			args: { name: 'TRACKING_GUILD' }
+		});
 	}
 
 	if (interaction.guild?.id !== process.env.TRACKING_GUILD) {
-		return t('TrackingServer', interaction.locale, 'comman', { command: interaction.commandName });
+		return t({
+			key: 'TrackingServer',
+			locale: interaction.locale,
+			args: { command: interaction.commandName }
+		});
 	}
 
 	return true;
@@ -168,11 +176,19 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 
 	const channel = interaction.channel.parent ?? interaction.channel;
 	if (!REGION_ABBREVIATION_MAP[channel.name]) {
-		return t('WrongRegionChannel', interaction.locale, 'comman', { channel: channel.toString() });
+		return t({
+			key: 'WrongRegionChannel',
+			locale: interaction.locale,
+			args: { channel: channel.toString() }
+		});
 	}
 
 	if (!interaction.member.roles.cache.some((r) => r.name === REGION_ABBREVIATION_MAP[channel.name])) {
-		return t('StateRegionMismatchChannel', interaction.locale, 'comman', { name: REGION_ABBREVIATION_MAP[channel.name] });
+		return t({
+			key: 'StateRegionMismatchChannel',
+			locale: interaction.locale,
+			args: { name: REGION_ABBREVIATION_MAP[channel.name] }
+		});
 	}
 
 	return true;
@@ -182,15 +198,23 @@ export function hasSMERole(interaction: CommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 	const roleIDs = process.env.SME_ROLE_IDS;
 	if (!roleIDs) {
-		return t('MissingConfiguration', interaction.locale, 'comman', { name: 'SME_ROLE_IDS' });
+		return t({
+			key: 'MissingConfiguration',
+			locale: interaction.locale,
+			args: { name: 'SME_ROLE_IDS' }
+		});
 	}
 
 	if (!roleIDs.split(',').some((id) => interaction.member.roles.cache.has(id))) {
-		return t('StateRegionMismatchChannel', interaction.locale, 'comman', {
-			roles: `${roleIDs
-				.split(',')
-				.map((id) => `<@&${id}>`)
-				.join(', ')}`
+		return t({
+			key: 'StateRegionMismatchChannel',
+			locale: interaction.locale,
+			args: {
+				roles: `${roleIDs
+					.split(',')
+					.map((id) => `<@&${id}>`)
+					.join(', ')}`
+			}
 		});
 	}
 
@@ -205,7 +229,11 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 	if (VCChannelNames.has(channel.id) && !channel.members.size && channel.name !== VCChannelNames.get(channel.id)) {
 		Logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
 
-		const auditReason = t('vc-rename-error', channel.guild.preferredLocale, 'lead');
+		const auditReason = t({
+			key: 'vc-rename-error',
+			locale: channel.guild.preferredLocale,
+			ns: 'lead'
+		});
 
 		await channel
 			.setName(VCChannelNames.get(channel.id), auditReason)
