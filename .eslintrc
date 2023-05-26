@@ -99,8 +99,7 @@
 		"padding-line-between-statements": [
 			"error",
 			{ "blankLine": "always", "prev": "*", "next": "function" },
-			{ "blankLine": "always", "prev": "*", "next": "export" },
-			{ "blankLine": "always", "prev": "*", "next": "declare" }
+			{ "blankLine": "always", "prev": "*", "next": "export" }
 		]
 	}
 }

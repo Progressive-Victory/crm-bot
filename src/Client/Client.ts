@@ -257,7 +257,7 @@ export class ExtendedClient extends Client {
 		}
 
 		const numberOfEvents = this.events.size;
-		Logger.info(`[INFO] Loaded ${this.events.size} events.`);
+		Logger.info(`Loaded ${this.events.size} events.`);
 		return numberOfEvents;
 	}
 
@@ -304,7 +304,7 @@ export class ExtendedClient extends Client {
 			throw new DiscordjsError(DiscordjsErrorCodes.TokenMissing);
 		}
 
-		console.log('[INFO] Deploying commands...');
+		Logger.info('Deploying commands...');
 		if (guild === undefined) {
 			// gets chat commands that are global
 			const globalDeploy: RESTPatchAPIApplicationCommandJSONBody[] = this.commands.filter((f) => f.isGlobal).map((m) => m.builder.toJSON());
@@ -317,7 +317,7 @@ export class ExtendedClient extends Client {
 				.put(Routes.applicationCommands(this.user.id), { body: globalDeploy })
 				.catch(console.error)) as ApplicationCommand[];
 
-			Logger.info(`[INFO] Deployed ${pushedCommands.length} global command(s)`);
+			Logger.info(`Deployed ${pushedCommands.length} global command(s)`);
 		}
 		else if (this.useGuildCommands) {
 			/** TODO: Guild commands */

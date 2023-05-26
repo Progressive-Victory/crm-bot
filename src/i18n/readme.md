@@ -1,10 +1,10 @@
 # Localization
 
-This folder contanis an implimntations of [Project Fluent](https://github.com/projectfluent/fluent.js)
+This folder contains an implementations of [Project Fluent](https://github.com/projectfluent/fluent.js)
 
 ## How to use
 
-In your main file call the init fuction.
+In your main file call the init function.
 
 ```ts
 import { init } from './i18n';
