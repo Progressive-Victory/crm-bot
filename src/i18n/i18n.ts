@@ -55,7 +55,7 @@ export class i18n {
 		const {
 			key, ons, args 
 		} = options;
-		const ns = options.ns === undefined ? 'comman' : options.ns;
+		const ns = options.ns === undefined ? 'common' : options.ns;
 		const locale = options.locale === undefined ? this.fallback : options.locale;
 
 		// check locle exsits
@@ -74,10 +74,10 @@ export class i18n {
 		const local = this.lang.get(locale);
 		// Checks id namespace is present
 		if (!local.has(ns)) {
-			if (locale === this.fallback && ns === 'comman') {
-				throw Error('comman.ftl not found in fallback locale');
+			if (locale === this.fallback && ns === 'common') {
+				throw Error('common.ftl not found in fallback locale');
 			}
-			else if (ns === 'comman') {
+			else if (ns === 'common') {
 				return this.t({
 					key,
 					ns: ons,
@@ -87,7 +87,7 @@ export class i18n {
 			}
 			return this.t({
 				key,
-				ns: 'comman',
+				ns: 'common',
 				ons: ns,
 				locale,
 				args
@@ -99,10 +99,10 @@ export class i18n {
 
 		// check if key value is present
 		if (!msg || !msg.value) {
-			if (ns === 'comman' && locale === this.fallback) {
-				throw Error(`${key} not found in comman.ftl in fallback locale`);
+			if (ns === 'common' && locale === this.fallback) {
+				throw Error(`${key} not found in common.ftl in fallback locale`);
 			}
-			else if (ns === 'comman') {
+			else if (ns === 'common') {
 				return this.t({
 					key,
 					ns: ons,
@@ -113,14 +113,14 @@ export class i18n {
 			else if (locale === this.fallback) {
 				return this.t({
 					key,
-					ns: 'comman',
+					ns: 'common',
 					locale,
 					args
 				});
 			}
 			return this.t({
 				key,
-				ns: 'comman',
+				ns: 'common',
 				ons: ns,
 				locale,
 				args
