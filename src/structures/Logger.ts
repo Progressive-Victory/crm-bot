@@ -2,6 +2,7 @@ import pino from 'pino';
 
 function wrap(logger: pino.Logger) {
 	const { error, child } = logger;
+
 	function errorRearranger(...args) {
 		if (typeof args[0] === 'string' && args.length > 1) {
 			for (let i = 1; i < args.length; i++) {
@@ -14,6 +15,7 @@ function wrap(logger: pino.Logger) {
 		}
 		return error.apply(this, args);
 	}
+
 	function childModifier(...args) {
 		const c = child.apply(this, args);
 		c.error = errorRearranger;

@@ -14,6 +14,7 @@ export function init(path: string, options?: i18nOptions) {
 export function t(option: tOptions) {
 	return i18n.t(option);
 }
+
 export function localization(key: string, ns: string, options?: Record<string, FluentVariable>): Partial<Record<LocaleString, string>> {
 	const res: Partial<Record<LocaleString, string>> = {};
 	i18n.supportedLocale.forEach((locale) => {

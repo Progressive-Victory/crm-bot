@@ -25,7 +25,7 @@ declare global {
 }
 
 // eslint-disable-next-line func-names
-Date.prototype.toDiscordString = function (format?: TimeCode) {
+Date.prototype.toDiscordString = function(format?: TimeCode) {
 	const code = Math.floor(this.getTime() / 1000);
 	if (!format) return `<t:${code}`;
 	return `<t:${code}:${format}>`;

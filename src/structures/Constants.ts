@@ -64,7 +64,9 @@ export interface state {
 }
 
 export const States = new Collection<string, state>();
+
 export const VCChannelIDs = process.env.STATE_LEAD_RENAMEABLE_CHANNELIDS.split(',');
+
 export const VCChannelNames = new Collection<Snowflake, string>();
 VCChannelIDs.forEach((id, index) => {
 	VCChannelNames.set(id, `Organizing VC ${index + 1}`);

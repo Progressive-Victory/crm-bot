@@ -15,7 +15,6 @@ export default new ChatInputCommand()
 			.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
 			.addUserOption((option) =>
 				option
-
 					.setName(t({ key: 'user-option-name', ns }))
 					.setDescription(t({ key: 'user-option-description', ns }))
 					.setNameLocalizations(localization('user-option-name', ns))
