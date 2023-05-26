@@ -85,6 +85,17 @@
 				}
 			}
 		],
-		"object-curly-spacing": ["error", "always"]
+		"object-curly-spacing": ["error", "always"],
+		"switch-colon-spacing": ["error", { "after": true, "before": false }],
+		"space-before-function-paren": [
+			"error",
+			{
+				"anonymous": "never",
+				"named": "never",
+				"asyncArrow": "never"
+			}
+		],
+		"block-spacing": "error",
+		"padding-line-between-statements": ["error", { "blankLine": "always", "prev": "*", "next": "function" }]
 	}
 }
