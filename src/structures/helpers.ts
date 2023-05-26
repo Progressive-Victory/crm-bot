@@ -174,7 +174,7 @@ export function trackingGuildChecks(interaction: CommandInteraction | ChatInputC
 export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInputCommandInteraction<'cached'>) {
 	if (!trackingGuildChecks(interaction)) return null;
 
-	const channel = interaction.channel.parent ?? interaction.channel;
+	const channel = interaction.channel.isThread() ? interaction.channel.parent : interaction.channel;
 	if (!REGION_ABBREVIATION_MAP[channel.name]) {
 		return t({
 			key: 'WrongRegionChannel',

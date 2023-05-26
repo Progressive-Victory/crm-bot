@@ -22,7 +22,7 @@
 		"prepare": "husky install",
 		"precommit": "lint-staged",
 		"lint": "eslint --fix {src,test}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern",
-		"style": "prettier --write {src,test}/**/* ./*.{json,*.json} !package-lock.json -u --no-error-on-unmatched-pattern"
+		"style": "prettier-eslint \"src/**/*.ts\" --write && yarn lint"
 	},
 	"engines": {
 		"node": ">=16.9.0"
