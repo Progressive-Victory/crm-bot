@@ -94,7 +94,7 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 	}
 	catch (error) {
 		if (isErrnoException(error) && error.code === 'ENOENT' && error.syscall === 'scandir') {
-			Logger.warn(`[Warning] Directory not found at ${error.path}`);
+			Logger.warn(`Directory not found at ${error.path}`);
 		}
 		else {
 			throw error;
@@ -206,7 +206,7 @@ export class ExtendedClient extends Client {
 	constructor(options: ExtendedClientOptions) {
 		super(options);
 
-		console.log('[INFO] Client starting up...');
+		Logger.info('Client starting up...');
 
 		// Paths
 		const {
