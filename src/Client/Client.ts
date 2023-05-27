@@ -66,9 +66,8 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 		for (const file of dirents.filter((dirent) => !dirent.isDirectory() && dirent.name.endsWith(tsNodeRun ? '.ts' : '.js'))) {
 			const resp: { default: Type } = await import(join(dirPath, file.name));
 
-			const name = (resp.default as Command).builder !== undefined
-				? (resp.default as Command).builder.name
-				: (resp.default as Interaction<DInteraction>).name;
+			const name =
+				(resp.default as Command).builder !== undefined ? (resp.default as Command).builder.name : (resp.default as Interaction<DInteraction>).name;
 
 			collection.set(name, resp.default);
 		}
@@ -80,9 +79,8 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 			for (const file of dirFiles.filter((f) => f.endsWith(tsNodeRun ? '.ts' : '.js'))) {
 				const resp: { default: Type } = await import(join(directoryPath, file));
 
-				const name = (resp.default as Command).builder !== undefined
-					? (resp.default as Command).builder.name
-					: (resp.default as Interaction<DInteraction>).name;
+				const name =
+					(resp.default as Command).builder !== undefined ? (resp.default as Command).builder.name : (resp.default as Interaction<DInteraction>).name;
 
 				collection.set(name, resp.default);
 			}
@@ -99,7 +97,6 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 
 	return collection;
 }
-
 
 export interface ExtendedClientOptions extends ClientOptions {
 	receiveMessageComponents?: boolean;

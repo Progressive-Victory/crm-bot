@@ -15,11 +15,11 @@ async function replyError(error: unknown, interaction: RepliableInteraction) {
 
 		const errorMessage = 'There was an error while executing this interaction.';
 
-		if  (interaction.deferred) {
-			await interaction.followUp({ content: errorMessage, ephemeral: true }).catch(e => Logger.error(e));
+		if (interaction.deferred) {
+			await interaction.followUp({ content: errorMessage, ephemeral: true }).catch((e) => Logger.error(e));
 		}
 		else {
-			await interaction.reply({ content: errorMessage, ephemeral: true }).catch(e => Logger.error(e));
+			await interaction.reply({ content: errorMessage, ephemeral: true }).catch((e) => Logger.error(e));
 		}
 	}
 }
