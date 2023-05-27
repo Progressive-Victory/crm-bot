@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import {
 	DiscordAPIError, Interaction, RepliableInteraction 
 } from 'discord.js';
@@ -7,18 +6,21 @@ import Logger from '../structures/Logger';
 // Send a warning on error
 async function replyError(error: unknown, interaction: RepliableInteraction) {
 	if (error instanceof DiscordAPIError) {
-		console.error(error);
+		Logger.error(error);
 	}
 	else if (error instanceof Error) {
-		const reply = interaction.deferred ? interaction.followUp : interaction.reply;
-
-		console.error(error);
+		Logger.error(error);
 
 		if (!interaction.client.replyOnError) return;
 
-		const errorMessage = '[Error] There was an error while executing this interaction.';
+		const errorMessage = 'There was an error while executing this interaction.';
 
-		reply({ content: errorMessage, ephemeral: true }).catch(console.error);
+		if  (interaction.deferred) {
+			await interaction.followUp({ content: errorMessage, ephemeral: true }).catch(e => Logger.error(e));
+		}
+		else {
+			await interaction.reply({ content: errorMessage, ephemeral: true }).catch(e => Logger.error(e));
+		}
 	}
 }
 

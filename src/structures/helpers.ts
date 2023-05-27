@@ -206,7 +206,7 @@ export function hasSMERole(interaction: CommandInteraction<'cached'>) {
 
 	if (!roleIDs.split(',').some((id) => interaction.member.roles.cache.has(id))) {
 		return t({
-			key: 'StateRegionMismatchChannel',
+			key: 'MissingSMERole',
 			locale: interaction.locale,
 			args: {
 				roles: `${roleIDs

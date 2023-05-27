@@ -6,6 +6,8 @@ import {
 } from 'discord.js';
 import { Client } from './Client';
 import { init } from './i18n';
+
+import 'source-map-support/register';
 import './structures/prototypes';
 
 // Load .env file contents
