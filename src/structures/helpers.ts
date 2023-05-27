@@ -231,7 +231,8 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 		const auditReason = t({
 			key: 'vc-rename-error',
 			locale: channel.guild.preferredLocale,
-			ns: 'lead'
+			ns: 'lead',
+			args: { channel: channel.name }
 		});
 
 		await channel
