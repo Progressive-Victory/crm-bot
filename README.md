@@ -1,7 +1,7 @@
 <div>
   <table style="width: 100%; border: none;" cellspacing="0" cellpadding="0" border="0">
   <tr>
-    <td><a href="https://progressivevictory.win/"><img src="https://github.com/Progressive-Victory/crm-bot/blob/main/src/assets/badge.png" width="200" alt="progressive victory banner" /></a></td>
+    <td><a href="https://progressivevictory.win/"><img src="https://github.com/Progressive-Victory/crm-bot/blob/main/assets/badge.png" width="200" alt="progressive victory banner" /></a></td>
     <td rowspan="3">        Interval PVBot. Responsible for server utilities and metrics and the server-join action from filling the form
 </td>
   </tr>
