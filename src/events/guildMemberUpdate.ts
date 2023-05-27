@@ -1,11 +1,13 @@
-import { GuildMember } from 'discord.js';
+import { Events, GuildMember } from 'discord.js';
+import { Event } from '../Client';
+import Logger from '../structures/Logger';
 
-export default async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
+async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
 	if (after.guild.id !== process.env.TRACKING_GUILD) return;
 	if (before.roles.cache.size === after.roles.cache.size) return;
 
 	if (!after.guild.members.me.permissions.has('ManageRoles')) {
-		console.warn('Missing permissions to manage roles');
+		Logger.warn('Missing permissions to manage roles');
 		return;
 	}
 
@@ -21,7 +23,7 @@ export default async function onGuildMemberUpdate(before: GuildMember, after: Gu
 	const verifiedRole = after.guild.roles.cache.get(process.env.VERIFIED_ROLE_ID);
 
 	if (!websiteFormFilledRole || !pendingRulesRole || !altDentifierRole || !verifiedRole) {
-		console.warn('Missing one of the verification related roles');
+		Logger.warn('Missing one of the verification related roles');
 		return;
 	}
 
@@ -55,3 +57,5 @@ export default async function onGuildMemberUpdate(before: GuildMember, after: Gu
 		await after.roles.add(websiteFormFilledRole);
 	}
 }
+
+export default new Event().setName(Events.GuildMemberUpdate).setExecute(onGuildMemberUpdate);

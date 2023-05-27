@@ -3,5 +3,6 @@ module.exports = {
 	semi: true,
 	singleQuote: true,
 	useTabs: true,
-	trailingComma: 'none'
+	trailingComma: 'none',
+	printWidth: 160
 };

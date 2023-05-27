@@ -11,12 +11,7 @@
 		"es2020": true,
 		"browser": true
 	},
-	"extends": [
-		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended",
-		"airbnb-base",
-		"prettier"
-	],
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "airbnb-base", "prettier"],
 	"rules": {
 		"indent": ["error", "tab"],
 		"no-tabs": "off",
@@ -32,7 +27,7 @@
 			}
 		],
 		"no-param-reassign": 0,
-		"no-console": "off",
+		"no-console": "error",
 		"no-await-in-loop": "off",
 		"max-classes-per-file": "off",
 		"no-underscore-dangle": "off",
@@ -56,6 +51,7 @@
 		"no-prototype-builtins": "off",
 		"no-bitwise": "off",
 		"linebreak-style": ["error", "unix"],
+		"@typescript-eslint/ban-ts-comment": "off",
 		"@typescript-eslint/type-annotation-spacing": [
 			"error",
 			{
@@ -88,6 +84,22 @@
 					"multiline": true
 				}
 			}
+		],
+		"object-curly-spacing": ["error", "always"],
+		"switch-colon-spacing": ["error", { "after": true, "before": false }],
+		"space-before-function-paren": [
+			"error",
+			{
+				"anonymous": "never",
+				"named": "never",
+				"asyncArrow": "always"
+			}
+		],
+		"block-spacing": "error",
+		"padding-line-between-statements": [
+			"error",
+			{ "blankLine": "always", "prev": "*", "next": "function" },
+			{ "blankLine": "always", "prev": "*", "next": "export" }
 		]
 	}
 }

@@ -8,7 +8,7 @@
 		"resolveJsonModule": true,
 		"isolatedModules": true,
 		"noImplicitAny": false,
-		"lib": ["es6"],
+		"lib": ["ESNext"],
 		"target": "ESNEXT",
 		"module": "commonjs",
 		"outDir": "./dist",

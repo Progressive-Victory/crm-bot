@@ -1,6 +1,7 @@
 import {
-	GuildMember, Message, MessageReaction, User 
+	Events, GuildMember, Message, MessageReaction, User 
 } from 'discord.js';
+import { Event } from '../Client';
 import Logger from '../structures/Logger';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
 
@@ -18,7 +19,7 @@ function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember
 	}
 }
 
-export default async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
+async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 	if (!reaction.message.inGuild()) return;
 	const member = await reaction.message.guild.members.fetch(user);
 
@@ -81,3 +82,5 @@ export default async function onMessageReactionAdd(reaction: MessageReaction, us
 		proposalsChannelReaction(reaction, member, reaction.message);
 	}
 }
+
+export default new Event().setName(Events.MessageReactionAdd).setExecute(onMessageReactionAdd);
