@@ -23,12 +23,12 @@ export type ChatInputCommandBuilders =
  */
 export interface Command {
 	/**
-	 * The constructor for the registation for the command
+	 * The constructor for the registration for the command
 	 */
 	builder: ChatInputCommandBuilders | ContextMenuCommandBuilder;
 
 	/**
-	 * State if the command is avaible in all servers
+	 * State if the command is available in all servers
 	 */
 	isGlobal: boolean;
 }
@@ -44,13 +44,13 @@ export class ChatInputCommand implements Command {
 	public execute: (interaction: ChatInputCommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
 	/**
-	 * runs when client recives and Autocomplete interaction
-	 * @param interaction Autocomplete interaction recived by the client
+	 * runs when client receives and Autocomplete interaction
+	 * @param interaction Autocomplete interaction received by the client
 	 */
 	public autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 
 	constructor(options?: Partial<ChatInputCommand>) {
-		// is options is undifined
+		// If options is undefined
 		if (!options) return;
 
 		this.isGlobal = options.isGlobal === undefined ? true : options.isGlobal;
@@ -93,7 +93,7 @@ export class ContextMenuCommand implements Command {
 	public execute: (interaction: ContextMenuCommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
 	constructor(options?: Partial<ContextMenuCommand>) {
-		// is options is undifined
+		// is options is undefined
 		if (!options) return;
 
 		this.isGlobal = options.isGlobal === undefined ? true : options.isGlobal;

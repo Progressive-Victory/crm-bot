@@ -6,12 +6,12 @@ import Logger from '../structures/Logger';
 
 // Send a warning on error
 async function replyError(error: unknown, interaction: RepliableInteraction) {
-	const reply = interaction.deferred ? interaction.followUp : interaction.reply;
-
 	if (error instanceof DiscordAPIError) {
 		console.error(error);
 	}
 	else if (error instanceof Error) {
+		const reply = interaction.deferred ? interaction.followUp : interaction.reply;
+
 		console.error(error);
 
 		if (!interaction.client.replyOnError) return;

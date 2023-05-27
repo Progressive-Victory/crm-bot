@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { join } from 'path';
 import { readdir } from 'fs/promises';
 import {
@@ -44,8 +43,8 @@ catch (e) {
 }
 
 /**
- * Returns a boolean and Types a unkown as ErrnoException if the object is an error
- * @param error Any unkown object
+ * Returns a boolean and Types a unknown as ErrnoException if the object is an error
+ * @param error Any unknown object
  * @returns A boolean value if the the object is a ErrnoException
  */
 // eslint-disable-next-line no-undef
@@ -123,7 +122,8 @@ export interface initOptions {
 }
 
 /**
- * ExtendedClient is extends frome `Discord.js`'s Client
+ * ExtendedClient is extended from the {@import ('discord.js').Client}.
+ * @see {@link https://discord.js.org/#/docs/main/stable/class/Client}
  */
 export class ExtendedClient extends Client {
 	readonly rest = new REST({ version: '10' });
@@ -234,14 +234,16 @@ export class ExtendedClient extends Client {
 			this.loadButtons(options.buttonPath),
 			this.loadSelectMenus(options.selectMenuPath),
 			this.loadModals(options.modalPath)
-		]).then(() => {
-			this.hasInitRun = true;
-		});
+		]);
+
+		this.hasInitRun = true;
+
 		return this;
 	}
 
 	private async loadEvents(eventPath: string) {
-		const files = (await readdir(eventPath)).filter((file) => file.endsWith(tsNodeRun ? '.ts' : '.js'));
+		const dir = await readdir(eventPath);
+		const files = dir.filter((file) => file.endsWith(tsNodeRun ? '.ts' : '.js'));
 
 		for (const file of files) {
 			const event = (await import(join(eventPath, file))).default as Event;
@@ -296,7 +298,7 @@ export class ExtendedClient extends Client {
 	// TODO: fix spelling
 	/**
 	 * Deploy Application Commands to Discord
-	 * @param guild if commands debloys subset of commands that should only be deployed to a spific guild
+	 * @param guild if commands deploys subset of commands that should only be deployed to a specific guild
 	 * @see https://discord.com/developers/docs/interactions/application-commands
 	 */
 	public async deploy(guild?: Snowflake) {
@@ -315,35 +317,26 @@ export class ExtendedClient extends Client {
 			// Put the JSON API object to the aplicationCommands endPoint
 			const pushedCommands = (await this.rest
 				.put(Routes.applicationCommands(this.user.id), { body: globalDeploy })
-				.catch(console.error)) as ApplicationCommand[];
+				.catch((e) => Logger.error(e))) as ApplicationCommand[];
 
 			Logger.info(`Deployed ${pushedCommands.length} global command(s)`);
 		}
 		else if (this.useGuildCommands) {
-			/** TODO: Guild commands */
+			// TODO: Guild Commands
 		}
 	}
 
-	public async login(token?: string): Promise<string> {
+	public login(token?: string) {
 		if (!this.hasInitRun) {
 			throw Error('[ERROR] client.init() has not been completed');
 		}
 
+		if (!process.env.TOKEN) {
+			throw new Error('[ERROR] Missing token')
+		}
+
 		(this as Mutable<ExtendedClient>).rest = this.rest.setToken(token);
-		try {
-			return super.login(token);
-		}
-		catch (err) {
-			if (err instanceof DiscordjsError) {
-				if (err.code === DiscordjsErrorCodes.TokenMissing) {
-					throw Error(`[ERROR] ${err.name}: ${err.message} Did you create a .env file?\n`);
-				}
-				else if (err.code === DiscordjsErrorCodes.TokenInvalid) {
-					throw Error(`[ERROR] ${err.name}: ${err.message} Check your .env file\n`);
-				}
-				throw err;
-			}
-			throw err;
-		}
+
+		return super.login(token);
 	}
 }

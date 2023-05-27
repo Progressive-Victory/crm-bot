@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { ClientEvents as DiscordClientEvents } from 'discord.js';
 import { Mutable } from './types';
 

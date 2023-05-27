@@ -8,7 +8,7 @@ import { ns } from '../index';
 const regionLeadRoleID: Snowflake = process.env.REGIONAL_ROLE_ID;
 
 /**
- * Function for toggling regoinlead role on and off
+ * Function for toggling role on and off
  * @param interaction command interaction
  * @returns interaction response
  */

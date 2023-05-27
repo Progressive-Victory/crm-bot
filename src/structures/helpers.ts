@@ -8,7 +8,6 @@ import { config } from 'dotenv';
 import fetch from 'node-fetch';
 import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
 import Logger from './Logger';
-import {} from '../Client';
 import { State } from '../declarations/states';
 import { t } from '../i18n';
 

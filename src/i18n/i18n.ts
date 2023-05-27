@@ -58,11 +58,12 @@ export class i18n {
 		const ns = options.ns === undefined ? 'common' : options.ns;
 		const locale = options.locale === undefined ? this.fallback : options.locale;
 
-		// check locle exsits
+		// Check if locale exists
 		if (!this.lang.has(locale)) {
 			if (locale === this.fallback) {
 				throw Error(`Fallback locale [${locale}] Not present`);
 			}
+
 			return this.t({
 				key,
 				ns,
@@ -72,12 +73,13 @@ export class i18n {
 		}
 
 		const local = this.lang.get(locale);
-		// Checks id namespace is present
+		// Checks if namespace is present
 		if (!local.has(ns)) {
 			if (locale === this.fallback && ns === 'common') {
 				throw Error('common.ftl not found in fallback locale');
 			}
-			else if (ns === 'common') {
+
+			if (ns === 'common') {
 				return this.t({
 					key,
 					ns: ons,
@@ -85,6 +87,7 @@ export class i18n {
 					args
 				});
 			}
+
 			return this.t({
 				key,
 				ns: 'common',
@@ -97,12 +100,13 @@ export class i18n {
 		const bundle = local.get(ns);
 		const msg = bundle.getMessage(key);
 
-		// check if key value is present
-		if (!msg || !msg.value) {
+		// Checks if key value is present
+		if (!msg?.value) {
 			if (ns === 'common' && locale === this.fallback) {
 				throw Error(`${key} not found in common.ftl in fallback locale`);
 			}
-			else if (ns === 'common') {
+	
+			if (ns === 'common') {
 				return this.t({
 					key,
 					ns: ons,
@@ -110,7 +114,8 @@ export class i18n {
 					args
 				});
 			}
-			else if (locale === this.fallback) {
+
+			if (locale === this.fallback) {
 				return this.t({
 					key,
 					ns: 'common',
@@ -118,6 +123,7 @@ export class i18n {
 					args
 				});
 			}
+
 			return this.t({
 				key,
 				ns: 'common',
@@ -139,7 +145,7 @@ export class i18n {
 
 	/**
 	 * Creates the collection of Collections for storing translations
-	 * @param locale The locale of the collaction being generated
+	 * @param locale The locale of the collection being generated
 	 */
 	private createLocaleCollection(locale: LocaleString) {
 		const path = join(this.path, locale);
@@ -152,6 +158,7 @@ export class i18n {
 			bundle.addResource(new FluentResource(readFileSync(join(path, file), { encoding: 'utf-8' })));
 			collection.set(file.slice(0, -4), bundle);
 		}
+
 		this.lang.set(locale, collection);
 	}
 }

@@ -14,9 +14,9 @@ init(path: string, options?: { hasGlobal?: boolean, fallback: Locale });
 
 This function sets the file  path where Localization files are stored and additional options:
 
-`hasGlobal`: if a `gobal.ftl` file in present in your Localization directory
+`hasGlobal`: if a `global.ftl` file in present in your Localization directory
 
-`fallback`: deafalt language
+`fallback`: default language
 
 ### Translation
 
