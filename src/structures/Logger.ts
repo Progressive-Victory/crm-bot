@@ -33,7 +33,17 @@ const Logger = wrap(
 		hooks: {
 			logMethod(inputArgs, method, level) {
 				if (level === 50 && (inputArgs[0] as any) instanceof Error) {
-					return method.apply(this, [(inputArgs[0] as any as Error).stack]);
+					const err = inputArgs[0] as any as Error;
+					let args = [];
+
+					if (err.cause) {
+						args = [`${err.stack}\nCaused by: ${err.cause[0]} ${err.cause[0].stack}`];
+					}
+					else {
+						args = [err.stack];
+					}
+
+					return method.apply(this, args);
 				}
 
 				// Handles additional arguments being passed in
@@ -46,6 +56,7 @@ const Logger = wrap(
 						inputArgs[0] += ` ${inputArgs[i]}`;
 					}
 				}
+
 				return method.apply(this, inputArgs);
 			}
 		}
