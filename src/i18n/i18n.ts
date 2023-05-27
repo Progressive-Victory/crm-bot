@@ -105,7 +105,7 @@ export class i18n {
 			if (ns === 'common' && locale === this.fallback) {
 				throw Error(`${key} not found in common.ftl in fallback locale`);
 			}
-	
+
 			if (ns === 'common') {
 				return this.t({
 					key,

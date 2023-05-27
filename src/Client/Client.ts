@@ -332,7 +332,7 @@ export class ExtendedClient extends Client {
 		}
 
 		if (!process.env.TOKEN) {
-			throw new Error('[ERROR] Missing token')
+			throw new Error('[ERROR] Missing token');
 		}
 
 		(this as Mutable<ExtendedClient>).rest = this.rest.setToken(token);
