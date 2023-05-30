@@ -20,11 +20,11 @@ export async function memberList(interaction: ChatInputCommandInteraction<'cache
 	// Get the role option from the interaction's options, ensuring it is required.
 	const role = options.getRole(t({ key: 'member-list-role-option-name', ns }), true);
 
-	// Define the file path for the CSV file based on the role name and interaction ID.
-	const csv =  new AttachmentBuilder(
-		Buffer.from(`displayName,username,id\n${role.members.map(member => `${member.displayName},${member.user.username},${member.id}\n`).join('')}`),
-		{ name:`${role.name.replace(' ', '-')}-${interaction.id}.csv` }
-	)
+	const csv = new AttachmentBuilder(
+		Buffer.from(`displayName,username,id\n${role.members.map((member) => `${member.displayName},${member.user.username},${member.id}\n`).join('')}`),
+		{ name: `${role.name.replace(' ', '-')}-${interaction.id}.csv` }
+	);
+
 	// Send a follow-up message with a content and the CSV file attached.
 	await interaction.followUp({
 		content: t({
@@ -35,5 +35,4 @@ export async function memberList(interaction: ChatInputCommandInteraction<'cache
 		}),
 		files: [csv]
 	});
-
 }
