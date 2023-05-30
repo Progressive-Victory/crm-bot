@@ -11,7 +11,6 @@ import role from './region/role';
 import { ns } from '../../builders/lead';
 import { memberList } from './member-list';
 
-
 export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 	const subcommand = interaction.options.getSubcommand(true);
 	const subcommandGroup = interaction.options.getSubcommandGroup();

@@ -70,7 +70,7 @@ export default new ChatInputCommand()
 							)
 					)
 			)
-			.addSubcommand((subcommand) => 
+			.addSubcommand((subcommand) =>
 				subcommand
 					.setName(t({ key: 'member-list-name', ns }))
 					.setDescription(t({ key: 'member-list-name', ns }))

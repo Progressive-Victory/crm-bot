@@ -6,7 +6,6 @@ import { State } from '../../../../declarations/states';
 import { t } from '../../../../i18n';
 import { ns } from '../../builders/lead';
 
-
 const states = Object.values(State);
 
 export default async function ping(interaction: ChatInputCommandInteraction<'cached'>) {

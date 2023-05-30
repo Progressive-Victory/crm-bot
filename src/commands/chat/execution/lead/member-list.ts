@@ -1,6 +1,4 @@
-import { ChatInputCommandInteraction } from 'discord.js';
-import { join } from 'path';
-import { appendFile, unlink } from 'fs/promises';
+import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { t } from '../../../../i18n';
 import { ns } from '../../builders/lead';
 
@@ -23,17 +21,10 @@ export async function memberList(interaction: ChatInputCommandInteraction<'cache
 	const role = options.getRole(t({ key: 'member-list-role-option-name', ns }), true);
 
 	// Define the file path for the CSV file based on the role name and interaction ID.
-	const path = join(process.cwd(), 'assets', 'csv', `${role.name.replace(' ', '-')}-${interaction.id}.csv`);
-
-	// Create the CSV file and add the header row.
-	await appendFile(path, 'displayName,username,id\n');
-
-	// Iterate over each member in the role and add their details to the CSV file.
-	for (const member of role.members.values()) {
-		const csv = `${member.displayName},${member.user.username},${member.id}\n`;
-		await appendFile(path, csv);
-	}
-
+	const csv =  new AttachmentBuilder(
+		Buffer.from(`displayName,username,id\n${role.members.map(member => `${member.displayName},${member.user.username},${member.id}\n`).join('')}`),
+		{ name:`${role.name.replace(' ', '-')}-${interaction.id}.csv` }
+	)
 	// Send a follow-up message with a content and the CSV file attached.
 	await interaction.followUp({
 		content: t({
@@ -42,9 +33,7 @@ export async function memberList(interaction: ChatInputCommandInteraction<'cache
 			ns,
 			args: { role: role.toString() }
 		}),
-		files: [path]
+		files: [csv]
 	});
 
-	// Remove the CSV file after it has been sent.
-	await unlink(path);
 }
