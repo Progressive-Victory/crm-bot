@@ -43,3 +43,14 @@ ping-description = ping role
 ping-cant-send = Message Can't be sent in this {$Channel}
 ping-not-no-perms = {$user} Does not have permission to send message
 ping-success = Ping message has been sent {$url}
+
+## Member list
+### Command
+member-list-name = member-list
+member-list-description = Exports a list of the users in each role as a csv file
+### Commabd Options
+member-list-role-option-name = target
+member-list-role-option-description = The role from with to get list
+
+### follow-up
+member-list-message-followup = Members in {$role} role

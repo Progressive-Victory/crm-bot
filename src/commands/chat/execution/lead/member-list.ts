@@ -1,15 +1,15 @@
 import { ChatInputCommandInteraction } from 'discord.js';
 import { join } from 'path';
 import { appendFile, unlink } from 'fs/promises';
-import { t } from '../../../i18n';
-import { ns } from '../builders/role-exporter';
+import { t } from '../../../../i18n';
+import { ns } from '../../builders/lead';
 
 /**
  * Executes a chat input command interaction to export role members to a CSV file.
  *
  * @param interaction - The chat input command interaction object.
  */
-export async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
+export async function memberList(interaction: ChatInputCommandInteraction<'cached'>) {
 	// Defer the reply to indicate that the bot is processing the command.
 	await interaction.deferReply({ ephemeral: true });
 
@@ -20,7 +20,7 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 	const { locale, options } = interaction;
 
 	// Get the role option from the interaction's options, ensuring it is required.
-	const role = options.getRole(t({ key: 'role-option-name', ns }), true);
+	const role = options.getRole(t({ key: 'member-list-role-option-name', ns }), true);
 
 	// Define the file path for the CSV file based on the role name and interaction ID.
 	const path = join(process.cwd(), 'assets', 'csv', `${role.name.replace(' ', '-')}-${interaction.id}.csv`);
@@ -37,7 +37,7 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 	// Send a follow-up message with a content and the CSV file attached.
 	await interaction.followUp({
 		content: t({
-			key: 'message-followup',
+			key: 'member-list-message-followup',
 			locale,
 			ns,
 			args: { role: role.toString() }

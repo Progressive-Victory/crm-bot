@@ -4,7 +4,8 @@ import {
 import Logger from '../../../../structures/Logger';
 import { State } from '../../../../declarations/states';
 import { t } from '../../../../i18n';
-import { ns } from './index';
+import { ns } from '../../builders/lead';
+
 
 const states = Object.values(State);
 

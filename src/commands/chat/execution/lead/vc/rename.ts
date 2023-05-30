@@ -4,7 +4,7 @@ import {
 import Logger from '../../../../../structures/Logger';
 import { VCChannelIDs } from '../../../../../structures/Constants';
 import { t } from '../../../../../i18n';
-import { ns } from '../index';
+import { ns } from '../../../builders/lead';
 
 /**
  * Renames a VC

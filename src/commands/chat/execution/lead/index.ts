@@ -8,8 +8,9 @@ import { t } from '../../../../i18n';
 import rename from './vc/rename';
 import ping from './ping';
 import role from './region/role';
+import { ns } from '../../builders/lead';
+import { memberList } from './member-list';
 
-export const ns = 'lead';
 
 export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 	const subcommand = interaction.options.getSubcommand(true);
@@ -23,6 +24,7 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 		break;
 	default:
 		if (subcommand === 'ping') return ping(interaction);
+		if (subcommand === 'member-list') return memberList(interaction);
 	}
 	throw Error;
 }
@@ -51,7 +53,6 @@ export function autoComplete(interaction: AutocompleteInteraction<'cached'>) {
 }
 
 export default {
-	ns,
 	lead,
 	autoComplete
 };
