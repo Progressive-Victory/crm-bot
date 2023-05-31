@@ -23,11 +23,7 @@ export async function memberList(interaction: ChatInputCommandInteraction<'cache
 	// Create a CSV attachment using the AttachmentBuilder class.
 	const csv = new AttachmentBuilder(
 		// Construct the CSV content using the role's members.
-		Buffer.from(
-			`displayName,username,id\n${role.members
-				.map((member) => `${member.displayName},${member.user.username},${member.id}\n`)
-				.join('')}`
-		),
+		Buffer.from(`displayName,username,id\n${role.members.map((member) => `${member.displayName},${member.user.username},${member.id}\n`).join('')}`),
 		// Set the file name for the CSV attachment based on the role name and interaction ID.
 		{ name: `${role.name.replace(' ', '-')}-${interaction.id}.csv` }
 	);
