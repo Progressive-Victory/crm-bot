@@ -20,8 +20,15 @@ export async function memberList(interaction: ChatInputCommandInteraction<'cache
 	// Get the role option from the interaction's options, ensuring it is required.
 	const role = options.getRole(t({ key: 'member-list-role-option-name', ns }), true);
 
+	// Create a CSV attachment using the AttachmentBuilder class.
 	const csv = new AttachmentBuilder(
-		Buffer.from(`displayName,username,id\n${role.members.map((member) => `${member.displayName},${member.user.username},${member.id}\n`).join('')}`),
+		// Construct the CSV content using the role's members.
+		Buffer.from(
+			`displayName,username,id\n${role.members
+				.map((member) => `${member.displayName},${member.user.username},${member.id}\n`)
+				.join('')}`
+		),
+		// Set the file name for the CSV attachment based on the role name and interaction ID.
 		{ name: `${role.name.replace(' ', '-')}-${interaction.id}.csv` }
 	);
 
