@@ -9,14 +9,14 @@ import { ExtendedClient } from '../src/Client/Client';
 config();
 
 describe('Client works', () => {
-	test('The client throw with no options provided', () => {
+	test('The client throws with no options provided', () => {
 		expect(() => {
 			// @ts-ignore
 			const client = new ExtendedClient();
 		}).toThrow();
 	});
 
-	test('Token exists', () => {
+	test('Token should exist', () => {
 		expect(process.env.TOKEN).toBeTruthy();
 	});
 

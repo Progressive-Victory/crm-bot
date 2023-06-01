@@ -223,6 +223,8 @@ export class ExtendedClient extends Client {
 	}
 
 	public async init(options: initOptions) {
+		Logger.debug('Client initializing...');
+
 		await Promise.all([
 			this.loadEvents(options.eventPath),
 			this.loadCommands(options.commandPath),
@@ -233,6 +235,8 @@ export class ExtendedClient extends Client {
 		]);
 
 		this.hasInitRun = true;
+
+		Logger.debug('Client initialized');
 
 		return this;
 	}
@@ -323,7 +327,9 @@ export class ExtendedClient extends Client {
 		}
 	}
 
-	public login(token?: string) {
+	public async login(token?: string) {
+		Logger.debug('Start of login called');
+
 		if (!this.hasInitRun) {
 			throw Error('[ERROR] client.init() has not been completed');
 		}
@@ -333,6 +339,8 @@ export class ExtendedClient extends Client {
 		}
 
 		(this as Mutable<ExtendedClient>).rest = this.rest.setToken(token);
+
+		Logger.debug('Initializing login')
 
 		return super.login(token);
 	}

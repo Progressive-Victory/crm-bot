@@ -70,6 +70,25 @@ export default new ChatInputCommand()
 							)
 					)
 			)
+			.addSubcommand((subcommand) =>
+				subcommand
+					.setName(t({ key: 'ping-name', ns }))
+					.setDescription(t({ key: 'ping-description', ns }))
+					.addChannelOption((option) =>
+						option
+							.setName(t({ key: 'channel', ns }))
+							.setDescription(t({ key: 'ping-channel-description', ns }))
+							.addChannelTypes(ChannelType.GuildText)
+							.setRequired(false)
+					)
+					.addStringOption((option) =>
+						option
+							.setName(t({ key: 'message', ns }))
+							.setDescription(t({ key: 'ping-message-description', ns }))
+							.setRequired(false)
+							.setMaxLength(150)
+					)
+			)
 	)
 	.setGlobal(true)
 	.setAutocomplete(autoComplete)
