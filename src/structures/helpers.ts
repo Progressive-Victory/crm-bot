@@ -206,7 +206,7 @@ export function hasSMERole(interaction: CommandInteraction<'cached'>) {
 
 	if (!roleIDs.split(',').some((id) => interaction.member.roles.cache.has(id))) {
 		return t({
-			key: 'StateRegionMismatchChannel',
+			key: 'MissingSMERole',
 			locale: interaction.locale,
 			args: {
 				roles: `${roleIDs
@@ -231,7 +231,8 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 		const auditReason = t({
 			key: 'vc-rename-error',
 			locale: channel.guild.preferredLocale,
-			ns: 'lead'
+			ns: 'lead',
+			args: { channel: channel.name }
 		});
 
 		await channel

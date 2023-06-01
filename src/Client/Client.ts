@@ -62,33 +62,28 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 
 	try {
 		const dirents = await readdir(dirPath, { withFileTypes: true });
-		dirents
-			.filter((dirent) => !dirent.isDirectory() && dirent.name.endsWith(tsNodeRun ? '.ts' : '.js'))
-			.forEach((file) => {
-				import(join(dirPath, file.name)).then((resp: { default: Type }) => {
-					collection.set(
-						(resp.default as Command).builder !== undefined
-							? (resp.default as Command).builder.name
-							: (resp.default as Interaction<DInteraction>).name,
-						resp.default
-					);
-				});
-			});
+
+		for (const file of dirents.filter((dirent) => !dirent.isDirectory() && dirent.name.endsWith(tsNodeRun ? '.ts' : '.js'))) {
+			const resp: { default: Type } = await import(join(dirPath, file.name));
+
+			const name =
+				(resp.default as Command).builder !== undefined ? (resp.default as Command).builder.name : (resp.default as Interaction<DInteraction>).name;
+
+			collection.set(name, resp.default);
+		}
 
 		for (const dir of dirents.filter((dirent) => dirent.isDirectory())) {
 			const directoryPath = join(dirPath, dir.name);
-			(await readdir(directoryPath))
-				.filter((file) => file.endsWith(tsNodeRun ? '.ts' : '.js'))
-				.forEach((file) => {
-					import(join(directoryPath, file)).then((resp: { default: Type }) => {
-						collection.set(
-							(resp.default as Command).builder !== undefined
-								? (resp.default as Command).builder.name
-								: (resp.default as Interaction<DInteraction>).name,
-							resp.default
-						);
-					});
-				});
+			const dirFiles = await readdir(directoryPath);
+
+			for (const file of dirFiles.filter((f) => f.endsWith(tsNodeRun ? '.ts' : '.js'))) {
+				const resp: { default: Type } = await import(join(directoryPath, file));
+
+				const name =
+					(resp.default as Command).builder !== undefined ? (resp.default as Command).builder.name : (resp.default as Interaction<DInteraction>).name;
+
+				collection.set(name, resp.default);
+			}
 		}
 	}
 	catch (error) {
@@ -99,6 +94,7 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 			throw error;
 		}
 	}
+
 	return collection;
 }
 
@@ -307,12 +303,13 @@ export class ExtendedClient extends Client {
 		}
 
 		Logger.info('Deploying commands...');
-		if (guild === undefined) {
-			// gets chat commands that are global
-			const globalDeploy: RESTPatchAPIApplicationCommandJSONBody[] = this.commands.filter((f) => f.isGlobal).map((m) => m.builder.toJSON());
 
-			// gets context menu commands that are global
-			globalDeploy.concat(this.contextMenus.filter((f) => f.isGlobal).map((m) => m.builder.toJSON()));
+		if (guild === undefined) {
+			// Gets chat commands that are global
+			const globalDeploy: RESTPatchAPIApplicationCommandJSONBody[] = this.commands.filter((f) => f.isGlobal !== false).map((m) => m.builder.toJSON());
+
+			// Gets context menu commands that are global
+			globalDeploy.push(...this.contextMenus.filter((f) => f.isGlobal !== false).map((m) => m.builder.toJSON()));
 
 			// Put the JSON API object to the aplicationCommands endPoint
 			const pushedCommands = (await this.rest

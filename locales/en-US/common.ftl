@@ -1,6 +1,6 @@
 norole = No role found
 
-meeting = Metting
+meeting = Meeting
 
 ## Errors
 error = An error occurred
