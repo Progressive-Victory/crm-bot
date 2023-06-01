@@ -340,7 +340,7 @@ export class ExtendedClient extends Client {
 
 		(this as Mutable<ExtendedClient>).rest = this.rest.setToken(token);
 
-		Logger.debug('Initializing login')
+		Logger.debug('Initializing login');
 
 		return super.login(token);
 	}
