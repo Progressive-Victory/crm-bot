@@ -4,40 +4,44 @@ import {
 import Logger from '../../../../structures/Logger';
 import { State } from '../../../../declarations/states';
 import { t } from '../../../../i18n';
-import { ns } from './index';
+import { ns } from '../../builders/lead';
 
 const states = Object.values(State);
 
+/**
+ * Executes the ping command to send a message to a channel.
+ * @param interaction - The chat input command interaction object.
+ */
 export default async function ping(interaction: ChatInputCommandInteraction<'cached'>) {
 	const { locale } = interaction;
+
+	// Defer the reply to indicate that the bot is processing the command.
 	await interaction.deferReply({ ephemeral: true });
-	const errorRes = t({
-		key: 'error',
-		locale,
-		ns
-	});
+
+	// Get the channel option from the interaction's options, if provided.
 	let channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
 
-	// Check to see if channel is defined
+	// Check if the channel option is defined.
 	if (!channel) {
-		// Checks to see if channel the command was sent from is a type GuildText
+		// Check if the command was sent from a GuildText channel.
 		if (interaction.channel.type !== ChannelType.GuildText) {
-			// If the check fails an error state occurs
+			// If not, send an error response indicating that the command cannot be sent.
 			return interaction.followUp({
 				content: t({
-					key: 'ping-cant-send ',
+					key: 'ping-cant-send',
 					locale,
 					ns,
 					args: { channel: channel.toString() }
 				})
 			});
 		}
-		// Else channel is set to where the command was used
+		// If the channel option is not provided, set the channel to the channel where the command was used.
 		channel = interaction.channel;
 	}
 
-	// Checks to see if bot has perms to send message in channel
+	// Check if the bot has permission to send messages in the channel.
 	if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
+		// If not, send an error response indicating that the bot does not have permission to send messages.
 		return interaction.followUp({
 			content: t({
 				key: 'ping-not-no-perms',
@@ -48,28 +52,43 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 		});
 	}
 
+	// Get the state role of the interaction member.
 	const stateRole = interaction.member.roles.valueOf().find((role) => states.includes(role.name as State));
+
+	// Create the message content for pinging the role.
 	const pingMessage: MessageCreateOptions = { content: stateRole.toString() };
+
+	// Get the additional message content from the 'message' option, if provided.
 	const message = interaction.options.getString('message');
 	if (message) {
 		pingMessage.content += `\n${message}`;
 	}
 
-	// Sends message to channel
-	return channel
-		.send(pingMessage)
-		.then((sentMessage) =>
-			interaction.followUp({
-				content: t({
-					key: 'ping-success',
-					locale,
-					ns,
-					args: { url: sentMessage.url }
-				})
+	try {
+		// Send the ping message to the channel.
+		const sentMessage = await channel.send(pingMessage);
+
+		// Send a success response with the URL of the sent message.
+		return interaction.followUp({
+			content: t({
+				key: 'ping-success',
+				locale,
+				ns,
+				args: { url: sentMessage.url }
 			})
-		)
-		.catch((err) => {
-			Logger.error(err);
-			return interaction.followUp({ content: errorRes });
 		});
+	}
+	catch (err) {
+		// Log the error.
+		Logger.error(err);
+
+		// Send an error response if sending the message fails.
+		return interaction.followUp({
+			content: t({
+				key: 'error',
+				locale,
+				ns
+			})
+		});
+	}
 }

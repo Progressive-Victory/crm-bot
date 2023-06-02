@@ -72,6 +72,21 @@ export default new ChatInputCommand()
 			)
 			.addSubcommand((subcommand) =>
 				subcommand
+					.setName(t({ key: 'member-list-name', ns }))
+					.setDescription(t({ key: 'member-list-name', ns }))
+					.setNameLocalizations(localization('member-list-name', ns))
+					.setDescriptionLocalizations(localization('member-list-name', ns))
+					.addRoleOption((option) =>
+						option
+							.setName(t({ key: 'member-list-role-option-name', ns }))
+							.setDescription(t({ key: 'member-list-role-option-description', ns }))
+							.setNameLocalizations(localization('member-list-role-option-name', ns))
+							.setDescriptionLocalizations(localization('member-list-role-option-description', ns))
+							.setRequired(true)
+					)
+			)
+			.addSubcommand((subcommand) =>
+				subcommand
 					.setName(t({ key: 'ping-name', ns }))
 					.setDescription(t({ key: 'ping-description', ns }))
 					.addChannelOption((option) =>
