@@ -14,3 +14,4 @@ MissingSMERole = You are missing one of the following roles: {$roles}
 
 channel = channel
 message = message
+role = role
