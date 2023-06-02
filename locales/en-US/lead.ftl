@@ -39,7 +39,11 @@ role-AuditLog = Regional Role toggled by {tag}
 
 ## Ping
 ping-name = ping
-ping-description = ping role
+ping-description = Ping Your State Role
+ping-channel-description = Channel where the ping will be sent
+ping-message-description = Message you wish to add to the ping
 ping-cant-send = Message Can't be sent in this {$Channel}
-ping-not-no-perms = {$user} Does not have permission to send message
+ping-not-no-perms = {$user} does not have permission to send message
 ping-success = Ping message has been sent {$url}
+channel = channel
+message = message

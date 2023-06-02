@@ -29,7 +29,7 @@ const client = new Client({
 	useGuildCommands: false
 });
 
-async function clientInit() {
+(async function start() {
 	await client.init({
 		eventPath: join(__dirname, 'events'),
 		// buttonPath: join(__dirname, 'interactions', 'buttons'),
@@ -40,10 +40,9 @@ async function clientInit() {
 	});
 
 	await client.login(process.env.TOKEN);
+
 	// Skip if no-deployment flag is set, else deploys commands
 	if (!process.argv.includes('--no-deployment')) {
 		await client.deploy();
 	}
-}
-
-clientInit();
+})();
