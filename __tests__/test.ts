@@ -4,7 +4,7 @@
 
 import { join } from 'path';
 import { config } from 'dotenv';
-import { ExtendedClient } from '../src/Client/Client';
+import { Client } from '../src/Client';
 
 config();
 
@@ -12,7 +12,7 @@ describe('Client works', () => {
 	test('The client throws with no options provided', () => {
 		expect(() => {
 			// @ts-ignore
-			const client = new ExtendedClient();
+			const client = new Client();
 		}).toThrow();
 	});
 
@@ -21,7 +21,7 @@ describe('Client works', () => {
 	});
 
 	test('The client should not throw with minimal amount of options provided', async () => {
-		const client = new ExtendedClient({ intents: [] });
+		const client = new Client({ intents: [] });
 
 		await expect(
 			(async () => client.init({
