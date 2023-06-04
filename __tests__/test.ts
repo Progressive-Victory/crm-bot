@@ -25,8 +25,8 @@ describe('Client works', () => {
 
 		await expect(
 			(async () => client.init({
-				eventPath: join(__dirname, 'events'),
-				commandPath: join(__dirname, 'commands')
+				eventPath: join(__dirname, '..', 'src', 'events'),
+				commandPath: join(__dirname, '..', 'src', 'commands', 'chat', 'builders')
 			}))()
 		).resolves.not.toThrow();
 	});
