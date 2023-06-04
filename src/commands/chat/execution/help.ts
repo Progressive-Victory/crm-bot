@@ -6,7 +6,9 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 	interaction.reply({
 		ephemeral: true,
 		content: t({
-			key:'comming-soon', locale:interaction.locale, ns 
+			key: 'comming-soon',
+			locale: interaction.locale,
+			ns
 		})
 	});
 }
