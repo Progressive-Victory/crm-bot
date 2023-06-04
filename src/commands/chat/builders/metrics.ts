@@ -3,7 +3,7 @@ import { localization, t } from 'src/i18n';
 import { ChatInputCommand } from 'src/Client';
 import { execute } from '../execution/metrics';
 
-const ns = 'metric';
+export const ns = 'metric';
 
 export default new ChatInputCommand()
 	.setBuilder((builder) =>
