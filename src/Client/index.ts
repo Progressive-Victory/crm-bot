@@ -13,3 +13,5 @@ export { Interaction } from './Interaction';
 export { TimeFormat, ExtraColor } from './types';
 
 export type { TimeCode } from './types';
+
+export { Logger } from './Logger'

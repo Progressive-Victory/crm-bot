@@ -1,7 +1,7 @@
 import {
 	DiscordAPIError, Interaction, RepliableInteraction 
 } from 'discord.js';
-import Logger from '../structures/Logger';
+import Logger from './Logger';
 
 // Send a warning on error
 async function replyError(error: unknown, interaction: RepliableInteraction) {

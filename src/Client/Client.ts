@@ -26,7 +26,7 @@ import { Interaction } from './Interaction';
 
 import { Mutable } from './types';
 import { onInteractionCreate } from './interactionCreate';
-import Logger from '../structures/Logger';
+import Logger from './Logger';
 
 // TypeScript or JavaScript environment (thanks to https://github.com/stijnvdkolk)
 // eslint-disable-next-line import/no-mutable-exports

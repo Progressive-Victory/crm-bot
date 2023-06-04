@@ -1,6 +1,6 @@
 import { Events, VoiceState } from 'discord.js';
 import { renameOrganizing } from '../structures/helpers';
-import Logger from '../structures/Logger';
+import Logger from '../Client/Logger';
 import Database from '../structures/Database';
 import { Event } from '../Client';
 

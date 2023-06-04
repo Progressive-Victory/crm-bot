@@ -1,6 +1,6 @@
 import { Events, Message } from 'discord.js';
 import { Event } from '../Client';
-import Logger from '../structures/Logger';
+import Logger from '../Client/Logger';
 import Database from '../structures/Database';
 
 async function onMessageCreate(message: Message) {

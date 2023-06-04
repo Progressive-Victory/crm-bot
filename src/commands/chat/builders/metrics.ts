@@ -1,6 +1,6 @@
 import { PermissionFlagsBits } from 'discord.js';
-import { localization, t } from '../../../i18n';
-import { ChatInputCommand } from '../../../Client';
+import { localization, t } from 'src/i18n';
+import { ChatInputCommand } from 'src/Client';
 import { execute } from '../execution/metrics';
 
 const ns = 'metric';

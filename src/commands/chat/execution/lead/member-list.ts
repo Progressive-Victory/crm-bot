@@ -1,5 +1,5 @@
 import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { t } from '../../../../i18n';
+import { t } from 'src/i18n';
 import { ns } from '../../builders/lead';
 
 /**

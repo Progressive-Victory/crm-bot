@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { checkConnected } from '../../../structures/helpers';
-import Database from '../../../structures/Database';
-import { t } from '../../../i18n';
+import { checkConnected } from 'src/structures/helpers';
+import Database from 'src/structures/Database';
+import { t } from 'src/i18n';
 
 const ns = 'metric';
 

@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, Snowflake } from 'discord.js';
 
-import Logger from '../../../../../structures/Logger';
-import { memberState } from '../../../../../structures/helpers';
-import { t } from '../../../../../i18n';
+import { Logger } from 'src/Client';
+import { memberState } from 'src/structures/helpers';
+import { t } from 'src/i18n';
 import { ns } from '../../../builders/lead';
 
 const regionLeadRoleID: Snowflake = process.env.REGIONAL_ROLE_ID;
