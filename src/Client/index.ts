@@ -14,4 +14,4 @@ export { TimeFormat, ExtraColor } from './types';
 
 export type { TimeCode } from './types';
 
-export { Logger } from './Logger'
+export { Logger } from './Logger';
