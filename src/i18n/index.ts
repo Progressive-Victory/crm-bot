@@ -1,7 +1,7 @@
 import { FluentVariable } from '@fluent/bundle';
 import { LocaleString } from 'discord.js';
 import {
-	i18n as Client, i18nOptions, tOptions
+	i18n as Client, i18nOptions, tOptions 
 } from './i18n';
 
 let i18n: Client;

@@ -2,7 +2,7 @@ import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';

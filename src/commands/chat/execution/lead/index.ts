@@ -1,5 +1,5 @@
 import {
-	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember
+	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember 
 } from 'discord.js';
 import { State } from 'src/declarations/states';
 import { t } from 'src/i18n';

@@ -1,5 +1,5 @@
 import {
-	ChatInputCommandInteraction, Snowflake, VoiceChannel
+	ChatInputCommandInteraction, Snowflake, VoiceChannel 
 } from 'discord.js';
 import Logger from 'src/Client/Logger';
 import { t } from 'src/i18n';
