@@ -18,7 +18,7 @@ import {
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import {
-	ChatInputCommand, Command, ContextMenuCommand
+	ChatInputCommand, Command, ContextMenuCommand 
 } from './Command';
 import { Event } from './Event';
 import { Interaction } from './Interaction';
