@@ -1,5 +1,5 @@
 import {
-	Events, GuildMember, Message, MessageReaction, User 
+	Events, GuildMember, Message, MessageReaction, User
 } from 'discord.js';
 import { Event, Logger } from 'src/Client';
 import { isConnectEmoji, onConnect } from 'src/structures/helpers';

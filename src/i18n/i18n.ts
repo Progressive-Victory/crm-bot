@@ -1,10 +1,10 @@
 import {
-	FluentBundle, FluentResource, FluentVariable 
+	FluentBundle, FluentResource, FluentVariable
 } from '@fluent/bundle';
 import {
-	Collection, Locale, LocaleString 
+	Collection, Locale, LocaleString
 } from 'discord.js';
-import { readdirSync, readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
 const locales = Object.values(Locale);

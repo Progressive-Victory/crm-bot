@@ -1,5 +1,7 @@
 import {
-	ChatInputCommandInteraction, ChannelType, MessageCreateOptions, PermissionFlagsBits 
+	ChannelType,
+	ChatInputCommandInteraction,
+	MessageCreateOptions, PermissionFlagsBits
 } from 'discord.js';
 import { Logger } from 'src/Client';
 import { State } from 'src/declarations/states';

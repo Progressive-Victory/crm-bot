@@ -1,5 +1,5 @@
 import {
-	DiscordAPIError, Interaction, RepliableInteraction 
+	DiscordAPIError, Interaction, RepliableInteraction
 } from 'discord.js';
 import Logger from './Logger';
 

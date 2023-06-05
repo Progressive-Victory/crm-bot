@@ -1,9 +1,9 @@
 import { Events, VoiceBasedChannel } from 'discord.js';
+import {
+	Client, Event, Logger
+} from 'src/Client';
 import { VCChannelIDs } from 'src/structures/Constants';
 import { renameOrganizing } from 'src/structures/helpers';
-import {
-	Client, Event, Logger 
-} from 'src/Client';
 
 async function onReady(client: Client) {
 	Logger.info(`Ready! Logged in as ${client.user.tag}`);

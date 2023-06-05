@@ -1,5 +1,5 @@
 import {
-	AutocompleteInteraction, BaseInteraction, ChatInputCommandInteraction 
+	AutocompleteInteraction, BaseInteraction, ChatInputCommandInteraction
 } from 'discord.js';
 
 declare global {

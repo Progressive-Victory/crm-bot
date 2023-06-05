@@ -1,7 +1,7 @@
 import { Events, GuildMember } from 'discord.js';
 import { Event, Logger } from 'src/Client';
-import { onJoin } from 'src/structures/helpers';
 import Database from 'src/structures/Database';
+import { onJoin } from 'src/structures/helpers';
 
 export default new Event().setName(Events.GuildBanAdd).setExecute(async (member: GuildMember) => {
 	if (member.guild.id === process.env.TRACKING_GUILD) {

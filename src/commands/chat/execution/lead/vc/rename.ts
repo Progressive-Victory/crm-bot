@@ -1,9 +1,9 @@
 import {
-	ChatInputCommandInteraction, Snowflake, VoiceChannel 
+	ChatInputCommandInteraction, Snowflake, VoiceChannel
 } from 'discord.js';
 import Logger from 'src/Client/Logger';
-import { VCChannelIDs } from 'src/structures/Constants';
 import { t } from 'src/i18n';
+import { VCChannelIDs } from 'src/structures/Constants';
 import { ns } from '../../../builders/lead';
 
 /**
