@@ -3,7 +3,7 @@ import {
 } from 'discord.js';
 import { isStateLead } from '../../structures/helpers';
 import { ContextMenuCommand } from '../../Client';
-import Logger from '../../structures/Logger';
+import Logger from '../../Client/Logger';
 import { localization, t } from '../../i18n';
 
 const ns = 'delete';

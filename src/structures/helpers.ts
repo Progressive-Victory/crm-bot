@@ -6,10 +6,10 @@ import {
 } from 'discord.js';
 import { config } from 'dotenv';
 import fetch from 'node-fetch';
+import { Logger } from 'src/Client';
+import { State } from 'src/declarations/states';
+import { t } from 'src/i18n';
 import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
-import Logger from './Logger';
-import { State } from '../declarations/states';
-import { t } from '../i18n';
 
 config();
 

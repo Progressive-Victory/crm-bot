@@ -1,7 +1,6 @@
 import { Events, GuildMember } from 'discord.js';
-import { Event } from '../Client';
-import Logger from '../structures/Logger';
-import Database from '../structures/Database';
+import { Event, Logger } from 'src/Client';
+import Database from 'src/structures/Database';
 
 export default new Event().setName(Events.GuildMemberRemove).setExecute(async (member: GuildMember) => {
 	if (member.guild.id === process.env.TRACKING_GUILD) {

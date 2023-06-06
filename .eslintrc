@@ -100,6 +100,12 @@
 			"error",
 			{ "blankLine": "always", "prev": "*", "next": "function" },
 			{ "blankLine": "always", "prev": "*", "next": "export" }
-		]
+		],
+		"semi" : ["error", "always"],
+		"key-spacing": ["error", {
+			"beforeColon": false,
+			"afterColon": true,
+			"mode": "strict"
+			}]
 	}
 }

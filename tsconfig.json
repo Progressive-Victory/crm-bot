@@ -14,7 +14,8 @@
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"moduleResolution": "node",
-		"baseUrl": ".",
+		"baseUrl": "./",
+		"paths": {"src/*": ["./src/*"]},
 		"esModuleInterop": true,
 		"sourceMap": true,
 		"inlineSources": true

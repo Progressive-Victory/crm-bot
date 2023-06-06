@@ -1,13 +1,13 @@
 import {
-	SlashCommandBuilder,
-	ContextMenuCommandBuilder,
-	ChatInputCommandInteraction,
 	AutocompleteInteraction,
+	ChatInputCommandInteraction,
 	CommandInteraction,
-	SlashCommandSubcommandsOnlyBuilder,
+	ContextMenuCommandBuilder,
+	ContextMenuCommandInteraction,
 	InteractionResponse,
 	Message,
-	ContextMenuCommandInteraction
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder
 } from 'discord.js';
 import { Mutable } from './types';
 

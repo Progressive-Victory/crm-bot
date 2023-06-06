@@ -27,13 +27,13 @@ function wrap(logger: pino.Logger) {
 	return logger;
 }
 
-const Logger = wrap(
+export const Logger = wrap(
 	pino({
 		level: process.env.LOG_LEVEL || 'debug',
 		hooks: {
 			logMethod(inputArgs, method, level) {
-				if (level === 50 && (inputArgs[0] as any) instanceof Error) {
-					const err = inputArgs[0] as any as Error;
+				if (level === 50 && (inputArgs[0] as unknown) instanceof Error) {
+					const err = inputArgs[0] as unknown as Error;
 					let args = [];
 
 					if (err.cause) {
