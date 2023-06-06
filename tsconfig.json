@@ -16,9 +16,9 @@
 		"moduleResolution": "node",
 		"baseUrl": "./src",
 		"paths": {
-			"Client/*": ["./Client/*"],
-			"i18n/*": ["./i18n/*"],
-			"builders/*": ["./commands/chat/builders/*"],
+			"@client": ["./Client"],
+			"@i18n": ["./i18n"],
+			"@builders/*": ["./commands/chat/builders/*"],
 			"src/*": ["./*"]
 		},
 		"esModuleInterop": true,
@@ -27,5 +27,5 @@
 		
 	},
 	"exclude": ["**/__tests__/*.ts", "node_modules", "jest.config.ts"],
-	"include": ["**/*.ts", "__tests__/test.ts"]
+	"include": ["**/*.ts", "__tests__/test.ts", "src/**/*"]
 }
