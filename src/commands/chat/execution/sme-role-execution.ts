@@ -11,12 +11,14 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 	const { locale } = interaction;
 	const member = interaction.options.getMember(t({ key: 'options-user', ns }));
 	const role = interaction.options.getRole(t({ key: 'options-role', ns }));
-	
-	if(!smeRoleIds.includes(role.id)) {
+
+	if (!smeRoleIds.includes(role.id)) {
 		interaction.followUp({
 			content: t({
-				key: 'not-sme-role', ns, locale, 
-				args: { role: role.toString() } 
+				key: 'not-sme-role',
+				ns,
+				locale,
+				args: { role: role.toString() }
 			})
 		});
 	}
@@ -30,7 +32,6 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 				args: { smeRole: role.name, member: interaction.member.displayName }
 			})
 		);
-		
 	}
 	else {
 		member.roles.add(

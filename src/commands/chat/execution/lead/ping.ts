@@ -1,7 +1,7 @@
 import { Logger } from 'Client';
 import { ns } from 'builders/lead';
 import {
-	ChannelType, ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits
+	ChannelType, ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits 
 } from 'discord.js';
 import { t } from 'i18n';
 import { State } from 'src/declarations/states';

@@ -1,6 +1,6 @@
 import { ns } from 'builders/lead';
 import {
-	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember
+	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember 
 } from 'discord.js';
 import { t } from 'i18n';
 import { State } from 'src/declarations/states';

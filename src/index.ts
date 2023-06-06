@@ -3,7 +3,7 @@ import { join } from 'path';
 
 import { Client } from 'Client';
 import {
-	GatewayIntentBits as Intents, Locale, Partials
+	GatewayIntentBits as Intents, Locale, Partials 
 } from 'discord.js';
 import { init } from 'i18n';
 
