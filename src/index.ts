@@ -4,7 +4,7 @@ import { join } from 'path';
 import { Client } from '@client';
 import { init } from '@i18n';
 import {
-	GatewayIntentBits as Intents, Locale, Partials
+	GatewayIntentBits as Intents, Locale, Partials 
 } from 'discord.js';
 
 import 'source-map-support/register';
