@@ -1,9 +1,9 @@
+import { ChatInputCommand } from 'Client';
 import { PermissionFlagsBits } from 'discord.js';
-import { localization, t } from '../../../i18n';
-import { ChatInputCommand } from '../../../Client';
+import { localization, t } from 'i18n';
 import { smeRole } from '../execution/sme-role-execution';
 
-export const ns = 'sme-role';
+export const ns = 'sme';
 
 export default new ChatInputCommand()
 	.setBuilder((builder) =>
@@ -21,7 +21,7 @@ export default new ChatInputCommand()
 					.setDescriptionLocalizations(localization('options-role', ns))
 					.setRequired(true)
 			)
-			.addStringOption((option) =>
+			.addRoleOption((option) =>
 				option
 					.setName(t({ key: 'options-role', ns }))
 					.setDescription(t({ key: 'role-description', ns }))

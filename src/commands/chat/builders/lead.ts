@@ -1,6 +1,6 @@
+import { ChatInputCommand } from 'Client';
 import { ChannelType, PermissionFlagsBits } from 'discord.js';
-import { ChatInputCommand } from 'src/Client';
-import { localization, t } from 'src/i18n';
+import { localization, t } from 'i18n';
 import { autoComplete, lead } from '../execution/lead';
 
 export const ns = 'lead';

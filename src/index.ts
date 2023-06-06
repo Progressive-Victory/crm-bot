@@ -1,11 +1,11 @@
 import { config } from 'dotenv';
 import { join } from 'path';
 
+import { Client } from 'Client';
 import {
-	GatewayIntentBits as Intents, Locale, Partials 
+	GatewayIntentBits as Intents, Locale, Partials
 } from 'discord.js';
-import { Client } from './Client';
-import { init } from './i18n';
+import { init } from 'i18n';
 
 import 'source-map-support/register';
 import './structures/prototypes';

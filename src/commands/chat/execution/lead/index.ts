@@ -1,11 +1,11 @@
+import { ns } from 'builders/lead';
 import {
-	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember 
+	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember
 } from 'discord.js';
+import { t } from 'i18n';
 import { State } from 'src/declarations/states';
-import { t } from 'src/i18n';
 import { REGION_ABBREVIATION_MAP } from 'src/structures/Constants';
 import { states } from 'src/structures/helpers';
-import { ns } from '../../builders/lead';
 import { memberList } from './member-list';
 import ping from './ping';
 import role from './region/role';

@@ -14,11 +14,17 @@
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"moduleResolution": "node",
-		"baseUrl": "./",
-		"paths": {"src/*": ["./src/*"]},
+		"baseUrl": "./src",
+		"paths": {
+			"Client/*": ["./Client/*"],
+			"i18n/*": ["./i18n/*"],
+			"builders/*": ["./commands/chat/builders/*"],
+			"src/*": ["./*"]
+		},
 		"esModuleInterop": true,
 		"sourceMap": true,
 		"inlineSources": true
+		
 	},
 	"exclude": ["**/__tests__/*.ts", "node_modules", "jest.config.ts"],
 	"include": ["**/*.ts", "__tests__/test.ts"]

@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, Snowflake } from 'discord.js';
 
-import { Logger } from 'src/Client';
-import { t } from 'src/i18n';
+import { Logger } from 'Client';
+import { t } from 'i18n';
 import { memberState } from 'src/structures/helpers';
 import { ns } from '../../../builders/lead';
 
