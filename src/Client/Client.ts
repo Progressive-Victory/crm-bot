@@ -293,10 +293,9 @@ export class ExtendedClient extends Client {
 		(this as Mutable<ExtendedClient>).commands = await fileToCollection<ChatInputCommand>(path);
 	}
 
-	// TODO: fix spelling
 	/**
 	 * Deploy Application Commands to Discord
-	 * @param guild if commands deploys subset of commands that should only be deployed to a specific guild
+	 * @param guild If commands deploys subset of commands that should only be deployed to a specific guild
 	 * @see https://discord.com/developers/docs/interactions/application-commands
 	 */
 	public async deploy(guild?: Snowflake) {
@@ -313,7 +312,7 @@ export class ExtendedClient extends Client {
 			// Gets context menu commands that are global
 			globalDeploy.push(...this.contextMenus.filter((f) => f.isGlobal !== false).map((m) => m.builder.toJSON()));
 
-			// Put the JSON API object to the aplicationCommands endPoint
+			// Put the JSON API object to the applicationCommands endpoint
 			const pushedCommands = (await this.rest
 				.put(Routes.applicationCommands(this.user.id), { body: globalDeploy })
 				.catch((e) => Logger.error(e))) as ApplicationCommand[];
