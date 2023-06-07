@@ -1,5 +1,5 @@
+import { Event, Logger } from '@Client';
 import { Events, VoiceState } from 'discord.js';
-import { Event, Logger } from 'src/Client';
 import Database from 'src/structures/Database';
 import { renameOrganizing } from 'src/structures/helpers';
 

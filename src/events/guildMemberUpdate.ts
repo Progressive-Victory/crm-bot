@@ -1,5 +1,5 @@
+import { Event, Logger } from '@Client';
 import { Events, GuildMember } from 'discord.js';
-import { Event, Logger } from 'src/Client';
 
 async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
 	if (after.guild.id !== process.env.TRACKING_GUILD) return;

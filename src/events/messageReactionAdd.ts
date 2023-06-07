@@ -1,7 +1,7 @@
+import { Event, Logger } from '@Client';
 import {
 	Events, GuildMember, Message, MessageReaction, User 
 } from 'discord.js';
-import { Event, Logger } from 'src/Client';
 import { isConnectEmoji, onConnect } from 'src/structures/helpers';
 
 function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember, message: Message<true>) {

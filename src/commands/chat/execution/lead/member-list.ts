@@ -1,6 +1,6 @@
+import { ns } from '@builders/lead';
+import { t } from '@i18n';
 import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { t } from 'src/i18n';
-import { ns } from '../../builders/lead';
 
 /**
  * Executes a chat input command interaction to export role members to a CSV file.

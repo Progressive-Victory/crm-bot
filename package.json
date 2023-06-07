@@ -10,10 +10,9 @@
 	"private": true,
 	"main": "./dist/index.js",
 	"scripts": {
-		"run": "node .",
-		"build": "rimraf dist && swc ./src --out-dir dist",
+		"build": "rimraf dist && tsc",
 		"prestart": "yarn build",
-		"start": "yarn run run",
+		"start": "node .",
 		"test": "jest",
 		"dev": "yarn start | pino-pretty -i pid,hostname -t 'yyyy-mm-dd HH:MM:ss'",
 		"prepm2": "yarn build",
@@ -31,6 +30,7 @@
 		"@fluent/bundle": "^0.18.0",
 		"discord.js": "^14.11.0",
 		"dotenv": "^16.0.3",
+		"module-alias": "^2.2.3",
 		"mongodb": "^5.3.0",
 		"node-fetch": "3.3.1",
 		"pino": "^8.11.0",
@@ -66,6 +66,15 @@
 		"src/**/*.ts": [
 			"prettier --write",
 			"eslint --fix"
-		]
+		],
+		"!**/*.{js,ts,jsx,tsx}": "prettier --write -u"
+	},
+	"_moduleAliases": {
+		"@Client": "dist/Client",
+		"@i18n": "dist/i18n",
+		"@builders": "dist/commands/chat/builders",
+		"@execution": "dist/commands/chat/execution",
+		"src": "dist"
+
 	}
 }
