@@ -2,7 +2,7 @@ import { Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, Snowflake, VoiceChannel
+	ChatInputCommandInteraction, Snowflake, VoiceChannel 
 } from 'discord.js';
 import { VCChannelIDs } from 'src/structures/Constants';
 

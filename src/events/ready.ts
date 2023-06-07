@@ -1,5 +1,5 @@
 import {
-	Client, Event, Logger
+	Client, Event, Logger 
 } from '@Client';
 import { Events, VoiceBasedChannel } from 'discord.js';
 import { VCChannelIDs } from 'src/structures/Constants';

@@ -1,6 +1,6 @@
 import { Event, Logger } from '@Client';
 import {
-	Events, GuildMember, Message, MessageReaction, User
+	Events, GuildMember, Message, MessageReaction, User 
 } from 'discord.js';
 import { isConnectEmoji, onConnect } from 'src/structures/helpers';
 

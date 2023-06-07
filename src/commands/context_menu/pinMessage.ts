@@ -1,9 +1,7 @@
 import { ContextMenuCommand, Logger } from '@Client';
 import { t } from '@i18n';
 import {
-	ApplicationCommandType,
-	ContextMenuCommandBuilder,
-	MessageContextMenuCommandInteraction, PermissionFlagsBits
+	ApplicationCommandType, ContextMenuCommandBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';
 import { hasSMERole, isStateLead } from 'src/structures/helpers';
 
