@@ -1,5 +1,3 @@
-import 'module-alias/register';
-
 import { Client } from '@Client';
 import { init } from '@i18n';
 import {
@@ -10,6 +8,10 @@ import { join } from 'path';
 
 import 'source-map-support/register';
 import './structures/prototypes';
+
+// imports relitive paths
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'module-alias/register';
 
 // Load .env file contents
 config();
