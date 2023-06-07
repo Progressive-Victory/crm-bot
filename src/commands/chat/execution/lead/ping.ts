@@ -1,9 +1,9 @@
-import { Logger } from 'Client';
-import { ns } from 'builders/lead';
+import { Logger } from '@Client';
+import { ns } from '@builders/lead';
+import { t } from '@i18n';
 import {
-	ChannelType, ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits 
+	ChannelType, ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits
 } from 'discord.js';
-import { t } from 'i18n';
 import { State } from 'src/declarations/states';
 
 const states = Object.values(State);

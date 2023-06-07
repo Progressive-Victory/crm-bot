@@ -11,20 +11,21 @@
 		"lib": ["ESNext"],
 		"target": "ESNEXT",
 		"module": "commonjs",
-		"outDir": "./dist",
-		"rootDir": "./src",
 		"moduleResolution": "node",
-		"baseUrl": "./src",
-		"paths": {
-			"@client": ["./Client"],
-			"@i18n": ["./i18n"],
-			"@builders/*": ["./commands/chat/builders/*"],
-			"src/*": ["./*"]
-		},
 		"esModuleInterop": true,
 		"sourceMap": true,
-		"inlineSources": true
-		
+		"inlineSources": true,
+
+		"outDir": "./dist",
+		"rootDir": "src",
+		"baseUrl": "./src",
+		"paths": {
+			"@Client": ["./Client"],
+			"@i18n": ["./i18n"],
+			"@builders/*": ["./commands/chat/builders/*"],
+			"@execution/*": ["./commands/chat/execution/*"],
+			"src/*": ["./*"]
+		}
 	},
 	"exclude": ["**/__tests__/*.ts", "node_modules", "jest.config.ts"],
 	"include": ["**/*.ts", "__tests__/test.ts", "src/**/*"]

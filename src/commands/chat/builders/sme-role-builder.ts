@@ -1,7 +1,7 @@
-import { ChatInputCommand } from 'Client';
+import { ChatInputCommand } from '@Client';
+import { smeRole } from '@execution/sme-role-execution';
+import { localization, t } from '@i18n';
 import { PermissionFlagsBits } from 'discord.js';
-import { localization, t } from 'i18n';
-import { smeRole } from '../execution/sme-role-execution';
 
 export const ns = 'sme';
 
@@ -15,18 +15,18 @@ export default new ChatInputCommand()
 			.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
 			.addUserOption((option) =>
 				option
-					.setName(t({ key: 'options-users', ns }))
-					.setDescription(t({ key: 'user-descriptions', ns }))
-					.setNameLocalizations(localization('options-role', ns))
-					.setDescriptionLocalizations(localization('options-role', ns))
+					.setName(t({ key: 'options-user', ns }))
+					.setDescription(t({ key: 'options-user-description', ns }))
+					.setNameLocalizations(localization('options-user', ns))
+					.setDescriptionLocalizations(localization('options-user-description', ns))
 					.setRequired(true)
 			)
 			.addRoleOption((option) =>
 				option
 					.setName(t({ key: 'options-role', ns }))
-					.setDescription(t({ key: 'role-description', ns }))
+					.setDescription(t({ key: 'options-role-description', ns }))
 					.setNameLocalizations(localization('options-role', ns))
-					.setDescriptionLocalizations(localization('role-description', ns))
+					.setDescriptionLocalizations(localization('options-role-description', ns ))
 					.setRequired(true)
 			)
 	)

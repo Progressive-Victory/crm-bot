@@ -1,7 +1,7 @@
-import { Events, VoiceBasedChannel } from 'discord.js';
 import {
-	Client, Event, Logger 
-} from 'src/Client';
+	Client, Event, Logger
+} from '@Client';
+import { Events, VoiceBasedChannel } from 'discord.js';
 import { VCChannelIDs } from 'src/structures/Constants';
 import { renameOrganizing } from 'src/structures/helpers';
 

@@ -1,12 +1,12 @@
+import { ContextMenuCommand, Logger } from '@Client';
+import { t } from '@i18n';
 import {
-	ContextMenuCommandBuilder, ApplicationCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits, Locale 
+	ApplicationCommandType,
+	ContextMenuCommandBuilder,
+	MessageContextMenuCommandInteraction, PermissionFlagsBits
 } from 'discord.js';
-import { hasSMERole, isStateLead } from '../../structures/helpers';
-import { ContextMenuCommand } from '../../Client';
-import Logger from '../../Client/Logger';
-import { t } from '../../i18n';
+import { hasSMERole, isStateLead } from 'src/structures/helpers';
 
-const locale = Locale.EnglishUS;
 const ns = 'pin';
 
 export default new ContextMenuCommand()
@@ -15,7 +15,6 @@ export default new ContextMenuCommand()
 			.setName(
 				t({
 					key: 'command-name',
-					locale,
 					ns
 				})
 			)
@@ -24,6 +23,7 @@ export default new ContextMenuCommand()
 			.setType(ApplicationCommandType.Message)
 	)
 	.setExecute(async (interaction: MessageContextMenuCommandInteraction<'cached'>) => {
+		const locale = interaction.guildLocale;
 		if (!interaction.targetMessage.pinnable) {
 			return interaction.reply({
 				content: t({

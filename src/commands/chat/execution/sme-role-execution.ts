@@ -1,6 +1,6 @@
-import { ns } from 'builders/sme-role-builder';
+import { ns } from '@builders/sme-role-builder';
+import { t } from '@i18n';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { t } from 'i18n';
 
 const smeName = 'sme-role';
 const smeRoleIds = process.env.SME_ROLE_IDS.split(',');

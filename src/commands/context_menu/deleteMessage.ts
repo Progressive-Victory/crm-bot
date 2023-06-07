@@ -1,10 +1,9 @@
+import { ContextMenuCommand, Logger } from '@Client';
+import { localization, t } from '@i18n';
 import {
-	ApplicationCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits 
+	ApplicationCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits
 } from 'discord.js';
-import { isStateLead } from '../../structures/helpers';
-import { ContextMenuCommand } from '../../Client';
-import Logger from '../../Client/Logger';
-import { localization, t } from '../../i18n';
+import { isStateLead } from 'src/structures/helpers';
 
 const ns = 'delete';
 

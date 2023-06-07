@@ -10,10 +10,9 @@
 	"private": true,
 	"main": "./dist/index.js",
 	"scripts": {
-		"run": "node .",
-		"build": "rimraf dist && swc ./src --out-dir dist",
+		"build": "rimraf dist && tsc",
 		"prestart": "yarn build",
-		"start": "yarn run run",
+		"start": "node -r tsconfig-paths/register .",
 		"test": "jest",
 		"dev": "yarn start | pino-pretty -i pid,hostname -t 'yyyy-mm-dd HH:MM:ss'",
 		"prepm2": "yarn build",
