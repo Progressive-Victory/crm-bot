@@ -1,15 +1,14 @@
-import { readdir } from 'fs/promises';
-import { resolve } from 'path';
-
+import { Logger } from '@Client';
+import { t } from '@i18n';
 import {
 	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';
 import { config } from 'dotenv';
-import fetch from 'node-fetch';
+import { readdir } from 'fs/promises';
+// import fetch from 'node-fetch';
+import { resolve } from 'path';
+import { State } from 'src/declarations/states';
 import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
-import Logger from './Logger';
-import { State } from '../declarations/states';
-import { t } from '../i18n';
 
 config();
 

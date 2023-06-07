@@ -1,7 +1,6 @@
+import { Event, Logger } from '@Client';
 import { Events, Message } from 'discord.js';
-import { Event } from '../Client';
-import Logger from '../structures/Logger';
-import Database from '../structures/Database';
+import Database from 'src/structures/Database';
 
 async function onMessageCreate(message: Message) {
 	if (message.author.bot) return null;

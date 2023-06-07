@@ -4,7 +4,7 @@ import {
 import {
 	Collection, Locale, LocaleString 
 } from 'discord.js';
-import { readdirSync, readFileSync } from 'fs';
+import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
 const locales = Object.values(Locale);

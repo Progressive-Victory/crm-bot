@@ -1,8 +1,7 @@
+import { Event, Logger } from '@Client';
 import { Events, VoiceState } from 'discord.js';
-import { renameOrganizing } from '../structures/helpers';
-import Logger from '../structures/Logger';
-import Database from '../structures/Database';
-import { Event } from '../Client';
+import Database from 'src/structures/Database';
+import { renameOrganizing } from 'src/structures/helpers';
 
 async function onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
 	if (newState.guild.id === process.env.TRACKING_GUILD) {

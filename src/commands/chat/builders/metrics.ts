@@ -1,9 +1,9 @@
+import { ChatInputCommand } from '@Client';
+import { execute } from '@execution/metrics';
+import { localization, t } from '@i18n';
 import { PermissionFlagsBits } from 'discord.js';
-import { localization, t } from '../../../i18n';
-import { ChatInputCommand } from '../../../Client';
-import { execute } from '../execution/metrics';
 
-const ns = 'metric';
+export const ns = 'metric';
 
 export default new ChatInputCommand()
 	.setBuilder((builder) =>

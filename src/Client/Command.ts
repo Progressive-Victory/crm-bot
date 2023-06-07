@@ -1,13 +1,13 @@
 import {
-	SlashCommandBuilder,
-	ContextMenuCommandBuilder,
-	ChatInputCommandInteraction,
 	AutocompleteInteraction,
+	ChatInputCommandInteraction,
 	CommandInteraction,
-	SlashCommandSubcommandsOnlyBuilder,
+	ContextMenuCommandBuilder,
+	ContextMenuCommandInteraction,
 	InteractionResponse,
 	Message,
-	ContextMenuCommandInteraction
+	SlashCommandBuilder,
+	SlashCommandSubcommandsOnlyBuilder
 } from 'discord.js';
 import { Mutable } from './types';
 
@@ -44,7 +44,7 @@ export class ChatInputCommand implements Command {
 	public execute: (interaction: ChatInputCommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
 	/**
-	 * runs when client receives and Autocomplete interaction
+	 * Runs when client receives and Autocomplete interaction
 	 * @param interaction Autocomplete interaction received by the client
 	 */
 	public autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;

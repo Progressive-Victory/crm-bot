@@ -1,9 +1,8 @@
+import { ns } from '@builders/metrics';
+import { t } from '@i18n';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { checkConnected } from '../../../structures/helpers';
-import Database from '../../../structures/Database';
-import { t } from '../../../i18n';
-
-const ns = 'metric';
+import Database from 'src/structures/Database';
+import { checkConnected } from 'src/structures/helpers';
 
 export async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
 	await interaction.deferReply({ ephemeral: true });

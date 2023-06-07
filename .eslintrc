@@ -12,6 +12,7 @@
 		"browser": true
 	},
 	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "airbnb-base", "prettier"],
+	"ignorePatterns": ["**/dist/*"],
 	"rules": {
 		"indent": ["error", "tab"],
 		"no-tabs": "off",
@@ -100,6 +101,12 @@
 			"error",
 			{ "blankLine": "always", "prev": "*", "next": "function" },
 			{ "blankLine": "always", "prev": "*", "next": "export" }
-		]
+		],
+		"semi" : ["error", "always"],
+		"key-spacing": ["error", {
+			"beforeColon": false,
+			"afterColon": true,
+			"mode": "strict"
+		}]
 	}
 }

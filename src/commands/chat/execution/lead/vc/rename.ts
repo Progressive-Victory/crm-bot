@@ -1,10 +1,10 @@
+import { Logger } from '@Client';
+import { ns } from '@builders/lead';
+import { t } from '@i18n';
 import {
 	ChatInputCommandInteraction, Snowflake, VoiceChannel 
 } from 'discord.js';
-import Logger from '../../../../../structures/Logger';
-import { VCChannelIDs } from '../../../../../structures/Constants';
-import { t } from '../../../../../i18n';
-import { ns } from '../../../builders/lead';
+import { VCChannelIDs } from 'src/structures/Constants';
 
 /**
  * Renames a VC

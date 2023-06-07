@@ -1,5 +1,5 @@
-import { config } from 'dotenv';
 import { Collection, Snowflake } from 'discord.js';
+import { config } from 'dotenv';
 
 config();
 

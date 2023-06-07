@@ -1,8 +1,7 @@
-import { MongoClient } from 'mongodb';
-import { config } from 'dotenv';
+import { Logger } from '@Client';
 import { Snowflake } from 'discord.js';
-
-import Logger from './Logger';
+import { config } from 'dotenv';
+import { MongoClient } from 'mongodb';
 
 config();
 const client = new MongoClient(process.env.DB_URI);
