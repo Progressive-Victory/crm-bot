@@ -10,7 +10,8 @@
 	"private": true,
 	"main": "./dist/index.js",
 	"scripts": {
-		"build": "rimraf dist && tsc",
+		"prebuild": "rimraf dist",
+		"build": "swc ./src --out-dir dist",
 		"prestart": "yarn build",
 		"start": "node .",
 		"test": "jest",
@@ -75,6 +76,5 @@
 		"@builders": "dist/commands/chat/builders",
 		"@execution": "dist/commands/chat/execution",
 		"src": "dist"
-
 	}
 }
