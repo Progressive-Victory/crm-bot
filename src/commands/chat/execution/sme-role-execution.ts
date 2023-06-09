@@ -1,3 +1,4 @@
+import { Logger } from '@Client';
 import { ns } from '@builders/sme-role-builder';
 import { t } from '@i18n';
 import { ChatInputCommandInteraction } from 'discord.js';
@@ -12,36 +13,42 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 	const member = interaction.options.getMember(t({ key: 'options-user', ns }));
 	const role = interaction.options.getRole(t({ key: 'options-role', ns }));
 
-	if (!smeRoleIds.includes(role.id)) {
-		interaction.followUp({
-			content: t({
-				key: 'not-sme-role',
-				ns,
-				locale,
-				args: { role: role.toString() }
-			})
-		});
+	try {
+		if (!smeRoleIds.includes(role.id)) {
+			interaction.followUp({
+				content: t({
+					key: 'not-sme-role',
+					ns,
+					locale,
+					args: { role: role.toString() }
+				})
+			});
+		}
+		else if (member.roles.cache.has(role.id)) {
+			member.roles.remove(
+				smeName,
+				t({
+					key: 'auditlog-remove',
+					ns,
+					locale: interaction.guildLocale,
+					args: { smeRole: role.name, member: interaction.member.displayName }
+				})
+			);
+		}
+		else {
+			member.roles.add(
+				smeName,
+				t({
+					key: 'auditlog-add',
+					ns,
+					locale: interaction.guildLocale,
+					args: { smeRole: role.name, member: interaction.member.displayName }
+				})
+			);
+		}
 	}
-	else if (member.roles.cache.has(role.id)) {
-		member.roles.remove(
-			smeName,
-			t({
-				key: 'auditlog-remove',
-				ns,
-				locale: interaction.guildLocale,
-				args: { smeRole: role.name, member: interaction.member.displayName }
-			})
-		);
-	}
-	else {
-		member.roles.add(
-			smeName,
-			t({
-				key: 'auditlog-add',
-				ns,
-				locale: interaction.guildLocale,
-				args: { smeRole: role.name, member: interaction.member.displayName }
-			})
-		);
+	catch (error) {
+		// TODO: Add Halding for lack of premission Error
+		Logger.error(error);
 	}
 }
