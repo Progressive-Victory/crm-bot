@@ -1,4 +1,8 @@
+/* pettier-ignore-start */
 import 'module-alias/register';
+import 'source-map-support/register';
+import './structures/prototypes';
+/* prettier-ignore-end */
 
 import { Client } from '@Client';
 import { init } from '@i18n';
@@ -7,9 +11,6 @@ import {
 } from 'discord.js';
 import { config } from 'dotenv';
 import { join } from 'path';
-
-import 'source-map-support/register';
-import './structures/prototypes';
 
 // Load .env file contents
 config();

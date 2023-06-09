@@ -44,7 +44,7 @@ export class ChatInputCommand implements Command {
 	public execute: (interaction: ChatInputCommandInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
 
 	/**
-	 * runs when client receives and Autocomplete interaction
+	 * Runs when client receives and Autocomplete interaction
 	 * @param interaction Autocomplete interaction received by the client
 	 */
 	public autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
