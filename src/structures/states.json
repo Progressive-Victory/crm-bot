@@ -1,0 +1,289 @@
+{
+	"states": [
+		{
+			"name": "Alabama",
+			"abbreviation": "AL",
+			"roleId": "1000784405343780904"
+		},
+		{
+			"name": "Alaska",
+			"abbreviation": "AK",
+			"roleId": "1000784700689891422"
+		},
+		{
+			"name": "Arizona",
+			"abbreviation": "AZ",
+			"roleId": "1000784744075755611"
+		},
+		{
+			"name": "Arkansas",
+			"abbreviation": "AR",
+			"roleId": "1000784788392783902"
+		},
+		{
+			"name": "American Samoa",
+			"abbreviation": "AS",
+			"roleId": ""
+		},
+		{
+			"name": "California",
+			"abbreviation": "CA",
+			"roleId": "1000784834416881754"
+		},
+		{
+			"name": "Colorado",
+			"abbreviation": "CO",
+			"roleId": "1000784916511981599"
+		},
+		{
+			"name": "Connecticut",
+			"abbreviation": "CT",
+			"roleId": "1000784955477082153"
+		},
+		{
+			"name": "Delaware",
+			"abbreviation": "DE",
+			"roleId": ""
+		},
+		{
+			"name": "District of Columbia",
+			"abbreviation": "DC",
+			"roleId": "1000808566480973924"
+		},
+		{
+			"name": "Florida",
+			"abbreviation": "FL",
+			"roleId": "1000785059957194842"
+		},
+		{
+			"name": "Georgia",
+			"abbreviation": "GA",
+			"roleId": "1000785126663405598"
+		},
+		{
+			"name": "Guam",
+			"abbreviation": "GU",
+			"roleId": ""
+		},
+		{
+			"name": "Hawaii",
+			"abbreviation": "hi",
+			"roleId": "1000785185266204692"
+		},
+		{
+			"name": "Idaho",
+			"abbreviation": "ID",
+			"roleId": "1000785243298607194"
+		},
+		{
+			"name": "Illinois",
+			"abbreviation": "IL",
+			"roleId": "1000813695032639499"
+		},
+		{
+			"name": "Indiana",
+			"abbreviation": "IN",
+			"roleId": "1000785309874782230"
+		},
+		{
+			"name": "Iowa",
+			"abbreviation": "IA",
+			"roleId": ""
+		},
+		{
+			"name": "Kansas",
+			"abbreviation": "KS",
+			"roleId": "1000785355978584105"
+		},
+		{
+			"name": "Kentucky",
+			"abbreviation": "KY",
+			"roleId": "1000785484773064704"
+		},
+		{
+			"name": "Louisiana",
+			"abbreviation": "LA",
+			"roleId": "1000785557720412302"
+		},
+		{
+			"name": "Maine",
+			"abbreviation": "ME",
+			"roleId": "1000785623004741722"
+		},
+		{
+			"name": "Maryland",
+			"abbreviation": "MD",
+			"roleId": "1000785699261390919"
+		},
+		{
+			"name": "Massachusetts",
+			"abbreviation": "MA",
+			"roleId": "1000785781369094154"
+		},
+		{
+			"name": "Michigan",
+			"abbreviation": "MI",
+			"roleId": "1000785853100069046"
+		},
+		{
+			"name": "Minnesota",
+			"abbreviation": "MN",
+			"roleId": "1000785944548478986"
+		},
+		{
+			"name": "Mississippi",
+			"abbreviation": "MS",
+			"roleId": "1000786001976905798"
+		},
+		{
+			"name": "Missouri",
+			"abbreviation": "MO",
+			"roleId": "1000786048873414676"
+		},
+		{
+			"name": "Montana",
+			"abbreviation": "MT",
+			"roleId": "1000808729752649819"
+		},
+		{
+			"name": "Nebraska",
+			"abbreviation": "NE",
+			"roleId": "1000786147951251596"
+		},
+		{
+			"name": "Nevada",
+			"abbreviation": "NV",
+			"roleId": "1000786206197567498"
+		},
+		{
+			"name": "New Hampshire",
+			"abbreviation": "NH",
+			"roleId": "1000786257422585936"
+		},
+		{
+			"name": "New Jersey",
+			"abbreviation": "NJ",
+			"roleId": "1000786306483355668"
+		},
+		{
+			"name": "New Mexico",
+			"abbreviation": "NM",
+			"roleId": "1000786353270820874"
+		},
+		{
+			"name": "New York",
+			"abbreviation": "NY",
+			"roleId": "1000786403812180039"
+		},
+		{
+			"name": "North Carolina",
+			"abbreviation": "NC",
+			"roleId": "1000786450503180389"
+		},
+		{
+			"name": "North Dakota",
+			"abbreviation": "ND",
+			"roleId": ""
+		},
+		{
+			"name": "Northern Mariana Islands",
+			"abbreviation": "MP",
+			"roleId": "1000786522796216350"
+		},
+		{
+			"name": "Ohio",
+			"abbreviation": "OH",
+			"roleId": "1000786584817381507"
+		},
+		{
+			"name": "Oklahoma",
+			"abbreviation": "OK",
+			"roleId": "1000786658469367808"
+		},
+		{
+			"name": "Oregon",
+			"abbreviation": "OR",
+			"roleId": "1000786695123374100"
+		},
+		{
+			"name": "Pennsylvania",
+			"abbreviation": "PA",
+			"roleId": "1000786755831734382"
+		},
+		{
+			"name": "Puerto Rico",
+			"abbreviation": "PR",
+			"roleId": ""
+		},
+		{
+			"name": "Rhode Island",
+			"abbreviation": "RI",
+			"roleId": "1000786822093357086"
+		},
+		{
+			"name": "Carolina",
+			"abbreviation": "SC",
+			"roleId": "1000786901701242970"
+		},
+		{
+			"name": "South Dakota",
+			"abbreviation": "SD",
+			"roleId": "1000786963080683550"
+		},
+		{
+			"name": "Tennessee",
+			"abbreviation": "TN",
+			"roleId": "1000787005317333103"
+		},
+		{
+			"name": "Texas",
+			"abbreviation": "TX",
+			"roleId": "1000787072476532778"
+		},
+		{
+			"name": "Trust Territories",
+			"abbreviation": "TT",
+			"roleId": ""
+		},
+		{
+			"name": "Utah",
+			"abbreviation": "UT",
+			"roleId": "1000787128608882708"
+		},
+		{
+			"name": "Vermont",
+			"abbreviation": "VT",
+			"roleId": "1000795422270431262"
+		},
+		{
+			"name": "Virginia",
+			"abbreviation": "VA",
+			"roleId": "1000795538804965398"
+		},
+		{
+			"name": "Virgin Islands",
+			"abbreviation": "VI",
+			"roleId": ""
+		},
+		{
+			"name": "Washington",
+			"abbreviation": "WA",
+			"roleId": "1000795627292205077"
+		},
+		{
+			"name": "West Virginia",
+			"abbreviation": "WV",
+			"roleId": "1000795681021239336"
+		},
+		{
+			"name": "Wisconsin",
+			"abbreviation": "WI",
+			"roleId": "1000795751934345227"
+		},
+		{
+			"name": "Wyoming",
+			"abbreviation": "WY",
+			"roleId": "1000795810721701948"
+		}
+	]
+}

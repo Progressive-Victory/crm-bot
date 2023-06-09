@@ -1,69 +1,82 @@
-import { Collection, Snowflake } from 'discord.js';
+import {
+	Collection, RoleResolvable, Snowflake 
+} from 'discord.js';
 import { config } from 'dotenv';
+import stateConfig from './states.json';
 
 config();
 
-export const REGION_ABBREVIATION_MAP = {
-	california: 'CA',
-	florida: 'FL',
-	'new-york': 'NY',
-	illinois: 'IL',
-	pennsylvania: 'PA',
-	ohio: 'OH',
-	georgia: 'GA',
-	'north-carolina': 'NC',
-	michigan: 'MI',
-	'new-jersey': 'NJ',
-	virginia: 'VA',
-	washington: 'WA',
-	arizona: 'AZ',
-	massachusetts: 'MA',
-	tennessee: 'TN',
-	indiana: 'IN',
-	texas: 'TX',
-	missouri: 'MO',
-	maryland: 'MD',
-	wisconsin: 'WI',
-	colorado: 'CO',
-	minnesota: 'MN',
-	'south-carolina': 'SC',
-	alabama: 'AL',
-	louisiana: 'LA',
-	kentucky: 'KY',
-	oregon: 'OR',
-	oklahoma: 'OK',
-	connecticut: 'CT',
-	utah: 'UT',
-	iowa: 'IA',
-	mississippi: 'MS',
-	arkansas: 'AR',
-	kansas: 'KS',
-	nevada: 'NV',
-	nebraska: 'NE',
-	'new-mexico': 'NM',
-	'west-virginia': 'WV',
-	idaho: 'ID',
-	hawaii: 'HI',
-	'new-hampshire': 'NH',
-	maine: 'ME',
-	'rhode-island': 'RI',
-	montana: 'MT',
-	delaware: 'DE',
-	'south-dakota': 'SD',
-	'north-dakota': 'ND',
-	alaska: 'AK',
-	wyoming: 'WY',
-	vermont: 'VT',
-	'district-of-columbia': 'DC',
-	'puerto-rico': 'PR'
-};
+export type State_Abbreviation =
+	| 'al'
+	| 'ak'
+	| 'az'
+	| 'as'
+	| 'ca'
+	| 'co'
+	| 'ct'
+	| 'de'
+	| 'dc'
+	| 'fl'
+	| 'ga'
+	| 'gu'
+	| 'hi'
+	| 'id'
+	| 'il'
+	| 'in'
+	| 'ia'
+	| 'ks'
+	| 'ky'
+	| 'la'
+	| 'me'
+	| 'md'
+	| 'ma'
+	| 'mi'
+	| 'mn'
+	| 'ms'
+	| 'mo'
+	| 'mt'
+	| 'ne'
+	| 'nv'
+	| 'nh'
+	| 'nj'
+	| 'nm'
+	| 'ny'
+	| 'nc'
+	| 'nd'
+	| 'mp'
+	| 'oh'
+	| 'ok'
+	| 'or'
+	| 'pa'
+	| 'pr'
+	| 'ri'
+	| 'sc'
+	| 'sd'
+	| 'tn'
+	| 'tx'
+	| 'tt'
+	| 'ut'
+	| 'vt'
+	| 'va'
+	| 'vi'
+	| 'wa'
+	| 'wv'
+	| 'wi'
+	| 'wy';
 
 export interface state {
 	name: string;
-	abbreviation: typeof REGION_ABBREVIATION_MAP;
+	abbreviation: string;
+	roleId: RoleResolvable;
 }
 
-export const States = new Collection<string, state>();
+function stateGen() {
+	const stateCollection = new Collection<State_Abbreviation, state>();
+	stateConfig.states.map((s) => stateCollection.set(s.abbreviation.toLocaleLowerCase() as State_Abbreviation, s));
+	return stateCollection;
+}
+
+export const States = stateGen();
 
 export const VCChannelIDs = process.env.STATE_LEAD_RENAMEABLE_CHANNELIDS.split(',');
 
