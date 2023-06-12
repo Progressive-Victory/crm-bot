@@ -1,5 +1,6 @@
 import {
-	Collection, RoleResolvable, Snowflake 
+	ChannelType,
+	Collection, RoleResolvable, Snowflake
 } from 'discord.js';
 import { config } from 'dotenv';
 import stateConfig from './states.json';
@@ -67,7 +68,9 @@ export type State_Abbreviation =
 export interface state {
 	name: string;
 	abbreviation: string;
-	roleId: RoleResolvable;
+	roleId?: RoleResolvable;
+	channelId?: Snowflake;
+	channelType?: ChannelType;
 }
 
 function stateGen() {

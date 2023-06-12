@@ -1,14 +1,13 @@
 import { Logger } from '@Client';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel
 } from 'discord.js';
 import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
 // import fetch from 'node-fetch';
 import { resolve } from 'path';
-import { State } from 'src/declarations/states';
-import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
+import { States, VCChannelNames } from './Constants';
 
 config();
 
@@ -39,10 +38,11 @@ export function isOwner(user: User | GuildMember): boolean {
 	return process.env.OWNERS?.split(',').includes(user.id);
 }
 
-export const states = Object.values(State);
-
 export function memberState(member: GuildMember) {
-	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
+	return member.roles.cache.filter((role) => {
+		const roleIds = States.map((state) => state.roleId);
+		return roleIds.includes(role.id);
+	});
 }
 
 export function isStaff(member: GuildMember): boolean {
@@ -129,7 +129,7 @@ export async function onConnect(
 	}
 }
 
-export function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
+export function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<Response | boolean> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) {
 		return Promise.resolve(false);
 	}
