@@ -1,6 +1,4 @@
-import {
-	ChannelType, Collection, Snowflake 
-} from 'discord.js';
+import { Collection, Snowflake } from 'discord.js';
 import { config } from 'dotenv';
 import stateConfig from './states.json';
 
@@ -66,9 +64,6 @@ export type StateAbbreviation =
 export interface state {
 	name: string;
 	abbreviation: string;
-	roleId: string;
-	channelId: string;
-	channelType: ChannelType;
 }
 
 function stateGen() {

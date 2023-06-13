@@ -51,7 +51,7 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	}
 
 	// Get the state role of the interaction member.
-	const stateRole = interaction.options.getRole('role') || States.find((s) => interaction.member.roles.cache.has(s.roleId));
+	const stateRole = interaction.options.getRole('role') || States.find((s) => interaction.member.roles.cache.find((r) => r.name === s.abbreviation));
 
 	// Create the message content for pinging the role.
 	const pingMessage: MessageCreateOptions = { content: stateRole.toString() };

@@ -2,395 +2,227 @@
 	"states": [
 		{
 			"name": "Alabama",
-			"abbreviation": "AL",
-			"roleId": "1000784405343780904",
-			"channelId": "999846978139738112",
-			"channelType": 0
+			"abbreviation": "AL"
 		},
 		{
 			"name": "Alaska",
-			"abbreviation": "AK",
-			"roleId": "1000784700689891422",
-			"channelId": "999847000990306366",
-			"channelType": 0
+			"abbreviation": "AK"
 		},
 		{
 			"name": "Arizona",
-			"abbreviation": "AZ",
-			"roleId": "1000784744075755611",
-			"channelId": "999847019906597005",
-			"channelType": 0
+			"abbreviation": "AZ"
 		},
 		{
 			"name": "Arkansas",
-			"abbreviation": "AR",
-			"roleId": "1000784788392783902",
-			"channelId": "999847044267130880",
-			"channelType": 0
+			"abbreviation": "AR"
 		},
 		{
 			"name": "American Samoa",
-			"abbreviation": "AS",
-			"roleId": "",
-			"channelId": "1000120471070711900",
-			"channelType": 0
+			"abbreviation": "AS"
 		},
 		{
 			"name": "California",
-			"abbreviation": "CA",
-			"roleId": "1000784834416881754",
-			"channelId": "999847068216611058",
-			"channelType": 0
+			"abbreviation": "CA"
 		},
 		{
 			"name": "Colorado",
-			"abbreviation": "CO",
-			"roleId": "1000784916511981599",
-			"channelId": "999847088596717708",
-			"channelType": 0
+			"abbreviation": "CO"
 		},
 		{
 			"name": "Connecticut",
-			"abbreviation": "CT",
-			"roleId": "1000784955477082153",
-			"channelId": "999847136952852552",
-			"channelType": 0
+			"abbreviation": "CT"
 		},
 		{
 			"name": "Delaware",
-			"abbreviation": "DE",
-			"roleId": "1000785021885501592",
-			"channelId": "999849739141001286",
-			"channelType": 0
+			"abbreviation": "DE"
 		},
 		{
 			"name": "District of Columbia",
-			"abbreviation": "DC",
-			"roleId": "1000808566480973924",
-			"channelId": "1000120249049415740",
-			"channelType": 0
+			"abbreviation": "DC"
 		},
 		{
 			"name": "Florida",
-			"abbreviation": "FL",
-			"roleId": "1000785059957194842",
-			"channelId": "999849775987949649",
-			"channelType": 0
+			"abbreviation": "FL"
 		},
 		{
 			"name": "Georgia",
-			"abbreviation": "GA",
-			"roleId": "1000785126663405598",
-			"channelId": "999849809089409114",
-			"channelType": 0
+			"abbreviation": "GA"
 		},
 		{
 			"name": "Guam",
-			"abbreviation": "GU",
-			"roleId": "",
-			"channelId": "1000120445523202179",
-			"channelType": 0
+			"abbreviation": "GU"
 		},
 		{
 			"name": "Hawaii",
-			"abbreviation": "HI",
-			"roleId": "1000785185266204692",
-			"channelId": "999849832493621308",
-			"channelType": 0
+			"abbreviation": "HI"
 		},
 		{
 			"name": "Idaho",
-			"abbreviation": "ID",
-			"roleId": "1000785243298607194",
-			"channelId": "999849858460561508",
-			"channelType": 0
+			"abbreviation": "ID"
 		},
 		{
 			"name": "Illinois",
-			"abbreviation": "IL",
-			"roleId": "1000813695032639499",
-			"channelId": "999849904367226911",
-			"channelType": 0
+			"abbreviation": "IL"
 		},
 		{
 			"name": "Indiana",
-			"abbreviation": "IN",
-			"roleId": "1000785309874782230",
-			"channelId": "999849921928769707",
-			"channelType": 0
+			"abbreviation": "IN"
 		},
 		{
 			"name": "Iowa",
-			"abbreviation": "IA",
-			"roleId": "1000785355978584105",
-			"channelId": "999849935904186408",
-			"channelType": 0
+			"abbreviation": "IA"
 		},
 		{
 			"name": "Kansas",
-			"abbreviation": "KS",
-			"roleId": "1000785355978584105",
-			"channelId": "999849950693294100",
-			"channelType": 0
+			"abbreviation": "KS"
 		},
 		{
 			"name": "Kentucky",
-			"abbreviation": "KY",
-			"roleId": "1000785484773064704",
-			"channelId": "999849998818758726",
-			"channelType": 0
+			"abbreviation": "KY"
 		},
 		{
 			"name": "Louisiana",
-			"abbreviation": "LA",
-			"roleId": "1000785557720412302",
-			"channelId": "999850048181518436",
-			"channelType": 0
+			"abbreviation": "LA"
 		},
 		{
 			"name": "Maine",
-			"abbreviation": "ME",
-			"roleId": "1000785623004741722",
-			"channelId": "999850076677611571",
-			"channelType": 0
+			"abbreviation": "ME"
 		},
 		{
 			"name": "Maryland",
-			"abbreviation": "MD",
-			"roleId": "1000785699261390919",
-			"channelId": "999850101008773160",
-			"channelType": 0
+			"abbreviation": "MD"
 		},
 		{
 			"name": "Massachusetts",
-			"abbreviation": "MA",
-			"roleId": "1000785781369094154",
-			"channelId": "999850269057765436",
-			"channelType": 0
+			"abbreviation": "MA"
 		},
 		{
 			"name": "Michigan",
-			"abbreviation": "MI",
-			"roleId": "1000785853100069046",
-			"channelId": "999850171485671424",
-			"channelType": 0
+			"abbreviation": "MI"
 		},
 		{
 			"name": "Minnesota",
-			"abbreviation": "MN",
-			"roleId": "1000785944548478986",
-			"channelId": "999850304017268776",
-			"channelType": 0
+			"abbreviation": "MN"
 		},
 		{
 			"name": "Mississippi",
-			"abbreviation": "MS",
-			"roleId": "1000786001976905798",
-			"channelId": "999850334115598406",
-			"channelType": 0
+			"abbreviation": "MS"
 		},
 		{
 			"name": "Missouri",
-			"abbreviation": "MO",
-			"roleId": "1000786048873414676",
-			"channelId": "999850376540999710",
-			"channelType": 0
+			"abbreviation": "MO"
 		},
 		{
 			"name": "Montana",
-			"abbreviation": "MT",
-			"roleId": "1000808729752649819",
-			"channelId": "999850429536030840",
-			"channelType": 0
+			"abbreviation": "MT"
 		},
 		{
 			"name": "Nebraska",
-			"abbreviation": "NE",
-			"roleId": "1000786147951251596",
-			"channelId": "999850484791787570",
-			"channelType": 0
+			"abbreviation": "NE"
 		},
 		{
 			"name": "Nevada",
-			"abbreviation": "NV",
-			"roleId": "1000786206197567498",
-			"channelId": "1000008610782380093",
-			"channelType": 0
+			"abbreviation": "NV"
 		},
 		{
 			"name": "New Hampshire",
-			"abbreviation": "NH",
-			"roleId": "1000786257422585936",
-			"channelId": "999850526063722556",
-			"channelType": 0
+			"abbreviation": "NH"
 		},
 		{
 			"name": "New Jersey",
-			"abbreviation": "NJ",
-			"roleId": "1000786306483355668",
-			"channelId": "999850551695122612",
-			"channelType": 0
+			"abbreviation": "NJ"
 		},
 		{
 			"name": "New Mexico",
-			"abbreviation": "NM",
-			"roleId": "1000786353270820874",
-			"channelId": "999850606233649262",
-			"channelType": 0
+			"abbreviation": "NM"
 		},
 		{
 			"name": "New York",
-			"abbreviation": "NY",
-			"roleId": "1000786403812180039",
-			"channelId": "999850578874212382",
-			"channelType": 0
+			"abbreviation": "NY"
 		},
 		{
 			"name": "North Carolina",
-			"abbreviation": "NC",
-			"roleId": "1000786450503180389",
-			"channelId": "999850668967870524",
-			"channelType": 0
+			"abbreviation": "NC"
 		},
 		{
 			"name": "North Dakota",
-			"abbreviation": "ND",
-			"roleId": "",
-			"channelId": "999850692808294551",
-			"channelType": 0
+			"abbreviation": "ND"
 		},
 		{
 			"name": "Northern Mariana Islands",
-			"abbreviation": "MP",
-			"roleId": "1000786522796216350",
-			"channelId": "1009949408978276403",
-			"channelType": 0
+			"abbreviation": "MP"
 		},
 		{
 			"name": "Ohio",
-			"abbreviation": "OH",
-			"roleId": "1000786584817381507",
-			"channelId": "999850713565896744",
-			"channelType": 0
+			"abbreviation": "OH"
 		},
 		{
 			"name": "Oklahoma",
-			"abbreviation": "OK",
-			"roleId": "1000786658469367808",
-			"channelId": "999850770650382509",
-			"channelType": 0
+			"abbreviation": "OK"
 		},
 		{
 			"name": "Oregon",
-			"abbreviation": "OR",
-			"roleId": "1000786695123374100",
-			"channelId": "999850811410616450",
-			"channelType": 0
+			"abbreviation": "OR"
 		},
 		{
 			"name": "Pennsylvania",
-			"abbreviation": "PA",
-			"roleId": "1000786755831734382",
-			"channelId": "999850850279235734",
-			"channelType": 0
+			"abbreviation": "PA"
 		},
 		{
 			"name": "Puerto Rico",
-			"abbreviation": "PR",
-			"roleId": "1000796242965692547",
-			"channelId": "1000120285015588915",
-			"channelType": 0
+			"abbreviation": "PR"
 		},
 		{
 			"name": "Rhode Island",
-			"abbreviation": "RI",
-			"roleId": "1000786822093357086",
-			"channelId": "999850878540456046",
-			"channelType": 0
+			"abbreviation": "RI"
 		},
 		{
 			"name": "South Carolina",
-			"abbreviation": "SC",
-			"roleId": "1000786901701242970",
-			"channelId": "999850908907229234",
-			"channelType": 0
+			"abbreviation": "SC"
 		},
 		{
 			"name": "South Dakota",
-			"abbreviation": "SD",
-			"roleId": "1000786963080683550",
-			"channelId": "999851655581413466",
-			"channelType": 0
+			"abbreviation": "SD"
 		},
 		{
 			"name": "Tennessee",
-			"abbreviation": "TN",
-			"roleId": "1000787005317333103",
-			"channelId": "999851697704808448",
-			"channelType": 0
+			"abbreviation": "TN"
 		},
 		{
 			"name": "Texas",
-			"abbreviation": "TX",
-			"roleId": "1000787072476532778",
-			"channelId": "999851725429149756",
-			"channelType": 0
+			"abbreviation": "TX"
 		},
 		{
 			"name": "Utah",
-			"abbreviation": "UT",
-			"roleId": "1000787128608882708",
-			"channelId": "999851760019583057",
-			"channelType": 0
+			"abbreviation": "UT"
 		},
 		{
 			"name": "Vermont",
-			"abbreviation": "VT",
-			"roleId": "1000795422270431262",
-			"channelId": "999851778495479839",
-			"channelType": 0
+			"abbreviation": "VT"
 		},
 		{
 			"name": "Virginia",
-			"abbreviation": "VA",
-			"roleId": "1000795538804965398",
-			"channelId": "999851812674867360",
-			"channelType": 0
+			"abbreviation": "VA"
 		},
 		{
 			"name": "Virgin Islands",
-			"abbreviation": "VI",
-			"roleId": "",
-			"channelId": "1000120496626606231",
-			"channelType": 0
+			"abbreviation": "VI"
 		},
 		{
 			"name": "Washington",
-			"abbreviation": "WA",
-			"roleId": "1000795627292205077",
-			"channelId": "1113644441530548315",
-			"channelType": 15
+			"abbreviation": "WA"
 		},
 		{
 			"name": "West Virginia",
-			"abbreviation": "WV",
-			"roleId": "1000795681021239336",
-			"channelId": "999851902839816234",
-			"channelType": 0
+			"abbreviation": "WV"
 		},
 		{
 			"name": "Wisconsin",
-			"abbreviation": "WI",
-			"roleId": "1000795751934345227",
-			"channelId": "999851939430932490",
-			"channelType": 0
+			"abbreviation": "WI"
 		},
 		{
 			"name": "Wyoming",
-			"abbreviation": "WY",
-			"roleId": "1000795810721701948",
-			"channelId": "999851977494237285",
-			"channelType": 0
+			"abbreviation": "WY"
 		}
 	]
 }

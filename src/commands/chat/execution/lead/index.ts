@@ -38,7 +38,7 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
  */
 export function autoComplete(interaction: AutocompleteInteraction<'cached'>) {
 	const { member } = interaction;
-	const stateConfig = States.find((s) => member.roles.cache.has(s.roleId));
+	const stateConfig = States.find((s) => member.roles.cache.find((r) => r.name === s.abbreviation));
 	const focusedOption = interaction.options.getFocused(true);
 	const meeting = t({
 		key: 'meeting',

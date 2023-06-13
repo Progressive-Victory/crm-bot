@@ -40,8 +40,8 @@ export function isOwner(user: User | GuildMember): boolean {
 
 export function memberState(member: GuildMember) {
 	return member.roles.cache.filter((role) => {
-		const roleIds = States.map((state) => state.roleId);
-		return roleIds.includes(role.id);
+		const roleAbbrevs = States.map((state) => state.abbreviation);
+		return roleAbbrevs.includes(role.id);
 	});
 }
 
@@ -173,7 +173,7 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 	if (!trackingGuildChecks(interaction)) return null;
 
 	const channel = interaction.channel.isThread() ? interaction.channel.parent : interaction.channel;
-	const stateConfig = States.find((state) => state.channelId === channel.id);
+	const stateConfig = States.find((state) => state.name.toLowerCase().replace(' ', '-') === channel.name);
 	if (!stateConfig) {
 		return t({
 			key: 'WrongRegionChannel',
@@ -182,7 +182,7 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 		});
 	}
 
-	if (!interaction.member.roles.cache.has(stateConfig.roleId)) {
+	if (!interaction.member.roles.cache.find((r) => r.name === stateConfig.abbreviation)) {
 		return t({
 			key: 'StateRegionMismatchChannel',
 			locale: interaction.locale,
