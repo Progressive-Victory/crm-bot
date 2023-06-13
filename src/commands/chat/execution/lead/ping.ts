@@ -4,9 +4,7 @@ import { t } from '@i18n';
 import {
 	ChannelType, ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits 
 } from 'discord.js';
-import { State } from 'src/declarations/states';
-
-const states = Object.values(State);
+import { States } from 'src/structures/Constants';
 
 /**
  * Executes the ping command to send a message to a channel.
@@ -53,7 +51,7 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	}
 
 	// Get the state role of the interaction member.
-	const stateRole = interaction.options.getRole('role') || interaction.member.roles.valueOf().find((role) => states.includes(role.name as State));
+	const stateRole = interaction.options.getRole('role') || States.find((s) => interaction.member.roles.cache.has(s.roleId));
 
 	// Create the message content for pinging the role.
 	const pingMessage: MessageCreateOptions = { content: stateRole.toString() };

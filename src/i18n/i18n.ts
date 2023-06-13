@@ -51,7 +51,7 @@ export class i18n {
 			});
 	}
 
-	public t(options: tOptions) {
+	public t(options: tOptions): string {
 		const {
 			key, ons, args 
 		} = options;

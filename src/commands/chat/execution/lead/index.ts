@@ -1,11 +1,7 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import {
-	AutocompleteInteraction, ChatInputCommandInteraction, GuildMember 
-} from 'discord.js';
-import { State } from 'src/declarations/states';
-import { REGION_ABBREVIATION_MAP } from 'src/structures/Constants';
-import { states } from 'src/structures/helpers';
+import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
+import { States } from 'src/structures/Constants';
 import { memberList } from './member-list';
 import ping from './ping';
 import role from './region/role';
@@ -41,19 +37,16 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
  * @returns The interaction response.
  */
 export function autoComplete(interaction: AutocompleteInteraction<'cached'>) {
-	const member = interaction.member as GuildMember;
-	const stateRole = member.roles.cache.find((r) => states.includes(r.name as State));
-	const stateChannel = REGION_ABBREVIATION_MAP[interaction.channel.name];
+	const { member } = interaction;
+	const stateConfig = States.find((s) => member.roles.cache.has(s.roleId));
 	const focusedOption = interaction.options.getFocused(true);
 	const meeting = t({
 		key: 'meeting',
 		locale: interaction.guildLocale,
 		ns
 	});
-	const choices = [];
 
-	if (stateChannel) choices.push(`${stateChannel} ${meeting}`);
-	choices.push(`${stateRole.name} ${meeting}`);
+	const choices = [`${stateConfig.name} ${meeting}`, `${stateConfig.abbreviation} ${meeting}`];
 
 	// Filter the choices based on the focused option.
 	const filtered = choices.filter((choice) => choice.toLowerCase().startsWith(focusedOption.value.toLowerCase()));

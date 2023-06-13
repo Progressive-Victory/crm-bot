@@ -1,7 +1,7 @@
 import { Logger } from '@Client';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';
 import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
@@ -129,7 +129,7 @@ export async function onConnect(
 	}
 }
 
-export function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<Response | boolean> {
+export function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) {
 		return Promise.resolve(false);
 	}
@@ -173,7 +173,8 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 	if (!trackingGuildChecks(interaction)) return null;
 
 	const channel = interaction.channel.isThread() ? interaction.channel.parent : interaction.channel;
-	if (!REGION_ABBREVIATION_MAP[channel.name]) {
+	const stateConfig = States.find((state) => state.channelId === channel.id);
+	if (!stateConfig) {
 		return t({
 			key: 'WrongRegionChannel',
 			locale: interaction.locale,
@@ -181,11 +182,11 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 		});
 	}
 
-	if (!interaction.member.roles.cache.some((r) => r.name === REGION_ABBREVIATION_MAP[channel.name])) {
+	if (!interaction.member.roles.cache.has(stateConfig.roleId)) {
 		return t({
 			key: 'StateRegionMismatchChannel',
 			locale: interaction.locale,
-			args: { name: REGION_ABBREVIATION_MAP[channel.name] }
+			args: { name: stateConfig.abbreviation }
 		});
 	}
 

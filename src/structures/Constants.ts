@@ -1,13 +1,12 @@
 import {
-	ChannelType,
-	Collection, RoleResolvable, Snowflake
+	ChannelType, Collection, Snowflake 
 } from 'discord.js';
 import { config } from 'dotenv';
 import stateConfig from './states.json';
 
 config();
 
-export type State_Abbreviation =
+export type StateAbbreviation =
 	| 'al'
 	| 'ak'
 	| 'az'
@@ -55,7 +54,6 @@ export type State_Abbreviation =
 	| 'sd'
 	| 'tn'
 	| 'tx'
-	| 'tt'
 	| 'ut'
 	| 'vt'
 	| 'va'
@@ -68,14 +66,14 @@ export type State_Abbreviation =
 export interface state {
 	name: string;
 	abbreviation: string;
-	roleId?: RoleResolvable;
-	channelId?: Snowflake;
-	channelType?: ChannelType;
+	roleId: string;
+	channelId: string;
+	channelType: ChannelType;
 }
 
 function stateGen() {
-	const stateCollection = new Collection<State_Abbreviation, state>();
-	stateConfig.states.map((s) => stateCollection.set(s.abbreviation.toLocaleLowerCase() as State_Abbreviation, s));
+	const stateCollection = new Collection<StateAbbreviation, state>();
+	stateConfig.states.map((s) => stateCollection.set(s.abbreviation.toLocaleLowerCase() as StateAbbreviation, s));
 	return stateCollection;
 }
 
