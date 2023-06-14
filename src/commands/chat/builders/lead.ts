@@ -1,7 +1,7 @@
 import { ChatInputCommand } from '@Client';
 import { autoComplete, lead } from '@execution/lead';
 import { localization, t } from '@i18n';
-import { ChannelType, PermissionFlagsBits } from 'discord.js';
+import { ChannelType } from 'discord.js';
 
 export const ns = 'lead';
 
@@ -12,7 +12,7 @@ export default new ChatInputCommand()
 			.setDescription(t({ key: 'command-description', ns }))
 			.setNameLocalizations(localization('command-name', ns))
 			.setDescriptionLocalizations(localization('command-description', ns))
-			.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels)
+			// .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels)
 			.setDMPermission(false)
 			.addSubcommandGroup((subcommandGroup) =>
 				subcommandGroup

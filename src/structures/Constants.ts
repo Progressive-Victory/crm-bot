@@ -1,74 +1,14 @@
 import { Collection, Snowflake } from 'discord.js';
 import { config } from 'dotenv';
-import stateConfig from './states.json';
+import {
+	StateAbbreviation, state, states 
+} from './states';
 
 config();
 
-export type StateAbbreviation =
-	| 'al'
-	| 'ak'
-	| 'az'
-	| 'as'
-	| 'ca'
-	| 'co'
-	| 'ct'
-	| 'de'
-	| 'dc'
-	| 'fl'
-	| 'ga'
-	| 'gu'
-	| 'hi'
-	| 'id'
-	| 'il'
-	| 'in'
-	| 'ia'
-	| 'ks'
-	| 'ky'
-	| 'la'
-	| 'me'
-	| 'md'
-	| 'ma'
-	| 'mi'
-	| 'mn'
-	| 'ms'
-	| 'mo'
-	| 'mt'
-	| 'ne'
-	| 'nv'
-	| 'nh'
-	| 'nj'
-	| 'nm'
-	| 'ny'
-	| 'nc'
-	| 'nd'
-	| 'mp'
-	| 'oh'
-	| 'ok'
-	| 'or'
-	| 'pa'
-	| 'pr'
-	| 'ri'
-	| 'sc'
-	| 'sd'
-	| 'tn'
-	| 'tx'
-	| 'ut'
-	| 'vt'
-	| 'va'
-	| 'vi'
-	| 'wa'
-	| 'wv'
-	| 'wi'
-	| 'wy';
-
-export interface state {
-	name: string;
-	abbreviation: string;
-}
-
 function stateGen() {
 	const stateCollection = new Collection<StateAbbreviation, state>();
-	stateConfig.states.map((s) => stateCollection.set(s.abbreviation.toLocaleLowerCase() as StateAbbreviation, s));
+	states.map((s) => stateCollection.set(s.abbreviation.toLocaleLowerCase() as StateAbbreviation, s));
 	return stateCollection;
 }
 
