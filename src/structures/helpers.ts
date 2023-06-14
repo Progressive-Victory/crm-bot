@@ -7,7 +7,8 @@ import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
 // import fetch from 'node-fetch';
 import { resolve } from 'path';
-import { States, VCChannelNames } from './Constants';
+import { VCChannelNames } from './Constants';
+import { states } from './states';
 
 config();
 
@@ -40,7 +41,7 @@ export function isOwner(user: User | GuildMember): boolean {
 
 export function memberState(member: GuildMember) {
 	return member.roles.cache.filter((role) => {
-		const roleAbbrevs = States.map((state) => state.abbreviation);
+		const roleAbbrevs = states.map((state) => state.abbreviation);
 		return roleAbbrevs.includes(role.id);
 	});
 }
@@ -173,7 +174,7 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 	if (!trackingGuildChecks(interaction)) return null;
 
 	const channel = interaction.channel.isThread() ? interaction.channel.parent : interaction.channel;
-	const stateConfig = States.find((state) => state.name.toLowerCase().replace(' ', '-') === channel.name);
+	const stateConfig = states.find((state) => state.name.toLowerCase().replace(' ', '-') === channel.name);
 	if (!stateConfig) {
 		return t({
 			key: 'WrongRegionChannel',
