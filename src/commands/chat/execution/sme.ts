@@ -1,9 +1,8 @@
 import { Logger } from '@Client';
-import { ns } from '@builders/sme-role-builder';
+import { ns } from '@builders/sme';
 import { t } from '@i18n';
 import { ChatInputCommandInteraction } from 'discord.js';
 
-const smeName = 'sme-role';
 const smeRoleIds = process.env.SME_ROLE_IDS.split(',');
 
 export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>) {
@@ -12,21 +11,15 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 	const { locale } = interaction;
 	const member = interaction.options.getMember(t({ key: 'options-user', ns }));
 	const role = interaction.options.getRole(t({ key: 'options-role', ns }));
+	let key: string;
 
 	try {
 		if (!smeRoleIds.includes(role.id)) {
-			interaction.followUp({
-				content: t({
-					key: 'not-sme-role',
-					ns,
-					locale,
-					args: { role: role.toString() }
-				})
-			});
+			key = 'not-sme-role';
 		}
 		else if (member.roles.cache.has(role.id)) {
 			member.roles.remove(
-				smeName,
+				role,
 				t({
 					key: 'auditlog-remove',
 					ns,
@@ -34,10 +27,11 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 					args: { smeRole: role.name, member: interaction.member.displayName }
 				})
 			);
+			key = 'sucess-remove';
 		}
 		else {
 			member.roles.add(
-				smeName,
+				role,
 				t({
 					key: 'auditlog-add',
 					ns,
@@ -45,10 +39,18 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 					args: { smeRole: role.name, member: interaction.member.displayName }
 				})
 			);
+			key = 'sucess-add';
 		}
+		interaction.followUp(
+			t({
+				key,
+				ns,
+				locale,
+				args: { smeRole: role.toString(), target: member.toString() }
+			})
+		);
 	}
 	catch (error) {
-		// TODO: Add Halding for lack of premission Error
 		Logger.error(error);
 	}
 }
