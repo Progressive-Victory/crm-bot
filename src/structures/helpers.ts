@@ -8,7 +8,7 @@ import { readdir } from 'fs/promises';
 // import fetch from 'node-fetch';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
-import { states } from './states';
+import { StateAbbreviation, states } from './states';
 
 config();
 
@@ -40,10 +40,7 @@ export function isOwner(user: User | GuildMember): boolean {
 }
 
 export function memberState(member: GuildMember) {
-	return member.roles.cache.filter((role) => {
-		const roleAbbrevs = states.map((state) => state.abbreviation);
-		return roleAbbrevs.includes(role.id);
-	});
+	return member.roles.cache.find((r) => states.has(r.name.toLocaleLowerCase() as StateAbbreviation));
 }
 
 export function isStaff(member: GuildMember): boolean {
