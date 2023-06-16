@@ -24,7 +24,7 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 					key: 'auditlog-remove',
 					ns,
 					locale: interaction.guildLocale,
-					args: { smeRole: role.name, member: interaction.member.displayName }
+					args: { role: role.name, member: interaction.member.displayName }
 				})
 			);
 			key = 'sucess-remove';
@@ -36,7 +36,7 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 					key: 'auditlog-add',
 					ns,
 					locale: interaction.guildLocale,
-					args: { smeRole: role.name, member: interaction.member.displayName }
+					args: { role: role.name, member: interaction.member.displayName }
 				})
 			);
 			key = 'sucess-add';
@@ -46,7 +46,7 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 				key,
 				ns,
 				locale,
-				args: { smeRole: role.toString(), target: member.toString() }
+				args: { role: role.toString(), target: member.toString() }
 			})
 		);
 	}
