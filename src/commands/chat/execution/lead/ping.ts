@@ -17,28 +17,10 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	await interaction.deferReply({ ephemeral: true });
 
 	// Get the channel option from the interaction's options, if provided.
-	let channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
-
-	// Check if the channel option is defined.
-	if (!channel) {
-		// Check if the command was sent from a GuildText channel.
-		if (interaction.channel.type !== ChannelType.GuildText) {
-			// If not, send an error response indicating that the command cannot be sent.
-			return interaction.followUp({
-				content: t({
-					key: 'ping-cant-send',
-					locale,
-					ns,
-					args: { channel: channel.toString() }
-				})
-			});
-		}
-		// If the channel option is not provided, set the channel to the channel where the command was used.
-		channel = interaction.channel;
-	}
+	const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]) || interaction.channel;
 
 	// Check if the bot has permission to send messages in the channel.
-	if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
+	if (channel.guild && !channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
 		// If not, send an error response indicating that the bot does not have permission to send messages.
 		return interaction.followUp({
 			content: t({
