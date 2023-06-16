@@ -43,7 +43,7 @@ ping-description = Ping Your State Role
 ping-role-description = Role to ping, otherwise one of your state roles
 ping-channel-description = Channel where the ping will be sent
 ping-message-description = Message you wish to add to the ping
-ping-cant-send = Message Can't be sent in this {$Channel}
+ping-cant-send = Message can't be sent in this {$channel}
 ping-not-no-perms = {$user} does not have permission to send message
 ping-success = Ping message has been sent {$url}
 
@@ -51,7 +51,7 @@ ping-success = Ping message has been sent {$url}
 ### Command
 member-list-name = member-list
 member-list-description = Exports a list of the users in each role as a csv file
-### Commabd Options
+### Command Options
 member-list-role-option-name = target
 member-list-role-option-description = The role from with to get list
 
