@@ -11,7 +11,7 @@ options-user-description = Choose a user for the sme role
 auditlog-add = {$role} has been added by {$member}
 auditlog-remove = {$role} has been removed by {$member}
 
-sucess-add = {$role} has been added to {$target}
-sucess-remove = {$role} has been removed from {$target}
+sucess-add = {$role} has been added to {$target}!
+sucess-remove = {$role} has been removed from {$target}.
 
-not-sme-role = The role {$role} is to an SME role
+not-sme-role = The role {$role} is not an SME role.
