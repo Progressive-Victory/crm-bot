@@ -127,24 +127,24 @@ export async function onConnect(
 	}
 }
 
-export function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
+export async function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) {
 		return Promise.resolve(false);
 	}
 	if (typeof discordUserID === 'string') {
-		return fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } }).then((r) =>
-			r.ok ? r.json() : null
-		);
+		const r = await fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } });
+		return r.ok ? r.json() : null;
 	}
 
-	return fetch(`${process.env.API_ENDPOINT}/users`, {
+	const r1 = await fetch(`${process.env.API_ENDPOINT}/users`, {
 		method: 'POST',
 		body: JSON.stringify(discordUserID),
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: process.env.API_AUTH
 		}
-	}).then((r) => r.json());
+	});
+	return r1.json();
 }
 
 export function trackingGuildChecks(interaction: CommandInteraction | ChatInputCommandInteraction) {
