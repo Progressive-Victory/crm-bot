@@ -7,8 +7,8 @@ import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
 // import fetch from 'node-fetch';
 import { resolve } from 'path';
-import { State } from 'src/declarations/states';
-import { REGION_ABBREVIATION_MAP, VCChannelNames } from './Constants';
+import { VCChannelNames } from './Constants';
+import { StateAbbreviation, states } from './states';
 
 config();
 
@@ -39,10 +39,8 @@ export function isOwner(user: User | GuildMember): boolean {
 	return process.env.OWNERS?.split(',').includes(user.id);
 }
 
-export const states = Object.values(State);
-
 export function memberState(member: GuildMember) {
-	return member.roles.cache.filter((role) => Object.values(State).includes(role.name as State));
+	return member.roles.cache.find((r) => states.has(r.name.toLocaleLowerCase() as StateAbbreviation));
 }
 
 export function isStaff(member: GuildMember): boolean {
@@ -129,24 +127,24 @@ export async function onConnect(
 	}
 }
 
-export function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
+export async function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) {
 		return Promise.resolve(false);
 	}
 	if (typeof discordUserID === 'string') {
-		return fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } }).then((r) =>
-			r.ok ? r.json() : null
-		);
+		const r = await fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } });
+		return r.ok ? r.json() : null;
 	}
 
-	return fetch(`${process.env.API_ENDPOINT}/users`, {
+	const r1 = await fetch(`${process.env.API_ENDPOINT}/users`, {
 		method: 'POST',
 		body: JSON.stringify(discordUserID),
 		headers: {
 			'Content-Type': 'application/json',
 			Authorization: process.env.API_AUTH
 		}
-	}).then((r) => r.json());
+	});
+	return r1.json();
 }
 
 export function trackingGuildChecks(interaction: CommandInteraction | ChatInputCommandInteraction) {
@@ -173,7 +171,8 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 	if (!trackingGuildChecks(interaction)) return null;
 
 	const channel = interaction.channel.isThread() ? interaction.channel.parent : interaction.channel;
-	if (!REGION_ABBREVIATION_MAP[channel.name]) {
+	const stateConfig = states.find((state) => state.name.toLowerCase().replace(' ', '-') === channel.name);
+	if (!stateConfig) {
 		return t({
 			key: 'WrongRegionChannel',
 			locale: interaction.locale,
@@ -181,11 +180,11 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 		});
 	}
 
-	if (!interaction.member.roles.cache.some((r) => r.name === REGION_ABBREVIATION_MAP[channel.name])) {
+	if (!interaction.member.roles.cache.find((r) => r.name === stateConfig.abbreviation)) {
 		return t({
 			key: 'StateRegionMismatchChannel',
 			locale: interaction.locale,
-			args: { name: REGION_ABBREVIATION_MAP[channel.name] }
+			args: { name: stateConfig.abbreviation }
 		});
 	}
 

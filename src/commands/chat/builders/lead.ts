@@ -89,6 +89,14 @@ export default new ChatInputCommand()
 				subcommand
 					.setName(t({ key: 'ping-name', ns }))
 					.setDescription(t({ key: 'ping-description', ns }))
+					.addRoleOption((option) =>
+						option
+							.setName(t({ key: 'role', ns }))
+							.setDescription(t({ key: 'ping-role-description', ns }))
+							.setNameLocalizations(localization('role', ns))
+							.setDescriptionLocalizations(localization('ping-role-description', ns))
+							.setRequired(true)
+					)
 					.addChannelOption((option) =>
 						option
 							.setName(t({ key: 'channel', ns }))
@@ -102,14 +110,6 @@ export default new ChatInputCommand()
 							.setDescription(t({ key: 'ping-message-description', ns }))
 							.setRequired(false)
 							.setMaxLength(150)
-					)
-					.addRoleOption((option) =>
-						option
-							.setName(t({ key: 'role', ns }))
-							.setDescription(t({ key: 'ping-role-description', ns }))
-							.setNameLocalizations(localization('role', ns))
-							.setDescriptionLocalizations(localization('ping-role-description', ns))
-							.setRequired(false)
 					)
 			)
 	)

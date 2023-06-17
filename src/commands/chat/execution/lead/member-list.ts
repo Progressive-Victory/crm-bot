@@ -11,9 +11,6 @@ export async function memberList(interaction: ChatInputCommandInteraction<'cache
 	// Defer the reply to indicate that the bot is processing the command.
 	await interaction.deferReply({ ephemeral: true });
 
-	// Fetches all members in the guild to ensure up-to-date data.
-	await interaction.guild.members.fetch();
-
 	// Extract the locale and options from the interaction.
 	const { locale, options } = interaction;
 
