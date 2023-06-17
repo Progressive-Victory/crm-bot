@@ -1,9 +1,24 @@
 import { Event, Logger } from '@Client';
-import { Events, GuildMember } from 'discord.js';
+import {
+	ChannelType, EmbedBuilder, Events, GuildMember, GuildTextBasedChannel 
+} from 'discord.js';
+import { isSMERole } from 'src/structures';
+
+const SMENotificationChannelID = process.env.SME_LEAD_CHANNEL_ID;
+
+async function onNewRole(before: GuildMember, after: GuildMember) {
+	const newRole = after.roles.cache.find((r) => !before.roles.cache.has(r.id));
+	if (!isSMERole(newRole)) return;
+	const channel = after.guild.channels.cache.get(SMENotificationChannelID) as GuildTextBasedChannel;
+	if (!channel && channel.type !== ChannelType.GuildText) throw new Error('Missing valid SME_LEAD_CHANNEL_ID in .env or channel not visable to bot');
+
+	channel.send({ embeds: [new EmbedBuilder().setTitle()] });
+}
 
 async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
 	if (after.guild.id !== process.env.TRACKING_GUILD) return;
 	if (before.roles.cache.size === after.roles.cache.size) return;
+	if (before.roles.cache.size < after.roles.cache.size) onNewRole(before, after);
 
 	if (!after.guild.members.me.permissions.has('ManageRoles')) {
 		Logger.warn('Missing permissions to manage roles');

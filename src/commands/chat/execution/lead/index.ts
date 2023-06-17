@@ -1,7 +1,7 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
-import { States } from 'src/structures/Constants';
+import { states } from 'src/structures';
 import { memberList } from './member-list';
 import ping from './ping';
 import role from './region/role';
@@ -38,7 +38,7 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
  */
 export function autoComplete(interaction: AutocompleteInteraction<'cached'>) {
 	const { member } = interaction;
-	const stateConfig = States.find((s) => member.roles.cache.find((r) => r.name === s.abbreviation));
+	const stateConfig = states.find((s) => member.roles.cache.find((r) => r.name === s.abbreviation));
 	const focusedOption = interaction.options.getFocused(true);
 	const meeting = t({
 		key: 'meeting',
