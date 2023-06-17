@@ -191,35 +191,6 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 	return true;
 }
 
-export function hasSMERole(interaction: CommandInteraction<'cached'>) {
-	if (!trackingGuildChecks(interaction)) return null;
-	const roleIDs = process.env.SME_ROLE_IDS;
-	if (!roleIDs) {
-		return t({
-			key: 'MissingConfiguration',
-			locale: interaction.locale,
-			args: { name: 'SME_ROLE_IDS' }
-		});
-	}
-
-	if (!roleIDs.split(',').some((id) => interaction.member.roles.cache.has(id))) {
-		return t({
-			key: 'MissingSMERole',
-			locale: interaction.locale,
-			args: {
-				roles: `${roleIDs
-					.split(',')
-					.map((id) => `<@&${id}>`)
-					.join(', ')}`
-			}
-		});
-	}
-
-	// TODO: Map roles to list of channels
-
-	return true;
-}
-
 export async function renameOrganizing(channel: VoiceBasedChannel) {
 	if (!channel.guild.members.me.permissions.has('ManageChannels')) return;
 
