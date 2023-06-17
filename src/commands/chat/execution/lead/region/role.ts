@@ -3,7 +3,7 @@ import { ChatInputCommandInteraction, Snowflake } from 'discord.js';
 import { Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { memberState } from 'src/structures/helpers';
+import { memberStates } from 'src/structures';
 
 const regionLeadRoleID: Snowflake = process.env.REGIONAL_ROLE_ID;
 
@@ -20,7 +20,7 @@ export default async function execute(interaction: ChatInputCommandInteraction<'
 	const stateLead = interaction.member;
 
 	// If the state lead and the target member do not have the same state role
-	if (!memberState(stateLead).some((role) => memberState(target).has(role.id))) {
+	if (!memberStates(stateLead).some((role) => memberStates(target).has(role.id))) {
 		return interaction.followUp({
 			content: t({
 				key: 'role-region-mismatch',
