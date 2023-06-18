@@ -6,6 +6,7 @@ export * as prototype from './prototypes';
 
 export {
 	checkConnected,
+	hasSMERole,
 	isConnectEmoji,
 	isErrnoException,
 	isOwner,
@@ -19,5 +20,3 @@ export {
 	renameOrganizing,
 	trackingGuildChecks
 } from './helpers';
-
-export { SMERoleIDs, getSMERoles, isSMERole } from './sme';

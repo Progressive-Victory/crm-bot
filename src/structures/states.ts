@@ -131,7 +131,7 @@ statesConfig.map((s) => states.set(s.abbreviation.toLocaleLowerCase() as StateAb
 export function isMemberStateLead(member: GuildMember) {
 	if (!stateLeadRoleID) throw Error('Missing STATE_LEAD_ROLE_ID in .env');
 	const role = member.guild.roles.cache.get(stateLeadRoleID);
-	if (!role) throw Error('inalid Role ID please check STATE_LEAD_ROLE_ID in .env');
+	if (!role) throw Error('Invalid role ID please check STATE_LEAD_ROLE_ID in .env');
 	return member.roles.cache.has(stateLeadRoleID);
 }
 
