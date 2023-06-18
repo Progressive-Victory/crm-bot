@@ -3,7 +3,7 @@ import { t } from '@i18n';
 import {
 	ApplicationCommandType, ContextMenuCommandBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';
-import { hasSMERole, isStateLead } from 'src/structures/helpers';
+import { hasSMERole, isStateLead } from 'src/structures';
 
 const ns = 'pin';
 

@@ -1,4 +1,8 @@
-import { Collection } from 'discord.js';
+import {
+	Collection, GuildMember, Role 
+} from 'discord.js';
+
+const stateLeadRoleID = process.env.STATE_LEAD_ROLE_ID;
 
 export interface state {
 	name: string;
@@ -123,3 +127,19 @@ export type StateAbbreviation =
 
 export const states = new Collection<StateAbbreviation, state>();
 statesConfig.map((s) => states.set(s.abbreviation.toLocaleLowerCase() as StateAbbreviation, s));
+
+export function isMemberStateLead(member: GuildMember) {
+	if (!stateLeadRoleID) throw Error('Missing STATE_LEAD_ROLE_ID in .env');
+	const role = member.guild.roles.cache.get(stateLeadRoleID);
+	if (!role) throw Error('Invalid role ID please check STATE_LEAD_ROLE_ID in .env');
+	return member.roles.cache.has(stateLeadRoleID);
+}
+
+export function isStateLeadRole(role: Role) {
+	if (!stateLeadRoleID) throw Error('Missing Valid STATE_LEAD_ROLE_ID in .env');
+	return role.id === stateLeadRoleID;
+}
+
+export function memberStates(member: GuildMember) {
+	return member.roles.cache.filter((r) => states.has(r.name.toLowerCase() as StateAbbreviation));
+}

@@ -1,4 +1,4 @@
-export { states } from './states';
+export { isMemberStateLead, isStateLeadRole, memberStates, states } from './states';
 
 export type { StateAbbreviation } from './states';
 
