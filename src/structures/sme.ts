@@ -1,19 +1,11 @@
-import {
-	Collection, GuildMember, Role, Snowflake 
-} from 'discord.js';
+import { GuildMember, Role } from 'discord.js';
 
 export const SMERoleIDs = process.env.SME_ROLE_IDS.split(',');
 
 export function getSMERoles(member: GuildMember) {
 	if (!SMERoleIDs) throw new Error('SME_ROLE_IDS not present in .env');
 
-	const SMERoles = new Collection<Snowflake, Role>();
-
-	SMERoleIDs.forEach((id) => {
-		if (member.roles.cache.has(id)) SMERoles.set(id, member.roles.cache.get(id));
-	});
-
-	return SMERoles;
+	return member.roles.cache.filter((_r, id) => SMERoleIDs.includes(id));
 }
 
 export function hasSMERole(member: GuildMember) {

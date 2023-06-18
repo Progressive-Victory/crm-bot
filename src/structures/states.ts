@@ -129,8 +129,9 @@ export const states = new Collection<StateAbbreviation, state>();
 statesConfig.map((s) => states.set(s.abbreviation.toLocaleLowerCase() as StateAbbreviation, s));
 
 export function isMemberStateLead(member: GuildMember) {
+	if (!stateLeadRoleID) throw Error('Missing STATE_LEAD_ROLE_ID in .env');
 	const role = member.guild.roles.cache.get(stateLeadRoleID);
-	if (!role) throw Error('Missing Valid STATE_LEAD_ROLE_ID in .env');
+	if (!role) throw Error('inalid Role ID please check STATE_LEAD_ROLE_ID in .env');
 	return member.roles.cache.has(stateLeadRoleID);
 }
 
