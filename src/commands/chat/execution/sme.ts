@@ -2,7 +2,8 @@ import { Logger } from '@Client';
 import { ns } from '@builders/sme';
 import { t } from '@i18n';
 import { ChatInputCommandInteraction } from 'discord.js';
-import { SMERoleIDs } from 'src/structures';
+
+const smeRoleIds = process.env.SME_ROLE_IDS.split(',');
 
 export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>) {
 	await interaction.deferReply({ ephemeral: true });
@@ -13,7 +14,7 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 	let key: string;
 
 	try {
-		if (!SMERoleIDs.includes(role.id)) {
+		if (!smeRoleIds.includes(role.id)) {
 			key = 'not-sme-role';
 		}
 		else if (member.roles.cache.has(role.id)) {
