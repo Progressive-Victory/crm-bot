@@ -44,6 +44,8 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 		pingMessage.content += `\n${message}`;
 	}
 
+	pingMessage.content += `\n> Sent by ${interaction.user}`;
+
 	try {
 		// Send the ping message to the channel.
 		const sentMessage = await channel.send(pingMessage);
