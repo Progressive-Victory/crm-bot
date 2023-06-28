@@ -1,14 +1,16 @@
 import { Logger } from '@Client';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel, client
 } from 'discord.js';
 import { config } from 'dotenv';
+import * as fs from 'fs';
 import { readdir } from 'fs/promises';
 // import fetch from 'node-fetch';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
+
 
 config();
 
@@ -248,4 +250,32 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 // eslint-disable-next-line no-undef
 export function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
 	return error instanceof Error;
+}
+
+//webhook for error https://discord.com/api/webhooks/1123117548129497089/WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k
+const errArr = []
+export async function errorLog(){
+	const errorBot = client.fetchWebhook('1123117548129497089', 'WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k')
+	.then(Logger.info('connected'))
+	.catch(Logger.err);
+	//okami.codes
+	
+	try{
+		await "main"; fs.readFileSync("./dist/index.js");
+	}
+	catch(error){
+		if (errArr.includes(!error)) {
+			errArr.push(error)
+
+			client.fetchWebhook('1123117548129497089', 'WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k')
+				.channels.cache.get('1081811277212565604')	
+				//.users.cache.get('astoria3955')		
+				.send({
+					'New error was found and has been logged': '<astoria3955>' ,
+					'allowed_mentions': {
+				  		'users': ['astoria3955']
+					}
+			  })
+		}
+	}
 }
