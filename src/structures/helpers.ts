@@ -261,7 +261,7 @@ export async function errorLog(){
 	//okami.codes
 	
 	try{
-		await "main"; fs.readFileSync("./dist/index.js");
+		await fs.readFileSync("./dist/index.js");
 	}
 	catch(error){
 		if (errArr.includes(!error)) {
