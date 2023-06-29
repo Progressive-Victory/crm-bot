@@ -6,7 +6,6 @@ import {
 import { config } from 'dotenv';
 import * as fs from 'fs';
 import { readdir } from 'fs/promises';
-// import fetch from 'node-fetch';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
@@ -253,8 +252,9 @@ export function isErrnoException(error: unknown): error is NodeJS.ErrnoException
 }
 
 //webhook for error https://discord.com/api/webhooks/1123117548129497089/WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k
-const errArr = []
+const errMap = new Map()
 export async function errorLog(){
+	
 	const errorBot = client.fetchWebhook('1123117548129497089', 'WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k')
 	.then(Logger.info('connected'))
 	.catch(Logger.err);
@@ -263,19 +263,23 @@ export async function errorLog(){
 	try{
 		await fs.readFileSync("./dist/index.js");
 	}
-	catch(error){
-		if (errArr.includes(!error)) {
-			errArr.push(error)
+	catch(err){
+		if (!errMap.has(err.stack)) {
+			errMap.set(err.stack, err)
+
+			//const logErr = new AttachmentBuilder
 
 			client.fetchWebhook('1123117548129497089', 'WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k')
 				.channels.cache.get('1081811277212565604')	
 				//.users.cache.get('astoria3955')		
 				.send({
-					'New error was found and has been logged': '<astoria3955>' ,
-					'allowed_mentions': {
-				  		'users': ['astoria3955']
+					content: `<@astoria3955>,New error just dropped ${Logger.err()}`,
+					allowed_mentions: {
+				  		users: ['@astoria3955']
 					}
+					//file: [logErr]
 			  })
+			  
 		}
 	}
 }
