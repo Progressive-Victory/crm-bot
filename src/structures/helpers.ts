@@ -4,7 +4,7 @@ import {
 	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel, client
 } from 'discord.js';
 import { config } from 'dotenv';
-import * as fs from 'fs';
+import { fs } from 'fs';
 import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
