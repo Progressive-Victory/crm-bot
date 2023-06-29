@@ -252,14 +252,13 @@ export function isErrnoException(error: unknown): error is NodeJS.ErrnoException
 }
 
 //webhook for error https://discord.com/api/webhooks/1123117548129497089/WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k
-const errMap = new Map()
 export async function errorLog(){
 	
 	const errorBot = client.fetchWebhook('1123117548129497089', 'WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k')
 	.then(Logger.info('connected'))
 	.catch(Logger.err);
 	//okami.codes
-	
+	const errMap = new Map()
 	try{
 		await fs.readFileSync("./dist/index.js");
 	}
