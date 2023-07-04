@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-use-before-define */
 import { Logger } from '@Client';
-import { parse } from '@csv-parser';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel, client
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel
 } from 'discord.js';
 import { config } from 'dotenv';
+import * as fs from 'fs';
 import { readdir } from 'fs/promises';
-import * as fs from 'node:fs';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
-import  path = require('node:path')
+import csv = require('csv-parser');
 
 
 config();
@@ -262,6 +261,7 @@ type errLogger = {
 }
 
 function errLogBuilder(error: Error): errLogger{
+	
 	const errorMessage = error.message.length. toString();
 	const errorName = error.name;
 	const errorStack = error.stack;
@@ -277,44 +277,56 @@ function errLogBuilder(error: Error): errLogger{
 	};
 }
 
-export async function errorLog(){
+declare function require(name: string);
+
+export async function errorLog() {
 
 	let arrayOfErrors: errLogger[];
+
+	const path = require('node:path');
+
+	require('dotenv').config();
+
+	const { Client, Intents } = require("discord.js");
+
+	const errBot =new Client({
+
+		Intents: [
+			Intents.FLAGS.GUILDS,
+			Intents.FLAGS.GUILD_MESSAGES 
+		]
+	});
+
+	errBot.once("ready", () =>{
+
+		Logger.info("BOT IS ONLINE"); 
+	});
+
+	errBot.login("WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k");
 	
 	try{
-		// await readdir('./../../src');
-		await client.fetchWebhook('1123117548129497089', 'WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k')
-			.then(Logger.info('connected'));
+		
+		await Client.run(process.env.TOKEN);
 		
 	}
 	catch(err){
 		
-		const csvFilePath = path.resolve(__dirname,'./../../locales/en-US/error-log.csv' );
+		const csvFilePath = path.resolve(__dirname,'./../../locales/en-US/error-log.cs' );
 			
 		const headers = ['Code', 'Signatures', 'Stack'];
-			
-		const fileContent = fs.readFileSync(csvFilePath, { encoding: 'utf-8' });
-			
-		parse(fileContent, {
-			delimiter: ',',
-			trim: true,
-			from_line: 2,
-			columns: headers
-		}, (e, errArr: errLogger[]) => {
-			if (e) {
-				Logger.error(e);
-			}
 
-			arrayOfErrors = errArr;
-
-		});
+		fs.createReadStream(csvFilePath)
+			.pipe(csv())
+			.on('data', (data) => arrayOfErrors.push(data))
+			.on('end', () => {
+				Logger.info('done');
+			});
 
 		if (!arrayOfErrors.includes(errLogBuilder(err))) {
 
 			arrayOfErrors.push(errLogBuilder(err));
 			
-			client.fetchWebhook('1123117548129497089', 'WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k')
-				.channels.cache.get('1081811277212565604')	
+			errBot.channels.cache.get('1125642278510264400')	
 				.send({
 					content: `<@astoria3955>, New error just dropped ${Logger.error(err)}`,
 					allowed_mentions: { users: ['@astoria3955'] }
@@ -329,7 +341,7 @@ export async function errorLog(){
 		   
 			  const records = arrayOfErrors;
 		   
-			  csvWriter.writeRecords(records)       // returns a promise
+			  csvWriter.writeRecords(records)       
 				  .then(() => {
 					  Logger.info('...Done');
 				  }); 
