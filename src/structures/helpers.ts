@@ -291,7 +291,7 @@ function readCSV(filePath: string, dataArr: unknown[] ){
 	return dataArr;
 }
 
-function writeCSV(pathOfFile: string, headerForCSV: string[], data: any[] ){
+function writeCSV(pathOfFile: string, headerForCSV: string[], data: unknown[] ){
 
 	const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
@@ -318,7 +318,7 @@ export async function errorLog() {
 
 	require('dotenv').config();
 	const { Client, Intents } = require("discord.js");
-	const errBot =new Client({
+	const errBot = new Client({
 
 		Intents: [
 			Intents.FLAGS.GUILDS,
@@ -334,9 +334,9 @@ export async function errorLog() {
 	errBot.login('WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k');
 	
 	try{
-		
+
+		await Client.login(process.env.TOKEN);
 		await Client.run(process.env.TOKEN);
-		
 	}
 	catch(err){
 		
