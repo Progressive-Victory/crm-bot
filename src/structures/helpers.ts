@@ -253,12 +253,14 @@ export function isErrnoException(error: unknown): error is NodeJS.ErrnoException
 	return error instanceof Error;
 }
 
-// webhook for error https://discord.com/api/webhooks/1123117548129497089/WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k
+// Type to help with catigorizing
 type errLogger = {
 	name: string;
 	signature: string;
 	stack: string;
 }
+
+// make error in to errLogger format
 
 function errLogBuilder(error: Error): errLogger{
 	
@@ -268,13 +270,42 @@ function errLogBuilder(error: Error): errLogger{
 
 	const sig = errorMessage + errorName + (errorStack.length.toString());
 
-
-
 	return {
 		name: errorName,
 		signature: sig,
 		stack: errorStack
 	};
+}
+
+function readCSV(filePath: string, dataArr: unknown[] ){ 
+
+	const arrOfData = [];
+	
+	fs.createReadStream(filePath)
+		.pipe(csv())
+		.on('data', (data) => arrOfData.push(data))
+		.on('end', () => {
+			 dataArr = arrOfData;
+		});
+
+	return dataArr;
+}
+
+function writeCSV(pathOfFile: string, headerForCSV: string[], data: any[] ){
+
+	const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+
+			  const csvWriter = createCsvWriter({
+				  path: pathOfFile,
+				  header: headerForCSV
+			  });
+		   
+			  const records = data;
+		   
+			  csvWriter.writeRecords(records)       
+				  .then(() => {
+					  Logger.info('...Done');
+				  }); 
 }
 
 declare function require(name: string);
@@ -286,9 +317,7 @@ export async function errorLog() {
 	const path = require('node:path');
 
 	require('dotenv').config();
-
 	const { Client, Intents } = require("discord.js");
-
 	const errBot =new Client({
 
 		Intents: [
@@ -312,16 +341,9 @@ export async function errorLog() {
 	catch(err){
 		
 		const csvFilePath = path.resolve(__dirname,'./../../locales/en-US/error-log.cs' );
-			
-		const headers = ['Code', 'Signatures', 'Stack'];
 
-		fs.createReadStream(csvFilePath)
-			.pipe(csv())
-			.on('data', (data) => arrayOfErrors.push(data))
-			.on('end', () => {
-				Logger.info('done');
-			});
-
+		readCSV(csvFilePath, arrayOfErrors);
+		
 		if (!arrayOfErrors.includes(errLogBuilder(err))) {
 
 			arrayOfErrors.push(errLogBuilder(err));
@@ -332,20 +354,11 @@ export async function errorLog() {
 					allowed_mentions: { users: ['@astoria3955'] }
 			  });
 
-			  const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+			  const headers = ['Code', 'Signatures', 'Stack'];
 
-			  const csvWriter = createCsvWriter({
-				  path: csvFilePath,
-				  header: ['Code', 'Signatures', 'Stack']
-			  });
-		   
-			  const records = arrayOfErrors;
-		   
-			  csvWriter.writeRecords(records)       
-				  .then(() => {
-					  Logger.info('...Done');
-				  }); 
+			  writeCSV(csvFilePath, headers, arrayOfErrors);
 		}
+	
 	}
 }
 		
