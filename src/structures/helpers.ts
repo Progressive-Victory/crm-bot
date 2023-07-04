@@ -297,12 +297,12 @@ export async function errorLog() {
 		]
 	});
 
-	errBot.once("ready", () =>{
+	errBot.once('ready', () =>{
 
-		Logger.info("BOT IS ONLINE"); 
+		Logger.info('BOT IS ONLINE'); 
 	});
 
-	errBot.login("WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k");
+	errBot.login('WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k');
 	
 	try{
 		
