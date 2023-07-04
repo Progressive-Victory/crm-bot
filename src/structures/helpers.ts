@@ -10,7 +10,7 @@ import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
-import csv = require('csv-parser');
+import  csv = require('./../../node_modules/csv-parser');
 
 
 config();
