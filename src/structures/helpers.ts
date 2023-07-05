@@ -261,7 +261,6 @@ type errLogger = {
 }
 
 // make error in to errLogger format
-
 function errLogBuilder(error: Error): errLogger{
 	
 	const errorMessage = error.message.length. toString();
@@ -285,12 +284,14 @@ function readCSV(filePath: string, dataArr: unknown[] ){
 		.pipe(csv())
 		.on('data', (data) => arrOfData.push(data))
 		.on('end', () => {
-			 dataArr = arrOfData;
+			dataArr.length = 0; // Clear the array
+			dataArr.push(...arrOfData);
 		});
 
 	return dataArr;
 }
 
+// main error function
 function writeCSV(pathOfFile: string, headerForCSV: string[], data: unknown[] ){
 
 	const createCsvWriter = require('csv-writer').createObjectCsvWriter;
@@ -334,8 +335,7 @@ export async function errorLog() {
 	errBot.login('WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k');
 	
 	try{
-
-		await Client.login(process.env.TOKEN);
+		// Database.get(client);
 		await Client.run(process.env.TOKEN);
 	}
 	catch(err){
@@ -344,7 +344,7 @@ export async function errorLog() {
 
 		readCSV(csvFilePath, arrayOfErrors);
 		
-		if (!arrayOfErrors.includes(errLogBuilder(err))) {
+		if (!arrayOfErrors.some((error) => error.signature === errLogBuilder(err).signature)) {
 
 			arrayOfErrors.push(errLogBuilder(err));
 			
