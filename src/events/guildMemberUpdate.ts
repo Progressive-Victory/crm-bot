@@ -2,8 +2,7 @@ import { Event, Logger } from '@Client';
 import {
 	ChannelType, Events, GuildMember, GuildTextBasedChannel 
 } from 'discord.js';
-import { isSMERole } from 'src/structures';
-import { getSMELeads } from 'src/structures/sme';
+import { getSMELeads, isSMERole } from 'src/structures';
 
 const SMENotificationChannelID = process.env.SME_LEAD_CHANNEL_ID;
 

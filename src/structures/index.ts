@@ -20,4 +20,4 @@ export {
 	trackingGuildChecks
 } from './helpers';
 
-export { SMERoleIDs, getSMERoles, isSMERole } from './sme';
+export { SMERoleIDs, getSMELeads, getSMERoles, hasSMERole, isSMERole } from './sme';

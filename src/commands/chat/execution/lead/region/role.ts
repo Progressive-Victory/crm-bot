@@ -48,7 +48,7 @@ export default async function execute(interaction: ChatInputCommandInteraction<'
 		key: 'role-success-remove',
 		locale,
 		ns,
-		args: { tag: target.user.tag }
+		args: { role: regionLeadRole.toString(), user: target.user.username }
 	});
 
 	try {
