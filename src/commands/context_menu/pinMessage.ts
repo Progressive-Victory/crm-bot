@@ -3,7 +3,7 @@ import { t } from '@i18n';
 import {
 	ApplicationCommandType, ContextMenuCommandBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';
-import { hasSMERole, isStateLead } from 'src/structures';
+import { getSMERoles, isStateLead } from 'src/structures';
 
 const ns = 'pin';
 
@@ -35,7 +35,7 @@ export default new ContextMenuCommand()
 		}
 
 		const stateLeadCheck = isStateLead(interaction);
-		const smeCheck = hasSMERole(interaction);
+		const smeCheck = getSMERoles(interaction.member).size > 0;
 
 		if (stateLeadCheck !== true && smeCheck !== true) {
 			return interaction.reply({

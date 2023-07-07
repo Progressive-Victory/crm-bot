@@ -11,7 +11,7 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"prebuild": "rimraf dist",
-		"build": "swc ./src --out-dir dist",
+		"build": "swc ./src --out-dir dist && yarn copy-files",
 		"prestart": "yarn build",
 		"start": "node .",
 		"test": "jest",
@@ -22,7 +22,8 @@
 		"prepare": "husky install",
 		"precommit": "lint-staged",
 		"lint": "eslint --fix {src,test}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern",
-		"style": "prettier-eslint \"src/**/*.ts\" --write && yarn lint"
+		"style": "prettier-eslint \"src/**/*.ts\" --write && yarn lint",
+		"copy-files": "rsync -avh --include='*.json' --exclude='*' ./src/ ./dist/ > /dev/null"
 	},
 	"engines": {
 		"node": ">=16.9.0"

@@ -17,6 +17,7 @@
     <li><code>TRACKING_CHANNEL</code> is the logs channel ID, this needs to be a channel that only permits automated system join messages. Those are the kinds of messages you'll see with sticker prompts when someone joins, basically.</li>
     <li><code>API_AUTH</code> is the authorization token from <a href="https://github.com/Progressive-Victory/crm-backend/blob/main/.env.sample">this repo</a>, and <code>API_ENDPOINT</code> should match the host for that project. You can leave them both as default if you haven't changed anything there.</li>
     <li>The default for <code>DB_URI</code> is <code>mongodb://localhost:27017</code>, change as your settings are configured</li>
+    <li>Create a file in /src/ called `sme.json` and make it an empty object.</li>
   </ol>
   <h2>
     Running
