@@ -1,6 +1,7 @@
 import {
 	Collection, GuildMember, Role, Snowflake 
 } from 'discord.js';
+import smeConfig from '../sme.json';
 
 export const SMERoleIDs = process.env.SME_ROLE_IDS.split(',');
 
@@ -23,4 +24,8 @@ export function hasSMERole(member: GuildMember) {
 
 export function isSMERole(role: Role) {
 	return SMERoleIDs.includes(role.id);
+}
+
+export async function getSMELeads(role: Role): Promise<GuildMember[]> {
+	return Promise.all(smeConfig[role.id].map((id: string) => role.guild.members.fetch(id)));
 }
