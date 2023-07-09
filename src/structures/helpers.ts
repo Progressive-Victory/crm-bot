@@ -2,16 +2,13 @@
 import { Logger } from '@Client';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel, WebhookClient
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel
 } from 'discord.js';
 import { config } from 'dotenv';
-import * as fs from 'fs';
 import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
-// eslint-disable-next-line import/order
-import  csv = require( 'csv-parser' );
 
 
 config();
