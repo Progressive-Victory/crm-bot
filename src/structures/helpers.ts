@@ -2,7 +2,7 @@
 import { Logger } from '@Client';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel, WebhookClient
 } from 'discord.js';
 import { config } from 'dotenv';
 import * as fs from 'fs';
@@ -10,7 +10,8 @@ import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
-import  csv = require('./../../node_modules/csv-parser');
+// eslint-disable-next-line import/order
+import  csv = require( 'csv-parser' );
 
 
 config();
@@ -253,112 +254,4 @@ export function isErrnoException(error: unknown): error is NodeJS.ErrnoException
 	return error instanceof Error;
 }
 
-// Type to help with catigorizing
-type errLogger = {
-	name: string;
-	signature: string;
-	stack: string;
-}
-
-// make error in to errLogger format
-function errLogBuilder(error: Error): errLogger{
-	
-	const errorMessage = error.message.length. toString();
-	const errorName = error.name;
-	const errorStack = error.stack;
-
-	const sig = errorMessage + errorName + (errorStack.length.toString());
-
-	return {
-		name: errorName,
-		signature: sig,
-		stack: errorStack
-	};
-}
-
-function readCSV(filePath: string, dataArr: unknown[] ){ 
-
-	const arrOfData = [];
-	
-	fs.createReadStream(filePath)
-		.pipe(csv())
-		.on('data', (data) => arrOfData.push(data))
-		.on('end', () => {
-			dataArr.length = 0; // Clear the array
-			dataArr.push(...arrOfData);
-		});
-
-	return dataArr;
-}
-
-// main error function
-function writeCSV(pathOfFile: string, headerForCSV: string[], data: unknown[] ){
-
-	const createCsvWriter = require('csv-writer').createObjectCsvWriter;
-
-			  const csvWriter = createCsvWriter({
-				  path: pathOfFile,
-				  header: headerForCSV
-			  });
-		   
-			  const records = data;
-		   
-			  csvWriter.writeRecords(records)       
-				  .then(() => {
-					  Logger.info('...Done');
-				  }); 
-}
-
-declare function require(name: string);
-
-export async function errorLog() {
-
-	let arrayOfErrors: errLogger[];
-
-	const path = require('node:path');
-
-	require('dotenv').config();
-	const { Client, Intents } = require("discord.js");
-	const errBot = new Client({
-
-		Intents: [
-			Intents.FLAGS.GUILDS,
-			Intents.FLAGS.GUILD_MESSAGES 
-		]
-	});
-
-	errBot.once('ready', () =>{
-
-		Logger.info('BOT IS ONLINE'); 
-	});
-
-	errBot.login('WZlNvXpvbp9Z3t_8jD7Ix8H_63ytgTEktjrBi7nJ7qAKnievujsslK5G1XvN7JLLqz9k');
-	
-	try{
-		// Database.get(client);
-		await Client.run(process.env.TOKEN);
-	}
-	catch(err){
-		
-		const csvFilePath = path.resolve(__dirname,'./../../locales/en-US/error-log.cs' );
-
-		readCSV(csvFilePath, arrayOfErrors);
-		
-		if (!arrayOfErrors.some((error) => error.signature === errLogBuilder(err).signature)) {
-
-			arrayOfErrors.push(errLogBuilder(err));
-			
-			errBot.channels.cache.get('1125642278510264400')	
-				.send({
-					content: `<@astoria3955>, New error just dropped ${Logger.error(err)}`,
-					allowed_mentions: { users: ['@astoria3955'] }
-			  });
-
-			  const headers = ['Code', 'Signatures', 'Stack'];
-
-			  writeCSV(csvFilePath, headers, arrayOfErrors);
-		}
-	
-	}
-}
 		

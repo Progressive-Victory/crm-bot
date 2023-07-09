@@ -1,4 +1,7 @@
+import { WebhookClient } from 'discord.js';
 import pino from 'pino';
+
+const errBot = new WebhookClient({ url: 'https://discord.com/api/webhooks/1126064927765966890/RTYdcnpjLfHEExcBpGMX-EiSKzPF6JRtcwzAzL-IB58pGNsFR0l0wannj9W_qVq1hbu1' });
 
 function wrap(logger: pino.Logger) {
 	const { error, child } = logger;
@@ -42,6 +45,8 @@ export const Logger = wrap(
 					else {
 						args = [err.stack];
 					}
+
+					errBot.send({ content: `<@okami.codes>, new Error ${method.apply(args)}` });
 
 					return method.apply(this, args);
 				}
