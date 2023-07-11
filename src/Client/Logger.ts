@@ -1,7 +1,7 @@
 import { EmbedBuilder, WebhookClient } from 'discord.js';
 import pino from 'pino';
 
-async function webHookErrBot(args: unknown, stack?: string){
+async function webHookErrBot(args: unknown){
 	const errBot = new WebhookClient({ url: 'https://discord.com/api/webhooks/1126064927765966890/RTYdcnpjLfHEExcBpGMX-EiSKzPF6JRtcwzAzL-IB58pGNsFR0l0wannj9W_qVq1hbu1' });
 	
 	await args;
