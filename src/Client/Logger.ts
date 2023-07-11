@@ -1,7 +1,23 @@
-import { WebhookClient } from 'discord.js';
+import { EmbedBuilder, WebhookClient } from 'discord.js';
 import pino from 'pino';
 
-const errBot = new WebhookClient({ url: 'https://discord.com/api/webhooks/1126064927765966890/RTYdcnpjLfHEExcBpGMX-EiSKzPF6JRtcwzAzL-IB58pGNsFR0l0wannj9W_qVq1hbu1' });
+async function webHookErrBot(args: unknown){
+	const errBot = new WebhookClient({ url: 'https://discord.com/api/webhooks/1126064927765966890/RTYdcnpjLfHEExcBpGMX-EiSKzPF6JRtcwzAzL-IB58pGNsFR0l0wannj9W_qVq1hbu1' });
+
+	await args;
+
+	const embed = new EmbedBuilder()
+		.setTitle('Error Detectet')
+		.setDescription(`Error was detected ${args}`)
+		.setColor(0xFF0000);
+
+	errBot.send({
+		content: '<@879086334835298375>',
+		username: 'Error Bot',
+		avatarURL: 'https://img.freepik.com/premium-vector/error-chatbot-glyph-icon-silhouette-symbol-talkbot-with-error-speech-bubble-error-bot_123447-1535.jpg',
+		embeds: [embed]
+	});
+}
 
 function wrap(logger: pino.Logger) {
 	const { error, child } = logger;
@@ -16,8 +32,10 @@ function wrap(logger: pino.Logger) {
 				}
 			}
 		}
+		
 		return error.apply(this, args);
 	}
+
 
 	function childModifier(...args) {
 		const c = child.apply(this, args);
@@ -25,10 +43,12 @@ function wrap(logger: pino.Logger) {
 		c.child = childModifier;
 		return c;
 	}
+	
 	logger.error = errorRearranger.bind(logger);
 	logger.child = childModifier.bind(logger);
 	return logger;
 }
+
 
 export const Logger = wrap(
 	pino({
@@ -45,10 +65,8 @@ export const Logger = wrap(
 					else {
 						args = [err.stack];
 					}
-
-					errBot.send({ content: `<@okami.codes>, new Error ${method.apply(args)}` });
-
-					return method.apply(this, args);
+					
+					return method.apply(this, args) ;
 				}
 
 				// Handles additional arguments being passed in
@@ -67,5 +85,6 @@ export const Logger = wrap(
 		}
 	})
 );
+
 
 export default Logger;
