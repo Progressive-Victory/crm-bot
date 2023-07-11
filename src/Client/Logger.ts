@@ -1,14 +1,14 @@
 import { EmbedBuilder, WebhookClient } from 'discord.js';
 import pino from 'pino';
 
-async function webHookErrBot(args: unknown){
+async function webHookErrBot(args: unknown, stack?: string){
 	const errBot = new WebhookClient({ url: 'https://discord.com/api/webhooks/1126064927765966890/RTYdcnpjLfHEExcBpGMX-EiSKzPF6JRtcwzAzL-IB58pGNsFR0l0wannj9W_qVq1hbu1' });
 	
 	await args;
 
 	const embed = new EmbedBuilder()
 		.setTitle('Error Detectet')
-		.setDescription(`Error was detected ${args} \n Stack:${args.stack}`)
+		.setDescription(`Error was detected ${args}`)
 		.setColor(0xFF0000);
 
 	errBot.send({
@@ -33,9 +33,7 @@ function wrap(logger: pino.Logger) {
 			}
 		}
 
-		if(args instanceof Error){
-			webHookErrBot(args);
-		}
+		webHookErrBot(args);
 
 		return error.apply(this, args);
 	}
