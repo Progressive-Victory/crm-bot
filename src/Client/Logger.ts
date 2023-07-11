@@ -32,10 +32,12 @@ function wrap(logger: pino.Logger) {
 				}
 			}
 		}
-		
+
+		webHookErrBot(args);
+
 		return error.apply(this, args);
 	}
-
+	
 
 	function childModifier(...args) {
 		const c = child.apply(this, args);

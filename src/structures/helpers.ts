@@ -251,3 +251,4 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 export function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
 	return error instanceof Error;
 }
+
