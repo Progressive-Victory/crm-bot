@@ -252,10 +252,3 @@ export function isErrnoException(error: unknown): error is NodeJS.ErrnoException
 	return error instanceof Error;
 }
 
-try {
-	throw new Error('Testing error');
-}
-catch (err) {
-	// Call the error handler function
-	Logger.error(err);
-}
