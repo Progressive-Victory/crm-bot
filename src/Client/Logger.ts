@@ -6,11 +6,22 @@ async function webHookErrBot(args: unknown){
 	
 	await args;
 
+	const getStackTrace = (input) => {
+		let stack = '';
+		for (const arg of input) {
+		  if (arg instanceof Error) {
+				stack = arg.stack;
+				break;
+		  }
+		}
+		return stack;
+	  };
+
 	const embed = new EmbedBuilder()
 		.setTitle('Error Detectet')
-		.setDescription(`Error was detected ${args}`)
+		.setDescription(`Error was detected: ${args} \n Stack trace: ${getStackTrace(args)}`)
 		.setColor(0xFF0000);
-
+		
 	errBot.send({
 		content: '<@879086334835298375>',
 		username: 'Error Bot',
