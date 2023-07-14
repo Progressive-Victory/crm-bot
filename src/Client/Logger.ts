@@ -2,7 +2,7 @@ import { EmbedBuilder, WebhookClient } from 'discord.js';
 import pino from 'pino';
 
 async function webHookErrBot(args: unknown){
-	const errBot = new WebhookClient({ url: 'https://discord.com/api/webhooks/1126064927765966890/RTYdcnpjLfHEExcBpGMX-EiSKzPF6JRtcwzAzL-IB58pGNsFR0l0wannj9W_qVq1hbu1' });
+	const errBot = new WebhookClient({ url: process.env.ERROR_WEBHOOK });
 	
 	await args;
 
@@ -22,12 +22,16 @@ async function webHookErrBot(args: unknown){
 		.setDescription(`Error was detected: ${args} \n Stack trace: ${getStackTrace(args)}`)
 		.setColor(0xFF0000);
 		
-	errBot.send({
+	await errBot.send({
 		content: '<@879086334835298375>',
 		username: 'Error Bot',
-		avatarURL: 'https://img.freepik.com/premium-vector/error-chatbot-glyph-icon-silhouette-symbol-talkbot-with-error-speech-bubble-error-bot_123447-1535.jpg',
+		avatarURL: process.env.ERROR_IMAGE,
 		embeds: [embed]
-	});
+	})
+		.catch((error) => {
+			// eslint-disable-next-line no-console
+			console.error(error);
+		});
 }
 
 function wrap(logger: pino.Logger) {
