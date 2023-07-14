@@ -66,7 +66,6 @@ function wrap(logger: pino.Logger) {
 	return logger;
 }
 
-
 export const Logger = wrap(
 	pino({
 		level: process.env.LOG_LEVEL || 'debug',
@@ -83,7 +82,7 @@ export const Logger = wrap(
 						args = [err.stack];
 					}
 					
-					return method.apply(this, args) ;
+					return method.apply(this, args);
 				}
 
 				// Handles additional arguments being passed in
@@ -102,6 +101,5 @@ export const Logger = wrap(
 		}
 	})
 );
-
 
 export default Logger;

@@ -11,7 +11,6 @@ import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
 
-
 config();
 
 // TypeScript or JavaScript environment (thanks to https://github.com/stijnvdkolk)
