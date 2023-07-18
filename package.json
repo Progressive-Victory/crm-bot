@@ -26,7 +26,7 @@
 		"copy-files": "rsync -avh --include='*.json' --exclude='*' ./src/ ./dist/ > /dev/null"
 	},
 	"engines": {
-		"node": ">=16.9.0"
+		"node": ">=18.16.1"
 	},
 	"dependencies": {
 		"@fluent/bundle": "^0.18.0",
