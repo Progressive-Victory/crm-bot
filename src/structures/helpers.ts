@@ -127,6 +127,7 @@ export async function onConnect(
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) {
 		return Promise.resolve(false);
