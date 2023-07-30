@@ -1,11 +1,12 @@
+/* eslint-disable no-use-before-define */
 import { Logger } from '@Client';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
+	ChatInputCommandInteraction, CommandInteraction,
+	GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel
 } from 'discord.js';
 import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
-// import fetch from 'node-fetch';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
@@ -220,3 +221,4 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 export function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
 	return error instanceof Error;
 }
+

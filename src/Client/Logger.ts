@@ -1,4 +1,38 @@
+import { EmbedBuilder, WebhookClient } from 'discord.js';
 import pino from 'pino';
+
+async function webHookErrBot(args: unknown){
+	const errBot = new WebhookClient({ url: process.env.ERROR_WEBHOOK });
+	
+	await args;
+
+	const getStackTrace = (input) => {
+		let stack = '';
+		for (const arg of input) {
+		  if (arg instanceof Error) {
+				stack = arg.stack;
+				break;
+		  }
+		}
+		return stack;
+	  };
+
+	const embed = new EmbedBuilder()
+		.setTitle('Error Detectet')
+		.setDescription(`Error was detected: ${args} \n Stack trace: ${getStackTrace(args)}`)
+		.setColor(0xFF0000);
+		
+	await errBot.send({
+		content: '<@879086334835298375>',
+		username: 'Error Bot',
+		avatarURL: process.env.ERROR_IMAGE,
+		embeds: [embed]
+	})
+		.catch((error) => {
+			// eslint-disable-next-line no-console
+			console.error(error);
+		});
+}
 
 function wrap(logger: pino.Logger) {
 	const { error, child } = logger;
@@ -13,8 +47,12 @@ function wrap(logger: pino.Logger) {
 				}
 			}
 		}
+
+		webHookErrBot(args);
+
 		return error.apply(this, args);
 	}
+	
 
 	function childModifier(...args) {
 		const c = child.apply(this, args);
@@ -22,6 +60,7 @@ function wrap(logger: pino.Logger) {
 		c.child = childModifier;
 		return c;
 	}
+	
 	logger.error = errorRearranger.bind(logger);
 	logger.child = childModifier.bind(logger);
 	return logger;
@@ -42,7 +81,7 @@ export const Logger = wrap(
 					else {
 						args = [err.stack];
 					}
-
+					
 					return method.apply(this, args);
 				}
 
