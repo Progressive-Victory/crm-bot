@@ -76,6 +76,7 @@ export default class Database {
 	}
 
 	static async getMetrics(guildID: Snowflake, userID?: Snowflake) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const query: any = { guildID };
 		if (userID) query.userID = userID;
 

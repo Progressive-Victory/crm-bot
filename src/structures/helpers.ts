@@ -2,8 +2,7 @@
 import { Logger } from '@Client';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, CommandInteraction,
-	GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';
 import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
@@ -128,6 +127,7 @@ export async function onConnect(
 	}
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
 	if (discordGuildID !== process.env.TRACKING_GUILD) {
 		return Promise.resolve(false);
@@ -221,4 +221,3 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 export function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
 	return error instanceof Error;
 }
-

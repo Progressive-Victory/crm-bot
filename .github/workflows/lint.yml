@@ -8,18 +8,20 @@ on: # event list
     push:
         branches: [main]
 
-env: # environment variables (available in any part of the action)
-    NODE_VERSION: 16
-
 jobs: # list of things to do
     linting:
         name: Linting # job name (unique id)
         runs-on: ubuntu-latest # on which machine to run
+
+        strategy:
+            matrix:
+                NODE_VERSION: [18.x, 20.x]
+
         steps: # list of steps
             - name: Install NodeJS
               uses: actions/setup-node@v2
               with:
-                  node-version: ${{ env.NODE_VERSION }}
+                  node-version: ${{ matrix.NODE_VERSION }}
 
             - name: Code Checkout
               uses: actions/checkout@v2
