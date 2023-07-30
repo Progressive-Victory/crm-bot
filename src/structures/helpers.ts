@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 import { Logger } from '@Client';
 import { t } from '@i18n';
 import {
@@ -5,7 +6,6 @@ import {
 } from 'discord.js';
 import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
-// import fetch from 'node-fetch';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
 import { StateAbbreviation, states } from './states';
