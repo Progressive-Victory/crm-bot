@@ -22,10 +22,11 @@ export default new ContextMenuCommand()
 	)
 	.setExecute(async (interaction: MessageContextMenuCommandInteraction<'cached'>) => {
 		const locale = interaction.guildLocale;
+
 		if (!interaction.targetMessage.pinnable) {
 			return interaction.reply({
 				content: t({
-					key: 'Error',
+					key: 'Pinnable',
 					locale,
 					ns,
 					args: { url: interaction.targetMessage.url }
@@ -48,7 +49,7 @@ export default new ContextMenuCommand()
 
 		try {
 			if (!interaction.targetMessage.pinned) {
-				await interaction.targetMessage.pin('Sate lead pin message command');
+				await interaction.targetMessage.pin('State lead pin message command');
 				return interaction.followUp(
 					t({
 						key: 'Success',
@@ -59,7 +60,7 @@ export default new ContextMenuCommand()
 				);
 			}
 
-			await interaction.targetMessage.unpin('Sate lead pin message command');
+			await interaction.targetMessage.unpin('State lead pin message command');
 			return interaction.followUp(
 				t({
 					key: 'Success',
@@ -70,7 +71,7 @@ export default new ContextMenuCommand()
 			);
 		}
 		catch (e) {
-			Logger.error('Error deleting message', e);
+			Logger.error('Error pinning message', e);
 			return interaction.followUp(
 				t({
 					key: 'Error',
