@@ -199,7 +199,7 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 		Logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
 
 		const auditReason = t({
-			key: 'vc-rename-error',
+			key: 'vc-rename-success',
 			locale: channel.guild.preferredLocale,
 			ns: 'lead',
 			args: { channel: channel.name }
