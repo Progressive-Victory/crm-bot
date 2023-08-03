@@ -2,7 +2,7 @@ import { Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import {
-	ChatInputCommandInteraction, Snowflake, VoiceChannel 
+	ChatInputCommandInteraction, PermissionFlagsBits, Snowflake, VoiceChannel 
 } from 'discord.js';
 import { VCChannelIDs } from 'src/structures/Constants';
 
@@ -41,7 +41,22 @@ export default async function rename(interaction: ChatInputCommandInteraction<'c
 				tag: interaction.user.tag
 			}
 		});
-		await channel.setName(name, reason).catch((err) => {
+
+		if (!channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.ManageChannels)) {
+			return interaction.followUp({
+				content: t({
+					key: 'vc-rename-permissions',
+					locale,
+					ns,
+					args: { channel: channel.toString() }
+				})
+			});
+		}
+
+		try {
+			await channel.setName(name, reason);
+		}
+		catch (err) {
 			Logger.error(err, ' could not rename channel');
 			return interaction.followUp({
 				content: t({
@@ -51,7 +66,8 @@ export default async function rename(interaction: ChatInputCommandInteraction<'c
 					args: { channel: channel.toString() }
 				})
 			});
-		});
+		}
+
 		content = t({
 			key: 'vc-rename-success',
 			locale,

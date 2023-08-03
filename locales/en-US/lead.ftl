@@ -23,8 +23,8 @@ vc-rename-channel-name = channel
 vc-rename-channel-description = The channel to rename
 vc-rename-name-name = name
 vc-rename-name-description = Name to set the channel to
-
 vc-rename-success = Successfully renamed the channel {$channel}
+vc-rename-permissions = I am missing manage channel permissions to rename the channel {$channel}.
 vc-rename-error = Failed to rename the channel {$channel}
 vc-rename-wrong-channel = You are not allowed to rename {$channel}. However, you can rename any of the following channels: {$channels}
 vc-rename-Audit-Log-Rename = Channel {$name} renamed by {$tag}
