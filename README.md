@@ -4,7 +4,7 @@
   <tr>
     <td>
       <a href="https://progressivevictory.win/">
-        <img src="assets/Badge.png" width="200" alt="PV Badge" />
+        <img src="assets/badge.png" width="200" alt="PV Badge" />
       </a>
     </td>
     <td rowspan="3">
