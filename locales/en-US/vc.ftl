@@ -1,0 +1,9 @@
+command-name = vc
+command-description = Join VC
+request-join-name = request-join
+request-join-description = Request to join a VC
+channel-option-name = channel
+channel-option-description = Channel to Join
+invalid-channel = Run this command in the CHannel you want to join or target a voice channel
+vc-allow = Allow
+vc-reject = Reject
