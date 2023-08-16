@@ -11,7 +11,8 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"prebuild": "rimraf dist",
-		"build": "swc ./src --out-dir dist && yarn copy-files",
+		"build": "swc ./src --out-dir dist",
+		"postbuild": "rsync -avh --include='*.json' --exclude='*' ./src/ ./dist/ > /dev/null",
 		"prestart": "yarn build",
 		"start": "node .",
 		"test": "jest",
@@ -22,15 +23,14 @@
 		"prepare": "husky install",
 		"precommit": "lint-staged",
 		"lint": "eslint --fix {src,test}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern",
-		"style": "prettier-eslint \"src/**/*.ts\" --write && yarn lint",
-		"copy-files": "rsync -avh --include='*.json' --exclude='*' ./src/ ./dist/ > /dev/null"
+		"style": "prettier-eslint \"src/**/*.ts\" --write && yarn lint"
 	},
 	"engines": {
 		"node": ">=18.16.1"
 	},
 	"dependencies": {
 		"@fluent/bundle": "^0.18.0",
-		"discord.js": "^14.11.0",
+		"discord.js": "^14.12.1",
 		"dotenv": "^16.3.1",
 		"module-alias": "^2.2.3",
 		"mongodb": "^5.7.0",
