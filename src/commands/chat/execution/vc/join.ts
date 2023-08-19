@@ -6,6 +6,7 @@ import {
 
 export async function joinRequest(interaction: ChatInputCommandInteraction<'cached'>) {
 	const channelOption = interaction.options.getChannel(t({ key: 'channel-option-name', ns }), false, [ChannelType.GuildVoice]);
+	const { locale } = interaction;
 	if (!channelOption && interaction.channel.type !== ChannelType.GuildVoice) {
 		return interaction.reply({
 			content: t({
@@ -15,16 +16,11 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 			ephemeral: true
 		});
 	}
-	let channel: VoiceChannel;
-	if (!channelOption && interaction.channel.type === ChannelType.GuildVoice) {
-		channel = interaction.channel;
-	}
-	else if (channelOption) {
-		channel = channelOption;
-	}
-	return channel.send({
+
+	const requestMessage = {
 		content: t({
 			key: 'request-to-join',
+			locale,
 			ns,
 			args: { member: interaction.member.toString() }
 		}),
@@ -56,5 +52,37 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 						)
 				)
 		]
+	};
+	let channel: VoiceChannel;
+	if (!channelOption && interaction.channel.type === ChannelType.GuildVoice) {
+		channel = interaction.channel;
+	}
+	else {
+		channel = channelOption;
+	}
+
+	if (channel.userLimit >= channel.members.size) {
+		if (interaction.channel === channel) {
+			return interaction.reply(requestMessage);
+		}
+		channel.send(requestMessage);
+		return interaction.reply({
+			content: t({
+				key: 'request-sent',
+				locale,
+				ns,
+				args: { channel: channel.toString() }
+			})
+		});
+	}
+
+	interaction.member.voice.setChannel(channel);
+	return interaction.reply({
+		content: t({
+			key: 'move-successful',
+			ns,
+			locale
+		}),
+		ephemeral: true
 	});
 }
