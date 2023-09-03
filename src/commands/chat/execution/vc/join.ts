@@ -1,7 +1,7 @@
 import { ns } from '@builders/vc';
 import { t } from '@i18n';
 import {
-	ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, VoiceChannel 
+	ActionRowBuilder, BaseMessageOptions, ButtonBuilder, ButtonStyle, ChannelType, ChatInputCommandInteraction, VoiceChannel 
 } from 'discord.js';
 
 export async function joinRequest(interaction: ChatInputCommandInteraction<'cached'>) {
@@ -53,7 +53,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 	}
 
 	// request message sent in target channel with buttons message will not mention the user
-	const requestMessage = {
+	const requestMessage: BaseMessageOptions = {
 		content: t({
 			key: 'request-to-join',
 			locale,
