@@ -7,11 +7,42 @@ import {
 export async function joinRequest(interaction: ChatInputCommandInteraction<'cached'>) {
 	const channelOption = interaction.options.getChannel(t({ key: 'channel-option-name', ns }), false, [ChannelType.GuildVoice]);
 	const { locale } = interaction;
+
+	let channel: VoiceChannel;
+	if (!channelOption && interaction.channel.type === ChannelType.GuildVoice) {
+		channel = interaction.channel;
+	}
+	else {
+		channel = channelOption;
+	}
+
 	if (!channelOption && interaction.channel.type !== ChannelType.GuildVoice) {
 		return interaction.reply({
 			content: t({
 				key: 'invalid-channel',
 				ns
+			}),
+			ephemeral: true
+		});
+	}
+
+	if (!interaction.member.voice.channel) {
+		return interaction.reply({
+			content: t({
+				key: 'not-in-vc',
+				ns,
+				locale
+			}),
+			ephemeral: true
+		});
+	}
+
+	if (interaction.channel === channel) {
+		return interaction.reply({
+			content: t({
+				key: 'same-target-destion-channel',
+				ns,
+				locale
 			}),
 			ephemeral: true
 		});
@@ -53,13 +84,6 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 				)
 		]
 	};
-	let channel: VoiceChannel;
-	if (!channelOption && interaction.channel.type === ChannelType.GuildVoice) {
-		channel = interaction.channel;
-	}
-	else {
-		channel = channelOption;
-	}
 
 	if (channel.userLimit <= channel.members.size) {
 		if (interaction.channel === channel) {

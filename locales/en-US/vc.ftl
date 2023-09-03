@@ -5,6 +5,9 @@ request-join-description = Request to join a VC
 channel-option-name = channel
 channel-option-description = Channel to Join
 invalid-channel = Run this command in the Channel you want to join or target a voice channel
+not-in-vc = To send a Request you must connect to any VC
+same-target-destion-channel = You are currently in this channel
+
 vc-allow = Allow
 vc-reject = Reject
 
