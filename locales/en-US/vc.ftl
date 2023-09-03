@@ -10,4 +10,9 @@ vc-reject = Reject
 
 request-to-join = {$member} requested to join this channel
 request-sent = Request to join {$channel} has been sent
-move-successful = Your request has been approved
+
+## Button Responose
+appover-not-in-channel = To approve join request must be in {$channel}
+request-exspired = This request was made {$time} and has expired
+requester-not-in-old-channel = {$member} is no longer in the channel where they requested from
+move-successful = Request Approved
