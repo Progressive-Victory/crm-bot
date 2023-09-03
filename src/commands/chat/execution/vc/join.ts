@@ -29,7 +29,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 			new ActionRowBuilder<ButtonBuilder>()
 				.addComponents(
 					new ButtonBuilder()
-						.setCustomId('vc_allow')
+						.setCustomId(`vc_allow_${interaction.user.id}_${interaction.member.voice.channelId}`)
 						.setStyle(ButtonStyle.Success)
 						.setLabel(
 							t({
@@ -41,7 +41,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 				)
 				.addComponents(
 					new ButtonBuilder()
-						.setCustomId('vc_reject')
+						.setCustomId(`vc_reject_${interaction.user.id}_${interaction.member.voice.channelId}`)
 						.setStyle(ButtonStyle.Danger)
 						.setLabel(
 							t({
@@ -61,7 +61,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 		channel = channelOption;
 	}
 
-	if (channel.userLimit >= channel.members.size) {
+	if (channel.userLimit <= channel.members.size) {
 		if (interaction.channel === channel) {
 			return interaction.reply(requestMessage);
 		}
@@ -72,7 +72,8 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 				locale,
 				ns,
 				args: { channel: channel.toString() }
-			})
+			}),
+			ephemeral: true
 		});
 	}
 

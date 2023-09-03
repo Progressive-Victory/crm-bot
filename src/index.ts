@@ -34,7 +34,7 @@ const client = new Client({
 (async function start() {
 	await client.init({
 		eventPath: join(__dirname, 'events'),
-		// buttonPath: join(__dirname, 'interactions', 'buttons'),
+		buttonPath: join(__dirname, 'interactions', 'buttons'),
 		// selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
 		// modalPath: join(__dirname, 'interactions', 'modals')
 		commandPath: join(__dirname, 'commands', 'chat', 'builders'),
