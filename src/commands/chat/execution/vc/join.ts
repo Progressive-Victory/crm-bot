@@ -9,6 +9,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 	const { locale } = interaction;
 
 	let channel: VoiceChannel;
+	// If channel option was not populated the channel where the command was run is used
 	if (!channelOption && interaction.channel.type === ChannelType.GuildVoice) {
 		channel = interaction.channel;
 	}
@@ -16,6 +17,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 		channel = channelOption;
 	}
 
+	// checking that target channel is a voice channel this is neeed if the command is run in a text channel with no channel option
 	if (!channelOption && interaction.channel.type !== ChannelType.GuildVoice) {
 		return interaction.reply({
 			content: t({
@@ -26,6 +28,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 		});
 	}
 
+	// Checks if member runing the command is in a VC
 	if (!interaction.member.voice.channel) {
 		return interaction.reply({
 			content: t({
@@ -37,6 +40,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 		});
 	}
 
+	// checks if the member using the command is already in  the target channel
 	if (interaction.channel === channel) {
 		return interaction.reply({
 			content: t({
@@ -48,6 +52,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 		});
 	}
 
+	// request message sent in target channel with buttons message will not mention the user
 	const requestMessage = {
 		content: t({
 			key: 'request-to-join',
@@ -85,10 +90,14 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 		]
 	};
 
+	// Checks that the room is full
 	if (channel.userLimit <= channel.members.size) {
+		// checks if command was sent from same channel
 		if (interaction.channel === channel) {
 			return interaction.reply(requestMessage);
 		}
+
+		// If sent from different channel request is sent to target channel
 		channel.send(requestMessage);
 		return interaction.reply({
 			content: t({
@@ -101,6 +110,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 		});
 	}
 
+	// If channel is not full member is moved in to channel
 	interaction.member.voice.setChannel(channel);
 	return interaction.reply({
 		content: t({
