@@ -27,7 +27,7 @@ jobs: # list of things to do
               uses: actions/checkout@v2
 
             - name: Install Dependencies
-              run: yarn install --frozen-lockfile --silent
+              run: yarn install --silent
               env:
                   CI: true
 
