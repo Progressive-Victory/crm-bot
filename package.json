@@ -11,9 +11,9 @@
 	"main": "./dist/index.js",
 	"scripts": {
 		"build": "swc ./src --out-dir dist",
-		"prestart": "yarn build",
 		"start": "node .",
 		"test": "jest",
+		"predev": "yarn build",
 		"dev": "yarn start | pino-pretty -i pid,hostname -t 'yyyy-mm-dd HH:MM:ss'",
 		"prepm2": "yarn build",
 		"pm2": "pm2 start dist/index.js --name crm-bot",
