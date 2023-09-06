@@ -17,6 +17,13 @@ async function deleteMessage(interaction: ButtonInteraction) {
 	}, 60000);
 }
 
+/**
+ * Updates button interactions
+ * @param interaction button interaction wich to update
+ * @param key i18n key string
+ * @param locale i18n locale
+ * @param args flunet arguments
+ */
 async function updateInteraction(interaction: ButtonInteraction, key: string, locale: Locale, args?: Record<string, FluentVariable>) {
 	await interaction.update({
 		content: t({
