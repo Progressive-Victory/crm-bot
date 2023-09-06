@@ -32,7 +32,7 @@ async function updateInteraction(interaction: ButtonInteraction, key: string, ar
 		allowedMentions: { users: [] },
 		components: []
 	});
-	await deleteMessage(interaction);
+	deleteMessage(interaction);
 }
 
 export default new Interaction<ButtonInteraction>().setName('vc').setExecute(async (interaction) => {
