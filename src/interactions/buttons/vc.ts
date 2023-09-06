@@ -1,7 +1,10 @@
 import { Interaction, Logger } from '@Client';
-import { ButtonInteraction, VoiceChannel } from 'discord.js';
+import {
+	ButtonInteraction, Locale, VoiceChannel 
+} from 'discord.js';
 
 import { ns } from '@builders/vc';
+import { FluentVariable } from '@fluent/bundle';
 import { t } from '@i18n';
 
 /**
@@ -12,6 +15,20 @@ async function deleteMessage(interaction: ButtonInteraction) {
 	setTimeout(() => {
 		interaction.deleteReply().catch((err) => Logger.error(err));
 	}, 60000);
+}
+
+async function updateInteraction(interaction: ButtonInteraction, key: string, locale: Locale, args?: Record<string, FluentVariable>) {
+	await interaction.update({
+		content: t({
+			key,
+			ns,
+			locale,
+			args
+		}),
+		allowedMentions: { users: [] },
+		components: []
+	});
+	await deleteMessage(interaction);
 }
 
 export default new Interaction<ButtonInteraction>().setName('vc').setExecute(async (interaction) => {
@@ -46,47 +63,19 @@ export default new Interaction<ButtonInteraction>().setName('vc').setExecute(asy
 	date.setMinutes(date.getMinutes() - 10);
 
 	if (interaction.createdAt < date) {
-		await interaction.update({
-			content: t({
-				key: 'request-exspired',
-				ns,
-				locale: guildLocale,
-				args: { time: interaction.createdAt.toDiscordString('R') }
-			}),
-			components: []
-		});
-		await deleteMessage(interaction);
-
+		updateInteraction(interaction, 'request-exspired', guildLocale, { time: interaction.createdAt.toDiscordString('R') });
 		return;
 	}
 
 	// checks to see if the requester is still in the channel that they were when the request was mad
 	if (!fromChannel.members.has(args[2])) {
-		await interaction.update({
-			content: t({
-				key: 'requester-not-in-old-channel',
-				ns,
-				locale: guildLocale,
-				args: { member: interaction.member.toString() }
-			}),
-			components: [],
-			allowedMentions: { users: [] }
-		});
-		await deleteMessage(interaction);
+		updateInteraction(interaction, 'requester-not-in-old-channel', guildLocale, { member: interaction.member.toString() });
+		return;
 	}
 
 	// move member into requested channel
 	requester.voice.setChannel(interaction.channel as VoiceChannel);
 
 	// update message to indicat task was completed
-	await interaction.update({
-		content: t({
-			key: 'move-successful',
-			ns,
-			locale: guildLocale,
-			args: { member: interaction.member.toString() }
-		}),
-		components: []
-	});
-	await deleteMessage(interaction);
+	updateInteraction(interaction, 'move-successful', guildLocale, { member: interaction.member.toString() });
 });
