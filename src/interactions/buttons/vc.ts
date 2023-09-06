@@ -9,7 +9,7 @@ import { t } from '@i18n';
  * Deletes message after a minute
  * @param interaction button interaction
  */
-async function deleteMessage(interaction: ButtonInteraction) {
+function deleteMessage(interaction: ButtonInteraction) {
 	setTimeout(() => {
 		interaction.deleteReply().catch((err) => Logger.error(err));
 	}, 60000);
