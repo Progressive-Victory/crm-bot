@@ -1,7 +1,5 @@
 import { Interaction, Logger } from '@Client';
-import {
-	ButtonInteraction, Locale, VoiceChannel 
-} from 'discord.js';
+import { ButtonInteraction, VoiceChannel } from 'discord.js';
 
 import { ns } from '@builders/vc';
 import { FluentVariable } from '@fluent/bundle';
@@ -21,15 +19,14 @@ async function deleteMessage(interaction: ButtonInteraction) {
  * Updates button interactions
  * @param interaction button interaction wich to update
  * @param key i18n key string
- * @param locale i18n locale
  * @param args flunet arguments
  */
-async function updateInteraction(interaction: ButtonInteraction, key: string, locale: Locale, args?: Record<string, FluentVariable>) {
+async function updateInteraction(interaction: ButtonInteraction, key: string, args?: Record<string, FluentVariable>) {
 	await interaction.update({
 		content: t({
 			key,
 			ns,
-			locale,
+			locale: interaction.guildLocale,
 			args
 		}),
 		allowedMentions: { users: [] },
@@ -39,7 +36,7 @@ async function updateInteraction(interaction: ButtonInteraction, key: string, lo
 }
 
 export default new Interaction<ButtonInteraction>().setName('vc').setExecute(async (interaction) => {
-	const { locale, guildLocale } = interaction;
+	const { locale } = interaction;
 	const args = interaction.customId.split(interaction.client.splitCustomIDOn);
 	const action = args[1];
 	const requester = await interaction.guild.members.fetch(args[2]);
@@ -70,13 +67,13 @@ export default new Interaction<ButtonInteraction>().setName('vc').setExecute(asy
 	date.setMinutes(date.getMinutes() - 10);
 
 	if (interaction.createdAt < date) {
-		updateInteraction(interaction, 'request-exspired', guildLocale, { time: interaction.createdAt.toDiscordString('R') });
+		updateInteraction(interaction, 'request-exspired', { time: interaction.createdAt.toDiscordString('R') });
 		return;
 	}
 
 	// checks to see if the requester is still in the channel that they were when the request was mad
 	if (!fromChannel.members.has(args[2])) {
-		updateInteraction(interaction, 'requester-not-in-old-channel', guildLocale, { member: interaction.member.toString() });
+		updateInteraction(interaction, 'requester-not-in-old-channel', { member: interaction.member.toString() });
 		return;
 	}
 
@@ -84,5 +81,5 @@ export default new Interaction<ButtonInteraction>().setName('vc').setExecute(asy
 	requester.voice.setChannel(interaction.channel as VoiceChannel);
 
 	// update message to indicat task was completed
-	updateInteraction(interaction, 'move-successful', guildLocale, { member: interaction.member.toString() });
+	updateInteraction(interaction, 'move-successful', { member: interaction.member.toString() });
 });
