@@ -10,5 +10,5 @@ export async function vc(interaction: ChatInputCommandInteraction<'cached'>) {
 	if (subcommand === t({ key: 'request-join-name', ns })) return joinRequest(interaction);
 
 	// Throw an error if the subcommand or subcommand group is not recognized.
-	throw Error;
+	throw Error('Unknown subcommand used');
 }

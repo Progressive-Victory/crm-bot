@@ -13,14 +13,13 @@ RUN yarn build
 FROM node:lts-hydrogen AS runner
 WORKDIR /usr/bot
 
-COPY package*.json .
-
+COPY package.json .
+COPY yarn.lock .
 COPY ./locales ./locales
 
-RUN yarn install --production
+RUN yarn install --frozen-lockfile --production
 
 COPY --from=builder /usr/bot/dist/ ./dist
-
 COPY ./src/*.json ./dist
 
 USER node

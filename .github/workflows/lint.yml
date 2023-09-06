@@ -19,15 +19,15 @@ jobs: # list of things to do
 
         steps: # list of steps
             - name: Install NodeJS
-              uses: actions/setup-node@v2
+              uses: actions/setup-node@v3
               with:
                   node-version: ${{ matrix.NODE_VERSION }}
 
             - name: Code Checkout
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: Install Dependencies
-              run: yarn install --silent
+              run: yarn install --frozen-lockfile --silent
               env:
                   CI: true
 

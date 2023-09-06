@@ -98,7 +98,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 		}
 
 		// If sent from different channel request is sent to target channel
-		channel.send(requestMessage);
+		await channel.send(requestMessage);
 		return interaction.reply({
 			content: t({
 				key: 'request-sent',
@@ -111,7 +111,7 @@ export async function joinRequest(interaction: ChatInputCommandInteraction<'cach
 	}
 
 	// If channel is not full member is moved in to channel
-	interaction.member.voice.setChannel(channel);
+	await interaction.member.voice.setChannel(channel);
 	return interaction.reply({
 		content: t({
 			key: 'move-successful',

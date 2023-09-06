@@ -60,7 +60,7 @@ export async function onInteractionCreate(interaction: Interaction) {
 					await interaction.followUp({ content: errorMessage, ephemeral: true }).catch((e) => Logger.error(e));
 				}
 				else {
-					// Else the interactions is replied too
+					// Else the interactions is replied to
 					await interaction.reply({ content: errorMessage, ephemeral: true }).catch((e) => Logger.error(e));
 				}
 			}
