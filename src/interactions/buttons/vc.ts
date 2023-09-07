@@ -67,19 +67,19 @@ export default new Interaction<ButtonInteraction>().setName('vc').setExecute(asy
 	date.setMinutes(date.getMinutes() - 10);
 
 	if (interaction.createdAt < date) {
-		updateInteraction(interaction, 'request-exspired', { time: interaction.createdAt.toDiscordString('R') });
+		await updateInteraction(interaction, 'request-exspired', { time: interaction.createdAt.toDiscordString('R') });
 		return;
 	}
 
 	// checks to see if the requester is still in the channel that they were when the request was mad
 	if (!fromChannel.members.has(args[2])) {
-		updateInteraction(interaction, 'requester-not-in-old-channel', { member: interaction.member.toString() });
+		await updateInteraction(interaction, 'requester-not-in-old-channel', { member: interaction.member.toString() });
 		return;
 	}
 
 	// move member into requested channel
-	requester.voice.setChannel(interaction.channel as VoiceChannel);
+	await requester.voice.setChannel(interaction.channel as VoiceChannel);
 
 	// update message to indicat task was completed
-	updateInteraction(interaction, 'move-successful', { member: interaction.member.toString() });
+	await updateInteraction(interaction, 'move-successful', { member: interaction.member.toString() });
 });
