@@ -113,6 +113,22 @@ export default new ChatInputCommand()
 									.setRequired(true)
 							)
 					)
+					.addSubcommand((subcommand) =>
+						subcommand
+							.setName(t({ key: 'event-update', ns }))
+							.setDescription(t({ key: 'event-update-description', ns }))
+							.setNameLocalizations(localization('event-update', ns))
+							.setDescriptionLocalizations(localization('event-update-description', ns))
+							.addChannelOption((option) =>
+								option
+									.setName(t({ key: 'event-option-channel', ns }))
+									.setDescription(t({ key: 'event-option-channel-description', ns }))
+									.setNameLocalizations(localization('event-option-channel', ns))
+									.setDescriptionLocalizations(localization('event-option-channel-description', ns))
+									.addChannelTypes(ChannelType.GuildText)
+									.setRequired(true)
+							)
+					)
 			)
 			.addSubcommand((subcommand) =>
 				subcommand

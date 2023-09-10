@@ -64,6 +64,9 @@ event-name = events
 event-description = event command
 event-create-name = create
 event-create-description = Create event with channels
+event-update = update
+event-update-description = Update permissions of event channels
+
 ### Command Options
 event-option-name = name
 event-option-name-description = Name of event
@@ -71,6 +74,8 @@ event-option-description = description
 event-option-description-description = Description of event
 event-option-date = date
 event-option-date-description = Example `2024-10-05T08:00` Date must be in the future
+event-option-channel = channel
+event-option-channel-description = Channel for event
 
 ### replies
 event-bad-date = Date is incorectly formated
@@ -81,4 +86,5 @@ event-success-button-vc = Voice Channel
 event-success-button-chat = Text Channel
 event-select-menu = Select Roles or members
 event-select-reply = Permission Override Updated
+event-channel-bad-category = Please choose a channel in the event category
 

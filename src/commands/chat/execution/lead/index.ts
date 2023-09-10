@@ -2,7 +2,7 @@ import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 import { states } from 'src/structures';
-import { createEvent } from './event';
+import { createEvent, updateEvent } from './event';
 import { memberList } from './member-list';
 import ping from './ping';
 import role from './region/role';
@@ -19,6 +19,7 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 	switch (subcommandGroup) {
 	case 'events':
 		if (subcommand === 'create') return createEvent(interaction);
+		if (subcommand === 'update') return updateEvent(interaction);
 		break;
 	case 'vc':
 		if (subcommand === 'rename') return rename(interaction);
