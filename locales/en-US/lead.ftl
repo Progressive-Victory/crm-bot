@@ -57,3 +57,28 @@ member-list-role-option-description = The role from with to get list
 
 ### follow-up
 member-list-message-followup = Members in {$role} role
+
+## events
+### Command
+event-name = events
+event-description = event command
+event-create-name = create
+event-create-description = Create event with channels
+### Command Options
+event-option-name = name
+event-option-name-description = Name of event
+event-option-description = description
+event-option-description-description = Description of event
+event-option-date = date
+event-option-date-description = Example `2024-10-05T08:00` Date must be in the future
+
+### replies
+event-bad-date = Date is incorectly formated
+event-date-past = Date entered was in the past and can not be used
+event-success-create = Successfully Created, Be sure to add roles or members to the event below 
+event-success-button-event = Event
+event-success-button-vc = Voice Channel
+event-success-button-chat = Text Channel
+event-select-menu = Select Roles or members
+event-select-reply = Permission Override Updated
+

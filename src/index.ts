@@ -20,8 +20,16 @@ init(join(__dirname, '../locales'), { fallback: Locale.EnglishUS, hasGlobal: tru
 
 // Initialization (specify intents and partials)
 const client = new Client({
-	intents: [Intents.Guilds, Intents.GuildMessages, Intents.GuildVoiceStates, Intents.MessageContent, Intents.GuildMembers, Intents.GuildModeration],
-	partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember],
+	intents: [
+		Intents.Guilds,
+		Intents.GuildMessages,
+		Intents.GuildVoiceStates,
+		Intents.MessageContent,
+		Intents.GuildMembers,
+		Intents.GuildModeration,
+		Intents.GuildScheduledEvents
+	],
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember, Partials.GuildScheduledEvent],
 	receiveMessageComponents: true,
 	receiveModals: true,
 	receiveAutocomplete: true,
@@ -35,7 +43,7 @@ const client = new Client({
 	await client.init({
 		eventPath: join(__dirname, 'events'),
 		buttonPath: join(__dirname, 'interactions', 'buttons'),
-		// selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
+		selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
 		// modalPath: join(__dirname, 'interactions', 'modals')
 		commandPath: join(__dirname, 'commands', 'chat', 'builders'),
 		contextMenuPath: join(__dirname, 'commands', 'context_menu')

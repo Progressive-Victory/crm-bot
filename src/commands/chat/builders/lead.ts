@@ -12,7 +12,7 @@ export default new ChatInputCommand()
 			.setDescription(t({ key: 'command-description', ns }))
 			.setNameLocalizations(localization('command-name', ns))
 			.setDescriptionLocalizations(localization('command-description', ns))
-			.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels)
+			.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels | PermissionFlagsBits.ManageEvents)
 			.setDMPermission(false)
 			.addSubcommandGroup((subcommandGroup) =>
 				subcommandGroup
@@ -70,12 +70,56 @@ export default new ChatInputCommand()
 							)
 					)
 			)
+			.addSubcommandGroup((subcommandGroup) =>
+				subcommandGroup
+					.setName(t({ key: 'event-name', ns }))
+					.setDescription(t({ key: 'event-description', ns }))
+					.setNameLocalizations(localization('event-name', ns))
+					.setDescriptionLocalizations(localization('event-description', ns))
+					.addSubcommand((subcommand) =>
+						subcommand
+							.setName(t({ key: 'event-create-name', ns }))
+							.setDescription(t({ key: 'event-create-description', ns }))
+							.setNameLocalizations(localization('event-create-name', ns))
+							.setDescriptionLocalizations(localization('event-create-description', ns))
+							.addStringOption((option) =>
+								option
+									.setName(t({ key: 'event-option-name', ns }))
+									.setNameLocalizations(localization('event-option-name', ns))
+									.setDescription(t({ key: 'event-option-name-description', ns }))
+									.setDescriptionLocalizations(localization('event-option-name-description', ns))
+									.setMinLength(1)
+									.setMaxLength(100)
+									.setRequired(true)
+							)
+							.addStringOption((option) =>
+								option
+									.setName(t({ key: 'event-option-description', ns }))
+									.setDescription(t({ key: 'event-option-description-description', ns }))
+									.setNameLocalizations(localization('event-option-description', ns))
+									.setDescriptionLocalizations(localization('event-option-description-description', ns))
+									.setMinLength(1)
+									.setMaxLength(1000)
+									.setRequired(true)
+							)
+							.addStringOption((option) =>
+								option
+									.setName(t({ key: 'event-option-date', ns }))
+									.setDescription(t({ key: 'event-option-date-description', ns }))
+									.setNameLocalizations(localization('event-option-date', ns))
+									.setDescriptionLocalizations(localization('event-option-date-description', ns))
+									.setMinLength(16)
+									.setMaxLength(16)
+									.setRequired(true)
+							)
+					)
+			)
 			.addSubcommand((subcommand) =>
 				subcommand
 					.setName(t({ key: 'member-list-name', ns }))
-					.setDescription(t({ key: 'member-list-name', ns }))
+					.setDescription(t({ key: 'member-list-description', ns }))
 					.setNameLocalizations(localization('member-list-name', ns))
-					.setDescriptionLocalizations(localization('member-list-name', ns))
+					.setDescriptionLocalizations(localization('member-list-description', ns))
 					.addRoleOption((option) =>
 						option
 							.setName(t({ key: 'member-list-role-option-name', ns }))
@@ -89,6 +133,8 @@ export default new ChatInputCommand()
 				subcommand
 					.setName(t({ key: 'ping-name', ns }))
 					.setDescription(t({ key: 'ping-description', ns }))
+					.setNameLocalizations(localization('ping-name', ns))
+					.setDescriptionLocalizations(localization('ping-description', ns))
 					.addRoleOption((option) =>
 						option
 							.setName(t({ key: 'role', ns }))
@@ -101,6 +147,8 @@ export default new ChatInputCommand()
 						option
 							.setName(t({ key: 'channel', ns }))
 							.setDescription(t({ key: 'ping-channel-description', ns }))
+							.setNameLocalizations(localization('channel', ns))
+							.setDescriptionLocalizations(localization('ping-channel-description', ns))
 							.addChannelTypes(ChannelType.GuildText)
 							.setRequired(false)
 					)
@@ -108,6 +156,8 @@ export default new ChatInputCommand()
 						option
 							.setName(t({ key: 'message', ns }))
 							.setDescription(t({ key: 'ping-message-description', ns }))
+							.setNameLocalizations(localization('message', ns))
+							.setDescriptionLocalizations(localization('ping-message-description', ns))
 							.setRequired(false)
 					)
 			)

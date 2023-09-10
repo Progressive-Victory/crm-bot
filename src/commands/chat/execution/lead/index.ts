@@ -2,6 +2,7 @@ import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 import { states } from 'src/structures';
+import { createEvent } from './event';
 import { memberList } from './member-list';
 import ping from './ping';
 import role from './region/role';
@@ -16,6 +17,9 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 	const subcommandGroup = interaction.options.getSubcommandGroup();
 
 	switch (subcommandGroup) {
+	case 'events':
+		if (subcommand === 'create') return createEvent(interaction);
+		break;
 	case 'vc':
 		if (subcommand === 'rename') return rename(interaction);
 		break;
@@ -28,7 +32,7 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 	}
 
 	// Throw an error if the subcommand or subcommand group is not recognized.
-	throw Error;
+	throw Error('No Subcommand');
 }
 
 /**
