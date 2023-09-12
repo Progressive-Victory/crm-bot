@@ -36,6 +36,19 @@ async function onReady(client: Client) {
 			await renameOrganizing(channel as VoiceBasedChannel);
 		}
 	}
+
+	if (!process.env.API_ENDPOINT) {
+		Logger.warn('API endpoint not set at API_ENDPOINT.');
+	}
+	else {
+		try {
+			await fetch(process.env.API_ENDPOINT);
+		}
+		catch (e) {
+			Logger.error('API endpoint not reachable. Exiting...');
+			process.exit(1);
+		}
+	}
 }
 
 export default new Event().setName(Events.ClientReady).setOnce(true).setExecute(onReady);
