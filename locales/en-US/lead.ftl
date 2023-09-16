@@ -73,7 +73,9 @@ event-option-name-description = Name of event
 event-option-description = description
 event-option-description-description = Description of event
 event-option-date = date
-event-option-date-description = Example `2024-10-05T08:00` Date must be in the future
+event-option-date-description = Example `2024-10-05` Date & must be in the future
+event-option-date-time = time
+event-option-date-time-description = Example `08:00` Date & must be in the future
 event-option-channel = channel
 event-option-channel-description = Channel for event
 

@@ -25,8 +25,10 @@ export async function createEvent(interaction: ChatInputCommandInteraction<'cach
 	}
 
 	// Check that date is valid
-	let dateString = options.getString(t({ key: 'event-option-date', ns }), true);
-	dateString = dateString.replace('t', 'T').trim();
+	const dateString = options
+		.getString(t({ key: 'event-option-date', ns }), true)
+		.concat('T')
+		.concat(options.getString(t({ key: 'event-option-date-time', ns }), true));
 
 	if (!datevalidation.test(dateString)) {
 		await interaction.reply({
