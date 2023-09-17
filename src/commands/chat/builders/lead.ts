@@ -82,46 +82,6 @@ export default new ChatInputCommand()
 							.setDescription(t({ key: 'event-create-description', ns }))
 							.setNameLocalizations(localization('event-create-name', ns))
 							.setDescriptionLocalizations(localization('event-create-description', ns))
-							.addStringOption((option) =>
-								option
-									.setName(t({ key: 'event-option-name', ns }))
-									.setNameLocalizations(localization('event-option-name', ns))
-									.setDescription(t({ key: 'event-option-name-description', ns }))
-									.setDescriptionLocalizations(localization('event-option-name-description', ns))
-									.setMinLength(1)
-									.setMaxLength(100)
-									.setRequired(true)
-							)
-							.addStringOption((option) =>
-								option
-									.setName(t({ key: 'event-option-description', ns }))
-									.setDescription(t({ key: 'event-option-description-description', ns }))
-									.setNameLocalizations(localization('event-option-description', ns))
-									.setDescriptionLocalizations(localization('event-option-description-description', ns))
-									.setMinLength(1)
-									.setMaxLength(1000)
-									.setRequired(true)
-							)
-							.addStringOption((option) =>
-								option
-									.setName(t({ key: 'event-option-date', ns }))
-									.setDescription(t({ key: 'event-option-date-description', ns }))
-									.setNameLocalizations(localization('event-option-date', ns))
-									.setDescriptionLocalizations(localization('event-option-date-description', ns))
-									.setMinLength(10)
-									.setMaxLength(10)
-									.setRequired(true)
-							)
-							.addStringOption((option) =>
-								option
-									.setName(t({ key: 'event-option-date-time', ns }))
-									.setDescription(t({ key: 'event-option-date-time-description', ns }))
-									.setNameLocalizations(localization('event-option-date-time', ns))
-									.setDescriptionLocalizations(localization('event-option-date-time-description', ns))
-									.setMinLength(5)
-									.setMaxLength(5)
-									.setRequired(true)
-							)
 					)
 					.addSubcommand((subcommand) =>
 						subcommand

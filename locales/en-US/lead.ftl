@@ -67,17 +67,6 @@ event-create-description = Create event with channels
 event-update = update
 event-update-description = Update permissions of event channels
 
-### Command Options
-event-option-name = name
-event-option-name-description = Name of event
-event-option-description = description
-event-option-description-description = Description of event
-event-option-date = date
-event-option-date-description = Example `2024-10-05` Date & must be in the future
-event-option-date-time = time
-event-option-date-time-description = Example `08:00` Date & must be in the future
-event-option-channel = channel
-event-option-channel-description = Channel for event
 
 ### replies
 event-bad-date = Date is incorectly formated
@@ -90,3 +79,13 @@ event-select-menu = Select Roles or members
 event-select-reply = Permission Override Updated
 event-channel-bad-category = Please choose a channel in the event category
 
+### Event Modals
+modal-title-event-create = Create Event
+modal-label-event-create-name = Name
+modal-placeholder-event-create-name = Name of the Event
+modal-label-event-create-description = Description
+modal-placeholder-event-create-description = Description of the Event
+modal-label-event-create-date = Date
+modal-placeholder-event-create-date = YYYY-MM-DD
+modal-label-event-create-time = Time(EST)
+modal-placeholder-event-create-time = HH:MM

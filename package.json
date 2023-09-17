@@ -70,6 +70,7 @@
 	"_moduleAliases": {
 		"@Client": "dist/Client",
 		"@i18n": "dist/i18n",
+		"@util": "dist/util",
 		"@builders": "dist/commands/chat/builders",
 		"@execution": "dist/commands/chat/execution",
 		"src": "dist"

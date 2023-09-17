@@ -44,7 +44,7 @@ const client = new Client({
 		eventPath: join(__dirname, 'events'),
 		buttonPath: join(__dirname, 'interactions', 'buttons'),
 		selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
-		// modalPath: join(__dirname, 'interactions', 'modals')
+		modalPath: join(__dirname, 'interactions', 'modals'),
 		commandPath: join(__dirname, 'commands', 'chat', 'builders'),
 		contextMenuPath: join(__dirname, 'commands', 'context_menu')
 	});
