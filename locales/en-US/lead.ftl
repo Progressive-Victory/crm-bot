@@ -67,6 +67,9 @@ event-create-description = Create event with channels
 event-update = update
 event-update-description = Update permissions of event channels
 
+### Command Options
+event-option-channel = channel
+event-option-channel-description = Channel for event
 
 ### replies
 event-bad-date = Date is incorectly formated
