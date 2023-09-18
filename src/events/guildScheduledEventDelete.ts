@@ -1,7 +1,14 @@
 import { Event } from '@Client';
 import { channelMessgesToAttachmentBuilder } from '@util/channel';
 import {
-	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, PublicThreadChannel, TextBasedChannel, TextChannel 
+	AttachmentBuilder,
+	ChannelType,
+	Events,
+	GuildScheduledEvent,
+	GuildScheduledEventStatus,
+	PublicThreadChannel,
+	TextBasedChannel,
+	TextChannel
 } from 'discord.js';
 
 const parentId = process.env.EVENT_CATEGORY_ID;
@@ -25,11 +32,10 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 			await channelMessgesToAttachmentBuilder(eventTextChannel as TextChannel | PublicThreadChannel),
 			await channelMessgesToAttachmentBuilder(channel)
 		);
-		eventTextChannel.delete('Event Deleted');
-		channel.delete('Event Deleted');
+		await Promise.all([eventTextChannel.delete('Event Deleted'), channel.delete('Event Deleted')]);
 	}
-	if (files && guildScheduledEvent.status) {
-		eventLogChannel.send({
+	if (files && guildScheduledEvent.status === GuildScheduledEventStatus.Canceled) {
+		await eventLogChannel.send({
 			content: 'Log of messages',
 			files
 		});

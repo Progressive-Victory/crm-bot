@@ -12,7 +12,8 @@ import {
 	GuildScheduledEventCreateOptions,
 	GuildScheduledEventEntityType,
 	GuildScheduledEventPrivacyLevel,
-	ModalSubmitInteraction
+	ModalSubmitInteraction,
+	PermissionFlagsBits
 } from 'discord.js';
 
 const dateValidation = /^([2][0-9]{3})-(0[0-9]|1[0-2])-(0[0-9]|[12]\d|3[01])T([01][0-9]|2[0-3]):([0-5][0-9])/g;
@@ -20,8 +21,12 @@ const eventCategoryId = process.env.EVENT_CATEGORY_ID;
 
 export default new Interaction<ModalSubmitInteraction>().setName('event').setExecute(async (interaction) => {
 	const {
-		guild, locale, fields 
+		guild, locale, fields, appPermissions 
 	} = interaction;
+	// check bot premistions
+	if (!appPermissions.has(PermissionFlagsBits.ManageChannels, true) || !appPermissions.has(PermissionFlagsBits.ManageRoles, true)) {
+		throw Error('Missing premisions `ManageChannels` or `ManageRoles`'); 
+	}
 	const eventCategory = guild.channels.cache.find((c, k) => k === eventCategoryId && c.type === ChannelType.GuildCategory) as CategoryChannel;
 	if (!eventCategory) {
 		throw Error('Faild to find Event Channel Please check .env.EVENT_CATEGORY_ID');
@@ -85,12 +90,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		content: t({
 			key: 'event-success-create',
 			ns,
-			locale,
-			args: {
-				event: event.url,
-				vc: eventVc.toString(),
-				chat: eventChat.toString()
-			}
+			locale
 		}),
 		components: [
 			new ActionRowBuilder<ButtonBuilder>().setComponents(

@@ -20,26 +20,30 @@ async function execute(interaction: MentionableSelectMenuInteraction) {
 	) as TextChannel;
 	const voiceChannel = event.channel as VoiceChannel;
 
-	await textChannel.lockPermissions();
-	await voiceChannel.lockPermissions();
+	await Promise.all([textChannel.lockPermissions(), voiceChannel.lockPermissions()]);
 
-	members.forEach(async (m) => {
-		await textChannel.permissionOverwrites.edit(m as GuildMember, { ViewChannel: true });
-		await voiceChannel.permissionOverwrites.edit(m as GuildMember, { ViewChannel: true });
-	});
-	roles.forEach(async (r) => {
-		await textChannel.permissionOverwrites.edit(r as Role, { ViewChannel: true });
-		await voiceChannel.permissionOverwrites.edit(r as Role, { ViewChannel: true });
-	});
-
-	await interaction.reply({
-		content: t({
-			key: 'event-select-reply',
-			ns,
-			locale
-		}),
-		ephemeral: true
-	});
+	await Promise.all([
+		async () => {
+			for (const [, member] of members) {
+				await textChannel.permissionOverwrites.edit(member as GuildMember, { ViewChannel: true });
+				await voiceChannel.permissionOverwrites.edit(member as GuildMember, { ViewChannel: true });
+			}
+		},
+		async () => {
+			for (const [, role] of roles) {
+				await textChannel.permissionOverwrites.edit(role as Role, { ViewChannel: true });
+				await voiceChannel.permissionOverwrites.edit(role as Role, { ViewChannel: true });
+			}
+		},
+		interaction.reply({
+			content: t({
+				key: 'event-select-reply',
+				ns,
+				locale
+			}),
+			ephemeral: true
+		})
+	]);
 }
 
 export default new Interaction<MentionableSelectMenuInteraction>().setName('vc').setExecute(execute);
