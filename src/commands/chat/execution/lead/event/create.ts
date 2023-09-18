@@ -12,5 +12,5 @@ export async function createEvent(interaction: ChatInputCommandInteraction<'cach
 	}
 
 	const create = createEventModal(locale);
-	interaction.showModal(create);
+	await interaction.showModal(create);
 }

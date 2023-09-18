@@ -1,39 +1,38 @@
-import { Event, Logger } from '@Client';
+import { Event } from '@Client';
+import { channelMessgesToAttachmentBuilder } from '@util/channel';
 import {
-	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, TextBasedChannel, TextChannel, VoiceChannel 
+	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, PublicThreadChannel, TextBasedChannel, TextChannel 
 } from 'discord.js';
-import { printChannel } from 'src/structures/print-channel';
 
 const parentId = process.env.EVENT_CATEGORY_ID;
 const eventLogId = process.env.EVENT_LOG_CHANNEL_ID;
 
 async function execute(guildScheduledEvent: GuildScheduledEvent) {
-	const eventTextChannel = guildScheduledEvent.guild.channels.cache.find(
-		(c) => c.parentId === parentId && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === guildScheduledEvent.id
+	const {
+		guild, channel, id 
+	} = guildScheduledEvent;
+	const eventTextChannel = guild.channels.cache.find(
+		(c) => c.parentId === parentId && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === id
 	);
 
-	const eventLogChannel = guildScheduledEvent.guild.channels.cache.find(
+	const eventLogChannel = guild.channels.cache.find(
 		(c, k) => k === eventLogId && (c.type === ChannelType.GuildText || c.type === ChannelType.PublicThread)
 	) as TextBasedChannel;
 	const files: AttachmentBuilder[] = [];
-	try {
-		if (eventTextChannel) {
-			files.push(await printChannel(eventTextChannel as TextChannel));
-			eventTextChannel.delete('Event Deleted');
-		}
-		if (guildScheduledEvent.channel.parentId === parentId) {
-			files.push(await printChannel(guildScheduledEvent.channel as VoiceChannel));
-			guildScheduledEvent.channel.delete('Event Deleted');
-		}
-		if (files) {
-			eventLogChannel.send({
-				content: 'Log for meesages sent during event',
-				files
-			});
-		}
+
+	if (eventTextChannel && channel.parentId === parentId && channel.type === ChannelType.GuildVoice) {
+		files.push(
+			await channelMessgesToAttachmentBuilder(eventTextChannel as TextChannel | PublicThreadChannel),
+			await channelMessgesToAttachmentBuilder(channel)
+		);
+		eventTextChannel.delete('Event Deleted');
+		channel.delete('Event Deleted');
 	}
-	catch (error) {
-		Logger.error(error);
+	if (files && guildScheduledEvent.status) {
+		eventLogChannel.send({
+			content: 'Log of messages',
+			files
+		});
 	}
 }
 

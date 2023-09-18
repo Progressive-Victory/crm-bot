@@ -147,6 +147,28 @@ export default new ChatInputCommand()
 							.setRequired(false)
 					)
 			)
+			.addSubcommand((subcommand) =>
+				subcommand
+					.setName(t({ key: 'log-message-name', ns }))
+					.setDescription(t({ key: 'log-message-description', ns }))
+					.setNameLocalizations(localization('log-message-name', ns))
+					.setDescriptionLocalizations(localization('log-message-description', ns))
+					.addChannelOption((option) =>
+						option
+							.setName(t({ key: 'log-message-channel', ns }))
+							.setDescription(t({ key: 'log-message-channel-description', ns }))
+							.setNameLocalizations(localization('log-message-channel', ns))
+							.setDescriptionLocalizations(localization('log-message-channel-description', ns))
+							.addChannelTypes(
+								ChannelType.GuildText,
+								ChannelType.GuildVoice,
+								ChannelType.GuildStageVoice,
+								ChannelType.PublicThread,
+								ChannelType.PrivateThread
+							)
+							.setRequired(false)
+					)
+			)
 	)
 	.setGlobal(true)
 	.setAutocomplete(autoComplete)

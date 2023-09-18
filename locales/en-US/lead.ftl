@@ -92,3 +92,10 @@ modal-label-event-create-date = Date
 modal-placeholder-event-create-date = YYYY-MM-DD
 modal-label-event-create-time = Time(EST)
 modal-placeholder-event-create-time = HH:MM
+
+## Log Message
+log-message-reply = Log Generated
+log-message-name = log-messages
+log-message-description = Generate TXT file of message content
+log-message-channel = channel
+log-message-channel-description = Target Channel
