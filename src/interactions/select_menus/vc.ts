@@ -50,7 +50,7 @@ async function execute(interaction: MentionableSelectMenuInteraction) {
 				await voiceChannel.permissionOverwrites.edit(role as Role, perms);
 			}
 		},
-		// send sucsses messages
+		// send success messages
 		interaction.reply({
 			content: t({
 				key: 'event-select-reply',
