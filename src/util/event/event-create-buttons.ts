@@ -4,6 +4,12 @@ import {
 	ButtonBuilder, ButtonStyle, Locale 
 } from 'discord.js';
 
+/**
+ *
+ * @param link URL for event
+ * @param locale Locale of where the button
+ * @returns Button to event modal
+ */
 export function eventLinkButton(link: string, locale: Locale) {
 	return new ButtonBuilder()
 		.setEmoji('🗓️')
@@ -18,6 +24,12 @@ export function eventLinkButton(link: string, locale: Locale) {
 		.setStyle(ButtonStyle.Link);
 }
 
+/**
+ *
+ * @param link URL for event
+ * @param locale Locale of where the button
+ * @returns Button to voice channel
+ */
 export function eventVCLinkButton(link: string, locale: Locale) {
 	return new ButtonBuilder()
 		.setEmoji('🗣️')
@@ -32,6 +44,12 @@ export function eventVCLinkButton(link: string, locale: Locale) {
 		.setStyle(ButtonStyle.Link);
 }
 
+/**
+ *
+ * @param link URL for event
+ * @param locale Locale of where the button
+ * @returns Button to text channel
+ */
 export function eventChatLinkButton(link: string, locale: Locale) {
 	return new ButtonBuilder()
 		.setEmoji('💬')

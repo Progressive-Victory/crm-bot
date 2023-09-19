@@ -23,10 +23,12 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 	const {
 		guild, locale, fields, appPermissions 
 	} = interaction;
-	// check bot premistions
+
+	// Check bot permissions
 	if (!appPermissions.has(PermissionFlagsBits.ManageChannels, true) || !appPermissions.has(PermissionFlagsBits.ManageRoles, true)) {
-		throw Error('Missing premisions `ManageChannels` or `ManageRoles`'); 
+		throw Error('Missing premisions `ManageChannels` or `ManageRoles`');
 	}
+	// Get eventCategory channel
 	const eventCategory = guild.channels.cache.find((c, k) => k === eventCategoryId && c.type === ChannelType.GuildCategory) as CategoryChannel;
 	if (!eventCategory) {
 		throw Error('Faild to find Event Channel Please check .env.EVENT_CATEGORY_ID');
@@ -34,7 +36,6 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 
 	// Check that date is valid
 	const dateString = fields.getTextInputValue('date').concat('T').concat(fields.getTextInputValue('time'));
-
 	if (!dateValidation.test(dateString)) {
 		await interaction.reply({
 			content: t({
@@ -46,6 +47,8 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		});
 		return;
 	}
+
+	// Check that date is in the future
 	const eventdate = new Date(dateString);
 	if (eventdate.getTime() <= Date.now()) {
 		await interaction.reply({
@@ -59,6 +62,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		return;
 	}
 
+	// Create Discord event VC
 	const eventName = fields.getTextInputValue('name');
 	const eventVc = await guild.channels.create({
 		name: eventName,
@@ -66,7 +70,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		parent: eventCategory
 	});
 
-	// create event
+	// Create Discord Event
 	const description = fields.getTextInputValue('description');
 	const eventOptions: GuildScheduledEventCreateOptions = {
 		name: eventName,
@@ -76,9 +80,9 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		channel: eventVc
 	};
 	if (description.length >= 1) eventOptions.description = description;
-
 	const event = await guild.scheduledEvents.create(eventOptions);
 
+	// Create Event Text Channel
 	const eventChat = await guild.channels.create({
 		name: eventName,
 		type: ChannelType.GuildText,
@@ -86,6 +90,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		parent: eventCategory
 	});
 
+	// Reply with Buttons and select menu
 	await interaction.reply({
 		content: t({
 			key: 'event-success-create',

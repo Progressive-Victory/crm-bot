@@ -10,9 +10,12 @@ export async function updateEvent(interaction: ChatInputCommandInteraction<'cach
 		locale, guild, options 
 	} = interaction;
 
+	// Get Text channel related to event
 	const textChannel = options.getChannel(t({ key: 'event-option-channel', ns }), true, [ChannelType.GuildText]);
+	// Get Event ID
 	const event = guild.scheduledEvents.cache.find((_e, k) => k === textChannel.topic.split(':')[1]);
 
+	// check if it is an event channel
 	if (!event || !(textChannel.parentId === parentId)) {
 		await interaction.reply({
 			content: t({
@@ -25,6 +28,7 @@ export async function updateEvent(interaction: ChatInputCommandInteraction<'cach
 		return;
 	}
 
+	// Send select Menu
 	await interaction.reply({
 		components: [createEventMemberaRoleSelectMenu(event.id, locale)],
 		ephemeral: true

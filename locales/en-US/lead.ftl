@@ -60,7 +60,7 @@ member-list-message-followup = Members in {$role} role
 
 ## events
 ### Command
-event-name = events
+event-name = event
 event-description = event command
 event-create-name = create
 event-create-description = Create event with channels

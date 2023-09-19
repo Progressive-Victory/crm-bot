@@ -4,6 +4,11 @@ import {
 	ActionRowBuilder, Locale, ModalBuilder, TextInputBuilder, TextInputStyle 
 } from 'discord.js';
 
+/**
+ * Create Event create modal
+ * @param locale locale of event modal
+ * @returns Modal builder
+ */
 export function createEventModal(locale: Locale) {
 	return new ModalBuilder()
 		.setCustomId('event_create')
