@@ -52,7 +52,7 @@ async function execute(interaction: MentionableSelectMenuInteraction) {
 		}
 	]);
 	// send success messages
-	interaction.reply({
+	await interaction.reply({
 		content: t({
 			key: 'event-select-reply',
 			ns,
