@@ -49,17 +49,17 @@ async function execute(interaction: MentionableSelectMenuInteraction) {
 				await textChannel.permissionOverwrites.edit(role as Role, perms);
 				await voiceChannel.permissionOverwrites.edit(role as Role, perms);
 			}
-		},
-		// send success messages
-		interaction.reply({
-			content: t({
-				key: 'event-select-reply',
-				ns,
-				locale
-			}),
-			ephemeral: true
-		})
+		}
 	]);
+	// send success messages
+	interaction.reply({
+		content: t({
+			key: 'event-select-reply',
+			ns,
+			locale
+		}),
+		ephemeral: true
+	});
 }
 
 export default new Interaction<MentionableSelectMenuInteraction>().setName('vc').setExecute(execute);
