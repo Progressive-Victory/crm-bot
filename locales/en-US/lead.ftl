@@ -57,3 +57,45 @@ member-list-role-option-description = The role from with to get list
 
 ### follow-up
 member-list-message-followup = Members in {$role} role
+
+## events
+### Command
+event-name = event
+event-description = event command
+event-create-name = create
+event-create-description = Create event with channels
+event-update = update
+event-update-description = Update permissions of event channels
+
+### Command Options
+event-option-channel = channel
+event-option-channel-description = Channel for event
+
+### replies
+event-bad-date = Date is incorrectly formatted
+event-date-past = Date entered was in the past and cannot be used
+event-success-create = Successfully created, be sure to add roles or members to the event below.
+event-success-button-event = Event
+event-success-button-vc = Voice Channel
+event-success-button-chat = Text Channel
+event-select-menu = Select Roles or members
+event-select-reply = Permission Override Updated
+event-channel-bad-category = Please choose a channel in the event category
+
+### Event Modals
+modal-title-event-create = Create Event
+modal-label-event-create-name = Name
+modal-placeholder-event-create-name = Name of the Event
+modal-label-event-create-description = Description
+modal-placeholder-event-create-description = Description of the Event
+modal-label-event-create-date = Date
+modal-placeholder-event-create-date = YYYY-MM-DD
+modal-label-event-create-time = Time(EST)
+modal-placeholder-event-create-time = HH:MM
+
+## Log Message
+log-message-reply = Log Generated
+log-message-name = log-messages
+log-message-description = Generate TXT file of message content
+log-message-channel = channel
+log-message-channel-description = Target Channel

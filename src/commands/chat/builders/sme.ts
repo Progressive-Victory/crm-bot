@@ -1,6 +1,7 @@
 import { ChatInputCommand } from '@Client';
 import { smeRole } from '@execution/sme';
 import { localization, t } from '@i18n';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const ns = 'sme';
 
@@ -11,7 +12,7 @@ export default new ChatInputCommand()
 			.setDescription(t({ key: 'command-description', ns }))
 			.setNameLocalizations(localization('command-name', ns))
 			.setDescriptionLocalizations(localization('command-description', ns))
-			// .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
+			.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
 			.addUserOption((option) =>
 				option
 					.setName(t({ key: 'options-user', ns }))

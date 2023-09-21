@@ -2,6 +2,8 @@ import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
 import { states } from 'src/structures';
+import { createEvent, updateEvent } from './event';
+import logMessages from './log-messages';
 import { memberList } from './member-list';
 import ping from './ping';
 import role from './region/role';
@@ -13,22 +15,28 @@ import rename from './vc/rename';
  */
 export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 	const subcommand = interaction.options.getSubcommand(true);
-	const subcommandGroup = interaction.options.getSubcommandGroup();
+	// const subcommandGroup = interaction.options.getSubcommandGroup();
 
-	switch (subcommandGroup) {
-	case 'vc':
-		if (subcommand === 'rename') return rename(interaction);
-		break;
-	case 'region':
-		if (subcommand === 'role') return role(interaction);
-		break;
+	switch (subcommand) {
+	case 'create':
+		return createEvent(interaction);
+	case 'update':
+		return updateEvent(interaction);
+	case 'rename':
+		return rename(interaction);
+	case 'role':
+		return role(interaction);
+	case 'ping':
+		return ping(interaction);
+	case 'member-list':
+		return memberList(interaction);
+	case 'log-messages':
+		return logMessages(interaction);
 	default:
-		if (subcommand === 'ping') return ping(interaction);
-		if (subcommand === 'member-list') return memberList(interaction);
+		throw Error('No Subcommand');
 	}
 
 	// Throw an error if the subcommand or subcommand group is not recognized.
-	throw Error;
 }
 
 /**

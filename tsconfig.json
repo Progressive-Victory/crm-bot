@@ -22,6 +22,7 @@
 		"paths": {
 			"@Client": ["./Client"],
 			"@i18n": ["./i18n"],
+			"@util/*": ["./util/*"],
 			"@builders/*": ["./commands/chat/builders/*"],
 			"@execution/*": ["./commands/chat/execution/*"],
 			"src/*": ["./*"]
