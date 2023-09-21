@@ -26,12 +26,12 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 
 	// Check bot permissions
 	if (!appPermissions.has(PermissionFlagsBits.ManageChannels, true) || !appPermissions.has(PermissionFlagsBits.ManageRoles, true)) {
-		throw Error('Missing premisions `ManageChannels` or `ManageRoles`');
+		throw Error('Missing permissions `ManageChannels` or `ManageRoles`');
 	}
 	// Get eventCategory channel
 	const eventCategory = guild.channels.cache.find((c, k) => k === eventCategoryId && c.type === ChannelType.GuildCategory) as CategoryChannel;
 	if (!eventCategory) {
-		throw Error('Faild to find Event Channel Please check .env.EVENT_CATEGORY_ID');
+		throw Error('Failed to find event channel, please check .env.EVENT_CATEGORY_ID');
 	}
 
 	// Check that date is valid
@@ -62,12 +62,20 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		return;
 	}
 
+	const permissionOverwrites = [
+		{
+			id: guild.client.user.id,
+			allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageChannels]
+		}
+	];
+
 	// Create Discord event VC
 	const eventName = fields.getTextInputValue('name');
 	const eventVc = await guild.channels.create({
 		name: eventName,
 		type: ChannelType.GuildVoice,
-		parent: eventCategory
+		parent: eventCategory,
+		permissionOverwrites
 	});
 
 	// Create Discord Event
@@ -87,7 +95,8 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		name: eventName,
 		type: ChannelType.GuildText,
 		topic: `Event ID:${event.id}`,
-		parent: eventCategory
+		parent: eventCategory,
+		permissionOverwrites
 	});
 
 	// Reply with Buttons and select menu

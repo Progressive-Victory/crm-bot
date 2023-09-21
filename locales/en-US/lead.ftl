@@ -72,9 +72,9 @@ event-option-channel = channel
 event-option-channel-description = Channel for event
 
 ### replies
-event-bad-date = Date is incorectly formated
-event-date-past = Date entered was in the past and can not be used
-event-success-create = Successfully Created, Be sure to add roles or members to the event below 
+event-bad-date = Date is incorrectly formatted
+event-date-past = Date entered was in the past and cannot be used
+event-success-create = Successfully created, be sure to add roles or members to the event below.
 event-success-button-event = Event
 event-success-button-vc = Voice Channel
 event-success-button-chat = Text Channel

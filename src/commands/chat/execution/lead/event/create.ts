@@ -9,7 +9,7 @@ export async function createEvent(interaction: ChatInputCommandInteraction<'cach
 	// Find event category
 	const eventCategory = guild.channels.cache.find((c, k) => k === process.env.EVENT_CATEGORY_ID && c.type === ChannelType.GuildCategory) as CategoryChannel;
 	if (!eventCategory) {
-		throw Error('Faild to find Event Channel Please check .env.EVENT_CATEGORY_ID');
+		throw Error('Failed to find event channel, please check .env.EVENT_CATEGORY_ID');
 	}
 
 	// Create and send modal

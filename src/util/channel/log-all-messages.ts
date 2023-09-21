@@ -5,12 +5,12 @@ import {
 /**
  * Fetch All Messages in a channel
  * @param channel
- * @returns Colections of message objects
+ * @returns Collection of message objects
  */
 async function fetchAllMessages(channel: TextChannel | VoiceChannel | StageChannel | ThreadChannel | NewsChannel) {
 	// Check for permissions to read the history in requested channel
-	if (channel.permissionsFor(channel.guild.members.cache.get(channel.client.user.id)).has(PermissionFlagsBits.ReadMessageHistory)) {
-		throw Error(`Bot missing Premision \`ReadMessageHistory\` in ${channel.name}`);
+	if (!channel.permissionsFor(channel.guild.members.cache.get(channel.client.user.id)).has(PermissionFlagsBits.ReadMessageHistory)) {
+		throw Error(`Bot missing permissions \`ReadMessageHistory\` in ${channel.name}`);
 	}
 
 	let messages = new Collection<string, Message<true>>();
@@ -18,7 +18,7 @@ async function fetchAllMessages(channel: TextChannel | VoiceChannel | StageChann
 	// Create message pointer
 	let message = (await channel.messages.fetch({ limit: 1, cache: false })).first();
 	// add the first message to the collection
-	messages.set(message.id, message);
+	if (message) messages.set(message.id, message);
 
 	while (message) {
 		// Fetch next 100 messages
@@ -38,16 +38,14 @@ async function fetchAllMessages(channel: TextChannel | VoiceChannel | StageChann
 
 /**
  *
- * @param channel traget channel
+ * @param channel target channel
  * @returns AttachmentBuilder with txt file
  */
-export async function channelMessgesToAttachmentBuilder(channel: TextChannel | VoiceChannel | StageChannel | ThreadChannel | NewsChannel) {
+export async function channelMessagesToAttachmentBuilder(channel: TextChannel | VoiceChannel | StageChannel | ThreadChannel | NewsChannel) {
+	const messages = await fetchAllMessages(channel);
+	if (!messages.size) return null;
 	return new AttachmentBuilder(
-		Buffer.from(
-			(await fetchAllMessages(channel))
-				.map((m) => `|${m.createdAt.toUTCString()}| ${m.author.username}: ${m.content}`)
-				.join('\n=============================\n')
-		),
+		Buffer.from(messages.map((m) => `|${m.createdAt.toUTCString()}| ${m.author.username}: ${m.content}`).join('\n=============================\n')),
 		{ name: `${channel.name.replace(' ', '-').toLowerCase()}-message-log.txt}` }
 	);
 }

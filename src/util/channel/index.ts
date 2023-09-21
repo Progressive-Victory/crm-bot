@@ -1,1 +1,1 @@
-export { channelMessgesToAttachmentBuilder } from './log-all-messages';
+export { channelMessagesToAttachmentBuilder } from './log-all-messages';
