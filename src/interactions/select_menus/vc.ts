@@ -2,11 +2,17 @@ import { Interaction } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import {
-	ChannelType, MentionableSelectMenuInteraction, PermissionFlagsBits, TextChannel, VoiceChannel 
+	ChannelType,
+	MentionableSelectMenuInteraction,
+	OverwriteResolvable,
+	PermissionFlagsBits,
+	PermissionsBitField,
+	TextChannel,
+	VoiceChannel
 } from 'discord.js';
-import { basePermissionOverwrites } from 'src/structures/Constants';
 
 const parentID = process.env.EVENT_CATEGORY_ID;
+const flags = new PermissionsBitField([PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageRoles]);
 
 /**
  *
@@ -26,9 +32,24 @@ async function execute(interaction: MentionableSelectMenuInteraction) {
 	const textChannel = guild.channels.cache.find(
 		(c) => c.parentId === parentID && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === event.id
 	) as TextChannel;
+
+	const basePerms: OverwriteResolvable[] = textChannel.parent.permissionOverwrites.cache
+		.map((po) => ({
+			id: po.id,
+			allow: po.allow,
+			deny: po.deny
+		}))
+		.concat([
+			{
+				id: interaction.user.id,
+				allow: flags,
+				deny: undefined
+			}
+		]);
+
 	const voiceChannel = event.channel as VoiceChannel;
 
-	const permissionOverwrites = basePermissionOverwrites(interaction).concat(...values.map((id) => ({ id, allow: [PermissionFlagsBits.ViewChannel] })));
+	const permissionOverwrites = basePerms.concat(...values.map((id) => ({ id, allow: [PermissionFlagsBits.ViewChannel] })));
 
 	await Promise.all([textChannel.permissionOverwrites.set(permissionOverwrites), voiceChannel.permissionOverwrites.set(permissionOverwrites)]);
 
