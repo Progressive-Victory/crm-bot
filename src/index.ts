@@ -10,6 +10,7 @@ import {
 	GatewayIntentBits as Intents, Locale, Partials 
 } from 'discord.js';
 import { config } from 'dotenv';
+import { connect } from 'mongoose';
 import { join } from 'path';
 
 // Load .env file contents
@@ -40,6 +41,8 @@ export const client = new Client({
 });
 
 (async function start() {
+	await connect(process.env.DB_URI);
+
 	await client.init({
 		eventPath: join(__dirname, 'events'),
 		buttonPath: join(__dirname, 'interactions', 'buttons'),

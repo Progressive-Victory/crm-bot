@@ -60,15 +60,18 @@ export class State {
 	 * @param channel
 	 * @returns
 	 */
-	public async setChannel(channel: string | TextChannel) {
-		const channelObject =
-			channel instanceof TextChannel
-				? channel
-				: (this.guild.channels.cache.find((r, k) => k === channel && r.type === ChannelType.GuildText) as TextChannel);
+	public async setChannel(channel: Snowflake | TextChannel) {
+		let textChannel: TextChannel;
+		if (channel instanceof TextChannel) textChannel = channel;
+		else {
+			const channelObject = this.guild.channels.cache.find((r, k) => k === channel && r.type === ChannelType.GuildText);
+			if (!(channelObject instanceof TextChannel)) throw Error('Snowflake is not text channel');
+			textChannel = channelObject;
+		}
 
-		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { channelId: channelObject.id });
+		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { channelID: textChannel.id });
 
-		(this as Mutable<State>).channel = channelObject;
+		(this as Mutable<State>).channel = textChannel;
 
 		return this;
 	}
@@ -77,16 +80,20 @@ export class State {
 	 * setLead
 	 */
 	public async setLead(member: GuildMemberResolvable) {
-		const memberObject =
-			member instanceof GuildMember
-				? member
-				: member instanceof User
-					? this.guild.members.cache.get(member.id)
-					: member instanceof ThreadMember
-						? member.guildMember
-						: member instanceof Message
-							? member.member
-							: this.guild.members.cache.get(member);
+		let memberObject: GuildMember;
+		// If member is a GuildMember Object
+		if (member instanceof GuildMember) memberObject = member;
+		// If member is a User Object
+		else if (member instanceof User) memberObject = this.guild.members.cache.get(member.id);
+		// If member is a ThreadMember Object
+		else if (member instanceof ThreadMember) memberObject = member.guildMember;
+		// If member is a Message Object
+		else if (member instanceof Message) member = member.member;
+		// Then member is a string
+		else memberObject = this.guild.members.cache.get(member);
+
+		// Error if a GuildMember is not resolved
+		if (!memberObject) throw Error('GuildMember not resolved');
 
 		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { leadID: memberObject.id });
 

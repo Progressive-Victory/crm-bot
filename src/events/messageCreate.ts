@@ -1,13 +1,13 @@
 import { Event, Logger } from '@Client';
+import { messages } from '@util/Database';
 import { Events, Message } from 'discord.js';
-import Database from 'src/structures/Database';
 
 async function onMessageCreate(message: Message) {
 	if (message.author.bot) return null;
 
-	if (message.guildId === process.env.TRACKING_GUILD) {
+	if (message.inGuild() && message.guildId === process.env.TRACKING_GUILD) {
 		if (!message.author) await message.fetch();
-		await Database.incrementMessages(message.author.id, message.guild.id, message.channelId);
+		await messages.new(message);
 		Logger.debug(`Incremented ${message.author.id}'s message count in ${message.guild.id} in ${message.channelId}.`);
 	}
 

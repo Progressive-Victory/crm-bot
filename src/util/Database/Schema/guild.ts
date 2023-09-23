@@ -14,11 +14,15 @@ interface IGuild {
 
 const guidSchema = new Schema<IGuild>(
 	{
-		id: { type: String, required: true },
+		id: {
+			type: String,
+			required: true,
+			unique: true
+		},
 		name: { type: String, required: true },
 		event: {
-			logChannelId: String,
-			eventCategoryId: String
+			logChannelID: String,
+			eventCategoryID: String
 		},
 		leadRenameableChannels: [{ id: String }],
 		smeRoles: [{ id: String }]
