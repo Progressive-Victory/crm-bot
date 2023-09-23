@@ -28,9 +28,7 @@ async function execute(interaction: MentionableSelectMenuInteraction) {
 	) as TextChannel;
 	const voiceChannel = event.channel as VoiceChannel;
 
-	const permissionOverwrites = basePermissionOverwrites(guild)
-		.concat(...values.map((id) => ({ id, allow: [PermissionFlagsBits.ViewChannel] })))
-		.concat({ id: interaction.user.id, allow: [PermissionFlagsBits.ViewChannel] });
+	const permissionOverwrites = basePermissionOverwrites(interaction).concat(...values.map((id) => ({ id, allow: [PermissionFlagsBits.ViewChannel] })));
 
 	await Promise.all([textChannel.permissionOverwrites.set(permissionOverwrites), voiceChannel.permissionOverwrites.set(permissionOverwrites)]);
 

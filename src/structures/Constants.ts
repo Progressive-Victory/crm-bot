@@ -1,5 +1,5 @@
 import {
-	Collection, Guild, PermissionFlagsBits, Snowflake 
+	Collection, Interaction, PermissionFlagsBits, Snowflake 
 } from 'discord.js';
 import { config } from 'dotenv';
 
@@ -13,13 +13,17 @@ VCChannelIDs.forEach((id, index) => {
 	VCChannelNames.set(id, `Organizing VC ${index + 1}`);
 });
 
-export const basePermissionOverwrites = (guild: Guild) => [
+export const basePermissionOverwrites = (interaction: Interaction) => [
 	{
-		id: guild.client.user.id,
+		id: interaction.client.user.id,
 		allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageChannels]
 	},
 	{
-		id: guild.id,
+		id: interaction.guild.id,
 		deny: [PermissionFlagsBits.ViewChannel]
+	},
+	{
+		id: interaction.user.id,
+		allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ManageChannels, PermissionFlagsBits.ManageRoles]
 	}
 ];
