@@ -3,17 +3,17 @@ import { Schema, model } from 'mongoose';
 
 interface IUser {
 	id: Snowflake;
-	guildId: Snowflake;
+	guildID: Snowflake;
 	name: string;
 	isStaff: boolean;
 	isStateLead: boolean;
-	smeLeadId?: Snowflake;
+	smeLeadID?: Snowflake;
 }
 
 const userSchema = new Schema<IUser>(
 	{
 		id: { type: String, required: true },
-		guildId: { type: String, required: true },
+		guildID: { type: String, required: true },
 		name: String,
 		isStaff: {
 			type: Boolean,
@@ -25,7 +25,7 @@ const userSchema = new Schema<IUser>(
 			default: false,
 			required: true
 		},
-		smeLeadId: String
+		smeLeadID: String
 	},
 	{ timestamps: true }
 );

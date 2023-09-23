@@ -3,20 +3,20 @@ import { Snowflake } from 'discord.js';
 import { Schema, model } from 'mongoose';
 
 interface IState {
-	guildId: Snowflake;
-	roleId: Snowflake;
-	channelId: Snowflake;
-	stateLeadUserId?: Snowflake;
+	guildID: Snowflake;
+	roleID: Snowflake;
+	channelID: Snowflake;
+	stateLeadUserID?: Snowflake;
 	name: string;
 	abbreviation: StateAbbreviation;
 }
 
 const stateSchema = new Schema<IState>(
 	{
-		guildId: { type: String, required: true },
-		roleId: String,
-		channelId: String,
-		stateLeadUserId: String,
+		guildID: { type: String, required: true },
+		roleID: String,
+		channelID: String,
+		stateLeadUserID: String,
 		name: { type: String, required: true },
 		abbreviation: { type: String, required: true }
 	},

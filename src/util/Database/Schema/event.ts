@@ -3,18 +3,18 @@ import { Schema, model } from 'mongoose';
 
 interface IEvent {
 	id: Snowflake;
-	guildId: Snowflake;
-	textId?: Snowflake;
-	vcId?: Snowflake;
+	guildID: Snowflake;
+	textID?: Snowflake;
+	vcID?: Snowflake;
 	participants: number;
 }
 
 const eventSchema = new Schema<IEvent>(
 	{
 		id: { type: String, required: true },
-		guildId: { type: String, required: true },
-		textId: String,
-		vcId: String,
+		guildID: { type: String, required: true },
+		textID: String,
+		vcID: String,
 		participants: {
 			type: Number,
 			required: true,

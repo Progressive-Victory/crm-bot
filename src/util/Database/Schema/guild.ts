@@ -5,8 +5,8 @@ interface IGuild {
 	id: Snowflake;
 	name: string;
 	event: {
-		logChannelId: Snowflake;
-		eventCategoryId: Snowflake;
+		logChannelID: Snowflake;
+		eventCategoryID: Snowflake;
 	};
 	leadRenameableChannels: [{ id: Snowflake }];
 	smeRoles: [{ id: Snowflake }];

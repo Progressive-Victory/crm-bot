@@ -8,10 +8,10 @@ import { client } from 'src/index';
 import stateDb from '../Database/Schema/state';
 
 interface StateOptions {
-	roleId: Snowflake;
-	guildId: Snowflake;
-	channelId: Snowflake;
-	stateLeadUserId?: Snowflake;
+	roleID: Snowflake;
+	guildID: Snowflake;
+	channelID: Snowflake;
+	stateLeadUserID?: Snowflake;
 	name: string;
 	abbreviation: StateAbbreviation;
 }
@@ -35,9 +35,9 @@ export class State {
 		this.name = options.name;
 		this.abbreviation = options.abbreviation;
 		this.client = client;
-		this.guild = client.guilds.cache.get(options.guildId);
-		this.role = this.guild.roles.cache.get(options.roleId);
-		this.channel = this.guild.channels.cache.get(options.channelId) as TextChannel;
+		this.guild = client.guilds.cache.get(options.guildID);
+		this.role = this.guild.roles.cache.get(options.roleID);
+		this.channel = this.guild.channels.cache.get(options.channelID) as TextChannel;
 	}
 
 	/**
@@ -88,7 +88,7 @@ export class State {
 							? member.member
 							: this.guild.members.cache.get(member);
 
-		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { leadId: memberObject.id });
+		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { leadID: memberObject.id });
 
 		(this as Mutable<State>).lead = memberObject;
 
