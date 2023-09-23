@@ -19,7 +19,7 @@ config();
 init(join(__dirname, '../locales'), { fallback: Locale.EnglishUS, hasGlobal: true });
 
 // Initialization (specify intents and partials)
-const client = new Client({
+export const client = new Client({
 	intents: [
 		Intents.Guilds,
 		Intents.GuildMessages,

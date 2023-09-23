@@ -1,3 +1,4 @@
+import { StateAbbreviation } from '@util/state/state-abbreviation';
 import {
 	Collection, GuildMember, Role 
 } from 'discord.js';
@@ -67,63 +68,6 @@ export const statesConfig = [
 	{ name: 'Wisconsin', abbreviation: 'WI' },
 	{ name: 'Wyoming', abbreviation: 'WY' }
 ];
-
-export type StateAbbreviation =
-	| 'al'
-	| 'ak'
-	| 'az'
-	| 'as'
-	| 'ca'
-	| 'co'
-	| 'ct'
-	| 'de'
-	| 'dc'
-	| 'fl'
-	| 'ga'
-	| 'gu'
-	| 'hi'
-	| 'id'
-	| 'il'
-	| 'in'
-	| 'ia'
-	| 'ks'
-	| 'ky'
-	| 'la'
-	| 'me'
-	| 'md'
-	| 'ma'
-	| 'mi'
-	| 'mn'
-	| 'ms'
-	| 'mo'
-	| 'mt'
-	| 'ne'
-	| 'nv'
-	| 'nh'
-	| 'nj'
-	| 'nm'
-	| 'ny'
-	| 'nc'
-	| 'nd'
-	| 'mp'
-	| 'oh'
-	| 'ok'
-	| 'or'
-	| 'pa'
-	| 'pr'
-	| 'ri'
-	| 'sc'
-	| 'sd'
-	| 'tn'
-	| 'tx'
-	| 'ut'
-	| 'vt'
-	| 'va'
-	| 'vi'
-	| 'wa'
-	| 'wv'
-	| 'wi'
-	| 'wy';
 
 export const states = new Collection<StateAbbreviation, state>();
 statesConfig.map((s) => states.set(s.abbreviation.toLocaleLowerCase() as StateAbbreviation, s));
