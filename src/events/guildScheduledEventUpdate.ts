@@ -1,5 +1,5 @@
 import { Event } from '@Client';
-import { channelMessgesToAttachmentBuilder } from '@util/channel';
+import { channelMessagesToAttachmentBuilder } from '@util/channel';
 import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, GuildScheduledEventStatus, TextBasedChannel, TextChannel 
 } from 'discord.js';
@@ -25,11 +25,11 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 	case GuildScheduledEventStatus.Completed:
 	case GuildScheduledEventStatus.Canceled:
 		if (textChannel) {
-			files.push(await channelMessgesToAttachmentBuilder(textChannel as TextChannel));
+			files.push(await channelMessagesToAttachmentBuilder(textChannel as TextChannel));
 			await textChannel.delete('Event Complete');
 		}
 		if (channel.parentId === parentId) {
-			files.push(await channelMessgesToAttachmentBuilder(channel));
+			files.push(await channelMessagesToAttachmentBuilder(channel));
 			await channel.delete('Event Complete');
 		}
 		break;
