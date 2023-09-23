@@ -76,7 +76,11 @@ export const Logger = wrap(
 					let args = [];
 
 					if (err.cause) {
-						args = [`${err.stack}\nCaused by: ${err.cause[0]} ${err.cause[0].stack}`];
+						let str = err.stack;
+						if (err.cause) {
+							str += `\nCaused by: ${err.cause[0]} ${err.cause[0]?.stack}`;
+						}
+						args = [str];
 					}
 					else {
 						args = [err.stack];

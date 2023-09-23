@@ -29,7 +29,7 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 			await Promise.all([eventTextChannel.delete('Event Deleted'), channel.delete('Event Deleted')]);
 		}
 
-		if (files.length) {
+		if (files.filter((e) => !!e).length) {
 			await eventLogChannel.send({
 				content: `Logs for channel **${eventTextChannel.name}**`,
 				files: files.filter((e) => !!e)

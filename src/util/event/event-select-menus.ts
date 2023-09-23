@@ -6,11 +6,11 @@ import {
 
 /**
  *
- * @param eventId ID of an event which is being referanced
- * @param locale Locale to use for placehold
+ * @param eventId ID of an event which is being referenced
+ * @param locale Locale to use for placeholder
  * @returns Action row with Mentionable Select Menu Builder
  */
-export function createEventMemberaRoleSelectMenu(eventId: Snowflake, locale: Locale) {
+export function createEventMemberRoleSelectMenu(eventId: Snowflake, locale: Locale) {
 	return new ActionRowBuilder<MentionableSelectMenuBuilder>().addComponents(
 		new MentionableSelectMenuBuilder()
 			.setCustomId(`vc_${eventId}`)

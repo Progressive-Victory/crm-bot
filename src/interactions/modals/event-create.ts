@@ -2,7 +2,7 @@ import { Interaction } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import {
-	createEventMemberaRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
+	createEventMemberRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
 } from '@util/event';
 import {
 	ActionRowBuilder,
@@ -15,8 +15,9 @@ import {
 	ModalSubmitInteraction,
 	PermissionFlagsBits
 } from 'discord.js';
+import { basePermissionOverwrites } from '../../structures/Constants';
 
-const dateValidation = /^([2][0-9]{3})-(0[0-9]|1[0-2])-(0[0-9]|[12]\d|3[01])T([01][0-9]|2[0-3]):([0-5][0-9])/g;
+// const dateValidation = /^([2][0-9]{3})-(0[0-9]|1[0-2])-(0[0-9]|[12]\d|3[01])T([01][0-9]|2[0-3]):([0-5][0-9])/g;
 const eventCategoryId = process.env.EVENT_CATEGORY_ID;
 
 export default new Interaction<ModalSubmitInteraction>().setName('event').setExecute(async (interaction) => {
@@ -34,9 +35,11 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		throw Error('Failed to find event channel, please check .env.EVENT_CATEGORY_ID');
 	}
 
-	// Check that date is valid
 	const dateString = fields.getTextInputValue('date').concat('T').concat(fields.getTextInputValue('time'));
-	if (!dateValidation.test(dateString)) {
+	const eventDate = new Date(dateString);
+
+	// Check for an invalid date string
+	if (Number.isNaN(eventDate.getTime())) {
 		await interaction.reply({
 			content: t({
 				key: 'event-bad-date',
@@ -48,9 +51,8 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		return;
 	}
 
-	// Check that date is in the future
-	const eventdate = new Date(dateString);
-	if (eventdate.getTime() <= Date.now()) {
+	// Check that date is not in the future
+	if (eventDate.getTime() <= Date.now()) {
 		await interaction.reply({
 			content: t({
 				key: 'event-date-past',
@@ -62,20 +64,13 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		return;
 	}
 
-	const permissionOverwrites = [
-		{
-			id: guild.client.user.id,
-			allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.ManageChannels]
-		}
-	];
-
 	// Create Discord event VC
 	const eventName = fields.getTextInputValue('name');
 	const eventVc = await guild.channels.create({
 		name: eventName,
 		type: ChannelType.GuildVoice,
 		parent: eventCategory,
-		permissionOverwrites
+		permissionOverwrites: basePermissionOverwrites(guild)
 	});
 
 	// Create Discord Event
@@ -84,7 +79,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		name: eventName,
 		privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
 		entityType: GuildScheduledEventEntityType.Voice,
-		scheduledStartTime: eventdate,
+		scheduledStartTime: eventDate,
 		channel: eventVc
 	};
 	if (description.length >= 1) eventOptions.description = description;
@@ -96,7 +91,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		type: ChannelType.GuildText,
 		topic: `Event ID:${event.id}`,
 		parent: eventCategory,
-		permissionOverwrites
+		permissionOverwrites: basePermissionOverwrites(guild)
 	});
 
 	// Reply with Buttons and select menu
@@ -112,7 +107,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 				eventVCLinkButton(eventVc.url, locale),
 				eventChatLinkButton(eventChat.url, locale)
 			),
-			createEventMemberaRoleSelectMenu(event.id, locale)
+			createEventMemberRoleSelectMenu(event.id, locale)
 		],
 		ephemeral: true
 	});
