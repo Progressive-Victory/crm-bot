@@ -70,7 +70,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		name: eventName,
 		type: ChannelType.GuildVoice,
 		parent: eventCategory,
-		permissionOverwrites: basePermissionOverwrites(guild)
+		permissionOverwrites: basePermissionOverwrites(interaction)
 	});
 
 	// Create Discord Event
@@ -91,7 +91,7 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		type: ChannelType.GuildText,
 		topic: `Event ID:${event.id}`,
 		parent: eventCategory,
-		permissionOverwrites: basePermissionOverwrites(guild)
+		permissionOverwrites: basePermissionOverwrites(interaction)
 	});
 
 	// Reply with Buttons and select menu
