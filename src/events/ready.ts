@@ -45,8 +45,12 @@ async function onReady(client: Client) {
 			await fetch(process.env.API_ENDPOINT);
 		}
 		catch (e) {
-			Logger.error('API endpoint not reachable. Exiting...');
-			process.exit(1);
+			if (e.code === 'ECONNREFUSED') {
+				Logger.error(`API endpoint (${process.env.API_ENDPOINT}) not reachable. Exiting...`);
+				process.exit(1);
+			}
+
+			Logger.error('API returned an error', e);
 		}
 	}
 }

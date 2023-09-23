@@ -2,4 +2,4 @@ export { eventChatLinkButton, eventLinkButton, eventVCLinkButton } from './event
 
 export { createEventModal } from './event-modal';
 
-export { createEventMemberaRoleSelectMenu } from './event-select-menus';
+export { createEventMemberRoleSelectMenu } from './event-select-menus';

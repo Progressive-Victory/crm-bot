@@ -2,10 +2,11 @@ import { Interaction } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import {
-	ChannelType, GuildMember, MentionableSelectMenuInteraction, PermissionOverwriteOptions, Role, TextChannel, VoiceChannel 
+	ChannelType, MentionableSelectMenuInteraction, PermissionFlagsBits, TextChannel, VoiceChannel 
 } from 'discord.js';
+import { basePermissionOverwrites } from 'src/structures/Constants';
 
-const parentId = process.env.EVENT_CATEGORY_ID;
+const parentID = process.env.EVENT_CATEGORY_ID;
 
 /**
  *
@@ -13,45 +14,26 @@ const parentId = process.env.EVENT_CATEGORY_ID;
  */
 async function execute(interaction: MentionableSelectMenuInteraction) {
 	const {
-		roles, members, guild, locale 
+		guild, locale, values 
 	} = interaction;
 	// Get Event and validate
 	const event = guild.scheduledEvents.cache.find((_c, k) => k === interaction.customId.split(interaction.client.splitCustomIDOn)[1]);
 	if (!event) {
-		await interaction.update({ content: 'Event was Deleted', components: [] });
+		await interaction.update({ content: 'Event was deleted', components: [] });
 	}
 
 	// Get channels
 	const textChannel = guild.channels.cache.find(
-		(c) => c.parentId === parentId && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === event.id
+		(c) => c.parentId === parentID && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === event.id
 	) as TextChannel;
 	const voiceChannel = event.channel as VoiceChannel;
 
-	// Rest channel perms
-	await Promise.all([textChannel.lockPermissions(), voiceChannel.lockPermissions()]);
-	const perms: Partial<PermissionOverwriteOptions> = { ViewChannel: true };
+	const permissionOverwrites = basePermissionOverwrites(guild)
+		.concat(...values.map((id) => ({ id, allow: [PermissionFlagsBits.ViewChannel] })))
+		.concat({ id: interaction.user.id, allow: [PermissionFlagsBits.ViewChannel] });
 
-	// set new channel perms and send reply
-	await Promise.all([
-		// perms for the interaction user
-		textChannel.permissionOverwrites.edit(interaction.user, perms),
-		voiceChannel.permissionOverwrites.edit(interaction.user, perms),
-		// add perms for select members
-		async () => {
-			for (const [, member] of members) {
-				await textChannel.permissionOverwrites.edit(member as GuildMember, perms);
-				await voiceChannel.permissionOverwrites.edit(member as GuildMember, perms);
-			}
-		},
-		// add perms for selected roles
-		async () => {
-			for (const [, role] of roles) {
-				await textChannel.permissionOverwrites.edit(role as Role, perms);
-				await voiceChannel.permissionOverwrites.edit(role as Role, perms);
-			}
-		}
-	]);
-	// send success messages
+	await Promise.all([textChannel.permissionOverwrites.set(permissionOverwrites), voiceChannel.permissionOverwrites.set(permissionOverwrites)]);
+
 	await interaction.reply({
 		content: t({
 			key: 'event-select-reply',
