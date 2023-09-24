@@ -39,7 +39,7 @@ const vcSchema = new Schema<IVc>(
 // eslint-disable-next-line @typescript-eslint/ban-types
 type vcDoc = Document<unknown, {}, IVc> & IVc & { _id: Types.ObjectId };
 
-export interface VCModel extends Model<IVc> {
+interface VCModel extends Model<IVc> {
 	newFromMember(member: GuildMember, channel: VoiceBasedChannel): Promise<vcDoc>;
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	getCount(guild: Guild, user?: User): Query<number, vcDoc, {}, IVc, 'count'>;

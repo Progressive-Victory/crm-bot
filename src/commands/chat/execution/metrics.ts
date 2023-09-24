@@ -1,7 +1,7 @@
 import { ns } from '@builders/metrics';
 import { t } from '@i18n';
 import {
-	messages, serverJoins, serverLeaves, vcJoins, vcLeaves 
+	sentMessages, serverJoins, serverLeaves, vcJoins, vcLeaves 
 } from '@util/Database';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { checkConnected } from 'src/structures/helpers';
@@ -16,7 +16,7 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 		vcLeaves.getCount(guild, user),
 		serverJoins.getCount(guild, user),
 		serverLeaves.getCount(guild, user),
-		messages.getMetric(guild, user)
+		sentMessages.getCount(guild, user)
 	]);
 
 	const embed = new EmbedBuilder();

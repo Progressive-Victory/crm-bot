@@ -35,7 +35,7 @@ const joinSchema = new Schema<IJoinLeave>(
 // eslint-disable-next-line @typescript-eslint/ban-types
 type joinLeaveDoc = Document<unknown, {}, IJoinLeave> & IJoinLeave & { _id: Types.ObjectId };
 
-export interface serverModel extends Model<IJoinLeave> {
+interface serverModel extends Model<IJoinLeave> {
 	newFromMember(member: GuildMember): Promise<joinLeaveDoc>;
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	getCount(guild: Guild, user?: User): Query<number, joinLeaveDoc, {}, IJoinLeave, 'count'>;

@@ -1,5 +1,5 @@
 import { Event, Logger } from '@Client';
-import { messages } from '@util/Database';
+import { sentMessages } from '@util/Database';
 import { Events, Message } from 'discord.js';
 
 async function onMessageCreate(message: Message) {
@@ -7,7 +7,7 @@ async function onMessageCreate(message: Message) {
 
 	if (message.inGuild() && message.guildId === process.env.TRACKING_GUILD) {
 		if (!message.author) await message.fetch();
-		await messages.new(message);
+		await sentMessages.newFromMessage(message);
 		Logger.debug(`Incremented ${message.author.id}'s message count in ${message.guild.id} in ${message.channelId}.`);
 	}
 
