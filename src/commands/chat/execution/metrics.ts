@@ -1,7 +1,7 @@
 import { ns } from '@builders/metrics';
 import { t } from '@i18n';
 import {
-	messages, server, vc 
+	messages, serverJoins, serverLeaves, vcJoins, vcLeaves 
 } from '@util/Database';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { checkConnected } from 'src/structures/helpers';
@@ -11,9 +11,11 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 
 	const user = interaction.options.getUser('user');
 	const guild = interaction.client.guilds.cache.get(process.env.TRACKING_GUILD) || interaction.guild;
-	const [[vcJoins, vcLeaves], [joins, leaves], messageCount] = await Promise.all([
-		vc.getMetric(guild, user),
-		server.getMetric(guild, user),
+	const [vcJoinsCount, vcLeavesCount, joinsCount, leavesCount, messageCount] = await Promise.all([
+		vcJoins.getCount(guild, user),
+		vcLeaves.getCount(guild, user),
+		serverJoins.getCount(guild, user),
+		serverLeaves.getCount(guild, user),
 		messages.getMetric(guild, user)
 	]);
 
@@ -45,8 +47,8 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						locale,
 						ns,
 						args: {
-							joins: `${vcJoins?.length ?? 0}`,
-							leaves: `${vcLeaves?.length ?? 0}`
+							joins: `${vcJoinsCount ?? 0}`,
+							leaves: `${vcLeavesCount ?? 0}`
 						}
 					})
 				},
@@ -74,8 +76,8 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						locale,
 						ns,
 						args: {
-							joins: `${joins?.length ?? 0}`,
-							leaves: `${leaves?.length ?? 0}`
+							joins: `${joinsCount ?? 0}`,
+							leaves: `${leavesCount ?? 0}`
 						}
 					})
 				},
@@ -146,7 +148,7 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						locale,
 						ns,
 						args: {
-							leaves: `${leaves?.length ?? 0}`,
+							leaves: `${leavesCount ?? 0}`,
 							membercount: `${guild.memberCount}`
 						}
 					})
@@ -164,8 +166,8 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						args: {
 							connected: `${usersInServerButConnected.length}`,
 							notconnected: `${usersInServerButNotConnected.length}`,
-							joins: `${vcJoins.filter((row) => memberIDs.includes(row.userID)).length}`,
-							leaves: `${vcLeaves.filter((row) => memberIDs.includes(row.userID)).length}`,
+							joins: `${vcJoinsCount}`,
+							leaves: `${vcLeavesCount}`,
 							messages: `${messageCount}`
 						}
 					})
@@ -183,8 +185,8 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						args: {
 							connected: `${usersInServerButConnected.length}`,
 							notconnected: `${usersInServerButNotConnected.length}`,
-							joins: `${vcJoins.filter((row) => !memberIDs.includes(row.userID)).length}`,
-							leaves: `${vcLeaves.filter((row) => !memberIDs.includes(row.userID)).length}`,
+							joins: `${vcJoinsCount}`,
+							leaves: `${vcLeavesCount}`,
 							messages: `${messageCount}`
 						}
 					})

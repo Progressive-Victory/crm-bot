@@ -21,7 +21,10 @@ const eventSchema = new Schema<IEvent>(
 			default: 0
 		}
 	},
-	{ timestamps: true }
+	{
+		timestamps: true,
+		methods: {}
+	}
 );
 
 export default model('event', eventSchema);
