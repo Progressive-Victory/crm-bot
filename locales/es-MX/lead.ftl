@@ -98,7 +98,6 @@ modal-placeholder-event-create-time = HH:MM
 ## Log Message
 log-message-reply = Registro generado
 log-message-name = mensajes-de-registro
-log-message-description = Generate TXT file of message content
 log-message-description = Generar archivo TXT del contenido del mensaje
 log-message-channel = canal
 log-message-channel-description = Canal Objetivo
