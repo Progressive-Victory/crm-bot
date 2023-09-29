@@ -1,7 +1,6 @@
 # sme-role exporter
 ## builder
 command-name = alterna-rol-sme
-command-description = Assign the SME-role to given member
 command-description = Assignar el rol de SME al membre indicat
 options-role = rol-sme
 options-role-description = Cual rol para el titulo de sme

@@ -25,7 +25,7 @@ server-embed-members-count-name = Salidas/Miembros
 server-embed-members-count-value = `{$leaves}`/`{$membercount}`
 server-embed-in-name = Usuarios en Servidor
 server-embed-out-name = Usuarios NO en Servidor
-server-embed-user-value = Connected: `{$connected}`
+server-embed-user-value = Conectado: `{$connected}`
     NO Conectado: `{$notconnected}`
     Uniones de Chat de Voz: `{$joins}`
     Salidas de Chat de Voz: `{$leaves}`
