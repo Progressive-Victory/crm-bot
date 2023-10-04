@@ -8,36 +8,67 @@ import { client } from 'src/index';
 import stateDb from '../Database/Schema/state';
 
 interface StateOptions {
-	roleID: Snowflake;
-	guildID: Snowflake;
-	channelID: Snowflake;
-	stateLeadUserID?: Snowflake;
+	role?: Role;
+	guild: Guild;
+	channel?: TextChannel;
+	stateLead?: GuildMember;
 	name: string;
 	abbreviation: StateAbbreviation;
 }
 
 export class State {
+	/**
+	 * Lowercase abbreviation of the state
+	 */
 	readonly abbreviation: StateAbbreviation;
 
+	/**
+	 * Name of the state
+	 */
 	readonly name: string;
 
+	/**
+	 * Role assosiated with the state
+	 */
 	readonly role?: Role;
 
+	/**
+	 * Channel assosiated with the state
+	 */
 	readonly channel?: TextChannel;
 
+	/**
+	 * Member assosiated with the state
+	 */
 	readonly lead?: GuildMember;
 
+	/**
+	 * Discord bot Client
+	 */
 	readonly client: Client;
 
+	/**
+	 * Assosiated Discord Server
+	 */
 	readonly guild: Guild;
 
+	/**
+	 * Defualt constructor for statesw
+	 * @param options
+	 */
 	constructor(options: StateOptions) {
-		this.name = options.name;
-		this.abbreviation = options.abbreviation;
+		const {
+			name, abbreviation, guild, role, channel, stateLead 
+		} = options;
+
+		this.name = name;
+		this.abbreviation = abbreviation;
 		this.client = client;
-		this.guild = client.guilds.cache.get(options.guildID);
-		this.role = this.guild.roles.cache.get(options.roleID);
-		this.channel = this.guild.channels.cache.get(options.channelID) as TextChannel;
+		this.guild = guild;
+
+		if (role) this.role = role;
+		if (channel) this.channel = channel;
+		if (stateLead) this.lead = stateLead;
 	}
 
 	/**
@@ -46,7 +77,9 @@ export class State {
 	 * @returns
 	 */
 	public async setRole(role: RoleResolvable) {
-		const roleObject = role instanceof Role ? role : this.guild.roles.cache.find((r, k) => k === role);
+		let roleObject: Role;
+		if (role instanceof Role) roleObject = role;
+		else roleObject = this.guild.roles.cache.find((r, k) => k === role);
 
 		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { roleId: roleObject.id });
 
@@ -77,7 +110,9 @@ export class State {
 	}
 
 	/**
-	 * setLead
+	 *
+	 * @param member
+	 * @returns
 	 */
 	public async setLead(member: GuildMemberResolvable) {
 		let memberObject: GuildMember;

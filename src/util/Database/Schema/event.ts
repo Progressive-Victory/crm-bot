@@ -1,29 +1,45 @@
-import { Snowflake } from 'discord.js';
+import {
+	GuildScheduledEventManager, GuildScheduledEventStatus, Snowflake 
+} from 'discord.js';
 import { Schema, model } from 'mongoose';
 
 interface IEvent {
-	id: Snowflake;
+	eventID: Snowflake;
+	creatorID: Snowflake;
 	guildID: Snowflake;
 	textID?: Snowflake;
 	vcID?: Snowflake;
-	participants: number;
+	name: string;
+	description?: string;
+	status: GuildScheduledEventStatus;
+	participants: Snowflake[];
 }
 
 const eventSchema = new Schema<IEvent>(
 	{
-		id: { type: String, required: true },
+		eventID: { type: String, required: true },
+		creatorID: { type: String, required: true },
 		guildID: { type: String, required: true },
-		textID: String,
-		vcID: String,
-		participants: {
+		textID: { type: String, required: false },
+		vcID: { type: String, required: false },
+		name: { type: String, required: true },
+		description: { type: String, required: false },
+		status: {
 			type: Number,
 			required: true,
-			default: 0
-		}
+			min: 1,
+			max: 4,
+			default: 1
+		},
+		participants: [{ type: String, required: true }]
 	},
 	{
 		timestamps: true,
-		methods: {}
+		statics: {
+			async recover(scheduledEvents: GuildScheduledEventManager) {
+				await scheduledEvents.fetch();
+			}
+		}
 	}
 );
 
