@@ -2,9 +2,12 @@ import {
 	AnySelectMenuInteraction,
 	ApplicationCommand,
 	ButtonInteraction,
+	ChatInputCommandInteraction,
 	Client,
 	ClientOptions,
 	Collection,
+	ContextMenuCommandBuilder,
+	ContextMenuCommandInteraction,
 	Interaction as DInteraction,
 	DiscordjsError,
 	DiscordjsErrorCodes,
@@ -18,13 +21,15 @@ import {
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import {
-	ChatInputCommand, Command, ContextMenuCommand 
+	ChatInputCommand, ChatInputCommandBuilders, Command, ContextMenuCommand 
 } from './Command';
 import { Event } from './Event';
 import { Interaction } from './Interaction';
 import Logger from './Logger';
 import { onInteractionCreate } from './interactionCreate';
 import { Mutable } from './types';
+
+type TypeCommand = Command<ChatInputCommandBuilders | ContextMenuCommandBuilder, ChatInputCommandInteraction | ContextMenuCommandInteraction>;
 
 // TypeScript or JavaScript environment (thanks to https://github.com/stijnvdkolk)
 // eslint-disable-next-line import/no-mutable-exports
@@ -55,7 +60,7 @@ function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
  * @param dirPath Root directory of object
  * @returns Collection of Type
  */
-async function fileToCollection<Type extends Command | Interaction<DInteraction>>(dirPath: string): Promise<Collection<string, Type>> {
+async function fileToCollection<Type extends TypeCommand | Interaction<DInteraction>>(dirPath: string): Promise<Collection<string, Type>> {
 	const collection: Collection<string, Type> = new Collection();
 
 	try {
@@ -65,7 +70,9 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 			const resp: { default: Type } = await import(join(dirPath, file.name));
 
 			const name =
-				(resp.default as Command).builder !== undefined ? (resp.default as Command).builder.name : (resp.default as Interaction<DInteraction>).name;
+				(resp.default as TypeCommand).builder !== undefined
+					? (resp.default as TypeCommand).builder.name
+					: (resp.default as Interaction<DInteraction>).name;
 
 			collection.set(name, resp.default);
 		}
@@ -78,7 +85,9 @@ async function fileToCollection<Type extends Command | Interaction<DInteraction>
 				const resp: { default: Type } = await import(join(directoryPath, file));
 
 				const name =
-					(resp.default as Command).builder !== undefined ? (resp.default as Command).builder.name : (resp.default as Interaction<DInteraction>).name;
+					(resp.default as TypeCommand).builder !== undefined
+						? (resp.default as TypeCommand).builder.name
+						: (resp.default as Interaction<DInteraction>).name;
 
 				collection.set(name, resp.default);
 			}
