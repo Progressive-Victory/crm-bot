@@ -1,4 +1,4 @@
-export type TimeStyle = 'd' | 'D' | 't' | 'T' | 'f' | 'F' | 'R';
+import { TimeStyle } from './types';
 
 export declare const TimeStyles: {
 	ShortDate: 'd';
@@ -9,17 +9,6 @@ export declare const TimeStyles: {
 	LongDateTime: 'F';
 	RelativeTime: 'R';
 };
-
-declare global {
-	interface Date {
-		/**
-		 * Convert Date object to Discord Formated sting
-		 * @param format The Style that will be used on the time stamp
-		 * @see https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
-		 */
-		toDiscordString(style?: TimeStyle): string;
-	}
-}
 
 // Implimentation of the Date Prototype addtional function of toDiscordString
 // eslint-disable-next-line func-names

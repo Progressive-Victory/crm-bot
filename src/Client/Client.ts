@@ -20,11 +20,11 @@ import { join } from 'path';
 import { ChatInputCommand, ContextMenuCommand } from './Command';
 import { Event } from './Event';
 import { Interaction } from './Interaction';
-import Logger from './Logger';
 import { onInteractionCreate } from './interactionCreate';
 import {
 	Mutable, TypeCommand, tsNodeRun 
 } from './util';
+import Logger from './util/Logger';
 
 /**
  * Returns a boolean and Types a unknown as ErrnoException if the object is an error

@@ -10,10 +10,6 @@ export { Event } from './Event';
 
 export { Interaction } from './Interaction';
 
-export { ExtraColor, tsNodeRun } from './util';
+export { ExtraColor, Logger, TimeStyles, tsNodeRun } from './util';
 
-export { TimeStyles } from './time';
-
-export type { TimeStyle } from './time';
-
-export { Logger } from './Logger';
+export type { TimeStyle } from './util';

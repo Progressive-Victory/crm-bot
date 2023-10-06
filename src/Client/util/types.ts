@@ -24,3 +24,5 @@ export type ChatInputCommandBuilders =
 export type ReturnableInteraction = void | CommandInteraction | ContextMenuCommandInteraction | InteractionResponse | Message;
 
 export type TypeCommand = Command<ChatInputCommandBuilders | ContextMenuCommandBuilder, ChatInputCommandInteraction | ContextMenuCommandInteraction>;
+
+export type TimeStyle = 'd' | 'D' | 't' | 'T' | 'f' | 'F' | 'R';

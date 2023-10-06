@@ -1,5 +1,5 @@
 import { DiscordAPIError, Interaction } from 'discord.js';
-import Logger from './Logger';
+import Logger from './util/Logger';
 
 export async function onInteractionCreate(interaction: Interaction) {
 	let interactionName: string;

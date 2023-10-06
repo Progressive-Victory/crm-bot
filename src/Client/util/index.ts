@@ -1,10 +1,15 @@
 import { ExtendedClient } from '../Client';
+import { TimeStyle } from './types';
 
 export { tsNodeRun } from './tsNodeRun';
 
-export type { ChatInputCommandBuilders, Mutable, ReturnableInteraction, TypeCommand } from './types';
+export { TimeStyles } from './time';
+
+export type { ChatInputCommandBuilders, Mutable, ReturnableInteraction, TimeStyle, TypeCommand } from './types';
 
 export { ExtraColor } from './types';
+
+export { Logger } from './Logger';
 
 declare module 'discord.js' {
 	interface BaseInteraction {
@@ -30,5 +35,16 @@ declare module 'discord.js' {
 	}
 	interface GuildMember {
 		client: ExtendedClient;
+	}
+}
+
+declare global {
+	interface Date {
+		/**
+		 * Convert Date object to Discord Formated sting
+		 * @param format The Style that will be used on the time stamp
+		 * @see https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
+		 */
+		toDiscordString(style?: TimeStyle): string;
 	}
 }
