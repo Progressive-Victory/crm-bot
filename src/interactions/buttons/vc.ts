@@ -1,4 +1,6 @@
-import { Interaction, Logger } from '@Client';
+import {
+	Interaction, Logger, TimeStyles 
+} from '@Client';
 import { ButtonInteraction, VoiceChannel } from 'discord.js';
 
 import { ns } from '@builders/vc';
@@ -67,7 +69,7 @@ export default new Interaction<ButtonInteraction>().setName('vc').setExecute(asy
 	date.setMinutes(date.getMinutes() - 10);
 
 	if (interaction.createdAt < date) {
-		await updateInteraction(interaction, 'request-exspired', { time: interaction.createdAt.toDiscordString('R') });
+		await updateInteraction(interaction, 'request-exspired', { time: interaction.createdAt.toDiscordString(TimeStyles.RelativeTime) });
 		return;
 	}
 

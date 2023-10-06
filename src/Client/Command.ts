@@ -1,23 +1,14 @@
 import {
 	AutocompleteInteraction,
 	ChatInputCommandInteraction,
-	CommandInteraction,
 	ContextMenuCommandBuilder,
 	ContextMenuCommandInteraction,
 	EmbedBuilder,
-	InteractionResponse,
-	Message,
-	SlashCommandBuilder,
-	SlashCommandSubcommandsOnlyBuilder
+	SlashCommandBuilder
 } from 'discord.js';
-import { Mutable } from './types';
-
-export type ReturnableInteraction = void | CommandInteraction | ContextMenuCommandInteraction | InteractionResponse | Message;
-
-export type ChatInputCommandBuilders =
-	| SlashCommandBuilder
-	| SlashCommandSubcommandsOnlyBuilder
-	| Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>;
+import {
+	ChatInputCommandBuilders, Mutable, ReturnableInteraction 
+} from './util';
 
 /**
  * Slash command or context command

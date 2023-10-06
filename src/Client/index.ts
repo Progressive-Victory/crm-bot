@@ -4,14 +4,16 @@ export type { ExtendedClientOptions as ClientOptions } from './Client';
 
 export { ChatInputCommand, ContextMenuCommand } from './Command';
 
-export type { ChatInputCommandBuilders, Command, ReturnableInteraction } from './Command';
+export type { Command } from './Command';
 
 export { Event } from './Event';
 
 export { Interaction } from './Interaction';
 
-export { ExtraColor, TimeFormat } from './types';
+export { ExtraColor, tsNodeRun } from './util';
 
-export type { TimeCode } from './types';
+export { TimeStyles } from './time';
+
+export type { TimeStyle } from './time';
 
 export { Logger } from './Logger';

@@ -1,6 +1,6 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { channelMessgesToAttachmentBuilder } from '@util/channel';
+import { channelMessagesToAttachmentBuilder } from '@util/channel';
 import { ChannelType, ChatInputCommandInteraction } from 'discord.js';
 
 export default async function logMessages(interaction: ChatInputCommandInteraction) {
@@ -21,7 +21,7 @@ export default async function logMessages(interaction: ChatInputCommandInteracti
 			ns,
 			locale
 		}),
-		files: [await channelMessgesToAttachmentBuilder(channel)],
+		files: [await channelMessagesToAttachmentBuilder(channel)],
 		ephemeral: true
 	});
 }
