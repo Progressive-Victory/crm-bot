@@ -21,3 +21,14 @@ Date.prototype.toDiscordString = function(this: Date, style?: TimeStyle) {
 	if (!style) return `<t:${code}>`;
 	return `<t:${code}:${style}>`;
 };
+
+declare global {
+	interface Date {
+		/**
+		 * Convert Date object to Discord Formated sting
+		 * @param format The Style that will be used on the time stamp
+		 * @see https://discord.com/developers/docs/reference#message-formatting-timestamp-styles
+		 */
+		toDiscordString(style?: TimeStyle): string;
+	}
+}

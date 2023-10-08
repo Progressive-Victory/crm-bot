@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ClientEvents as DiscordClientEvents } from 'discord.js';
-import { Mutable } from './util';
+import { Mutable } from '../util';
 
 /**
  * Event Class

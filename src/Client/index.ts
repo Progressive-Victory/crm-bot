@@ -1,14 +1,8 @@
-export { ExtendedClient as Client } from './Client';
+export { ExtendedClient as Client } from './ExtendedClient';
 
-export type { ExtendedClientOptions as ClientOptions } from './Client';
+export type { ExtendedClientOptions as ClientOptions } from './util';
 
-export { ChatInputCommand, ContextMenuCommand } from './Command';
-
-export type { Command } from './Command';
-
-export { Event } from './Event';
-
-export { Interaction } from './Interaction';
+export { ChatInputCommand, Command, ContextMenuCommand, Event, Interaction } from './Classes';
 
 export { ExtraColor, Logger, TimeStyles, tsNodeRun } from './util';
 

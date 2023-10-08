@@ -3,7 +3,6 @@ import {
 	ApplicationCommand,
 	ButtonInteraction,
 	Client,
-	ClientOptions,
 	Collection,
 	Interaction as DInteraction,
 	DiscordjsError,
@@ -17,103 +16,13 @@ import {
 } from 'discord.js';
 import { readdir } from 'fs/promises';
 import { join } from 'path';
-import { ChatInputCommand, ContextMenuCommand } from './Command';
-import { Event } from './Event';
-import { Interaction } from './Interaction';
+import {
+	ChatInputCommand, ContextMenuCommand, Event, Interaction 
+} from './Classes';
 import { onInteractionCreate } from './interactionCreate';
 import {
-	Mutable, TypeCommand, tsNodeRun 
+	ExtendedClientOptions, Logger, Mutable, TypeCommand, initOptions, tsNodeRun 
 } from './util';
-import Logger from './util/Logger';
-
-/**
- * Returns a boolean and Types a unknown as ErrnoException if the object is an error
- * @param error Any unknown object
- * @returns A boolean value if the the object is a ErrnoException
- */
-// eslint-disable-next-line no-undef
-function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
-	return error instanceof Error;
-}
-
-/**
- * Converts Commands and Interactions in to Collection objects
- * @param dirPath Root directory of object
- * @returns Collection of Type
- */
-async function fileToCollection<Type extends TypeCommand | Interaction<DInteraction>>(dirPath: string): Promise<Collection<string, Type>> {
-	// collection that will be returned
-	const collection = new Collection<string, Type>();
-
-	try {
-		// Array of Directory entitys including the file type
-		const dirents = await readdir(dirPath, { withFileTypes: true });
-
-		// For Each file in the Array of Directory entitys where the file ends in ts or js based on the environment
-		for (const file of dirents.filter((dirent) => !dirent.isDirectory() && dirent.name.endsWith(tsNodeRun ? '.ts' : '.js'))) {
-			// Import the file noting the default object
-			const resp: { default: Type } = await import(join(dirPath, file.name));
-
-			// Get name of file
-			const name =
-				'builder' in resp.default !== undefined ? (resp.default as TypeCommand).builder.name : (resp.default as Interaction<DInteraction>).name;
-
-			// Add object to the colection
-			collection.set(name, resp.default);
-		}
-
-		// For Each Directory in the Array of Directory entitys
-		for (const dir of dirents.filter((dirent) => dirent.isDirectory())) {
-			// Get the coplete filepath
-			const directoryPath = join(dirPath, dir.name);
-			// Get subfolder contects
-			const dirFiles = await readdir(directoryPath);
-
-			// For Each file in the Array of Directory entitys where the file ends in ts or js based on the environmen
-			for (const file of dirFiles.filter((f) => f.endsWith(tsNodeRun ? '.ts' : '.js'))) {
-				// Import the file noting the default object
-				const resp: { default: Type } = await import(join(directoryPath, file));
-
-				// Get name of file
-				const name =
-					'builder' in resp.default !== undefined ? (resp.default as TypeCommand).builder.name : (resp.default as Interaction<DInteraction>).name;
-
-				// Add object to the colection
-				collection.set(name, resp.default);
-			}
-		}
-	}
-	catch (error) {
-		// catch errors relating to a file destination not existing as they are not fatal to the function of the Client
-		if (isErrnoException(error) && error.code === 'ENOENT' && error.syscall === 'scandir') {
-			Logger.warn(`Directory not found at ${error.path}`);
-		}
-		else {
-			throw error;
-		}
-	}
-
-	return collection;
-}
-
-export interface ExtendedClientOptions extends ClientOptions {
-	receiveMessageComponents?: boolean;
-	receiveModals?: boolean;
-	receiveAutocomplete?: boolean;
-	replyOnError?: boolean;
-	splitCustomID?: boolean;
-	splitCustomIDOn?: string;
-	useGuildCommands?: boolean;
-}
-
-export interface initOptions {
-	commandPath?: string;
-	contextMenuPath?: string;
-	buttonPath?: string;
-	selectMenuPath?: string;
-	modalPath?: string;
-	eventPath: string;
-}
 
 /**
  * ExtendedClient is extended from the {@import ('discord.js').Client}.
@@ -252,33 +161,33 @@ export class ExtendedClient extends Client {
 	private async loadSelectMenus(path?: string) {
 		// Select Menu Handler
 		if (path) {
-			this.clientMutable().selectMenus = await fileToCollection<Interaction<AnySelectMenuInteraction>>(path);
+			this.clientMutable().selectMenus = await this.fileToCollection<Interaction<AnySelectMenuInteraction>>(path);
 		}
 	}
 
 	private async loadButtons(path?: string) {
 		// Button Handler
 		if (path) {
-			this.clientMutable().buttons = await fileToCollection<Interaction<ButtonInteraction>>(path);
+			this.clientMutable().buttons = await this.fileToCollection<Interaction<ButtonInteraction>>(path);
 		}
 	}
 
 	private async loadModals(path?: string) {
 		// Modal Handler
 		if (path) {
-			this.clientMutable().modals = await fileToCollection<Interaction<ModalSubmitInteraction>>(path);
+			this.clientMutable().modals = await this.fileToCollection<Interaction<ModalSubmitInteraction>>(path);
 		}
 	}
 
 	private async loadContextMenus(path?: string) {
 		// Context Menu Handler
 		if (path) {
-			this.clientMutable().contextMenus = await fileToCollection<ContextMenuCommand>(path);
+			this.clientMutable().contextMenus = await this.fileToCollection<ContextMenuCommand>(path);
 		}
 	}
 
 	private async loadCommands(path?: string) {
-		this.clientMutable().commands = await fileToCollection<ChatInputCommand>(path);
+		this.clientMutable().commands = await this.fileToCollection<ChatInputCommand>(path);
 	}
 
 	/**
@@ -334,5 +243,102 @@ export class ExtendedClient extends Client {
 		Logger.debug('Initializing login');
 
 		return super.login(token);
+	}
+
+	/**
+	 * Converts Commands and Interactions in to Collection objects
+	 * @param dirPath Root directory of object
+	 * @returns Collection of Type
+	 */
+	private async fileToCollection<Type extends TypeCommand | Interaction<DInteraction>>(dirPath: string): Promise<Collection<string, Type>> {
+		// collection that will be returned
+		const collection = new Collection<string, Type>();
+
+		try {
+			// Array of Directory entitys including the file type
+			const dirents = await readdir(dirPath, { withFileTypes: true });
+
+			// For Each file in the Array of Directory entitys where the file ends in ts or js based on the environment
+			for (const file of dirents.filter((dirent) => !dirent.isDirectory() && dirent.name.endsWith(tsNodeRun ? '.ts' : '.js'))) {
+				// Import the file noting the default object
+				const resp: { default: Type } = await import(join(dirPath, file.name));
+
+				// Get name of file
+				const name =
+					'builder' in resp.default !== undefined ? (resp.default as TypeCommand).builder.name : (resp.default as Interaction<DInteraction>).name;
+
+				// Add object to the colection
+				collection.set(name, resp.default);
+			}
+
+			// For Each Directory in the Array of Directory entitys
+			for (const dir of dirents.filter((dirent) => dirent.isDirectory())) {
+				// Get the coplete filepath
+				const directoryPath = join(dirPath, dir.name);
+				// Get subfolder contects
+				const dirFiles = await readdir(directoryPath);
+
+				// For Each file in the Array of Directory entitys where the file ends in ts or js based on the environmen
+				for (const file of dirFiles.filter((f) => f.endsWith(tsNodeRun ? '.ts' : '.js'))) {
+					// Import the file noting the default object
+					const resp: { default: Type } = await import(join(directoryPath, file));
+
+					// Get name of file
+					const name =
+						'builder' in resp.default !== undefined ? (resp.default as TypeCommand).builder.name : (resp.default as Interaction<DInteraction>).name;
+
+					// Add object to the colection
+					collection.set(name, resp.default);
+				}
+			}
+		}
+		catch (error) {
+			// catch errors relating to a file destination not existing as they are not fatal to the function of the Client
+			if (this.isErrnoException(error) && error.code === 'ENOENT' && error.syscall === 'scandir') {
+				Logger.warn(`Directory not found at ${error.path}`);
+			}
+			else {
+				throw error;
+			}
+		}
+
+		return collection;
+	}
+
+	/**
+	 * Returns a boolean and Types a unknown as ErrnoException if the object is an error
+	 * @param error Any unknown object
+	 * @returns A boolean value if the the object is a ErrnoException
+	 */
+	// eslint-disable-next-line no-undef
+	private isErrnoException(error: unknown): error is NodeJS.ErrnoException {
+		return error instanceof Error;
+	}
+}
+
+declare module 'discord.js' {
+	interface BaseInteraction {
+		client: ExtendedClient;
+	}
+	interface Component {
+		client: ExtendedClient;
+	}
+	interface Message {
+		client: ExtendedClient;
+	}
+	interface BaseChannel {
+		client: ExtendedClient;
+	}
+	interface Role {
+		client: ExtendedClient;
+	}
+	interface Guild {
+		client: ExtendedClient;
+	}
+	interface User {
+		client: ExtendedClient;
+	}
+	interface GuildMember {
+		client: ExtendedClient;
 	}
 }

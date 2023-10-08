@@ -1,5 +1,5 @@
 import { Interaction as DiscordInteraction, PermissionFlags } from 'discord.js';
-import { Mutable } from './util';
+import { Mutable } from '../util';
 
 /**
  * Interaction object

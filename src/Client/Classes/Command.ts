@@ -3,12 +3,11 @@ import {
 	ChatInputCommandInteraction,
 	ContextMenuCommandBuilder,
 	ContextMenuCommandInteraction,
-	EmbedBuilder,
 	SlashCommandBuilder
 } from 'discord.js';
 import {
 	ChatInputCommandBuilders, Mutable, ReturnableInteraction 
-} from './util';
+} from '../util';
 
 /**
  * Slash command or context command
@@ -22,9 +21,6 @@ export class Command<
 
 	// State if the command is available in all servers
 	readonly isGlobal: boolean;
-
-	// Embed to be used for help command
-	readonly helpEmbed: EmbedBuilder;
 
 	// Method that is run when command is executed
 	readonly execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
@@ -41,7 +37,6 @@ export class Command<
 		this.isGlobal = options.isGlobal === undefined ? true : options.isGlobal;
 		if (options.builder) this.builder = options.builder;
 		if (options.execute) this.execute = options.execute;
-		if (options.helpEmbed) this.helpEmbed = options.helpEmbed;
 	}
 
 	/**
@@ -61,22 +56,6 @@ export class Command<
 	 */
 	public setExecute(execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction): this {
 		(this as Mutable<Command<TypeBuilder, TypeInteraction>>).execute = execute;
-		return this;
-	}
-
-	/**
-	 * Set Help embed
-	 * @param builder Embed builder or callback
-	 * @returns The modified object
-	 */
-	public setHelpEmbed(builder: EmbedBuilder | ((embedBuilder: EmbedBuilder) => EmbedBuilder)): this {
-		const mutableCommand = this as Mutable<Command<TypeBuilder, TypeInteraction>>;
-		if (typeof builder === 'function') {
-			mutableCommand.helpEmbed = builder(new EmbedBuilder());
-		}
-		else {
-			mutableCommand.helpEmbed = builder;
-		}
 		return this;
 	}
 }
@@ -129,11 +108,13 @@ export class ContextMenuCommand extends Command<ContextMenuCommandBuilder, Conte
 	 * @returns The modified object
 	 */
 	public setBuilder(input: ContextMenuCommandBuilder | ((subcommandBuilder: ContextMenuCommandBuilder) => ContextMenuCommandBuilder)): this {
+		const mutableCommand = this as Mutable<ContextMenuCommand>;
+
 		if (typeof input === 'function') {
-			(this as Mutable<ContextMenuCommand>).builder = input(new ContextMenuCommandBuilder());
+			mutableCommand.builder = input(new ContextMenuCommandBuilder());
 		}
 		else {
-			(this as Mutable<ContextMenuCommand>).builder = input;
+			mutableCommand.builder = input;
 		}
 		return this;
 	}

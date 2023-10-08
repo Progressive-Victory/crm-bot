@@ -8,7 +8,7 @@ import {
 	SlashCommandBuilder,
 	SlashCommandSubcommandsOnlyBuilder
 } from 'discord.js';
-import { Command } from '../Command';
+import { Command } from '../Classes/Command';
 
 export type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 
