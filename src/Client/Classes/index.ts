@@ -6,4 +6,4 @@ export { Interaction } from './Interaction';
 
 export { ExtendedContextMenuCommandBuilder } from './ExtendedContextMenuCommandBuilder';
 
-export { ExtendedSlashCommandBuilder } from './ExtendedSlashCommandBuilder';
+export { ExtendedSlashCommandBuilder, ExtendedSlashCommandSubcommandBuilder, ExtendedSlashCommandSubcommandGroupBuilder } from './ExtendedSlashCommandBuilder';
