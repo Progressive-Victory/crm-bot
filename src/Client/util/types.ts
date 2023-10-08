@@ -14,6 +14,9 @@ export type Mutable<T> = { -readonly [P in keyof T]: T[P] };
 
 export declare const ExtraColor: {
 	EmbedGray: 0x2b2d31;
+	PVBlue: 0x2986cc;
+	PVDarkBlue: 0x09223a;
+	PVOrange: 0xe54c3c;
 };
 
 export type ChatInputCommandBuilders =
