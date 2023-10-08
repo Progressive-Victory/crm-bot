@@ -2,6 +2,8 @@ import { EmbedBuilder, WebhookClient } from 'discord.js';
 import pino from 'pino';
 
 async function webHookErrBot(args: unknown) {
+	if (!process.env.ERROR_WEBHOOK) return null;
+
 	const errBot = new WebhookClient({ url: process.env.ERROR_WEBHOOK });
 
 	await args;
@@ -18,11 +20,11 @@ async function webHookErrBot(args: unknown) {
 	};
 
 	const embed = new EmbedBuilder()
-		.setTitle('Error Detectet')
+		.setTitle('Error detected')
 		.setDescription(`Error was detected: ${args} \n Stack trace: ${getStackTrace(args)}`)
 		.setColor(0xff0000);
 
-	await errBot
+	return errBot
 		.send({
 			content: '<@879086334835298375>',
 			username: 'Error Bot',
