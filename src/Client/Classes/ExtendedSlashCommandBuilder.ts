@@ -1,7 +1,7 @@
 import {
 	Collection,
-	EmbedBuilder,
 	Locale,
+	LocaleString,
 	SharedSlashCommandOptions,
 	SlashCommandBuilder,
 	SlashCommandSubcommandBuilder,
@@ -9,17 +9,26 @@ import {
 } from 'discord.js';
 
 export class ExtendedSlashCommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
-	public getHelpEmbed: (locale: Locale, baseEmbed?: EmbedBuilder) => EmbedBuilder;
+	private helpTitle: Partial<Record<LocaleString, string>> = {};
 
-	public setHelpEmbed(input: (locale: Locale, baseEmbed?: EmbedBuilder) => EmbedBuilder) {
-		this.getHelpEmbed = input;
+	private helpDescription: Partial<Record<LocaleString, string>> = {};
+
+	public setHelpTitleLocalizations(localizedTitle: Partial<Record<LocaleString, string>>) {
+		Object.assign(this.helpTitle, localizedTitle);
 		return this;
+	}
+
+	public setHelpDescriptionLocalizations(localizedDescriptions: Partial<Record<LocaleString, string>>) {
+		Object.assign(this.helpTitle, localizedDescriptions);
+		return this;
+	}
+
+	public getHelpInfo(locale: Locale): { title: string; description: string } {
+		return { title: this.helpTitle[locale.toString()], description: this.helpDescription[locale.toString()] };
 	}
 }
 
 export class ExtendedSlashCommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBuilder {
-	public getHelpEmbed: (locale: Locale, baseEmbed?: EmbedBuilder) => EmbedBuilder;
-
 	private subcommandBuilders = new Collection<string, ExtendedSlashCommandSubcommandBuilder>();
 
 	public addSubcommand(
@@ -32,15 +41,26 @@ export class ExtendedSlashCommandSubcommandGroupBuilder extends SlashCommandSubc
 		return super.addSubcommand(input);
 	}
 
-	public setHelpEmbed(input: (locale: Locale, baseEmbed?: EmbedBuilder) => EmbedBuilder) {
-		this.getHelpEmbed = input;
+	private helpTitle: Partial<Record<LocaleString, string>> = {};
+
+	private helpDescription: Partial<Record<LocaleString, string>> = {};
+
+	public setHelpTitleLocalizations(localizedTitle: Partial<Record<LocaleString, string>>) {
+		Object.assign(this.helpTitle, localizedTitle);
 		return this;
+	}
+
+	public setHelpDescriptionLocalizations(localizedDescriptions: Partial<Record<LocaleString, string>>) {
+		Object.assign(this.helpTitle, localizedDescriptions);
+		return this;
+	}
+
+	public getHelpInfo(locale: Locale): { title: string; description: string } {
+		return { title: this.helpTitle[locale.toString()], description: this.helpDescription[locale.toString()] };
 	}
 }
 
 export class ExtendedSlashCommandBuilder extends SlashCommandBuilder {
-	public getHelpEmbed: (locale: Locale, baseEmbed?: EmbedBuilder) => EmbedBuilder;
-
 	private subcommandGroupBuilders = new Collection<string, ExtendedSlashCommandSubcommandGroupBuilder>();
 
 	private subcommandBuilders = new Collection<string, ExtendedSlashCommandSubcommandBuilder>();
@@ -67,8 +87,21 @@ export class ExtendedSlashCommandBuilder extends SlashCommandBuilder {
 		return super.addSubcommand(input) as Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>>;
 	}
 
-	public setHelpEmbed(input: (locale: Locale, baseEmbed?: EmbedBuilder) => EmbedBuilder) {
-		this.getHelpEmbed = input;
+	private helpTitle: Partial<Record<LocaleString, string>> = {};
+
+	private helpDescription: Partial<Record<LocaleString, string>> = {};
+
+	public setHelpTitleLocalizations(localizedTitle: Partial<Record<LocaleString, string>>) {
+		Object.assign(this.helpTitle, localizedTitle);
 		return this;
+	}
+
+	public setHelpDescriptionLocalizations(localizedDescriptions: Partial<Record<LocaleString, string>>) {
+		Object.assign(this.helpTitle, localizedDescriptions);
+		return this;
+	}
+
+	public getHelpInfo(locale: Locale): { title: string; description: string } {
+		return { title: this.helpTitle[locale.toString()], description: this.helpDescription[locale.toString()] };
 	}
 }

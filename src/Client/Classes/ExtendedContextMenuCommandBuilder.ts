@@ -1,12 +1,23 @@
 import {
-	ContextMenuCommandBuilder, EmbedBuilder, Locale 
+	ContextMenuCommandBuilder, Locale, LocaleString 
 } from 'discord.js';
 
 export class ExtendedContextMenuCommandBuilder extends ContextMenuCommandBuilder {
-	public getHelpEmbed: (locale: Locale, baseEmbed?: EmbedBuilder) => EmbedBuilder;
+	private helpTitle: Partial<Record<LocaleString, string>> = {};
 
-	public setHelpEmbed(input: (locale: Locale, baseEmbed?: EmbedBuilder) => EmbedBuilder) {
-		this.getHelpEmbed = input;
+	private helpDescription: Partial<Record<LocaleString, string>> = {};
+
+	public setHelpTitleLocalizations(localizedTitle: Partial<Record<LocaleString, string>>) {
+		Object.assign(this.helpTitle, localizedTitle);
 		return this;
+	}
+
+	public setHelpDescriptionLocalizations(localizedDescriptions: Partial<Record<LocaleString, string>>) {
+		Object.assign(this.helpTitle, localizedDescriptions);
+		return this;
+	}
+
+	public getHelpInfo(locale: Locale): { title: string; description: string } {
+		return { title: this.helpTitle[locale.toString()], description: this.helpDescription[locale.toString()] };
 	}
 }
