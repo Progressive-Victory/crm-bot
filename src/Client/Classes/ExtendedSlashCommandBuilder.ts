@@ -1,34 +1,19 @@
 import {
 	Collection,
-	Locale,
-	LocaleString,
+	ContextMenuCommandBuilder,
 	SharedSlashCommandOptions,
 	SlashCommandBuilder,
 	SlashCommandSubcommandBuilder,
 	SlashCommandSubcommandGroupBuilder
 } from 'discord.js';
 
-export class ExtendedSlashCommandSubcommandBuilder extends SlashCommandSubcommandBuilder {
-	private helpTitle: Partial<Record<LocaleString, string>> = {};
+import { Mixin } from './Mixin';
 
-	private helpDescription: Partial<Record<LocaleString, string>> = {};
+export class ExtendedContextMenuCommandBuilder extends Mixin(ContextMenuCommandBuilder) {}
 
-	public setHelpTitleLocalizations(localizedTitle: Partial<Record<LocaleString, string>>) {
-		Object.assign(this.helpTitle, localizedTitle);
-		return this;
-	}
+export class ExtendedSlashCommandSubcommandBuilder extends Mixin(SlashCommandSubcommandBuilder) {}
 
-	public setHelpDescriptionLocalizations(localizedDescriptions: Partial<Record<LocaleString, string>>) {
-		Object.assign(this.helpTitle, localizedDescriptions);
-		return this;
-	}
-
-	public getHelpInfo(locale: Locale): { title: string; description: string } {
-		return { title: this.helpTitle[locale.toString()], description: this.helpDescription[locale.toString()] };
-	}
-}
-
-export class ExtendedSlashCommandSubcommandGroupBuilder extends SlashCommandSubcommandGroupBuilder {
+export class ExtendedSlashCommandSubcommandGroupBuilder extends Mixin(SlashCommandSubcommandGroupBuilder) {
 	private subcommandBuilders = new Collection<string, ExtendedSlashCommandSubcommandBuilder>();
 
 	public addSubcommand(
@@ -40,27 +25,9 @@ export class ExtendedSlashCommandSubcommandGroupBuilder extends SlashCommandSubc
 
 		return super.addSubcommand(input);
 	}
-
-	private helpTitle: Partial<Record<LocaleString, string>> = {};
-
-	private helpDescription: Partial<Record<LocaleString, string>> = {};
-
-	public setHelpTitleLocalizations(localizedTitle: Partial<Record<LocaleString, string>>) {
-		Object.assign(this.helpTitle, localizedTitle);
-		return this;
-	}
-
-	public setHelpDescriptionLocalizations(localizedDescriptions: Partial<Record<LocaleString, string>>) {
-		Object.assign(this.helpTitle, localizedDescriptions);
-		return this;
-	}
-
-	public getHelpInfo(locale: Locale): { title: string; description: string } {
-		return { title: this.helpTitle[locale.toString()], description: this.helpDescription[locale.toString()] };
-	}
 }
 
-export class ExtendedSlashCommandBuilder extends SlashCommandBuilder {
+export class ExtendedSlashCommandBuilder extends Mixin(SlashCommandBuilder) {
 	private subcommandGroupBuilders = new Collection<string, ExtendedSlashCommandSubcommandGroupBuilder>();
 
 	private subcommandBuilders = new Collection<string, ExtendedSlashCommandSubcommandBuilder>();
@@ -71,7 +38,6 @@ export class ExtendedSlashCommandBuilder extends SlashCommandBuilder {
 			| ((subcommandGroup: ExtendedSlashCommandSubcommandGroupBuilder) => ExtendedSlashCommandSubcommandGroupBuilder)
 	): Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>> {
 		const group = typeof input === 'function' ? input(new ExtendedSlashCommandSubcommandGroupBuilder()) : input;
-
 		this.subcommandGroupBuilders.set(group.name, group);
 
 		return super.addSubcommandGroup(input) as Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>>;
@@ -85,23 +51,5 @@ export class ExtendedSlashCommandBuilder extends SlashCommandBuilder {
 		this.subcommandBuilders.set(command.name, command);
 
 		return super.addSubcommand(input) as Omit<ExtendedSlashCommandBuilder, Exclude<keyof SharedSlashCommandOptions, 'options'>>;
-	}
-
-	private helpTitle: Partial<Record<LocaleString, string>> = {};
-
-	private helpDescription: Partial<Record<LocaleString, string>> = {};
-
-	public setHelpTitleLocalizations(localizedTitle: Partial<Record<LocaleString, string>>) {
-		Object.assign(this.helpTitle, localizedTitle);
-		return this;
-	}
-
-	public setHelpDescriptionLocalizations(localizedDescriptions: Partial<Record<LocaleString, string>>) {
-		Object.assign(this.helpTitle, localizedDescriptions);
-		return this;
-	}
-
-	public getHelpInfo(locale: Locale): { title: string; description: string } {
-		return { title: this.helpTitle[locale.toString()], description: this.helpDescription[locale.toString()] };
 	}
 }

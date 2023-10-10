@@ -17,11 +17,11 @@ import {
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import {
-	ChatInputCommand, ContextMenuCommand, Event, Interaction
+	ChatInputCommand, ContextMenuCommand, Event, Interaction 
 } from './Classes';
 import { onInteractionCreate } from './interactionCreate';
 import {
-	ExtendedClientOptions, Logger, Mutable, TypeCommand, initOptions, tsNodeRun
+	ExtendedClientOptions, Logger, Mutable, TypeCommand, initOptions, tsNodeRun 
 } from './util';
 
 /**
@@ -101,14 +101,14 @@ export class ExtendedClient extends Client {
 		// Add interaction event listener for built in interaction handler
 		this.on(Events.InteractionCreate, onInteractionCreate);
 
-		// Add the built in interation hanaler to the event collection
+		// Add the built in interaction handler to the event collection
 		this.events.set(Events.InteractionCreate, new Event({ name: Events.InteractionCreate, execute: onInteractionCreate }));
 	}
 
 	/**
 	 * Loads event, command and interaction files in to the client
 	 * @param options file paths where event, command and interaction files are
-	 * @returns the client object with omiting the init method
+	 * @returns the client object without the init method
 	 */
 	public async init(options: initOptions) {
 		Logger.debug('Client initializing...');
@@ -128,7 +128,7 @@ export class ExtendedClient extends Client {
 
 		Logger.debug('Client initialized');
 
-		// return this object with init method omited
+		// return this object with init method omitted
 		return this as Omit<ExtendedClient, 'init'>;
 	}
 
@@ -255,7 +255,7 @@ export class ExtendedClient extends Client {
 		const collection = new Collection<string, Type>();
 
 		try {
-			// Array of Directory entitys including the file type
+			// Array of Directory entities including the file type
 			const dirents = await readdir(dirPath, { withFileTypes: true });
 
 			// For Each file in the Array of Directory entitys where the file ends in ts or js based on the environment
@@ -272,18 +272,18 @@ export class ExtendedClient extends Client {
 					throw new Error(`[ERROR] ${file.name} is missing a name`);
 				}
 
-				// Add object to the colection
+				// Add object to the collection
 				collection.set(name, resp.default);
 			}
 
-			// For Each Directory in the Array of Directory entitys
+			// For Each Directory in the Array of Directory entities
 			for (const dir of dirents.filter((dirent) => dirent.isDirectory())) {
-				// Get the coplete filepath
+				// Get the complete filepath
 				const directoryPath = join(dirPath, dir.name);
 				// Get subfolder contects
 				const dirFiles = await readdir(directoryPath);
 
-				// For Each file in the Array of Directory entitys where the file ends in ts or js based on the environmen
+				// For Each file in the Array of Directory entities where the file ends in ts or js based on the environment
 				for (const file of dirFiles.filter((f) => f.endsWith(tsNodeRun ? '.ts' : '.js'))) {
 					// Import the file noting the default object
 					const resp: { default: Type } = await import(join(directoryPath, file));
@@ -292,7 +292,7 @@ export class ExtendedClient extends Client {
 					const name =
 						'builder' in resp.default !== undefined ? (resp.default as TypeCommand).builder.name : (resp.default as Interaction<DInteraction>).name;
 
-					// Add object to the colection
+					// Add object to the collection
 					collection.set(name, resp.default);
 				}
 			}
