@@ -3,7 +3,7 @@ import {
 } from 'discord.js';
 import smeConfig from '../sme.json';
 
-export const SMERoleIDs = process.env.SME_ROLE_IDS.split(',');
+export const SMERoleIDs = process.env.SME_ROLE_IDS.split(',').filter((e) => !!e);
 
 export function getSMERoles(member: GuildMember) {
 	if (!SMERoleIDs) throw new Error('SME_ROLE_IDS not present in .env');

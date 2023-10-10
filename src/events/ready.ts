@@ -50,7 +50,7 @@ async function onReady(client: Client) {
 				process.exit(1);
 			}
 
-			Logger.error('API returned an error', e);
+			Logger.error(`API (${process.env.API_ENDPOINT}) returned an error`, e);
 		}
 	}
 }
