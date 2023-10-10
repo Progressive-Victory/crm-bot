@@ -17,11 +17,11 @@ import {
 import { readdir } from 'fs/promises';
 import { join } from 'path';
 import {
-	ChatInputCommand, ContextMenuCommand, Event, Interaction 
+	ChatInputCommand, ContextMenuCommand, Event, Interaction
 } from './Classes';
 import { onInteractionCreate } from './interactionCreate';
 import {
-	ExtendedClientOptions, Logger, Mutable, TypeCommand, initOptions, tsNodeRun 
+	ExtendedClientOptions, Logger, Mutable, TypeCommand, initOptions, tsNodeRun
 } from './util';
 
 /**
@@ -265,7 +265,12 @@ export class ExtendedClient extends Client {
 
 				// Get name of file
 				const name =
-					'builder' in resp.default !== undefined ? (resp.default as TypeCommand).builder.name : (resp.default as Interaction<DInteraction>).name;
+					('builder' in resp.default !== undefined && (resp.default as TypeCommand).builder?.name) ||
+					(resp.default as Interaction<DInteraction>)?.name;
+
+				if (!name) {
+					throw new Error(`[ERROR] ${file.name} is missing a name`);
+				}
 
 				// Add object to the colection
 				collection.set(name, resp.default);

@@ -30,10 +30,7 @@ export class Command<
 	 * @param options
 	 * @returns
 	 */
-	constructor(options?: Partial<Command<TypeBuilder, TypeInteraction>>) {
-		// If options is undefined
-		if (!options) return;
-
+	constructor(options: Partial<Command<TypeBuilder, TypeInteraction>> = {}) {
 		this.isGlobal = options.isGlobal === undefined ? true : options.isGlobal;
 		if (options.builder) this.builder = options.builder;
 		if (options.execute) this.execute = options.execute;
@@ -70,7 +67,7 @@ export class ChatInputCommand extends Command<ChatInputCommandBuilders, ChatInpu
 	 */
 	public autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 
-	constructor(options?: Partial<ChatInputCommand>) {
+	constructor(options: Partial<ChatInputCommand> = {}) {
 		super(options);
 		if (options.autocomplete) this.autocomplete = options.autocomplete;
 	}
