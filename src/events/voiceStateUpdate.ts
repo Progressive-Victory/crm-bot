@@ -1,6 +1,10 @@
 import { Event, Logger } from '@Client';
-import { vcJoins, vcLeaves } from '@util/Database';
-import { Events, VoiceState } from 'discord.js';
+import {
+	EventsDB, vcJoins, vcLeaves 
+} from '@util/Database';
+import {
+	Events, GuildScheduledEventStatus, VoiceState 
+} from 'discord.js';
 import { renameOrganizing } from 'src/structures/helpers';
 
 async function onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
@@ -13,9 +17,12 @@ async function onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
 			await vcLeaves.newFromMember(newState.member, oldState.channel);
 			Logger.debug(`Added ${newState.member.id} to the VC leave database.`);
 		}
-
 		await renameOrganizing(newState.channel || oldState.channel);
 	}
+	const activeEvent = newState.guild.scheduledEvents.cache.filter((e) => e.status === GuildScheduledEventStatus.Active);
+	activeEvent.forEach(async (e) => {
+		if (newState.channelId === e.channelId) await EventsDB.findOneAndUpdate({ eventID: e.id }, { $push: { participants: newState.member.id } });
+	});
 }
 
 export default new Event().setName(Events.VoiceStateUpdate).setExecute(onVoiceStateUpdate);

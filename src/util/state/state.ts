@@ -7,7 +7,7 @@ import {
 import { client } from 'src/index';
 import stateDb from '../Database/Schema/state';
 
-interface StateOptions {
+export interface StateOptions {
 	role?: Role;
 	guild: Guild;
 	channel?: TextChannel;

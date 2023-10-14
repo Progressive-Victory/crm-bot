@@ -1,4 +1,5 @@
 import { Event } from '@Client';
+import { EventsDB } from '@util/Database';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
 import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, GuildScheduledEventStatus, TextBasedChannel, TextChannel 
@@ -51,6 +52,15 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 			files
 		});
 	}
+	EventsDB.findOneAndUpdate(
+		{ eventID: newGuildScheduledEvent.id },
+		{
+			name: newGuildScheduledEvent.name,
+			description: newGuildScheduledEvent.description,
+			status: newGuildScheduledEvent.status,
+			vcID: newGuildScheduledEvent.channelId
+		}
+	);
 }
 
 export default new Event().setName(Events.GuildScheduledEventUpdate).setExecute(execute);

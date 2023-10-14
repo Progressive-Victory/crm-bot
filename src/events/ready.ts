@@ -1,6 +1,7 @@
 import {
 	Client, Event, Logger 
 } from '@Client';
+import { EventsDB } from '@util/Database';
 import { Events, VoiceBasedChannel } from 'discord.js';
 import { VCChannelIDs } from 'src/structures/Constants';
 import { renameOrganizing } from 'src/structures/helpers';
@@ -20,6 +21,7 @@ async function onReady(client: Client) {
 
 	const guild = client.guilds.cache.get(process.env.TRACKING_GUILD);
 	await guild.members.fetch();
+	EventsDB.recover(guild.scheduledEvents);
 	if (!guild) {
 		Logger.error('Tracking guild not found. Exiting...');
 		process.exit(1);

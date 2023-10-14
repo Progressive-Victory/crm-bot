@@ -1,4 +1,5 @@
 import { Event } from '@Client';
+import { EventsDB } from '@util/Database';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
 import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, PublicThreadChannel, TextBasedChannel, TextChannel 
@@ -36,6 +37,7 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 			});
 		}
 	}
+	EventsDB.findOneAndUpdate({ eventID: guildScheduledEvent.id }, { status: guildScheduledEvent.status });
 }
 
 export default new Event().setName(Events.GuildScheduledEventDelete).setExecute(execute);

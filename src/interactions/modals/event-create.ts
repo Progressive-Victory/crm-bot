@@ -1,6 +1,7 @@
 import { Interaction } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
+import { EventsDB } from '@util/Database';
 import {
 	createEventMemberRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
 } from '@util/event';
@@ -110,5 +111,16 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 			createEventMemberRoleSelectMenu(event.id, locale)
 		],
 		ephemeral: true
+	});
+
+	await EventsDB.create({
+		name: event.name,
+		description: event.description,
+		guildID: event.guildId,
+		eventID: event.id,
+		creatorID: interaction.user.id,
+		vcID: event.channel.id,
+		textID: eventChat,
+		status: event.status
 	});
 });

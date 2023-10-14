@@ -1,9 +1,11 @@
 import {
 	GuildScheduledEventManager, GuildScheduledEventStatus, Snowflake 
 } from 'discord.js';
-import { Schema, model } from 'mongoose';
+import {
+	Model, Schema, model 
+} from 'mongoose';
 
-interface IEvent {
+export interface IEvent {
 	eventID: Snowflake;
 	creatorID: Snowflake;
 	guildID: Snowflake;
@@ -17,9 +19,18 @@ interface IEvent {
 
 const eventSchema = new Schema<IEvent>(
 	{
-		eventID: { type: String, required: true },
+		eventID: {
+			type: String,
+			required: true,
+			immutabl: true,
+			unique: true
+		},
 		creatorID: { type: String, required: true },
-		guildID: { type: String, required: true },
+		guildID: {
+			type: String,
+			required: true,
+			immutabl: true
+		},
 		textID: { type: String, required: false },
 		vcID: { type: String, required: false },
 		name: { type: String, required: true },
@@ -42,5 +53,8 @@ const eventSchema = new Schema<IEvent>(
 		}
 	}
 );
+interface eventFunctions extends Model<IEvent> {
+	recover(scheduledEvents: GuildScheduledEventManager): Promise<void>;
+}
 
-export default model('event', eventSchema);
+export const Events = model('event', eventSchema) as eventFunctions;
