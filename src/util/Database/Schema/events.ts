@@ -21,28 +21,25 @@ const eventSchema = new Schema<IEvent>(
 	{
 		eventID: {
 			type: String,
-			required: true,
-			immutabl: true,
-			unique: true
-		},
-		creatorID: { type: String, required: true },
-		guildID: {
-			type: String,
-			required: true,
-			immutabl: true
-		},
-		textID: { type: String, required: false },
-		vcID: { type: String, required: false },
-		name: { type: String, required: true },
-		description: { type: String, required: false },
-		status: {
-			type: Number,
-			required: true,
-			min: 1,
-			max: 4,
-			default: 1
-		},
-		participants: [{ type: String, required: true }]
+			required: true
+		}
+		// creatorID: { type: String, required: true },
+		// guildID: {
+		// 	type: String,
+		// 	required: true
+		// },
+		// textID: { type: String, required: false },
+		// vcID: { type: String, required: false },
+		// name: { type: String, required: true },
+		// description: { type: String, required: false },
+		// status: {
+		// 	type: Number,
+		// 	required: true,
+		// 	min: 1,
+		// 	max: 4,
+		// 	default: 1
+		// },
+		// participants: [{ type: String, required: true }]
 	},
 	{
 		timestamps: true,
@@ -53,8 +50,9 @@ const eventSchema = new Schema<IEvent>(
 		}
 	}
 );
+// type eventDoc = Document<unknown, object, IEvent> & IEvent & { _id: Types.ObjectId };
 interface eventFunctions extends Model<IEvent> {
 	recover(scheduledEvents: GuildScheduledEventManager): Promise<void>;
 }
 
-export const Events = model('event', eventSchema) as eventFunctions;
+export const EventsDB = model('events', eventSchema) as eventFunctions;

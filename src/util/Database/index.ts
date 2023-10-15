@@ -10,6 +10,6 @@ export type { IJoinLeave } from './Schema/joinLeaves';
 
 export type { IVc } from './Schema/vc';
 
-export type { IEvent } from './Schema/event';
+export type { IEvent } from './Schema/events';
 
-export { Events as EventsDB } from './Schema/event';
+export { EventsDB } from './Schema/events';

@@ -1,4 +1,4 @@
-import { Interaction } from '@Client';
+import { Interaction, Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { EventsDB } from '@util/Database';
@@ -94,7 +94,9 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		parent: eventCategory,
 		permissionOverwrites: basePermissionOverwrites(interaction)
 	});
+	await EventsDB.create({ eventID: event.id });
 
+	Logger.info('test');
 	// Reply with Buttons and select menu
 	await interaction.reply({
 		content: t({
@@ -111,16 +113,5 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 			createEventMemberRoleSelectMenu(event.id, locale)
 		],
 		ephemeral: true
-	});
-
-	await EventsDB.create({
-		name: event.name,
-		description: event.description,
-		guildID: event.guildId,
-		eventID: event.id,
-		creatorID: interaction.user.id,
-		vcID: event.channel.id,
-		textID: eventChat,
-		status: event.status
 	});
 });

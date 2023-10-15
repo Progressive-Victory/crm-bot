@@ -60,14 +60,11 @@ const sentMessagesSchema = new Schema<ISentMessages>(
 	}
 );
 
-// eslint-disable-next-line @typescript-eslint/ban-types
-type sentMessagesDoc = Document<unknown, {}, ISentMessages> & ISentMessages & { _id: Types.ObjectId };
+type sentMessagesDoc = Document<unknown, object, ISentMessages> & ISentMessages & { _id: Types.ObjectId };
 
 interface sentMessagesModel extends Model<ISentMessages> {
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	newFromMessage(message: Message<true>): Query<sentMessagesDoc, sentMessagesDoc, {}, ISentMessages, 'findOneAndUpdate'>;
-	// eslint-disable-next-line @typescript-eslint/ban-types
-	getCount(guild: Guild, user?: User, channel?: TextBasedChannel): Query<number, sentMessagesDoc, {}, ISentMessages, 'count'>;
+	newFromMessage(message: Message<true>): Query<sentMessagesDoc, sentMessagesDoc, object, ISentMessages, 'findOneAndUpdate'>;
+	getCount(guild: Guild, user?: User, channel?: TextBasedChannel): Query<number, sentMessagesDoc, object, ISentMessages, 'count'>;
 }
 
 export const sentMessages = model('messages', sentMessagesSchema) as sentMessagesModel;
