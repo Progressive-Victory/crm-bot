@@ -52,14 +52,15 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 			files
 		});
 	}
-	EventsDB.findOneAndUpdate(
+	await EventsDB.findOneAndUpdate(
 		{ eventID: newGuildScheduledEvent.id },
 		{
 			name: newGuildScheduledEvent.name,
 			description: newGuildScheduledEvent.description,
 			status: newGuildScheduledEvent.status,
 			vcID: newGuildScheduledEvent.channelId
-		}
+		},
+		{ upsert: true }
 	);
 }
 

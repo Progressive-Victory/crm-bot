@@ -21,25 +21,28 @@ const eventSchema = new Schema<IEvent>(
 	{
 		eventID: {
 			type: String,
-			required: true
-		}
-		// creatorID: { type: String, required: true },
-		// guildID: {
-		// 	type: String,
-		// 	required: true
-		// },
-		// textID: { type: String, required: false },
-		// vcID: { type: String, required: false },
-		// name: { type: String, required: true },
-		// description: { type: String, required: false },
-		// status: {
-		// 	type: Number,
-		// 	required: true,
-		// 	min: 1,
-		// 	max: 4,
-		// 	default: 1
-		// },
-		// participants: [{ type: String, required: true }]
+			required: true,
+			immutable: true,
+			unique: true
+		},
+		creatorID: { type: String, required: true },
+		guildID: {
+			type: String,
+			required: true,
+			immutable: true
+		},
+		textID: { type: String, required: false },
+		vcID: { type: String, required: false },
+		name: { type: String, required: true },
+		description: { type: String, required: false },
+		status: {
+			type: Number,
+			required: true,
+			min: 1,
+			max: 4,
+			default: 1
+		},
+		participants: [{ type: String, required: true }]
 	},
 	{
 		timestamps: true,

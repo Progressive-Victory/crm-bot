@@ -1,6 +1,7 @@
 /* eslint-disable no-use-before-define */
 import { Logger } from '@Client';
 import { t } from '@i18n';
+import { StateAbbreviation } from '@util/state';
 import {
 	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';
@@ -8,7 +9,7 @@ import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
 import { resolve } from 'path';
 import { VCChannelNames } from './Constants';
-import { StateAbbreviation, states } from './states';
+import { states } from './states';
 
 config();
 
@@ -193,7 +194,7 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 }
 
 export async function renameOrganizing(channel: VoiceBasedChannel) {
-	if (!channel.guild.members.me.permissions.has('ManageChannels')) return;
+	if (channel && !channel.guild.members.me.permissions.has('ManageChannels')) return;
 
 	if (VCChannelNames.has(channel.id) && !channel.members.size && channel.name !== VCChannelNames.get(channel.id)) {
 		Logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
