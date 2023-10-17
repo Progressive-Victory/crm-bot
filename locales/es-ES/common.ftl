@@ -16,4 +16,4 @@ channel = canal
 message = mensaje
 role = rol
 
-comming-soon = 🚧 Próximamente 🚧
+coming-soon = 🚧 Próximamente 🚧
