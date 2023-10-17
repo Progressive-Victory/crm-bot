@@ -16,4 +16,9 @@ channel = channel
 message = message
 role = role
 
-comming-soon = 🚧 Comming Soon 🚧
+coming-soon = 🚧 Coming Soon 🚧
+
+command-name = command
+command-description = description
+option-command-name = option-name
+option-command-description = option-description

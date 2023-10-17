@@ -1,29 +1,19 @@
 import { Event, Logger } from '@Client';
 import {
-	Events, GuildMember, Message, MessageReaction, User 
+	Events, MessageReaction, User 
 } from 'discord.js';
-import { isConnectEmoji, onConnect } from 'src/structures/helpers';
-
-function proposalsChannelReaction(reaction: MessageReaction, member: GuildMember, message: Message<true>) {
-	const mentionedRoles = message.mentions.roles;
-	let hasRole = false;
-
-	mentionedRoles.forEach((_r, k) => {
-		if (hasRole === false && member.roles.cache.has(k)) {
-			hasRole = true;
-		}
-	});
-	if (!hasRole) {
-		reaction.remove();
-	}
-}
+import Database from '../structures/Database';
+import { isConnectEmoji, onConnect } from '../structures/helpers';
 
 async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
-	if (!reaction.message.inGuild()) return;
-	const member = await reaction.message.guild.members.fetch(user);
+	const { message } = reaction;
+
+	if (!message.inGuild()) return;
+
+	const member = await message.guild.members.fetch(user);
 
 	if (isConnectEmoji(reaction.emoji.name) && !reaction.message.content) {
-		if (!reaction.message.author) await reaction.message.fetch();
+		if (!message.author) await message.fetch();
 		const users = await reaction.users.fetch();
 		const otherUser = users.find((u) => u.id !== user.id) || user;
 
@@ -45,40 +35,65 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 			throw Error('Unknown path');
 		}
 
-		await onConnect(
-			reaction.message.author.id,
-			reaction.message.author.tag,
-			otherUser.id,
-			otherUser.tag,
-			reaction.message.guildId,
-			reaction.message.channelId,
-			path
-		);
+		await onConnect(message.author.id, message.author.tag, otherUser.id, otherUser.tag, message.guildId, message.channelId, path);
 
-		setTimeout(async () => {
-			await reaction.message.fetch();
-			if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) {
-				return;
-			}
-			try {
-				await onConnect(
-					reaction.message.author.id,
-					reaction.message.author.tag,
-					otherUser.id,
-					otherUser.tag,
-					reaction.message.guildId,
-					reaction.message.channelId,
-					'timeout'
-				);
-				Logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
-			}
-			catch (e) {
-				Logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
-			}
-		}, 1000 * 60 * 60 * 24);
+		setTimeout(
+			async () => {
+				await reaction.message.fetch();
+				if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) {
+					return;
+				}
+				try {
+					await onConnect(
+						reaction.message.author.id,
+						reaction.message.author.tag,
+						otherUser.id,
+						otherUser.tag,
+						reaction.message.guildId,
+						reaction.message.channelId,
+						'timeout'
+					);
+					Logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
+				}
+				catch (e) {
+					Logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
+				}
+			},
+			1000 * 60 * 60 * 24
+		);
 	}
-	if (reaction.message.channelId === process.env.PROPOSALS_CHANNEL_ID) {
-		proposalsChannelReaction(reaction, member, reaction.message);
+
+	if (message.channelId === process.env.PROPOSALS_CHANNEL_ID) {
+		if (message.mentions.roles.every((r) => !member.roles.cache.has(r.id))) {
+			await reaction.remove();
+		}
+	}
+
+	if (message.channelId === process.env.AMPLIFY_CHANNEL_ID && reaction.emoji.name === process.env.AMPLIFY_EMOJI) {
+		if (!process.env.AMPLIFY_ROLE_ID) {
+			Logger.error('Missing AMPLIFY_ROLE_ID');
+		}
+		else {
+			const amplifyRole = message.guild.roles.cache.get(process.env.AMPLIFY_ROLE_ID);
+			if (amplifyRole) {
+				const botMember = await message.guild.members.fetch(message.client.user);
+				if (!botMember.permissions.has('ManageRoles')) {
+					Logger.error('Missing MANAGE_ROLES permission');
+				}
+				else {
+					try {
+						await member.roles.add(amplifyRole);
+						await Database.addTimedRole(member.id, message.guild, amplifyRole);
+					}
+					catch (e) {
+						Logger.error('Failed to add role', e);
+					}
+				}
+			}
+			else {
+				Logger.error('Amplify role not found');
+			}
+		}
 	}
 }
 

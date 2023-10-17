@@ -27,7 +27,8 @@ const client = new Client({
 		Intents.MessageContent,
 		Intents.GuildMembers,
 		Intents.GuildModeration,
-		Intents.GuildScheduledEvents
+		Intents.GuildScheduledEvents,
+		Intents.GuildMessageReactions
 	],
 	partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember, Partials.GuildScheduledEvent],
 	receiveMessageComponents: true,
