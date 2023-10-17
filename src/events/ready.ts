@@ -2,8 +2,9 @@ import {
 	Client, Event, Logger 
 } from '@Client';
 import { Events, VoiceBasedChannel } from 'discord.js';
-import { VCChannelIDs } from 'src/structures/Constants';
-import { renameOrganizing } from 'src/structures/helpers';
+import { VCChannelIDs } from '../structures/Constants';
+import Database from '../structures/Database';
+import { renameOrganizing } from '../structures/helpers';
 
 async function onReady(client: Client) {
 	Logger.info(`Ready! Logged in as ${client.user.tag}`);
@@ -53,6 +54,8 @@ async function onReady(client: Client) {
 			Logger.error(`API (${process.env.API_ENDPOINT}) returned an error`, e);
 		}
 	}
+
+	setInterval(() => Database.removeExpiredRoles(client), 1000 * 60 * 60);
 }
 
 export default new Event().setName(Events.ClientReady).setOnce(true).setExecute(onReady);
