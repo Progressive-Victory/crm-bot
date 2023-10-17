@@ -64,7 +64,7 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 	}
 
 	if (message.channelId === process.env.PROPOSALS_CHANNEL_ID) {
-		if (message.mentions.roles.some((r) => member.roles.cache.has(r.id))) {
+		if (message.mentions.roles.every((r) => !member.roles.cache.has(r.id))) {
 			await reaction.remove();
 		}
 	}
