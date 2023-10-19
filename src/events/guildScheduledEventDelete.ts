@@ -1,4 +1,4 @@
-import { Event } from '@Client';
+import { Event, Logger } from '@Client';
 import { EventsDB } from '@util/Database';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
 import {
@@ -10,7 +10,7 @@ const eventLogID = process.env.EVENT_LOG_CHANNEL_ID;
 
 async function execute(guildScheduledEvent: GuildScheduledEvent) {
 	const {
-		guild, channel, id 
+		guild, channel, id, status 
 	} = guildScheduledEvent;
 	const eventTextChannel = guild.channels.cache.find(
 		(c) => c.parentId === eventID && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === id
@@ -37,7 +37,8 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 			});
 		}
 	}
-	EventsDB.findOneAndUpdate({ eventID: guildScheduledEvent.id }, { status: guildScheduledEvent.status });
+	await EventsDB.findOneAndDelete({ eventID: id });
+	Logger.debug(status, 'Event has been Canceled and deleted from DB');
 }
 
 export default new Event().setName(Events.GuildScheduledEventDelete).setExecute(execute);

@@ -1,3 +1,4 @@
+import { Logger } from '@Client';
 import {
 	GuildScheduledEventManager, GuildScheduledEventStatus, Snowflake 
 } from 'discord.js';
@@ -49,6 +50,44 @@ const eventSchema = new Schema<IEvent>(
 		statics: {
 			async recover(scheduledEvents: GuildScheduledEventManager) {
 				await scheduledEvents.fetch();
+
+				let DBEvents = await this.find();
+
+				for (const [eventID, event] of scheduledEvents.cache.entries()) {
+					const foundEvent = DBEvents.find((e) => e.eventID === eventID);
+
+					if (foundEvent) {
+						foundEvent.name = event.name;
+						foundEvent.description = event.description;
+						foundEvent.status = event.status;
+						foundEvent.vcID = event.channelId;
+						if (event.status === GuildScheduledEventStatus.Active && !event.channel) {
+							for (const [memberID] of event.channel.members) {
+								if (!foundEvent.participants.includes(memberID)) {
+									foundEvent.participants.push(memberID);
+								}
+							}
+						}
+
+						await foundEvent.save();
+						DBEvents = DBEvents.filter((e) => e.eventID !== eventID);
+					}
+					else {
+						await this.create({
+							eventID,
+							guildID: event.guildId,
+							creatorID: event.creatorId,
+							vcID: event.channelId,
+							name: event.name,
+							description: event.description,
+							participants: []
+						});
+						Logger.debug('Event added to DB on Recovery');
+					}
+				}
+				if (DBEvents.length > 0) {
+					DBEvents.forEach(async (e) => e.deleteOne());
+				}
 			}
 		}
 	}

@@ -22,6 +22,7 @@ async function onReady(client: Client) {
 	const guild = client.guilds.cache.get(process.env.TRACKING_GUILD);
 	await guild.members.fetch();
 	EventsDB.recover(guild.scheduledEvents);
+
 	if (!guild) {
 		Logger.error('Tracking guild not found. Exiting...');
 		process.exit(1);

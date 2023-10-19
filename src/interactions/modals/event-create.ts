@@ -1,4 +1,4 @@
-import { Interaction } from '@Client';
+import { Interaction, Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { EventsDB } from '@util/Database';
@@ -124,4 +124,5 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		description: event.description,
 		participants: []
 	});
+	Logger.debug('Event created from Modal window');
 });

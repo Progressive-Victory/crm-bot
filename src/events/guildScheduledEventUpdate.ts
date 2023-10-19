@@ -1,4 +1,4 @@
-import { Event } from '@Client';
+import { Event, Logger } from '@Client';
 import { EventsDB } from '@util/Database';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
 import {
@@ -62,6 +62,7 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 		},
 		{ upsert: true }
 	);
+	Logger.debug('Event has been updated');
 }
 
 export default new Event().setName(Events.GuildScheduledEventUpdate).setExecute(execute);
