@@ -73,6 +73,7 @@ const eventSchema = new Schema<IEvent>(
 						DBEvents = DBEvents.filter((e) => e.eventID !== eventID);
 					}
 					else {
+						Logger.debug('Event added to DB on Recovery');
 						await this.create({
 							eventID,
 							guildID: event.guildId,
@@ -82,11 +83,13 @@ const eventSchema = new Schema<IEvent>(
 							description: event.description,
 							participants: []
 						});
-						Logger.debug('Event added to DB on Recovery');
 					}
 				}
 				if (DBEvents.length > 0) {
-					DBEvents.forEach(async (e) => e.deleteOne());
+					for (const e of DBEvents) {
+						Logger.debug('Event Removed from DB');
+						await e.deleteOne();
+					}
 				}
 			}
 		}

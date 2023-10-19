@@ -20,9 +20,9 @@ async function onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
 		await renameOrganizing(newState.channel || oldState.channel);
 	}
 	const activeEvent = newState.guild.scheduledEvents.cache.filter((e) => e.status === GuildScheduledEventStatus.Active);
-	activeEvent.forEach(async (e) => {
-		if (newState.channelId === e.channelId) await EventsDB.findOneAndUpdate({ eventID: e.id }, { $push: { participants: newState.member.id } });
-	});
+	for (const [eventID, e] of activeEvent) {
+		if (newState.channelId === e.channelId) await EventsDB.findOneAndUpdate({ eventID }, { $push: { participants: newState.member.id } });
+	}
 }
 
 export default new Event().setName(Events.VoiceStateUpdate).setExecute(onVoiceStateUpdate);
