@@ -5,7 +5,7 @@ import { onJoin } from 'src/structures/helpers';
 
 export default new Event().setName(Events.GuildBanAdd).setExecute(async (member: GuildMember) => {
 	if (member.guild.id === process.env.TRACKING_GUILD) {
-		await serverJoins.newFromMember(member);
+		await serverJoins.createFromMember(member);
 		await onJoin(member.id, member.user.tag, member.guild.id);
 		Logger.debug(`Added ${member.user.tag} to the database.`);
 	}

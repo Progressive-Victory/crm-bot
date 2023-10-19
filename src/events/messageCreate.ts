@@ -7,8 +7,9 @@ async function onMessageCreate(message: Message) {
 
 	if (message.inGuild() && message.guildId === process.env.TRACKING_GUILD) {
 		if (!message.author) await message.fetch();
-		await sentMessages.newFromMessage(message);
+
 		Logger.debug(`Incremented ${message.author.id}'s message count in ${message.guild.id} in ${message.channelId}.`);
+		await sentMessages.newFromMessage(message);
 	}
 
 	if (!message.partial && !message.content?.length) return null;

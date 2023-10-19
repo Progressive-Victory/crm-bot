@@ -41,16 +41,17 @@ export const client = new Client({
 });
 
 (async function start() {
-	await connect(process.env.DB_URI);
-
-	await client.init({
-		eventPath: join(__dirname, 'events'),
-		buttonPath: join(__dirname, 'interactions', 'buttons'),
-		selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
-		modalPath: join(__dirname, 'interactions', 'modals'),
-		commandPath: join(__dirname, 'commands', 'chat', 'builders'),
-		contextMenuPath: join(__dirname, 'commands', 'context_menu')
-	});
+	await Promise.all([
+		client.init({
+			eventPath: join(__dirname, 'events'),
+			buttonPath: join(__dirname, 'interactions', 'buttons'),
+			selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
+			modalPath: join(__dirname, 'interactions', 'modals'),
+			commandPath: join(__dirname, 'commands', 'chat', 'builders'),
+			contextMenuPath: join(__dirname, 'commands', 'context_menu')
+		}),
+		connect(process.env.DB_URI)
+	]);
 
 	await client.login(process.env.TOKEN);
 

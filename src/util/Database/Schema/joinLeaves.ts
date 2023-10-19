@@ -18,13 +18,13 @@ const joinSchema = new Schema<IJoinLeave>(
 	{
 		timestamps: true,
 		statics: {
-			newFromMemberjoin(member: GuildMember) {
+			createFromMember(member: GuildMember) {
 				return this.create({
 					userID: member.user.id,
 					guildID: member.guild.id
 				});
 			},
-			getMetric(guild: Guild, user?: User) {
+			getCount(guild: Guild, user?: User) {
 				const query: FilterQuery<IJoinLeave> = { guildID: guild.id };
 				if (user) query.userID = user.id;
 				return this.find(query);
@@ -36,7 +36,7 @@ const joinSchema = new Schema<IJoinLeave>(
 type joinLeaveDoc = Document<unknown, {}, IJoinLeave> & IJoinLeave & { _id: Types.ObjectId };
 
 interface serverModel extends Model<IJoinLeave> {
-	newFromMember(member: GuildMember): Promise<joinLeaveDoc>;
+	createFromMember(member: GuildMember): Promise<joinLeaveDoc>;
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	getCount(guild: Guild, user?: User): Query<number, joinLeaveDoc, {}, IJoinLeave, 'count'>;
 }

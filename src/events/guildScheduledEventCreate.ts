@@ -7,8 +7,8 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 		id, guildId, creatorId, channelId, name, description 
 	} = guildScheduledEvent;
 
-	const exsiting = await EventsDB.findOne({ eventID: id });
 	setTimeout(async () => {
+		const exsiting = await EventsDB.findOne({ eventID: id });
 		if (!exsiting) {
 			Logger.debug('Event created out side of command');
 			await EventsDB.create({
