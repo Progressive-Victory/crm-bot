@@ -1,6 +1,6 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { createEventMemberaRoleSelectMenu } from '@util/event';
+import { createEventMemberRoleSelectMenu } from '@util/event';
 import { ChannelType, ChatInputCommandInteraction } from 'discord.js';
 
 const parentId = process.env.EVENT_CATEGORY_ID;
@@ -30,7 +30,7 @@ export async function updateEvent(interaction: ChatInputCommandInteraction<'cach
 
 	// Send select Menu
 	await interaction.reply({
-		components: [createEventMemberaRoleSelectMenu(event.id, locale)],
+		components: [createEventMemberRoleSelectMenu(event.id, locale)],
 		ephemeral: true
 	});
 }
