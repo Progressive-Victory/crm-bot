@@ -86,10 +86,9 @@ const eventSchema = new Schema<IEvent>(
 					}
 				}
 				if (DBEvents.length > 0) {
-					for (const e of DBEvents) {
-						Logger.debug('Event Removed from DB');
-						await e.deleteOne();
-					}
+					const objectIDs = DBEvents.map((e) => e._id);
+					this.deleteMany({ _id: { $in: objectIDs } });
+					Logger.debug('Event Removed from DB');
 				}
 			}
 		}

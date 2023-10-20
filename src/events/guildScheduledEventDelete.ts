@@ -38,8 +38,8 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 		}
 	}
 
-	Logger.debug(status, 'Event has been Canceled and deleted from DB');
 	await EventsDB.findOneAndDelete({ eventID: id });
+	Logger.debug(status, 'Event has been Canceled and deleted from DB');
 }
 
 export default new Event().setName(Events.GuildScheduledEventDelete).setExecute(execute);

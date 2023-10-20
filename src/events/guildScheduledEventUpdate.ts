@@ -53,7 +53,6 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 		});
 	}
 
-	Logger.debug('Event has been updated');
 	await EventsDB.findOneAndUpdate(
 		{ eventID: newGuildScheduledEvent.id },
 		{
@@ -64,6 +63,7 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 		},
 		{ upsert: true }
 	);
+	Logger.debug('Event has been updated');
 }
 
 export default new Event().setName(Events.GuildScheduledEventUpdate).setExecute(execute);
