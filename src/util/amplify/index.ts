@@ -9,10 +9,19 @@ const {
 	AMPLIFY_ROLE_ID, AMPLIFY_EMOJI, AMPLIFY_CHANNEL_ID 
 } = process.env;
 
+/**
+ * Function
+ * @param message New Message
+ */
 export async function newAmplifyMessage(message: Message) {
 	if (message.channelId === AMPLIFY_CHANNEL_ID) await message.react(AMPLIFY_EMOJI);
 }
 
+/**
+ * Run function whena new reaction is added
+ * @param reaction
+ * @param user
+ */
 export async function newAmplifyMessageReaction(reaction: MessageReaction, user: User) {
 	const {
 		channelId, guild, author 
@@ -50,6 +59,9 @@ export async function newAmplifyMessageReaction(reaction: MessageReaction, user:
 	}
 }
 
+/**
+ * Run on bot restart
+ */
 export function recoverAmplify() {
 	setInterval(() => tempRoles.removeExpiredRoles(client), 1000 * 60 * 60);
 }

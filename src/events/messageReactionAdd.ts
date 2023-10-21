@@ -2,8 +2,8 @@ import { Event, logger } from 'discord-client';
 import {
 	Events, MessageReaction, User 
 } from 'discord.js';
-import { newAmplifyMessageReaction } from '../features/amplify';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
+import { newAmplifyMessageReaction } from '../util/amplify';
 
 async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 	const { message } = reaction;

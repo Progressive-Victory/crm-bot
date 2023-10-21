@@ -1,9 +1,9 @@
 import { EventsDB } from '@util/Database';
+import { recoverAmplify } from '@util/amplify';
 import {
 	Client, Event, logger 
 } from 'discord-client';
 import { Events, VoiceBasedChannel } from 'discord.js';
-import { recoverAmplify } from 'src/features/amplify';
 import { VCChannelIDs } from '../structures/Constants';
 import { renameOrganizing } from '../structures/helpers';
 

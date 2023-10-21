@@ -1,7 +1,7 @@
 import { sentMessages } from '@util/Database';
+import { newAmplifyMessage } from '@util/amplify';
 import { Event, logger } from 'discord-client';
 import { Events, Message } from 'discord.js';
-import { newAmplifyMessage } from 'src/features/amplify';
 
 async function onMessageCreate(message: Message) {
 	if (message.author.bot) return;
