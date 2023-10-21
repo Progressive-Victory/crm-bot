@@ -5,7 +5,7 @@ import {
 	ChannelType, Guild, GuildMember, GuildMemberResolvable, Message, Role, RoleResolvable, Snowflake, TextChannel, ThreadMember, User 
 } from 'discord.js';
 import { client } from 'src/index';
-import stateDb from '../Database/Schema/state';
+import stateDb from '../Database/schema/state';
 
 export interface StateOptions {
 	role?: Role;
