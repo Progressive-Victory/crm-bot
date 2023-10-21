@@ -1,8 +1,9 @@
-import { EventsDB, tempRoles } from '@util/Database';
+import { EventsDB } from '@util/Database';
 import {
 	Client, Event, logger 
 } from 'discord-client';
 import { Events, VoiceBasedChannel } from 'discord.js';
+import { recoverAmplify } from 'src/features/amplify';
 import { VCChannelIDs } from '../structures/Constants';
 import { renameOrganizing } from '../structures/helpers';
 
@@ -57,7 +58,7 @@ async function onReady(client: Client) {
 		}
 	}
 
-	setInterval(() => tempRoles.removeExpiredRoles(client), 1000 * 60 * 60);
+	recoverAmplify();
 }
 
 export default new Event().setName(Events.ClientReady).setOnce(true).setExecute(onReady);
