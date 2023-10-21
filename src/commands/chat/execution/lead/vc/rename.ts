@@ -1,6 +1,6 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { Logger } from 'discord-client';
+import { logger } from 'discord-client';
 import {
 	ChatInputCommandInteraction, PermissionFlagsBits, Snowflake, VoiceChannel 
 } from 'discord.js';
@@ -57,7 +57,7 @@ export default async function rename(interaction: ChatInputCommandInteraction<'c
 			await channel.setName(name, reason);
 		}
 		catch (err) {
-			Logger.error(err, ' could not rename channel');
+			logger.error(err, ' could not rename channel');
 			return interaction.followUp({
 				content: t({
 					key: 'vc-rename-error',

@@ -1,6 +1,6 @@
 import { ns } from '@builders/sme';
 import { t } from '@i18n';
-import { Logger } from 'discord-client';
+import { logger } from 'discord-client';
 import { ChatInputCommandInteraction } from 'discord.js';
 import { SMERoleIDs } from 'src/structures';
 
@@ -50,6 +50,6 @@ export async function smeRole(interaction: ChatInputCommandInteraction<'cached'>
 		);
 	}
 	catch (error) {
-		Logger.error(error);
+		logger.error(error);
 	}
 }

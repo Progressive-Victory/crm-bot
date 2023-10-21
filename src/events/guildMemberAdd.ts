@@ -1,5 +1,5 @@
 import { serverJoins } from '@util/Database';
-import { Event, Logger } from 'discord-client';
+import { Event, logger } from 'discord-client';
 import { Events, GuildMember } from 'discord.js';
 import { onJoin } from 'src/structures/helpers';
 
@@ -7,6 +7,6 @@ export default new Event().setName(Events.GuildBanAdd).setExecute(async (member:
 	if (member.guild.id === process.env.TRACKING_GUILD) {
 		await serverJoins.createFromMember(member);
 		await onJoin(member.id, member.user.tag, member.guild.id);
-		Logger.debug(`Added ${member.user.tag} to the database.`);
+		logger.debug(`Added ${member.user.tag} to the database.`);
 	}
 });

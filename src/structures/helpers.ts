@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import { t } from '@i18n';
 import { StateAbbreviation } from '@util/state';
-import { Logger } from 'discord-client';
+import { logger } from 'discord-client';
 import {
 	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';
@@ -197,7 +197,7 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 	if (channel && !channel.guild.members.me.permissions.has('ManageChannels')) return;
 
 	if (VCChannelNames.has(channel.id) && !channel.members.size && channel.name !== VCChannelNames.get(channel.id)) {
-		Logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
+		logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
 
 		const auditReason = t({
 			key: 'vc-rename-success',
@@ -208,8 +208,8 @@ export async function renameOrganizing(channel: VoiceBasedChannel) {
 
 		await channel
 			.setName(VCChannelNames.get(channel.id), auditReason)
-			.then(() => Logger.debug(`Successfully renamed ${channel.name} (${channel.id})`))
-			.catch((err) => Logger.error(`Error renaming ${channel.name} (${channel.id})`, err));
+			.then(() => logger.debug(`Successfully renamed ${channel.name} (${channel.id})`))
+			.catch((err) => logger.error(`Error renaming ${channel.name} (${channel.id})`, err));
 	}
 }
 

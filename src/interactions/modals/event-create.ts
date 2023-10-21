@@ -4,7 +4,7 @@ import { EventsDB } from '@util/Database';
 import {
 	createEventMemberRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
 } from '@util/event';
-import { Interaction, Logger } from 'discord-client';
+import { Interaction, logger } from 'discord-client';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -124,5 +124,5 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		description: event.description,
 		participants: []
 	});
-	Logger.debug('Event created from Modal window');
+	logger.debug('Event created from Modal window');
 });

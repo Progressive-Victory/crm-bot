@@ -1,5 +1,5 @@
 import { tempRoles } from '@util/Database';
-import { Event, Logger } from 'discord-client';
+import { Event, logger } from 'discord-client';
 import {
 	Events, MessageReaction, User 
 } from 'discord.js';
@@ -53,10 +53,10 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 						reaction.message.channelId,
 						'timeout'
 					);
-					Logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
+					logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
 				}
 				catch (e) {
-					Logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
+					logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
 				}
 			},
 			1000 * 60 * 60 * 24
@@ -71,14 +71,14 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 
 	if (message.channelId === process.env.AMPLIFY_CHANNEL_ID && reaction.emoji.name === process.env.AMPLIFY_EMOJI) {
 		if (!process.env.AMPLIFY_ROLE_ID) {
-			Logger.error('Missing AMPLIFY_ROLE_ID');
+			logger.error('Missing AMPLIFY_ROLE_ID');
 		}
 		else {
 			const amplifyRole = message.guild.roles.cache.get(process.env.AMPLIFY_ROLE_ID);
 			if (amplifyRole) {
 				const botMember = await message.guild.members.fetch(message.client.user);
 				if (!botMember.permissions.has('ManageRoles')) {
-					Logger.error('Missing MANAGE_ROLES permission');
+					logger.error('Missing MANAGE_ROLES permission');
 				}
 				else {
 					try {
@@ -90,12 +90,12 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 						});
 					}
 					catch (e) {
-						Logger.error('Failed to add role', e);
+						logger.error('Failed to add role', e);
 					}
 				}
 			}
 			else {
-				Logger.error('Amplify role not found');
+				logger.error('Amplify role not found');
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-import { Client, Logger } from 'discord-client';
+import { Client, logger } from 'discord-client';
 import { Snowflake } from 'discord.js';
 import {
 	Model, Schema, model 
@@ -53,14 +53,14 @@ const tempRolesSchema = new Schema<ITempRole>(
 						const role = await guild.roles.fetch(roleID);
 
 						if (role && member.roles.cache.has(role.id)) {
-							Logger.debug(`Removing role ${role.name} from ${member.user.tag} (${member.id})`);
+							logger.debug(`Removing role ${role.name} from ${member.user.tag} (${member.id})`);
 
 							try {
 								await member.roles.remove(role);
 								await roleAssignment.deleteOne();
 							}
 							catch (e) {
-								Logger.error('Failed to remove role', e);
+								logger.error('Failed to remove role', e);
 							}
 						}
 					}

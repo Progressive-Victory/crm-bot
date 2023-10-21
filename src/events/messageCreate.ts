@@ -1,5 +1,5 @@
 import { sentMessages } from '@util/Database';
-import { Event, Logger } from 'discord-client';
+import { Event, logger } from 'discord-client';
 import { Events, Message } from 'discord.js';
 
 async function onMessageCreate(message: Message) {
@@ -9,7 +9,7 @@ async function onMessageCreate(message: Message) {
 		if (!message.author) await message.fetch();
 
 		await sentMessages.newFromMessage(message);
-		Logger.debug(`Incremented ${message.author.id}'s message count in ${message.guild.id} in ${message.channelId}.`);
+		logger.debug(`Incremented ${message.author.id}'s message count in ${message.guild.id} in ${message.channelId}.`);
 	}
 
 	if (!message.partial && !message.content?.length) return null;

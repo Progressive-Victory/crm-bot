@@ -1,5 +1,5 @@
 import { localization, t } from '@i18n';
-import { ContextMenuCommand, Logger } from 'discord-client';
+import { ContextMenuCommand, logger } from 'discord-client';
 import {
 	ApplicationCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';
@@ -49,7 +49,7 @@ export default new ContextMenuCommand()
 			);
 		}
 		catch (e) {
-			Logger.error('Error deleting message', e);
+			logger.error('Error deleting message', e);
 			return interaction.followUp(
 				t({
 					key: 'Error',

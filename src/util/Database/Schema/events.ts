@@ -1,4 +1,4 @@
-import { Logger } from 'discord-client';
+import { logger } from 'discord-client';
 import {
 	GuildScheduledEventManager, GuildScheduledEventStatus, Snowflake 
 } from 'discord.js';
@@ -73,7 +73,7 @@ const eventSchema = new Schema<IEvent>(
 						DBEvents = DBEvents.filter((e) => e.eventID !== eventID);
 					}
 					else {
-						Logger.debug('Event added to DB on Recovery');
+						logger.debug('Event added to DB on Recovery');
 						await this.create({
 							eventID,
 							guildID: event.guildId,
@@ -88,7 +88,7 @@ const eventSchema = new Schema<IEvent>(
 				if (DBEvents.length > 0) {
 					const objectIDs = DBEvents.map((e) => e._id);
 					this.deleteMany({ _id: { $in: objectIDs } });
-					Logger.debug('Event Removed from DB');
+					logger.debug('Event Removed from DB');
 				}
 			}
 		}
