@@ -1,7 +1,5 @@
 export { isMemberStateLead, isStateLeadRole, memberStates, states } from './states';
 
-export type { StateAbbreviation } from './states';
-
 export * as prototype from './prototypes';
 
 export {

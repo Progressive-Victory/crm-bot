@@ -1,8 +1,8 @@
 import { Event, Logger } from '@Client';
+import { tempRoles } from '@util/Database';
 import {
 	Events, MessageReaction, User 
 } from 'discord.js';
-import Database from '../structures/Database';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
 
 async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
@@ -83,7 +83,11 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 				else {
 					try {
 						await member.roles.add(amplifyRole);
-						await Database.addTimedRole(member.id, message.guild, amplifyRole);
+						await tempRoles.create({
+							userID: member.id,
+							guildID: message.guildId,
+							roleID: amplifyRole.id
+						});
 					}
 					catch (e) {
 						Logger.error('Failed to add role', e);

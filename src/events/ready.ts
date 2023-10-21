@@ -1,9 +1,9 @@
 import {
 	Client, Event, Logger 
 } from '@Client';
+import { EventsDB, tempRoles } from '@util/Database';
 import { Events, VoiceBasedChannel } from 'discord.js';
 import { VCChannelIDs } from '../structures/Constants';
-import Database from '../structures/Database';
 import { renameOrganizing } from '../structures/helpers';
 
 async function onReady(client: Client) {
@@ -21,6 +21,8 @@ async function onReady(client: Client) {
 
 	const guild = client.guilds.cache.get(process.env.TRACKING_GUILD);
 	await guild.members.fetch();
+	await EventsDB.recover(guild.scheduledEvents);
+
 	if (!guild) {
 		Logger.error('Tracking guild not found. Exiting...');
 		process.exit(1);
@@ -55,7 +57,7 @@ async function onReady(client: Client) {
 		}
 	}
 
-	setInterval(() => Database.removeExpiredRoles(client), 1000 * 60 * 60);
+	setInterval(() => tempRoles.removeExpiredRoles(client), 1000 * 60 * 60);
 }
 
 export default new Event().setName(Events.ClientReady).setOnce(true).setExecute(onReady);

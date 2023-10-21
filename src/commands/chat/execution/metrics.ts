@@ -1,7 +1,9 @@
 import { ns } from '@builders/metrics';
 import { t } from '@i18n';
+import {
+	sentMessages, serverJoins, serverLeaves, vcJoins, vcLeaves 
+} from '@util/Database';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import Database from 'src/structures/Database';
 import { checkConnected } from 'src/structures/helpers';
 
 export async function execute(interaction: ChatInputCommandInteraction<'cached'>) {
@@ -9,8 +11,13 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 
 	const user = interaction.options.getUser('user');
 	const guild = interaction.client.guilds.cache.get(process.env.TRACKING_GUILD) || interaction.guild;
-
-	const metrics = await Database.getMetrics(guild.id, user?.id);
+	const [vcJoinsCount, vcLeavesCount, joinsCount, leavesCount, messageCount] = await Promise.all([
+		vcJoins.getCount(guild, user),
+		vcLeaves.getCount(guild, user),
+		serverJoins.getCount(guild, user),
+		serverLeaves.getCount(guild, user),
+		sentMessages.getCount(guild, user)
+	]);
 
 	const embed = new EmbedBuilder();
 
@@ -40,8 +47,8 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						locale,
 						ns,
 						args: {
-							joins: `${metrics?.vcJoins?.length ?? 0}`,
-							leaves: `${metrics?.vcLeaves?.length ?? 0}`
+							joins: `${vcJoinsCount ?? 0}`,
+							leaves: `${vcLeavesCount ?? 0}`
 						}
 					})
 				},
@@ -55,7 +62,7 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						key: 'user-embed-messages-value',
 						locale,
 						ns,
-						args: { messages: `${metrics?.messages?.count ?? 0}` }
+						args: { messages: `${messageCount ?? 0}` }
 					})
 				},
 				{
@@ -69,8 +76,8 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						locale,
 						ns,
 						args: {
-							joins: `${metrics?.joins?.length ?? 0}`,
-							leaves: `${metrics?.leaves?.length ?? 0}`
+							joins: `${joinsCount ?? 0}`,
+							leaves: `${leavesCount ?? 0}`
 						}
 					})
 				},
@@ -141,7 +148,7 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						locale,
 						ns,
 						args: {
-							leaves: `${metrics?.leaves?.length ?? 0}`,
+							leaves: `${leavesCount ?? 0}`,
 							membercount: `${guild.memberCount}`
 						}
 					})
@@ -159,9 +166,9 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						args: {
 							connected: `${usersInServerButConnected.length}`,
 							notconnected: `${usersInServerButNotConnected.length}`,
-							joins: `${metrics.vcJoins.filter((row) => memberIDs.includes(row.userID)).length}`,
-							leaves: `${metrics.vcLeaves.filter((row) => memberIDs.includes(row.userID)).length}`,
-							messages: `${metrics.messages.filter((row) => memberIDs.includes(row.userID)).length}`
+							joins: `${vcJoinsCount}`,
+							leaves: `${vcLeavesCount}`,
+							messages: `${messageCount}`
 						}
 					})
 				},
@@ -178,9 +185,9 @@ export async function execute(interaction: ChatInputCommandInteraction<'cached'>
 						args: {
 							connected: `${usersInServerButConnected.length}`,
 							notconnected: `${usersInServerButNotConnected.length}`,
-							joins: `${metrics.vcJoins.filter((row) => !memberIDs.includes(row.userID)).length}`,
-							leaves: `${metrics.vcLeaves.filter((row) => !memberIDs.includes(row.userID)).length}`,
-							messages: `${metrics.messages.filter((row) => !memberIDs.includes(row.userID)).length}`
+							joins: `${vcJoinsCount}`,
+							leaves: `${vcLeavesCount}`,
+							messages: `${messageCount}`
 						}
 					})
 				}
