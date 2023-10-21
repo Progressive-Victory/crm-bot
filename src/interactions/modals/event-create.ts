@@ -1,10 +1,10 @@
-import { Interaction, Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { EventsDB } from '@util/Database';
 import {
 	createEventMemberRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
 } from '@util/event';
+import { Interaction, Logger } from 'discord-client';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,

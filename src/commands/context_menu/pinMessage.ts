@@ -1,5 +1,5 @@
-import { ContextMenuCommand, Logger } from '@Client';
 import { t } from '@i18n';
+import { ContextMenuCommand, Logger } from 'discord-client';
 import {
 	ApplicationCommandType, ContextMenuCommandBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';

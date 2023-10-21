@@ -1,5 +1,5 @@
-import { Event, Logger } from '@Client';
 import { sentMessages } from '@util/Database';
+import { Event, Logger } from 'discord-client';
 import { Events, Message } from 'discord.js';
 
 async function onMessageCreate(message: Message) {

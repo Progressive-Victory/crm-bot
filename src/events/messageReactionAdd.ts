@@ -1,5 +1,5 @@
-import { Event, Logger } from '@Client';
 import { tempRoles } from '@util/Database';
+import { Event, Logger } from 'discord-client';
 import {
 	Events, MessageReaction, User 
 } from 'discord.js';

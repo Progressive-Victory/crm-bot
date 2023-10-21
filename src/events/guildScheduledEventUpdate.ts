@@ -1,6 +1,6 @@
-import { Event, Logger } from '@Client';
 import { EventsDB } from '@util/Database';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
+import { Event, Logger } from 'discord-client';
 import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, GuildScheduledEventStatus, TextBasedChannel, TextChannel 
 } from 'discord.js';

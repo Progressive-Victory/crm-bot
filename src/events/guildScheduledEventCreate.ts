@@ -1,5 +1,5 @@
-import { Event, Logger } from '@Client';
 import { EventsDB } from '@util/Database';
+import { Event, Logger } from 'discord-client';
 import { Events, GuildScheduledEvent } from 'discord.js';
 
 async function execute(guildScheduledEvent: GuildScheduledEvent) {

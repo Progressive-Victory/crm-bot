@@ -1,6 +1,6 @@
-import { Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
+import { Logger } from 'discord-client';
 import {
 	ChatInputCommandInteraction, PermissionFlagsBits, Snowflake, VoiceChannel 
 } from 'discord.js';

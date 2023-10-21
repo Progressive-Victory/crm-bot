@@ -1,4 +1,4 @@
-import { Interaction, Logger } from '@Client';
+import { Interaction, Logger } from 'discord-client';
 import { ButtonInteraction, VoiceChannel } from 'discord.js';
 
 import { ns } from '@builders/vc';

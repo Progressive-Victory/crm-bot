@@ -1,7 +1,7 @@
-import { Event, Logger } from '@Client';
 import {
 	EventsDB, vcJoins, vcLeaves 
 } from '@util/Database';
+import { Event, Logger } from 'discord-client';
 import {
 	Events, GuildScheduledEventStatus, VoiceState 
 } from 'discord.js';

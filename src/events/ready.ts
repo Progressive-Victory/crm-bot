@@ -1,7 +1,7 @@
+import { EventsDB, tempRoles } from '@util/Database';
 import {
 	Client, Event, Logger 
-} from '@Client';
-import { EventsDB, tempRoles } from '@util/Database';
+} from 'discord-client';
 import { Events, VoiceBasedChannel } from 'discord.js';
 import { VCChannelIDs } from '../structures/Constants';
 import { renameOrganizing } from '../structures/helpers';

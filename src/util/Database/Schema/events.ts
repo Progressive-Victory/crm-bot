@@ -1,4 +1,4 @@
-import { Logger } from '@Client';
+import { Logger } from 'discord-client';
 import {
 	GuildScheduledEventManager, GuildScheduledEventStatus, Snowflake 
 } from 'discord.js';

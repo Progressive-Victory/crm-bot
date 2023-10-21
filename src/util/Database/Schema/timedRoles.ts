@@ -1,4 +1,4 @@
-import { Client, Logger } from '@Client';
+import { Client, Logger } from 'discord-client';
 import { Snowflake } from 'discord.js';
 import {
 	Model, Schema, model 

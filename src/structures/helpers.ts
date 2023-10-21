@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
-import { Logger } from '@Client';
 import { t } from '@i18n';
 import { StateAbbreviation } from '@util/state';
+import { Logger } from 'discord-client';
 import {
 	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';

@@ -4,8 +4,8 @@ import 'source-map-support/register';
 import './structures/prototypes';
 /* prettier-ignore-end */
 
-import { Client } from '@Client';
 import { init } from '@i18n';
+import { Client } from 'discord-client';
 import {
 	GatewayIntentBits as Intents, Locale, Partials 
 } from 'discord.js';

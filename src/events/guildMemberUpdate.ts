@@ -1,4 +1,4 @@
-import { Event, Logger } from '@Client';
+import { Event, Logger } from 'discord-client';
 import {
 	ChannelType, Events, GuildMember, GuildTextBasedChannel 
 } from 'discord.js';

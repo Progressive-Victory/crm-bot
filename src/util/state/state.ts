@@ -1,6 +1,6 @@
-import { Client } from '@Client';
 import { StateAbbreviation } from '@util/state/state-abbreviation';
 import { Mutable } from '@util/types';
+import { Client } from 'discord-client';
 import {
 	ChannelType, Guild, GuildMember, GuildMemberResolvable, Message, Role, RoleResolvable, Snowflake, TextChannel, ThreadMember, User 
 } from 'discord.js';
