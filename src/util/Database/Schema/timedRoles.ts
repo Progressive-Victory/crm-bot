@@ -1,6 +1,8 @@
 import { Client, Logger } from '@Client';
 import { Snowflake } from 'discord.js';
-import { Model, Schema } from 'mongoose';
+import {
+	Model, Schema, model 
+} from 'mongoose';
 
 export interface ITempRole {
 	userID: Snowflake;
@@ -72,4 +74,4 @@ interface TempRoleModel extends Model<ITempRole> {
 	removeExpiredRoles(client: Client): Promise<void>;
 }
 
-export const tempRoles = new Model('timedRoles', tempRolesSchema) as TempRoleModel;
+export const tempRoles = model('timedRoles', tempRolesSchema) as TempRoleModel;
