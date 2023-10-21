@@ -27,7 +27,7 @@ export async function newAmplifyMessageReaction(reaction: MessageReaction, user:
 		channelId, guild, author 
 	} = reaction.message;
 	const member = guild.members.cache.get(author.id);
-	if (!user.bot && channelId === AMPLIFY_CHANNEL_ID && reaction.emoji.name === AMPLIFY_EMOJI) {
+	if (!user.bot && author !== user && channelId === AMPLIFY_CHANNEL_ID && reaction.emoji.name === AMPLIFY_EMOJI) {
 		if (!AMPLIFY_ROLE_ID) {
 			logger.error('Missing AMPLIFY_ROLE_ID');
 		}
@@ -40,12 +40,19 @@ export async function newAmplifyMessageReaction(reaction: MessageReaction, user:
 				}
 				else {
 					try {
-						await member.roles.add(amplifyRole);
-						await tempRoles.create({
+						const recordValue = {
 							userID: member.id,
 							guildID: guild.id,
 							roleID: amplifyRole.id
-						});
+						};
+
+						const record = await tempRoles.findOne(recordValue);
+
+						if (record) return;
+
+						await member.roles.add(amplifyRole);
+
+						await tempRoles.create(recordValue);
 					}
 					catch (e) {
 						logger.error('Failed to add role', e);
@@ -63,5 +70,5 @@ export async function newAmplifyMessageReaction(reaction: MessageReaction, user:
  * Run on bot restart
  */
 export function recoverAmplify() {
-	setInterval(() => tempRoles.removeExpiredRoles(client), 1000 * 60 * 60);
+	setInterval(() => tempRoles.removeExpiredRoles(), 1000 * 60 * 60);
 }
