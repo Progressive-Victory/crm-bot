@@ -4,7 +4,10 @@ import {
 } from 'discord.js';
 import { getSMELeads, isSMERole } from 'src/structures';
 
-const SMENotificationChannelID = process.env.SME_LEAD_CHANNEL_ID;
+const {
+	SMENotificationChannelID, TRACKING_GUILD, WEBSITE_FORM_FILLED_ROLE_ID, PENDING_RULES_AGREEMENT_ROLE_ID, ALTDENTIFIER_ROLE_ID, VERIFIED_ROLE_ID 
+} =
+	process.env;
 
 async function onNewRole(before: GuildMember, after: GuildMember) {
 	const newRoles = after.roles.cache.filter((r) => !before.roles.cache.has(r.id) && isSMERole(r));
@@ -24,7 +27,7 @@ async function onNewRole(before: GuildMember, after: GuildMember) {
 }
 
 async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
-	if (after.guild.id !== process.env.TRACKING_GUILD) return;
+	if (after.guild.id !== TRACKING_GUILD) return;
 	if (before.roles.cache.size === after.roles.cache.size) return;
 	if (before.roles.cache.size < after.roles.cache.size) onNewRole(before, after).catch((e) => logger.error(e));
 
@@ -39,10 +42,10 @@ async function onGuildMemberUpdate(before: GuildMember, after: GuildMember) {
 	let hasAltDentifierPending = false;
 	let justFinishedAltDentifier = false;
 
-	const websiteFormFilledRole = after.guild.roles.cache.get(process.env.WEBSITE_FORM_FILLED_ROLE_ID);
-	const pendingRulesRole = after.guild.roles.cache.get(process.env.PENDING_RULES_AGREEMENT_ROLE_ID);
-	const altDentifierRole = after.guild.roles.cache.get(process.env.ALTDENTIFIER_ROLE_ID);
-	const verifiedRole = after.guild.roles.cache.get(process.env.VERIFIED_ROLE_ID);
+	const websiteFormFilledRole = after.guild.roles.cache.get(WEBSITE_FORM_FILLED_ROLE_ID);
+	const pendingRulesRole = after.guild.roles.cache.get(PENDING_RULES_AGREEMENT_ROLE_ID);
+	const altDentifierRole = after.guild.roles.cache.get(ALTDENTIFIER_ROLE_ID);
+	const verifiedRole = after.guild.roles.cache.get(VERIFIED_ROLE_ID);
 
 	if (!websiteFormFilledRole || !pendingRulesRole || !altDentifierRole || !verifiedRole) {
 		logger.warn('Missing one of the verification related roles');

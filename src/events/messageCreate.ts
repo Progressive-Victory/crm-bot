@@ -3,10 +3,12 @@ import { sentMessages } from '@util/database';
 import { Event, logger } from 'discord-client';
 import { Events, Message } from 'discord.js';
 
+const { TRACKING_GUILD } = process.env;
+
 async function onMessageCreate(message: Message) {
 	if (message.author.bot) return;
 
-	if (message.inGuild() && message.guildId === process.env.TRACKING_GUILD) {
+	if (message.inGuild() && message.guildId === TRACKING_GUILD) {
 		if (!message.author) await message.fetch();
 
 		await sentMessages.newFromMessage(message);

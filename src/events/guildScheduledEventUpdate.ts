@@ -5,8 +5,7 @@ import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, GuildScheduledEventStatus, TextBasedChannel, TextChannel 
 } from 'discord.js';
 
-const parentId = process.env.EVENT_CATEGORY_ID;
-const eventLogId = process.env.EVENT_LOG_CHANNEL_ID;
+const { EVENT_CATEGORY_ID, EVENT_LOG_CHANNEL_ID } = process.env;
 
 async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildScheduledEvent: GuildScheduledEvent) {
 	const {
@@ -14,13 +13,13 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 	} = newGuildScheduledEvent;
 	await channel.fetch();
 	const textChannel = guild.channels.cache.find(
-		(c) => c.parentId === parentId && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === id
+		(c) => c.parentId === EVENT_CATEGORY_ID && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === id
 	);
 
 	const files: AttachmentBuilder[] = [];
 
 	const eventLogChannel = guild.channels.cache.find(
-		(c, k) => k === eventLogId && (c.type === ChannelType.GuildText || c.type === ChannelType.PublicThread)
+		(c, k) => k === EVENT_LOG_CHANNEL_ID && (c.type === ChannelType.GuildText || c.type === ChannelType.PublicThread)
 	) as TextBasedChannel;
 	switch (status) {
 	case GuildScheduledEventStatus.Completed:
@@ -29,7 +28,7 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 			files.push(await channelMessagesToAttachmentBuilder(textChannel as TextChannel));
 			await textChannel.delete('Event Complete');
 		}
-		if (channel.parentId === parentId) {
+		if (channel.parentId === EVENT_CATEGORY_ID) {
 			files.push(await channelMessagesToAttachmentBuilder(channel));
 			await channel.delete('Event Complete');
 		}
@@ -39,7 +38,7 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 		if (textChannel) {
 			await textChannel.setName(name);
 		}
-		if (channel.parentId === parentId) {
+		if (channel.parentId === EVENT_CATEGORY_ID) {
 			await channel.setName(name);
 		}
 		break;

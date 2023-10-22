@@ -1,11 +1,10 @@
 import { recoverAmplify } from '@util/amplify';
+import { VCChannelIDs, renameOrganizing } from '@util/channel';
 import { EventsDB } from '@util/database';
 import {
 	Client, Event, logger 
 } from 'discord-client';
 import { Events, VoiceBasedChannel } from 'discord.js';
-import { VCChannelIDs } from '../structures/Constants';
-import { renameOrganizing } from '../structures/helpers';
 
 async function onReady(client: Client) {
 	logger.info(`Ready! Logged in as ${client.user.tag}`);

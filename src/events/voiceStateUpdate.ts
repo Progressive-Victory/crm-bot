@@ -1,3 +1,4 @@
+import { renameOrganizing } from '@util/channel';
 import {
 	EventsDB, vcJoins, vcLeaves 
 } from '@util/database';
@@ -5,10 +6,11 @@ import { Event, logger } from 'discord-client';
 import {
 	Events, GuildScheduledEventStatus, VoiceState 
 } from 'discord.js';
-import { renameOrganizing } from 'src/structures/helpers';
+
+const { TRACKING_GUILD } = process.env;
 
 async function onVoiceStateUpdate(oldState: VoiceState, newState: VoiceState) {
-	if (newState.guild.id === process.env.TRACKING_GUILD) {
+	if (newState.guild.id === TRACKING_GUILD) {
 		if (!oldState.channel && newState.channel) {
 			await vcJoins.newFromMember(newState.member, newState.channel);
 			logger.debug(`Added ${newState.member.id} to the VC join database.`);

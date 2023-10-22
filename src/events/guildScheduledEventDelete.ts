@@ -5,24 +5,23 @@ import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, PublicThreadChannel, TextBasedChannel, TextChannel 
 } from 'discord.js';
 
-const eventID = process.env.EVENT_CATEGORY_ID;
-const eventLogID = process.env.EVENT_LOG_CHANNEL_ID;
+const { EVENT_CATEGORY_ID, EVENT_LOG_CHANNEL_ID } = process.env;
 
 async function execute(guildScheduledEvent: GuildScheduledEvent) {
 	const {
 		guild, channel, id, status 
 	} = guildScheduledEvent;
 	const eventTextChannel = guild.channels.cache.find(
-		(c) => c.parentId === eventID && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === id
+		(c) => c.parentId === EVENT_CATEGORY_ID && c.type === ChannelType.GuildText && (c as TextChannel).topic.split(':')[1] === id
 	);
 
 	const eventLogChannel = guild.channels.cache.find(
-		(c, k) => k === eventLogID && (c.type === ChannelType.GuildText || c.type === ChannelType.PublicThread)
+		(c, k) => k === EVENT_LOG_CHANNEL_ID && (c.type === ChannelType.GuildText || c.type === ChannelType.PublicThread)
 	) as TextBasedChannel;
 	const files: AttachmentBuilder[] = [];
 
 	if (eventLogChannel) {
-		if (eventTextChannel && channel.parentId === eventID) {
+		if (eventTextChannel && channel.parentId === EVENT_CATEGORY_ID) {
 			files.push(
 				await channelMessagesToAttachmentBuilder(eventTextChannel as TextChannel | PublicThreadChannel),
 				await channelMessagesToAttachmentBuilder(channel)

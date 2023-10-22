@@ -5,12 +5,14 @@ import {
 	Events, MessageReaction, User 
 } from 'discord.js';
 
+const { PROPOSALS_CHANNEL_ID } = process.env;
+
 async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 	const { message } = reaction;
 
 	const member = message.guild.members.cache.get(user.id);
 
-	if (message.channelId === process.env.PROPOSALS_CHANNEL_ID) {
+	if (message.channelId === PROPOSALS_CHANNEL_ID) {
 		if (message.mentions.roles.every((r) => !member.roles.cache.has(r.id))) {
 			await reaction.remove();
 		}

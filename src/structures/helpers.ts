@@ -1,14 +1,12 @@
 /* eslint-disable no-use-before-define */
 import { t } from '@i18n';
 import { StateAbbreviation } from '@util/state';
-import { logger } from 'discord-client';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, User, VoiceBasedChannel 
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, User 
 } from 'discord.js';
 import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
 import { resolve } from 'path';
-import { VCChannelNames } from './Constants';
 import { states } from './states';
 
 config();
@@ -113,34 +111,4 @@ export function isStateLead(interaction: CommandInteraction<'cached'> | ChatInpu
 	}
 
 	return true;
-}
-
-export async function renameOrganizing(channel: VoiceBasedChannel) {
-	if (channel && !channel.guild.members.me.permissions.has('ManageChannels')) return;
-
-	if (VCChannelNames.has(channel.id) && !channel.members.size && channel.name !== VCChannelNames.get(channel.id)) {
-		logger.debug(`Renaming ${channel.name} (${channel.id}) to ${VCChannelNames.get(channel.id)}`);
-
-		const auditReason = t({
-			key: 'vc-rename-success',
-			locale: channel.guild.preferredLocale,
-			ns: 'lead',
-			args: { channel: channel.name }
-		});
-
-		await channel
-			.setName(VCChannelNames.get(channel.id), auditReason)
-			.then(() => logger.debug(`Successfully renamed ${channel.name} (${channel.id})`))
-			.catch((err) => logger.error(`Error renaming ${channel.name} (${channel.id})`, err));
-	}
-}
-
-/**
- * Returns a boolean and Types a unknown as ErrnoException if the object is an error
- * @param error Any unknown object
- * @returns A boolean value if the the object is a ErrnoException
- */
-// eslint-disable-next-line no-undef
-export function isErrnoException(error: unknown): error is NodeJS.ErrnoException {
-	return error instanceof Error;
 }
