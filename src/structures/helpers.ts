@@ -3,7 +3,7 @@ import { t } from '@i18n';
 import { StateAbbreviation } from '@util/state';
 import { logger } from 'discord-client';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
+	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, User, VoiceBasedChannel 
 } from 'discord.js';
 import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
@@ -30,10 +30,6 @@ export async function reRequire(path: string) {
 	delete require.cache[require.resolve(path)];
 	const result = await require(path);
 	return result;
-}
-
-export function isConnectEmoji(str: string) {
-	return [process.env.VERIFY_EMOJI, process.env.CONNECT_EMOJI, process.env.LINKED_EMOJI, process.env.REFUSED_EMOJI].includes(str);
 }
 
 export function isOwner(user: User | GuildMember): boolean {
@@ -73,80 +69,6 @@ export async function readFiles(dir): Promise<string[]> {
 		})
 	);
 	return Array.prototype.concat(...files);
-}
-
-export async function onJoin(discordUserID: Snowflake, discordHandle: string, discordGuildID: Snowflake) {
-	if (discordGuildID !== process.env.TRACKING_GUILD) return;
-
-	const response = await fetch(`${process.env.API_ENDPOINT}/join`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: process.env.API_AUTH
-		},
-		body: JSON.stringify({
-			discordUserID,
-			discordGuildID,
-			discordHandle
-		})
-	});
-
-	if (!response.ok) {
-		throw Error(`Failed to join user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`);
-	}
-}
-
-export async function onConnect(
-	searchDiscordUserID: Snowflake,
-	searchDiscordHandle: string,
-	discordUserID: Snowflake,
-	discordHandle: string,
-	discordGuildID: Snowflake,
-	discordChannelID: Snowflake,
-	path: string
-) {
-	if (discordGuildID !== process.env.TRACKING_GUILD) return;
-	if (discordChannelID !== process.env.TRACKING_CHANNEL) return;
-
-	const response = await fetch(`${process.env.API_ENDPOINT}/${path}`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: process.env.API_AUTH
-		},
-		body: JSON.stringify({
-			discordUserID,
-			discordGuildID,
-			discordHandle,
-			searchDiscordUserID,
-			searchDiscordHandle
-		})
-	});
-
-	if (!response.ok) {
-		throw Error(`Failed to ${path} user ${discordUserID} in guild ${discordGuildID}: ${response.statusText}`);
-	}
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
-	if (discordGuildID !== process.env.TRACKING_GUILD) {
-		return Promise.resolve(false);
-	}
-	if (typeof discordUserID === 'string') {
-		const r = await fetch(`${process.env.API_ENDPOINT}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } });
-		return r.ok ? r.json() : null;
-	}
-
-	const r1 = await fetch(`${process.env.API_ENDPOINT}/users`, {
-		method: 'POST',
-		body: JSON.stringify(discordUserID),
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: process.env.API_AUTH
-		}
-	});
-	return r1.json();
 }
 
 export function trackingGuildChecks(interaction: CommandInteraction | ChatInputCommandInteraction) {

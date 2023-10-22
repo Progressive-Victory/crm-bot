@@ -1,4 +1,4 @@
-import { tempRoles } from '@util/Database';
+import { tempRoles } from '@util/database';
 import { logger } from 'discord-client';
 import {
 	Message, MessageReaction, User 

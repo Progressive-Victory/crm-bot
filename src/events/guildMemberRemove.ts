@@ -1,4 +1,4 @@
-import { serverLeaves } from '@util/Database';
+import { serverLeaves } from '@util/database';
 import { Event, logger } from 'discord-client';
 import { Events, GuildMember } from 'discord.js';
 

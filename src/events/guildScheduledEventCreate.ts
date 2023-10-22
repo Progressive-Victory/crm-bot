@@ -1,4 +1,4 @@
-import { EventsDB } from '@util/Database';
+import { EventsDB } from '@util/database';
 import { Event, logger } from 'discord-client';
 import { Events, GuildScheduledEvent } from 'discord.js';
 

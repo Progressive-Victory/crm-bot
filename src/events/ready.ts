@@ -1,5 +1,5 @@
-import { EventsDB } from '@util/Database';
 import { recoverAmplify } from '@util/amplify';
+import { EventsDB } from '@util/database';
 import {
 	Client, Event, logger 
 } from 'discord-client';
