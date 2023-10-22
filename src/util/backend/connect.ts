@@ -8,14 +8,6 @@ const {
 	API_ENDPOINT, API_AUTH, TRACKING_GUILD, TRACKING_CHANNEL, VERIFY_EMOJI, CONNECT_EMOJI, LINKED_EMOJI, REFUSED_EMOJI 
 } = process.env;
 
-// searchDiscordUserID: Snowflake,
-// searchDiscordHandle: string,
-// discordUserID: Snowflake,
-// discordHandle: string,
-// discordGuildID: Snowflake,
-// discordChannelID: Snowflake,
-// path: string
-
 export async function onConnect(message: Message, reaction: MessageReaction, user: User, path: string) {
 	const { author, guildId } = message;
 
@@ -39,8 +31,7 @@ export async function onConnect(message: Message, reaction: MessageReaction, use
 	}
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake): Promise<any> {
+export async function checkConnected(discordUserID: Snowflake | Snowflake[], discordGuildID: Snowflake) {
 	if (discordGuildID !== TRACKING_GUILD) {
 		return Promise.resolve(false);
 	}

@@ -1,15 +1,15 @@
 import { t } from '@i18n';
 import { ContextMenuCommand, logger } from 'discord-client';
 import {
-	ApplicationCommandType, ContextMenuCommandBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits 
+	ApplicationCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';
 import { getSMERoles, isStateLead } from 'src/structures';
 
 const ns = 'pin';
 
 export default new ContextMenuCommand()
-	.setBuilder(
-		new ContextMenuCommandBuilder()
+	.setBuilder((builder) =>
+		builder
 			.setName(
 				t({
 					key: 'command-name',
