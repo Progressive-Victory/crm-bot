@@ -2,20 +2,6 @@ export { isMemberStateLead, isStateLeadRole, memberStates, states } from './stat
 
 export * as prototype from './prototypes';
 
-export {
-	checkConnected,
-	isConnectEmoji,
-	isErrnoException,
-	isOwner,
-	isStaff,
-	isStateLead,
-	memberState,
-	onConnect,
-	onJoin,
-	reRequire,
-	readFiles,
-	renameOrganizing,
-	trackingGuildChecks
-} from './helpers';
+export { isErrnoException, isOwner, isStaff, isStateLead, memberState, reRequire, readFiles, renameOrganizing, trackingGuildChecks } from './helpers';
 
 export { SMERoleIDs, getSMELeads, getSMERoles, hasSMERole, isSMERole } from './sme';
