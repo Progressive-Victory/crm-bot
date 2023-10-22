@@ -2,7 +2,7 @@ import { ns } from '@builders/metrics';
 import { t } from '@i18n';
 import {
 	sentMessages, serverJoins, serverLeaves, vcJoins, vcLeaves 
-} from '@util/Database';
+} from '@util/database';
 import { ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { checkConnected } from 'src/structures/helpers';
 

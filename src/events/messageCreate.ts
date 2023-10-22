@@ -1,5 +1,5 @@
-import { sentMessages } from '@util/Database';
 import { newAmplifyMessage } from '@util/amplify';
+import { sentMessages } from '@util/database';
 import { Event, logger } from 'discord-client';
 import { Events, Message } from 'discord.js';
 

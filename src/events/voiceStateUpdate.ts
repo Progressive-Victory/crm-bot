@@ -1,6 +1,6 @@
 import {
 	EventsDB, vcJoins, vcLeaves 
-} from '@util/Database';
+} from '@util/database';
 import { Event, logger } from 'discord-client';
 import {
 	Events, GuildScheduledEventStatus, VoiceState 

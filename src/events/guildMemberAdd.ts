@@ -1,4 +1,4 @@
-import { serverJoins } from '@util/Database';
+import { serverJoins } from '@util/database';
 import { Event, logger } from 'discord-client';
 import { Events, GuildMember } from 'discord.js';
 import { onJoin } from 'src/structures/helpers';

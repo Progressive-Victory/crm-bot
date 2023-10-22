@@ -1,6 +1,6 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { EventsDB } from '@util/Database';
+import { EventsDB } from '@util/database';
 import {
 	createEventMemberRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
 } from '@util/event';
