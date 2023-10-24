@@ -1,5 +1,4 @@
-import { recoverAmplify } from '@util/amplify';
-import { EventsDB } from '@util/database';
+import { EventsDB, tempRoles } from '@util/database';
 import {
 	Client, Event, logger 
 } from 'discord-client';
@@ -58,7 +57,7 @@ async function onReady(client: Client) {
 		}
 	}
 
-	recoverAmplify();
+	setInterval(() => tempRoles.removeExpiredRoles(), 1000 * 60 * 60);
 }
 
 export default new Event().setName(Events.ClientReady).setOnce(true).setExecute(onReady);

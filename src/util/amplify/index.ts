@@ -65,10 +65,3 @@ export async function newAmplifyMessageReaction(reaction: MessageReaction, user:
 		}
 	}
 }
-
-/**
- * Run on bot restart
- */
-export function recoverAmplify() {
-	setInterval(() => tempRoles.removeExpiredRoles(), 1000 * 60 * 60);
-}
