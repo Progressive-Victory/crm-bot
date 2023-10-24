@@ -1,6 +1,6 @@
-import { Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
+import { logger } from 'discord-client';
 import {
 	ChannelType, ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits 
 } from 'discord.js';
@@ -62,7 +62,7 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	}
 	catch (err) {
 		// Log the error.
-		Logger.error(err);
+		logger.error(err);
 
 		// Send an error response if sending the message fails.
 		return interaction.followUp({

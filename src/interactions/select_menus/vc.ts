@@ -1,6 +1,6 @@
-import { Interaction } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
+import { Interaction } from 'discord-client';
 import {
 	ChannelType,
 	MentionableSelectMenuInteraction,

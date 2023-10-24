@@ -1,6 +1,6 @@
-import { Event, Logger } from '@Client';
-import { EventsDB } from '@util/Database';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
+import { EventsDB } from '@util/database';
+import { Event, logger } from 'discord-client';
 import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, PublicThreadChannel, TextBasedChannel, TextChannel 
 } from 'discord.js';
@@ -39,7 +39,7 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 	}
 
 	await EventsDB.findOneAndDelete({ eventID: id });
-	Logger.debug(status, 'Event has been Canceled and deleted from DB');
+	logger.debug(status, 'Event has been Canceled and deleted from DB');
 }
 
 export default new Event().setName(Events.GuildScheduledEventDelete).setExecute(execute);

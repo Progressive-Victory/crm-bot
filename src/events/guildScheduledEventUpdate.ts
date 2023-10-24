@@ -1,6 +1,6 @@
-import { Event, Logger } from '@Client';
-import { EventsDB } from '@util/Database';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
+import { EventsDB } from '@util/database';
+import { Event, logger } from 'discord-client';
 import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, GuildScheduledEventStatus, TextBasedChannel, TextChannel 
 } from 'discord.js';
@@ -63,7 +63,7 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 		},
 		{ upsert: true }
 	);
-	Logger.debug('Event has been updated');
+	logger.debug('Event has been updated');
 }
 
 export default new Event().setName(Events.GuildScheduledEventUpdate).setExecute(execute);

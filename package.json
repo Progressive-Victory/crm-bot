@@ -28,6 +28,7 @@
 	},
 	"dependencies": {
 		"@fluent/bundle": "^0.18.0",
+		"discord-client": "Progressive-Victory/discord-client",
 		"discord.js": "^14.13.0",
 		"dotenv": "^16.3.1",
 		"module-alias": "^2.2.3",
@@ -68,7 +69,6 @@
 		"!**/*.{js,ts,jsx,tsx}": "prettier --write -u"
 	},
 	"_moduleAliases": {
-		"@Client": "dist/Client",
 		"@i18n": "dist/i18n",
 		"@util": "dist/util",
 		"@builders": "dist/commands/chat/builders",

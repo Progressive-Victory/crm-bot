@@ -1,5 +1,5 @@
-import { Event, Logger } from '@Client';
-import { EventsDB } from '@util/Database';
+import { EventsDB } from '@util/database';
+import { Event, logger } from 'discord-client';
 import { Events, GuildScheduledEvent } from 'discord.js';
 
 async function execute(guildScheduledEvent: GuildScheduledEvent) {
@@ -19,7 +19,7 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 				description,
 				participants: []
 			});
-			Logger.debug('Event created out side of command');
+			logger.debug('Event created out side of command');
 		}
 	}, 1000);
 }

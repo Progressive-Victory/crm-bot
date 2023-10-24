@@ -1,9 +1,9 @@
-import { Event, Logger } from '@Client';
-import { tempRoles } from '@util/Database';
+import { Event, logger } from 'discord-client';
 import {
 	Events, MessageReaction, User 
 } from 'discord.js';
 import { isConnectEmoji, onConnect } from '../structures/helpers';
+import { newAmplifyMessageReaction } from '../util/amplify';
 
 async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 	const { message } = reaction;
@@ -53,10 +53,10 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 						reaction.message.channelId,
 						'timeout'
 					);
-					Logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
+					logger.debug(`Connected ${otherUser.tag} (${otherUser.id})`);
 				}
 				catch (e) {
-					Logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
+					logger.error(`Failed to connect ${otherUser.tag} (${otherUser.id})`, e);
 				}
 			},
 			1000 * 60 * 60 * 24
@@ -68,37 +68,7 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 			await reaction.remove();
 		}
 	}
-
-	if (message.channelId === process.env.AMPLIFY_CHANNEL_ID && reaction.emoji.name === process.env.AMPLIFY_EMOJI) {
-		if (!process.env.AMPLIFY_ROLE_ID) {
-			Logger.error('Missing AMPLIFY_ROLE_ID');
-		}
-		else {
-			const amplifyRole = message.guild.roles.cache.get(process.env.AMPLIFY_ROLE_ID);
-			if (amplifyRole) {
-				const botMember = await message.guild.members.fetch(message.client.user);
-				if (!botMember.permissions.has('ManageRoles')) {
-					Logger.error('Missing MANAGE_ROLES permission');
-				}
-				else {
-					try {
-						await member.roles.add(amplifyRole);
-						await tempRoles.create({
-							userID: member.id,
-							guildID: message.guildId,
-							roleID: amplifyRole.id
-						});
-					}
-					catch (e) {
-						Logger.error('Failed to add role', e);
-					}
-				}
-			}
-			else {
-				Logger.error('Amplify role not found');
-			}
-		}
-	}
+	await newAmplifyMessageReaction(reaction, user);
 }
 
 export default new Event().setName(Events.MessageReactionAdd).setExecute(onMessageReactionAdd);

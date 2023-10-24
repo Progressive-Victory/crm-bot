@@ -1,4 +1,4 @@
-import { Interaction, Logger } from '@Client';
+import { Interaction, logger } from 'discord-client';
 import { ButtonInteraction, VoiceChannel } from 'discord.js';
 
 import { ns } from '@builders/vc';
@@ -11,7 +11,7 @@ import { t } from '@i18n';
  */
 function deleteMessage(interaction: ButtonInteraction) {
 	setTimeout(() => {
-		interaction.deleteReply().catch((err) => Logger.error(err));
+		interaction.deleteReply().catch((err) => logger.error(err));
 	}, 60000);
 }
 

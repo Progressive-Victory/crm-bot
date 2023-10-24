@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, Snowflake } from 'discord.js';
 
-import { Logger } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
+import { logger } from 'discord-client';
 import { memberStates } from 'src/structures';
 
 const regionLeadRoleID: Snowflake = process.env.REGIONAL_ROLE_ID;
@@ -84,7 +84,7 @@ export default async function execute(interaction: ChatInputCommandInteraction<'
 			ns,
 			args: { role: regionLeadRole.toString() }
 		});
-		Logger.error(e);
+		logger.error(e);
 	}
 
 	return interaction.editReply({ content });

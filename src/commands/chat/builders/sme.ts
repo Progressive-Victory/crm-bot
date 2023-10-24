@@ -1,6 +1,6 @@
-import { ChatInputCommand } from '@Client';
 import { smeRole } from '@execution/sme';
 import { localization, t } from '@i18n';
+import { ChatInputCommand } from 'discord-client';
 import { PermissionFlagsBits } from 'discord.js';
 
 export const ns = 'sme';

@@ -1,21 +1,21 @@
+import { EventsDB, tempRoles } from '@util/database';
 import {
-	Client, Event, Logger 
-} from '@Client';
-import { EventsDB, tempRoles } from '@util/Database';
+	Client, Event, logger 
+} from 'discord-client';
 import { Events, VoiceBasedChannel } from 'discord.js';
 import { VCChannelIDs } from '../structures/Constants';
 import { renameOrganizing } from '../structures/helpers';
 
 async function onReady(client: Client) {
-	Logger.info(`Ready! Logged in as ${client.user.tag}`);
+	logger.info(`Ready! Logged in as ${client.user.tag}`);
 
 	if (!process.env.TRACKING_GUILD) {
-		Logger.error('Tracking guild not set. Exiting...');
+		logger.error('Tracking guild not set. Exiting...');
 		process.exit(1);
 	}
 
 	if (!client.guilds.cache.has(process.env.TRACKING_GUILD)) {
-		Logger.error('Tracking guild not found. Exiting...');
+		logger.error('Tracking guild not found. Exiting...');
 		process.exit(1);
 	}
 
@@ -24,14 +24,14 @@ async function onReady(client: Client) {
 	await EventsDB.recover(guild.scheduledEvents);
 
 	if (!guild) {
-		Logger.error('Tracking guild not found. Exiting...');
+		logger.error('Tracking guild not found. Exiting...');
 		process.exit(1);
 	}
 
 	if (VCChannelIDs.length) {
 		const channels = guild.channels.cache.filter((c) => VCChannelIDs.includes(c.id) && c.isVoiceBased());
 		if (!channels.size || channels.size !== VCChannelIDs.length) {
-			Logger.error('One or more channels not found. Exiting...');
+			logger.error('One or more channels not found. Exiting...');
 			process.exit(1);
 		}
 
@@ -41,7 +41,7 @@ async function onReady(client: Client) {
 	}
 
 	if (!process.env.API_ENDPOINT) {
-		Logger.warn('API endpoint not set at API_ENDPOINT.');
+		logger.warn('API endpoint not set at API_ENDPOINT.');
 	}
 	else {
 		try {
@@ -49,15 +49,15 @@ async function onReady(client: Client) {
 		}
 		catch (e) {
 			if (e.code === 'ECONNREFUSED') {
-				Logger.error(`API endpoint (${process.env.API_ENDPOINT}) not reachable. Exiting...`);
+				logger.error(`API endpoint (${process.env.API_ENDPOINT}) not reachable. Exiting...`);
 				process.exit(1);
 			}
 
-			Logger.error(`API (${process.env.API_ENDPOINT}) returned an error`, e);
+			logger.error(`API (${process.env.API_ENDPOINT}) returned an error`, e);
 		}
 	}
 
-	setInterval(() => tempRoles.removeExpiredRoles(client), 1000 * 60 * 60);
+	setInterval(() => tempRoles.removeExpiredRoles(), 1000 * 60 * 60);
 }
 
 export default new Event().setName(Events.ClientReady).setOnce(true).setExecute(onReady);

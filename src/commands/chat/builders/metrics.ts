@@ -1,6 +1,6 @@
-import { ChatInputCommand } from '@Client';
 import { execute } from '@execution/metrics';
 import { localization, t } from '@i18n';
+import { ChatInputCommand } from 'discord-client';
 import { PermissionFlagsBits } from 'discord.js';
 
 export const ns = 'metric';

@@ -1,5 +1,5 @@
-import { ContextMenuCommand, Logger } from '@Client';
 import { t } from '@i18n';
+import { ContextMenuCommand, logger } from 'discord-client';
 import {
 	ApplicationCommandType, ContextMenuCommandBuilder, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';
@@ -71,7 +71,7 @@ export default new ContextMenuCommand()
 			);
 		}
 		catch (e) {
-			Logger.error('Error pinning message', e);
+			logger.error('Error pinning message', e);
 			return interaction.followUp(
 				t({
 					key: 'Error',
