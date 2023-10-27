@@ -24,7 +24,7 @@
 		"style": "prettier-eslint \"src/**/*.ts\" --write && yarn lint"
 	},
 	"engines": {
-		"node": ">=18.16.1"
+		"node": ">=20.9.0"
 	},
 	"dependencies": {
 		"@fluent/bundle": "^0.18.0",
