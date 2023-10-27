@@ -1,4 +1,4 @@
-FROM node:lts-hydrogen AS builder
+FROM node:lts-iron AS builder
 WORKDIR /usr/bot
 
 COPY package.json .
@@ -10,7 +10,7 @@ COPY . .
 
 RUN yarn build
 
-FROM node:lts-hydrogen AS runner
+FROM node:lts-iron AS runner
 WORKDIR /usr/bot
 
 COPY package.json .
