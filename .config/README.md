@@ -9,7 +9,7 @@ This project utizies the following software
 
 ## Windows ##
 
-Run the below command to install all software nessisary to run this project
+Run the below command in PowerShell to install all software nessisary to run this project
 ```pwsh
 winget configuration -f ".\configuration.dsc.yaml" --accept-configuration-agreements
 ```
