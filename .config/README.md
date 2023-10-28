@@ -27,4 +27,4 @@ ERROR_WEBHOOK=<GET WEBHOOK FROM LOG CHANNEL IN TEST SERVER>
 
 ## sme.json ##
 
-After the first build of the project copy [sme.json](https://github.com/Progressive-Victory/crm-bot/edit/v20-LTS-update/.config/SME.json) to `./dist` code will not run with out this file
+After the first build of the project copy [sme.json](https://github.com/Progressive-Victory/crm-bot/edit/v20-LTS-update/.config/sme.json) to `./dist` code will not run with out this file
