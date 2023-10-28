@@ -18,10 +18,13 @@ DB_URI=<MONGO TEST URI>
 ERROR_WEBHOOK=<GET WEBHOOK FROM LOG CHANNEL IN TEST SERVER>
 ```
 
+## sme.json ##
+
+After the first build of the project copy [sme.json](https://github.com/Progressive-Victory/crm-bot/edit/v20-LTS-update/.config/SME.json) to `./dist` code will not run with out this file
+
 ## Windows ##
 
 Run the below command to install all software nessisary to run this project
-
 ```pwsh
 winget configuration -f ".\configuration.dsc.yaml" --accept-configuration-agreements
 ```
