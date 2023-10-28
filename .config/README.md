@@ -6,7 +6,14 @@ This project utizies the following software
   - Pakages:
     - [Yarn](https://github.com/yarnpkg/yarn)
     - [TypeScript](https://github.com/microsoft/TypeScript)
-    
+
+## Windows ##
+
+Run the below command to install all software nessisary to run this project
+```pwsh
+winget configuration -f ".\configuration.dsc.yaml" --accept-configuration-agreements
+```
+
 ## .env ##
 
 Copy `./.env.sample` to a file `./.env` with the then edit the following vaules to be actruate
@@ -21,10 +28,3 @@ ERROR_WEBHOOK=<GET WEBHOOK FROM LOG CHANNEL IN TEST SERVER>
 ## sme.json ##
 
 After the first build of the project copy [sme.json](https://github.com/Progressive-Victory/crm-bot/edit/v20-LTS-update/.config/SME.json) to `./dist` code will not run with out this file
-
-## Windows ##
-
-Run the below command to install all software nessisary to run this project
-```pwsh
-winget configuration -f ".\configuration.dsc.yaml" --accept-configuration-agreements
-```
