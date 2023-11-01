@@ -1,5 +1,5 @@
+import { Event, logger } from '@progressive-victory/client';
 import { serverJoins } from '@util/database';
-import { Event, logger } from 'discord-client';
 import { Events, GuildMember } from 'discord.js';
 import { onJoin } from 'src/structures/helpers';
 

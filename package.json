@@ -28,7 +28,7 @@
 	},
 	"dependencies": {
 		"@fluent/bundle": "^0.18.0",
-		"discord-client": "Progressive-Victory/discord-client",
+		"@progressive-victory/client": "^0.3.2",
 		"discord.js": "^14.13.0",
 		"dotenv": "^16.3.1",
 		"module-alias": "^2.2.3",

@@ -1,7 +1,7 @@
 /* eslint-disable no-use-before-define */
 import { t } from '@i18n';
+import { logger } from '@progressive-victory/client';
 import { StateAbbreviation } from '@util/state';
-import { logger } from 'discord-client';
 import {
 	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, Snowflake, User, VoiceBasedChannel 
 } from 'discord.js';
