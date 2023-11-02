@@ -1,6 +1,6 @@
 # Setup Insteructions #
 
-This project utizies the following software
+This project utilizes the following software:
 
 - [Visual Studio Code](https://github.com/microsoft/vscode)
 - [Node.js LTS Iron](https://github.com/nodejs/node/releases/tag/v20.9.0)
@@ -10,7 +10,7 @@ This project utizies the following software
 
 ## Windows ##
 
-Run the below command in PowerShell to install all software nessisary to run this project
+Run the below command in PowerShell to install all of the software necessary to run this project.
 
 ```pwsh
 winget configuration -f ".\configuration.dsc.yaml" --accept-configuration-agreements
@@ -18,7 +18,7 @@ winget configuration -f ".\configuration.dsc.yaml" --accept-configuration-agreem
 
 ### .env ###
 
-Copy `./.env.sample` to a file `./.env` with the then edit the following vaules to be actruate
+Copy `./.env.sample` to a file `./.env` then edit the following vaules to be actruate:
 
 ```txt
 TOKEN=<BOT TOKEN>
@@ -28,16 +28,34 @@ DB_URI=<MONGO TEST URI>
 ERROR_WEBHOOK=<GET WEBHOOK FROM LOG CHANNEL IN TEST SERVER>
 ```
 
-### sme.json ###
+The following PowerShell will copy the file
 
-After the first build of the project copy [sme.json](https://github.com/Progressive-Victory/crm-bot/edit/v20-LTS-update/.config/sme.json) to `./dist` code will not run with out this file
+```pwsh
+copy ./.env.sample ./.env
+```
 
-### runing code ###
+### Runing the Bot ###
 
-To run the bot after bot user
+To run the bot the following actions must be completed:
 
-```bash
+First Install all dependencies
+
+```pwsh
+yarn install
+```
+
+Then build the bot's in the `./dist` folder
+
+```pwsh
+yarn build
+```
+
+After that move `sme.json` to `./dist/sme.json` files exsits as describe in above sections.
+
+Finaly run the bot
+
+```pwsh
 yarn dev
 ```
 
-If the bot fails to run check that `.env` and `./dist/sme.json` files exsits as describe in above sections.
+If the bot fails to run check that `.env` and `./dist/sme.json`.
