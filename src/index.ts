@@ -5,7 +5,7 @@ import './structures/prototypes';
 /* prettier-ignore-end */
 
 import { init } from '@i18n';
-import { Client } from 'discord-client';
+import { Client, logger } from 'discord-client';
 import {
 	GatewayIntentBits as Intents, Locale, Partials 
 } from 'discord.js';
@@ -51,7 +51,19 @@ export const client = new Client({
 			commandPath: join(__dirname, 'commands', 'chat', 'builders'),
 			contextMenuPath: join(__dirname, 'commands', 'context_menu')
 		}),
-		connect(process.env.DB_URI)
+		async () => {
+			try {
+				const URI = process.env.DB_URI;
+				if (!URI) {
+					throw new Error('MongDB login URI is undefined');
+				}
+				await connect(URI);
+			}
+			catch (err) {
+				logger.error(err);
+				throw err;
+			}
+		}
 	]);
 
 	await client.login(process.env.TOKEN);
