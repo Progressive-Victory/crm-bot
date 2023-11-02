@@ -10,7 +10,9 @@
 	"private": true,
 	"main": "./dist/index.js",
 	"scripts": {
+		"prebuild": "bash rm_dist.sh",
 		"build": "swc ./src --out-dir dist",
+		"postbuild": "bash sme.sh",
 		"start": "node .",
 		"test": "jest",
 		"predev": "yarn build",
