@@ -28,12 +28,6 @@ DB_URI=<MONGO TEST URI>
 ERROR_WEBHOOK=<GET WEBHOOK FROM LOG CHANNEL IN TEST SERVER>
 ```
 
-The following PowerShell will copy the file
-
-```pwsh
-copy ./.env.sample ./.env
-```
-
 ### Runing the Bot ###
 
 To run the bot the following actions must be completed:
@@ -44,18 +38,10 @@ First Install all dependencies
 yarn install
 ```
 
-Then build the bot's in the `./dist` folder
-
-```pwsh
-yarn build
-```
-
-After that move `sme.json` to `./dist/sme.json` files exsits as describe in above sections.
-
-Finaly run the bot
+To build and run the bot
 
 ```pwsh
 yarn dev
 ```
 
-If the bot fails to run check that `.env` and `./dist/sme.json`.
+If the bot fails to run check that `.env` file all values are correct
