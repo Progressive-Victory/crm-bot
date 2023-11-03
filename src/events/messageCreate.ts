@@ -1,6 +1,6 @@
+import { Event, logger } from '@progressive-victory/client';
 import { newAmplifyMessage } from '@util/amplify';
 import { sentMessages } from '@util/database';
-import { Event, logger } from 'discord-client';
 import { Events, Message } from 'discord.js';
 
 async function onMessageCreate(message: Message) {

@@ -1,4 +1,4 @@
-import { Interaction, logger } from 'discord-client';
+import { Interaction, logger } from '@progressive-victory/client';
 import { ButtonInteraction, VoiceChannel } from 'discord.js';
 
 import { ns } from '@builders/vc';

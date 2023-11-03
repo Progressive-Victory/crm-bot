@@ -1,6 +1,6 @@
 import { vc } from '@execution/vc';
 import { localization, t } from '@i18n';
-import { ChatInputCommand } from 'discord-client';
+import { ChatInputCommand } from '@progressive-victory/client';
 import { ChannelType } from 'discord.js';
 
 export const ns = 'vc';
