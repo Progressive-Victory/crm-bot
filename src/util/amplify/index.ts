@@ -1,5 +1,5 @@
+import { logger } from '@progressive-victory/client';
 import { tempRoles } from '@util/database';
-import { logger } from 'discord-client';
 import {
 	Message, MessageReaction, User 
 } from 'discord.js';

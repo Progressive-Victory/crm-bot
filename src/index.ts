@@ -5,7 +5,7 @@ import './structures/prototypes';
 /* prettier-ignore-end */
 
 import { init } from '@i18n';
-import { Client } from 'discord-client';
+import { Client } from '@progressive-victory/client';
 import {
 	GatewayIntentBits as Intents, Locale, Partials 
 } from 'discord.js';

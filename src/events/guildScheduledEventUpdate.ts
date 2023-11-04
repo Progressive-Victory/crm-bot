@@ -1,6 +1,6 @@
+import { Event, logger } from '@progressive-victory/client';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
 import { EventsDB } from '@util/database';
-import { Event, logger } from 'discord-client';
 import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, GuildScheduledEventStatus, TextBasedChannel, TextChannel 
 } from 'discord.js';

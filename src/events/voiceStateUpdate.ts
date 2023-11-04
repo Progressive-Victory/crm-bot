@@ -1,8 +1,8 @@
+import { Event, logger } from '@progressive-victory/client';
 import { renameOrganizing } from '@util/channel';
 import {
 	EventsDB, vcJoins, vcLeaves 
 } from '@util/database';
-import { Event, logger } from 'discord-client';
 import {
 	Events, GuildScheduledEventStatus, VoiceState 
 } from 'discord.js';

@@ -1,4 +1,4 @@
-import { logger } from 'discord-client';
+import { logger } from '@progressive-victory/client';
 import { Snowflake } from 'discord.js';
 import {
 	Model, Schema, model 

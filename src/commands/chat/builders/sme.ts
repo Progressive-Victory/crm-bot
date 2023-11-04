@@ -1,6 +1,6 @@
 import { smeRole } from '@execution/sme';
 import { localization, t } from '@i18n';
-import { ChatInputCommand } from 'discord-client';
+import { ChatInputCommand } from '@progressive-victory/client';
 import { PermissionFlagsBits } from 'discord.js';
 
 export const ns = 'sme';

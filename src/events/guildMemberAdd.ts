@@ -1,6 +1,6 @@
+import { Event, logger } from '@progressive-victory/client';
 import { onJoin } from '@util/backend';
 import { serverJoins } from '@util/database';
-import { Event, logger } from 'discord-client';
 import { Events, GuildMember } from 'discord.js';
 
 const { TRACKING_GUILD } = process.env;

@@ -1,4 +1,4 @@
-import { Event, logger } from 'discord-client';
+import { Event, logger } from '@progressive-victory/client';
 import {
 	ChannelType, Events, GuildMember, GuildTextBasedChannel 
 } from 'discord.js';

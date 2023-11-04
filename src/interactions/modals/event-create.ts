@@ -1,10 +1,10 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
+import { Interaction, logger } from '@progressive-victory/client';
 import { EventsDB } from '@util/database';
 import {
 	createEventMemberRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
 } from '@util/event';
-import { Interaction, logger } from 'discord-client';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,

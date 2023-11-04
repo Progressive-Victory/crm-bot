@@ -1,6 +1,6 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { Interaction } from 'discord-client';
+import { Interaction } from '@progressive-victory/client';
 import {
 	ChannelType,
 	MentionableSelectMenuInteraction,

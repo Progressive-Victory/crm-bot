@@ -1,9 +1,9 @@
+import {
+	Client, Event, logger 
+} from '@progressive-victory/client';
 import { recoverAmplify } from '@util/amplify';
 import { VCChannelIDs, renameOrganizing } from '@util/channel';
 import { EventsDB } from '@util/database';
-import {
-	Client, Event, logger 
-} from 'discord-client';
 import { Events, VoiceBasedChannel } from 'discord.js';
 
 async function onReady(client: Client) {

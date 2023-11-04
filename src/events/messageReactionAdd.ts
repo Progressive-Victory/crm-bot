@@ -1,9 +1,10 @@
 import { newAmplifyMessageReaction } from '@util/amplify';
 import { onConnectMessageReaction } from '@util/backend';
-import { Event } from 'discord-client';
 import {
 	Events, MessageReaction, User 
 } from 'discord.js';
+
+import { Event } from '@progressive-victory/client';
 
 const { PROPOSALS_CHANNEL_ID } = process.env;
 

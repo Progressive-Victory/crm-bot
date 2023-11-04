@@ -1,5 +1,5 @@
 import { localization, t } from '@i18n';
-import { ContextMenuCommand, logger } from 'discord-client';
+import { ContextMenuCommand, logger } from '@progressive-victory/client';
 import {
 	ApplicationCommandType, MessageContextMenuCommandInteraction, PermissionFlagsBits 
 } from 'discord.js';
