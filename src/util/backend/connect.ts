@@ -1,4 +1,4 @@
-import { logger } from 'discord-client';
+import { logger } from '@progressive-victory/client';
 import {
 	EmojiResolvable, Message, MessageReaction, Snowflake, User 
 } from 'discord.js';

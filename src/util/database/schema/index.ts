@@ -8,7 +8,7 @@ export { EventsDB } from './events';
 
 export { tempRoles } from './timedRoles';
 
-export { states } from './states';
+export { stateDb } from './states';
 
 export { users } from './users';
 

@@ -1,22 +1,22 @@
 import { Client } from '@progressive-victory/client';
+import { StateDoc } from '@util/database/index';
 import { StateAbbreviation } from '@util/state/state-abbreviation';
 import { Mutable } from '@util/types';
 import {
 	ChannelType, Guild, GuildMember, GuildMemberResolvable, Message, Role, RoleResolvable, Snowflake, TextChannel, ThreadMember, User 
 } from 'discord.js';
 import { client } from 'src/index';
-import stateDb from '../database/schema/state';
 
 export interface StateOptions {
-	role?: Role;
-	guild: Guild;
-	channel?: TextChannel;
-	stateLead?: GuildMember;
-	name: string;
 	abbreviation: StateAbbreviation;
 }
 
 export class State {
+	/**
+	 * DB record
+	 */
+	private DBAnchor: StateDoc;
+
 	/**
 	 * Lowercase abbreviation of the state
 	 */
@@ -38,9 +38,14 @@ export class State {
 	readonly channel?: TextChannel;
 
 	/**
-	 * Member assosiated with the state
+	 * State leads assosiated with the state
 	 */
-	readonly lead?: GuildMember;
+	readonly leads?: GuildMember[];
+
+	/**
+	 * Region leads assosiated with the state
+	 */
+	readonly regionLeads?: GuildMember[];
 
 	/**
 	 * Discord bot Client
@@ -56,19 +61,17 @@ export class State {
 	 * Defualt constructor for statesw
 	 * @param options
 	 */
-	constructor(options: StateOptions) {
-		const {
-			name, abbreviation, guild, role, channel, stateLead 
-		} = options;
-
-		this.name = name;
-		this.abbreviation = abbreviation;
+	constructor(state: StateDoc) {
+		this.DBAnchor = state;
+		this.name = state.name;
+		this.abbreviation = state.abbreviation;
 		this.client = client;
-		this.guild = guild;
+		this.guild = client.guilds.cache.get(state.guildId);
 
-		if (role) this.role = role;
-		if (channel) this.channel = channel;
-		if (stateLead) this.lead = stateLead;
+		if (state.roleId) this.role = this.guild.roles.cache.get(state.roleId);
+		if (state.channelId) this.channel = this.guild.channels.cache.get(state.channelId) as TextChannel;
+		if (state.stateLeads.length > 0) this.leads = state.stateLeads.map((id) => this.guild.members.cache.get(id));
+		if (state.regionLeads.length > 0) this.regionLeads = state.regionLeads.map((id) => this.guild.members.cache.get(id));
 	}
 
 	/**
@@ -81,10 +84,11 @@ export class State {
 		if (role instanceof Role) roleObject = role;
 		else roleObject = this.guild.roles.cache.find((r, k) => k === role);
 
-		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { roleId: roleObject.id });
+		this.DBAnchor.roleId = roleObject.id;
 
 		(this as Mutable<State>).role = roleObject;
 
+		await this.DBAnchor.save();
 		return this;
 	}
 
@@ -102,10 +106,11 @@ export class State {
 			textChannel = channelObject;
 		}
 
-		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { channelID: textChannel.id });
+		this.DBAnchor.channelId = textChannel.id;
 
 		(this as Mutable<State>).channel = textChannel;
 
+		await this.DBAnchor.save();
 		return this;
 	}
 
@@ -130,10 +135,23 @@ export class State {
 		// Error if a GuildMember is not resolved
 		if (!memberObject) throw Error('GuildMember not resolved');
 
-		await stateDb.findOneAndUpdate({ abbreviation: this.abbreviation }, { leadID: memberObject.id });
+		this.DBAnchor.stateLeads.push(memberObject.id);
 
-		(this as Mutable<State>).lead = memberObject;
+		(this as Mutable<State>).leads.push(memberObject);
 
+		await this.DBAnchor.save();
 		return this;
+	}
+
+	/**
+	 *
+	 * @param member
+	 * @returns
+	 */
+	public isStateLead(member: GuildMember) {
+		for (const lead of this.leads) {
+			if (lead === member) return true;
+		}
+		return false;
 	}
 }

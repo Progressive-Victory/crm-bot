@@ -1,7 +1,7 @@
-import { StateAbbreviation } from '@util/state/state-abbreviation';
 import {
 	Collection, GuildMember, Role 
 } from 'discord.js';
+import { StateAbbreviation } from './state-abbreviation';
 
 const stateLeadRoleID = process.env.STATE_LEAD_ROLE_ID;
 
@@ -10,7 +10,7 @@ export interface state {
 	abbreviation: string;
 }
 
-export const statesConfig = [
+export const statesConfig: state[] = [
 	{ name: 'Alabama', abbreviation: 'AL' },
 	{ name: 'Alaska', abbreviation: 'AK' },
 	{ name: 'Arizona', abbreviation: 'AZ' },

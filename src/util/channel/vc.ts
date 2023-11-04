@@ -1,5 +1,5 @@
 import { t } from '@i18n';
-import { logger } from 'discord-client';
+import { logger } from '@progressive-victory/client';
 import {
 	Collection, Snowflake, VoiceBasedChannel 
 } from 'discord.js';

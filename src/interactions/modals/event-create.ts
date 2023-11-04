@@ -1,6 +1,7 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { Interaction, logger } from '@progressive-victory/client';
+import { basePermissionOverwrites } from '@util/channel';
 import { EventsDB } from '@util/database';
 import {
 	createEventMemberRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
@@ -16,7 +17,6 @@ import {
 	ModalSubmitInteraction,
 	PermissionFlagsBits
 } from 'discord.js';
-import { basePermissionOverwrites } from '../../structures/Constants';
 
 // const dateValidation = /^([2][0-9]{3})-(0[0-9]|1[0-2])-(0[0-9]|[12]\d|3[01])T([01][0-9]|2[0-3]):([0-5][0-9])/g;
 const eventCategoryId = process.env.EVENT_CATEGORY_ID;

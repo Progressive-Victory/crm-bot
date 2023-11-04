@@ -1,18 +1,20 @@
-import { StateAbbreviation } from '@util/state';
+import { logger } from '@progressive-victory/client';
+import { State, StateAbbreviation } from '@util/state';
 import {
-	GuildMember, Role, Snowflake, TextChannel 
+	GuildMember, Snowflake, TextChannel 
 } from 'discord.js';
 import {
 	Document, Model, Schema, Types, model 
 } from 'mongoose';
-import { users } from '.';
 
 interface IState {
 	name: string;
 	abbreviation: StateAbbreviation;
-	stateLeads: Schema.Types.ObjectId[];
+	stateLeads: Snowflake[];
+	regionLeads: Snowflake[];
 	channelId: Snowflake;
 	roleId: Snowflake;
+	guildId: Snowflake;
 }
 
 const stateSchema = new Schema<IState>(
@@ -21,26 +23,51 @@ const stateSchema = new Schema<IState>(
 		abbreviation: { type: String, required: true },
 		stateLeads: [
 			{
-				type: Schema.Types.ObjectId,
-				ref: 'users',
+				type: String,
+				required: false
+			}
+		],
+		regionLeads: [
+			{
+				type: String,
 				required: false
 			}
 		],
 		channelId: { type: String, required: false },
-		roleId: { type: String, required: false }
+		roleId: { type: String, required: false },
+		guildId: {
+			type: String,
+			required: false,
+			immutable: true
+		}
 	},
 	{
 		timestamps: true,
 		statics: {
-			async setStateLead(member: GuildMember) {
-				const user = await users.findMember(member);
-				return this.findByIdAndUpdate(user.state, { $push: { stateLeads: user._id } });
+			async getStateFromChannel(channel: TextChannel) {
+				const doc = await this.findOne({ channelId: channel.id });
+				if (doc) {
+					logger.error('State not found');
+					return null;
+				}
+				return new State(doc);
 			},
-			async setChannel(channel: TextChannel, state: StateAbbreviation) {
-				return this.findOne({ abbreviation: state }, { channelId: channel.id });
+			async getStateFromAbbreviation(state: StateAbbreviation) {
+				const doc = await this.findOne({ abbreviation: state });
+				if (doc) {
+					logger.error('State not found');
+					return null;
+				}
+				return new State(doc);
 			},
-			async setRole(role: Role, state: StateAbbreviation) {
-				return this.findOne({ abbreviation: state }, { roleId: role.id });
+			async getStateFromMember(member: GuildMember) {
+				let state: State = null;
+				for (const doc of await this.find()) {
+					if (member.roles.cache.has(doc.roleId)) {
+						state = new State(doc);
+					}
+				}
+				return state;
 			}
 		}
 	}
@@ -49,9 +76,9 @@ const stateSchema = new Schema<IState>(
 export type StateDoc = Document<unknown, object, IState> & IState & { _id: Types.ObjectId };
 
 interface StateModal extends Model<IState> {
-	setStateLead(member: GuildMember): Promise<StateDoc>;
-	setChannel(channel: TextChannel, state: StateAbbreviation): Promise<StateDoc>;
-	setRole(role: Role, state: StateAbbreviation): Promise<StateDoc>;
+	getStateFromChannel(channel: TextChannel): Promise<State | null>;
+	getStateFromAbbreviation(state: StateAbbreviation): Promise<State | null>;
+	getStateFromMember(member: GuildMember): Promise<State | null>;
 }
 
-export const states = model('states', stateSchema) as StateModal;
+export const stateDb = model('states', stateSchema) as StateModal;

@@ -7,7 +7,7 @@ import {
 import { config } from 'dotenv';
 import { readdir } from 'fs/promises';
 import { resolve } from 'path';
-import { states } from './states';
+import { states } from '../util/state/statesTypes';
 
 config();
 

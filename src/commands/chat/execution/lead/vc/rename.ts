@@ -1,10 +1,10 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { logger } from '@progressive-victory/client';
+import { VCChannelIDs } from '@util/channel';
 import {
 	ChatInputCommandInteraction, PermissionFlagsBits, Snowflake, VoiceChannel 
 } from 'discord.js';
-import { VCChannelIDs } from 'src/structures/Constants';
 
 /**
  * Renames a VC
