@@ -20,7 +20,12 @@ interface IState {
 const stateSchema = new Schema<IState>(
 	{
 		name: { type: String, required: true },
-		abbreviation: { type: String, required: true },
+		abbreviation: {
+			type: String,
+			required: true,
+			minlength: 2,
+			maxlength: 2
+		},
 		stateLeads: [
 			{
 				type: String,

@@ -143,9 +143,8 @@ export class State {
 	public async removeLead(member: GuildMemberResolvable) {
 		const memberObject = this.resolveMember(member);
 
-		this.DBAnchor.stateLeads.push(memberObject.id);
-
-		(this as Mutable<State>).leads.push(memberObject);
+		this.DBAnchor.stateLeads = this.DBAnchor.stateLeads.filter((id) => id !== memberObject.id);
+		(this as Mutable<State>).leads = this.leads.filter((id) => id !== memberObject);
 
 		await Promise.all([memberObject.roles.remove(STATE_LEAD_ROLE_ID), this.DBAnchor.save()]);
 		return this;
