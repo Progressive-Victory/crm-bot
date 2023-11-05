@@ -1,7 +1,7 @@
 import { logger } from '@progressive-victory/client';
 import { State, StateAbbreviation } from '@util/state';
 import {
-	GuildMember, Snowflake, TextChannel 
+	Guild, GuildMember, Snowflake, TextChannel 
 } from 'discord.js';
 import {
 	Document, Model, Schema, Types, model 
@@ -46,28 +46,27 @@ const stateSchema = new Schema<IState>(
 		statics: {
 			async getStateFromChannel(channel: TextChannel) {
 				const doc = await this.findOne({ channelId: channel.id });
-				if (doc) {
+				if (!doc) {
 					logger.error('State not found');
 					return null;
 				}
 				return new State(doc);
 			},
-			async getStateFromAbbreviation(state: StateAbbreviation) {
-				const doc = await this.findOne({ abbreviation: state });
-				if (doc) {
+			async getStateFromAbbreviation(state: StateAbbreviation, guild: Guild) {
+				const doc = await this.findOne({ abbreviation: state.toLocaleLowerCase(), guildId: guild.id });
+				if (!doc) {
 					logger.error('State not found');
 					return null;
 				}
 				return new State(doc);
 			},
 			async getStateFromMember(member: GuildMember) {
-				let state: State = null;
 				for (const doc of await this.find()) {
 					if (member.roles.cache.has(doc.roleId)) {
-						state = new State(doc);
+						return new State(doc);
 					}
 				}
-				return state;
+				return null;
 			}
 		}
 	}
@@ -77,7 +76,7 @@ export type StateDoc = Document<unknown, object, IState> & IState & { _id: Types
 
 interface StateModal extends Model<IState> {
 	getStateFromChannel(channel: TextChannel): Promise<State | null>;
-	getStateFromAbbreviation(state: StateAbbreviation): Promise<State | null>;
+	getStateFromAbbreviation(state: StateAbbreviation, guild: Guild): Promise<State | null>;
 	getStateFromMember(member: GuildMember): Promise<State | null>;
 }
 

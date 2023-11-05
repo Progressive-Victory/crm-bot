@@ -1,8 +1,8 @@
-# Localization
+# Localization ##
 
 This folder contains an implementations of [Project Fluent](https://github.com/projectfluent/fluent.js)
 
-## How to use
+## How to use ##
 
 In your main file call the init function.
 
@@ -18,7 +18,7 @@ This function sets the file  path where Localization files are stored and additi
 
 `fallback`: default language
 
-### Translation
+### Translation ###
 
 translation options
 
@@ -32,7 +32,7 @@ interface tOptions {
 }
 ```
 
-#### Example
+#### Example ###
 
 key: `command-name`,
 namespace: `command`,
@@ -59,7 +59,7 @@ t({
 })
 ```
 
-#### Debugging
+#### Debugging ###
 
 If you see the following error:
 

@@ -1,7 +1,7 @@
 /* pettier-ignore-start */
 import 'module-alias/register';
 import 'source-map-support/register';
-import './structures/prototypes';
+import './util/prototypes';
 /* prettier-ignore-end */
 
 import { init } from '@i18n';
@@ -12,6 +12,9 @@ import {
 import { config } from 'dotenv';
 import { connect } from 'mongoose';
 import { join } from 'path';
+
+// brings in prototypes
+export * from '@util/prototypes';
 
 // Load .env file contents
 config();

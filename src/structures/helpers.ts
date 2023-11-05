@@ -2,71 +2,15 @@
 import { t } from '@i18n';
 import { StateAbbreviation } from '@util/state';
 import {
-	ChatInputCommandInteraction, CommandInteraction, GuildMember, PermissionFlagsBits, User 
+	ChatInputCommandInteraction, CommandInteraction, GuildMember 
 } from 'discord.js';
 import { config } from 'dotenv';
-import { readdir } from 'fs/promises';
-import { resolve } from 'path';
 import { states } from '../util/state/statesTypes';
 
 config();
 
-// TypeScript or JavaScript environment (thanks to https://github.com/stijnvdkolk)
-// eslint-disable-next-line import/no-mutable-exports
-export let tsNodeRun = false;
-try {
-	// @ts-ignore
-	if (process[Symbol.for('ts-node.register.instance')]) {
-		tsNodeRun = true;
-	}
-}
-catch (e) {
-	/* empty */
-}
-
-export async function reRequire(path: string) {
-	delete require.cache[require.resolve(path)];
-	const result = await require(path);
-	return result;
-}
-
-export function isOwner(user: User | GuildMember): boolean {
-	return process.env.OWNERS?.split(',').includes(user.id);
-}
-
 export function memberState(member: GuildMember) {
 	return member.roles.cache.find((r) => states.has(r.name.toLocaleLowerCase() as StateAbbreviation));
-}
-
-export function isStaff(member: GuildMember): boolean {
-	return member.permissions.any([
-		PermissionFlagsBits.ManageChannels,
-		PermissionFlagsBits.ManageGuild,
-		PermissionFlagsBits.ManageMessages,
-		PermissionFlagsBits.ManageRoles,
-		PermissionFlagsBits.ManageWebhooks,
-		PermissionFlagsBits.BanMembers,
-		PermissionFlagsBits.KickMembers,
-		PermissionFlagsBits.Administrator,
-		PermissionFlagsBits.DeafenMembers,
-		PermissionFlagsBits.MuteMembers,
-		PermissionFlagsBits.MoveMembers,
-		PermissionFlagsBits.MentionEveryone,
-		PermissionFlagsBits.ManageEmojisAndStickers,
-		PermissionFlagsBits.ManageThreads,
-		PermissionFlagsBits.ManageNicknames
-	]);
-}
-
-export async function readFiles(dir): Promise<string[]> {
-	const dirents = await readdir(dir, { withFileTypes: true });
-	const files = await Promise.all(
-		dirents.map((dirent) => {
-			const res = resolve(dir, dirent.name);
-			return dirent.isDirectory() ? readFiles(res) : res;
-		})
-	);
-	return Array.prototype.concat(...files);
 }
 
 export function trackingGuildChecks(interaction: CommandInteraction | ChatInputCommandInteraction) {
