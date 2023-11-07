@@ -1,6 +1,7 @@
-import { Interaction } from '@Client';
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
+import { Interaction, logger } from '@progressive-victory/client';
+import { EventsDB } from '@util/database';
 import {
 	createEventMemberRoleSelectMenu, eventChatLinkButton, eventLinkButton, eventVCLinkButton 
 } from '@util/event';
@@ -111,4 +112,17 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		],
 		ephemeral: true
 	});
+
+	await EventsDB.create({
+		eventID: event.id,
+		guildID: event.guildId,
+		textID: eventChat.id,
+		vcID: event.channelId,
+		creatorID: interaction.user.id,
+		status: event.status,
+		name: event.name,
+		description: event.description,
+		participants: []
+	});
+	logger.debug('Event created from Modal window');
 });

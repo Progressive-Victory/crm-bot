@@ -1,19 +1,19 @@
-import { Event, Logger } from '@Client';
+import { Event, logger } from '@progressive-victory/client';
+import { newAmplifyMessage } from '@util/amplify';
+import { sentMessages } from '@util/database';
 import { Events, Message } from 'discord.js';
-import Database from 'src/structures/Database';
 
 async function onMessageCreate(message: Message) {
-	if (message.author.bot) return null;
+	if (message.author.bot) return;
 
-	if (message.guildId === process.env.TRACKING_GUILD) {
+	if (message.inGuild() && message.guildId === process.env.TRACKING_GUILD) {
 		if (!message.author) await message.fetch();
-		await Database.incrementMessages(message.author.id, message.guild.id, message.channelId);
-		Logger.debug(`Incremented ${message.author.id}'s message count in ${message.guild.id} in ${message.channelId}.`);
+
+		await sentMessages.newFromMessage(message);
+		logger.debug(`Incremented ${message.author.id}'s message count in ${message.guild.id} in ${message.channelId}.`);
 	}
 
-	if (!message.partial && !message.content?.length) return null;
-
-	return null;
+	await newAmplifyMessage(message);
 }
 
 export default new Event().setName(Events.MessageCreate).setExecute(onMessageCreate);

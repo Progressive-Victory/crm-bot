@@ -1,5 +1,6 @@
-import { Event } from '@Client';
+import { Event, logger } from '@progressive-victory/client';
 import { channelMessagesToAttachmentBuilder } from '@util/channel';
+import { EventsDB } from '@util/database';
 import {
 	AttachmentBuilder, ChannelType, Events, GuildScheduledEvent, GuildScheduledEventStatus, TextBasedChannel, TextChannel 
 } from 'discord.js';
@@ -51,6 +52,18 @@ async function execute(oldGuildScheduledEvent: GuildScheduledEvent, newGuildSche
 			files
 		});
 	}
+
+	await EventsDB.findOneAndUpdate(
+		{ eventID: newGuildScheduledEvent.id },
+		{
+			name: newGuildScheduledEvent.name,
+			description: newGuildScheduledEvent.description,
+			status: newGuildScheduledEvent.status,
+			vcID: newGuildScheduledEvent.channelId
+		},
+		{ upsert: true }
+	);
+	logger.debug('Event has been updated');
 }
 
 export default new Event().setName(Events.GuildScheduledEventUpdate).setExecute(execute);

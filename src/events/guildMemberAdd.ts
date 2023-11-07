@@ -1,12 +1,12 @@
-import { Event, Logger } from '@Client';
+import { Event, logger } from '@progressive-victory/client';
+import { serverJoins } from '@util/database';
 import { Events, GuildMember } from 'discord.js';
-import Database from 'src/structures/Database';
 import { onJoin } from 'src/structures/helpers';
 
 export default new Event().setName(Events.GuildBanAdd).setExecute(async (member: GuildMember) => {
 	if (member.guild.id === process.env.TRACKING_GUILD) {
-		await Database.addJoin(member.id, member.guild.id);
+		await serverJoins.createFromMember(member);
 		await onJoin(member.id, member.user.tag, member.guild.id);
-		Logger.debug(`Added ${member.user.tag} to the database.`);
+		logger.debug(`Added ${member.user.tag} to the database.`);
 	}
 });
