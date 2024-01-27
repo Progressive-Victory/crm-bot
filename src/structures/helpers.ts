@@ -78,7 +78,7 @@ export async function readFiles(dir): Promise<string[]> {
 export async function onJoin(discordUserID: Snowflake, discordHandle: string, discordGuildID: Snowflake) {
 	if (discordGuildID !== process.env.TRACKING_GUILD) return;
 
-	const response = await fetch(`${process.env.API_ENDPOINT}/${discordGuildID}/join`, {
+	const response = await fetch(`${process.env.API_ENDPOINT}/guilds/${discordGuildID}/join`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -108,7 +108,7 @@ export async function onConnect(
 	if (discordGuildID !== process.env.TRACKING_GUILD) return;
 	if (discordChannelID !== process.env.TRACKING_CHANNEL) return;
 
-	const response = await fetch(`${process.env.API_ENDPOINT}/${discordGuildID}/${path}`, {
+	const response = await fetch(`${process.env.API_ENDPOINT}/guilds/${discordGuildID}/${path}`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
@@ -134,11 +134,11 @@ export async function checkConnected(discordUserID: Snowflake | Snowflake[], dis
 		return Promise.resolve(false);
 	}
 	if (typeof discordUserID === 'string') {
-		const r = await fetch(`${process.env.API_ENDPOINT}/${discordGuildID}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } });
+		const r = await fetch(`${process.env.API_ENDPOINT}/guilds/${discordGuildID}/users/${discordUserID}`, { headers: { Authorization: process.env.API_AUTH } });
 		return r.ok ? r.json() : null;
 	}
 
-	const r1 = await fetch(`${process.env.API_ENDPOINT}/${discordGuildID}/users`, {
+	const r1 = await fetch(`${process.env.API_ENDPOINT}/guilds/${discordGuildID}/users`, {
 		method: 'POST',
 		body: JSON.stringify(discordUserID),
 		headers: {
