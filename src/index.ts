@@ -51,7 +51,19 @@ export const client = new Client({
 			commandPath: join(__dirname, 'commands', 'chat', 'builders'),
 			contextMenuPath: join(__dirname, 'commands', 'context_menu')
 		}),
-		connect(process.env.DB_URI)
+		async () => {
+			try {
+				const URI = process.env.DB_URI;
+				if (!URI) {
+					throw new Error('MongDB login URI is undefined');
+				}
+				await connect(URI);
+			}
+			catch (err) {
+				client.emit('error', err);
+				throw err;
+			}
+		}
 	]);
 
 	await client.login(process.env.TOKEN);
