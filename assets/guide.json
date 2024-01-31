@@ -1,0 +1,101 @@
+{
+	"welcome": {
+		"image": "https://user-images.githubusercontent.com/11844002/230267579-abe1407a-4fdd-447e-a590-37011d2a8e2c.png",
+		"title": "Welcome to Progressive Victory!",
+		"showTitle": true,
+		"description": [
+			"This is a Discord server where you can connect with your fellow progressive-minded individuals and organize together to make a difference in the world. We are a community of people who are passionate about making the world a better place, and we believe that by working together, we can make a real impact!",
+			"**SERVER RULES**",
+			"By clicking on this button, you will see a list to the current rules we operate under. Please keep them in mind!",
+			"**MODERATION**",
+			"You will find our punishment system by clicking on this button.",
+			"**GET INVOLVED**",
+			"Non-Americans, please read this section to understand the rules regarding your participation in US elections.",
+			"**NEXT STEPS**",
+			"Click here to see what to do next!",
+			"**SERVER INVITE**",
+			"Click here to share an invite with a friend! Keep in mind we do not use traditional server invites."
+		],
+		"buttons": ["rules", "moderation", "get-involved", "how-pv-works", "next-steps", "what-do", "invite"]
+	},
+	"rules": {
+		"numbered": true,
+		"showTitle": false,
+		"title": "Server Rules",
+		"image": "https://cdn.discordapp.com/attachments/1118282749384593459/1175790518727352391/Rules.png?ex=65bf91c0&is=65ad1cc0&hm=e018991ab5d79c7ca3fdc93417707cb1223799a52f2534018645915177e03037&",
+		"description": [
+			"Be respectful. We do not condone any form of bigotry, including racism, sexism, homophobia, transphobia, ableism, or any other form of discrimination.\nDo not harass other members, in or outside of the server.\nAdditionally, as we are a big tent organization, do not hold your views other others, there are no moral competitions to be had.",
+			"Please do not share personal information with anyone else. PV will only ever ask for your personal information via our website registration portal, and Mobilize, where the information will only be used for recruitment and outreach purposes. We will never sell your data, or share it outside of the organization without your explicit consent.",
+			"NSFW is not allowed anywhere on this server except in <#1007800638933053450>. However, there are still limits - please don't get carried away or post excessive imagery. Gore or similarly disturbing topics are strictly prohibited everywhere on the server.",
+			"Please keep channels on topic and do not spam in any channel. Do not \"shitpost\" in any channel.",
+			"We have some restrictions on topics permitted within the server.\nPlease try to avoid discussions of a religious nature.\nDiscussions about streamers are permitted, but inflammatory or hyperbolic comments about a left-leaning content creator does not encourage productive discussion and as such is not useful in the server. Please keep relevant discussions outside of the organizing-related channels.\nAdditionally, please refrain from engaging in debates. Long and adversarial discussions should be redirected to DMs between participants.",
+			"We do not condone political violence, alt-right sympathy, fascism, dehumanizing language, slurs, or anything similar as they actively harm us and our community. Additionally, as this is an organization focused on electoral action, we do not condone the support of unlawful behavior that doesn't derive from electoral behavior, and we do not support third party candidates in federal elections.",
+			"Keep advertisement in <#928709707634462757>. Discord server links that are not directly affiliated with Progressive Victory are prohibited. Mobilize links are only permitted after being vetted by a lead.",
+			"Members are expected to engage in constructive and considerate discourse regarding the organization's goals and mission, as well as broad political action. Antagonistic, pessimistic, or defeatist attitudes that undermine our community morale are not permitted.",
+			"Do not play a game of \"how far can I push the rules\", or try to find loopholes in the rules. This is a serious organizing community, and we expect you to act in good faith. The mods reserve the right to take action against any behavior that is not in the spirit of the rules, even if not otherwise explicitly stated.",
+			"*If you have a report to make about the server or the moderation team, or generally wish to submit anonymous feedback to be reviewed by leadership, please use [this form](https://forms.gle/uezuhpEoawtKLBSZA) - it is accessible by all of leadership."
+		],
+		"buttons": ["moderation", "get-involved", "how-pv-works", "next-steps", "what-do", "invite"]
+	},
+	"moderation": {
+		"title": "Moderation Policy",
+		"showTitle": false,
+		"image": "https://cdn.discordapp.com/attachments/1118282749384593459/1175790519146778644/Consequences.png?ex=65bf91c0&is=65ad1cc0&hm=0a99a51034eef505d5b214551c91add28acb08b17e9ad6298dd1e1a95210cdde&",
+		"description": [
+			"Failure to abide by these rules can lead to a permanent ban. Upon a permanent ban, you will receive a link to a ban appeal form. You may only use this form once — the decision made on that ban appeal will be considered final. It is suggested to wait some time to reflect on the ban decision before submitting an appeal, otherwise you will more likely receive a rejection. Generally speaking, we follow a 3 strikes system, the final one leading to a ban, in the most straightforward of cases."
+		],
+		"buttons": ["rules", "get-involved", "how-pv-works", "next-steps", "what-do", "invite"]
+	},
+	"get-involved": {
+		"title": "🌍 Election Participation Rules for Non-Americans 🌏",
+		"showTitle": true,
+		"image": "https://cdn.discordapp.com/attachments/1118282749384593459/1175790519511687218/getinvoled.png?ex=65bf91c0&is=65ad1cc0&hm=b8ef79c499a5f024552b492441f7fd8a0e66db0f132e1dd9af62fd4a0eb3243d&",
+		"description": [
+			"All are welcome in PV, but American election law places some restrictions on non-American participation in US Elections. Here's what you need to know.",
+			"✅ As a non-American you ***CAN***: Volunteer (phone bank, canvass, etc.) talk politics, uplift and amplify the work of members of this community as an individual",
+			"❌ As a non-American you ***CANNOT***: Donate money to US campaigns, connect US campaigns with non-American resources larger than your own labor, or (this may be self-explanatory) vote in US elections."
+		],
+		"buttons": ["rules", "moderation", "how-pv-works", "next-steps", "what-do", "invite"]
+	},
+	"how-pv-works":{
+		"title": "How Progressive Victory Works",
+		"description": [
+			"Welcome! Progressive Victory is a political action community built by the internet, for America. Right now, we're organizing toward winning progressive victories across the United States in future election cycles.",
+			"**Here's how you can take action in PV:**",
+			"🚨1️⃣🚨 Take Action in PV's on-going campaigns. We have National Campaigns in key swing states where we can make a big difference. Check out the Events section of the discord to see what’s next. Locally, statewide campaigns are being led for impactful races in your area. Check out the welcome thread in your state channel or DM you state lead for more information.",
+			"2️⃣ Stay for the vibes. Learn some new stuff. PV is an opportunity for like-minded progressives to hang out, meet new people, and learn how the political process works. Our staff also hosts monthly Office Hours, quarterly All Hands, and additional opportunities for action in our Organizing VC channels. You can find these opportunities in the Events section.",
+			"3️⃣ Find like-minded people. Organize yourself. This community is driven by the actions of our members. Beyond our current actions, members are proposing new projects and campaigns all the time!"
+		],
+		"buttons": ["rules", "moderation", "get-involved", "next-steps", "what-do", "invite"]
+	},
+	"next-steps": {
+		"title": "❇️⬇️ NEXT STEPS ⬇️❇️",
+		"showTitle": true,
+		"description": [
+			"Click the button under the rules list, then go select your channels and roles in <id:customize>. After that, you can check <#1036657308165484584> or <#1009896538778112000>, take a look at our ongoing volunteer opportunities, and hang out in the chat!",
+			"If you can't see the \"Browse Channels\" section at the top of the server, please log in on a Desktop client or update your mobile Discord client if possible."
+		],
+		"buttons": ["rules", "moderation", "how-pv-works", "get-involved", "what-do", "invite"]
+	},
+	"what-do": {
+		"title": "What do I do now?",
+		"description": [
+			"Thanks for checking the rules and selecting your roles. You're now ready to get started in PV — but what to do first? Here are some options:",
+			"1️⃣ Sign up for a volunteer shift!",
+			"Get started making phone calls, knocking on doors, and more. **Every event includes training for beginners!**\nFind volunteer opportunities in the Events tab or head on over to Progressive Victory's mobilize page:",
+			"https://www.mobilize.us/progressivevictory/",
+			"2️⃣ Go introduce yourself in your state channel.",
+			"Head on over to your state channel and say hi! Check out the welcome thread for up to date information on local projects. Get to know the other volunteers in your community and talk to your state's lead to find additional opportunities!",
+			"3️⃣ Have any questions?",
+			"Still looking for more information? Head on over to the next section for our <#1017890038454947982>. Want to learn more? Explore our new wiki",
+			"https://wiki.progressivevictory.win/",
+			"And, as always, if you have any questions, feel free to DM someone in the <#1009896819456757862> channel."
+		]
+	},
+	"invite": {
+		"title": "Server Invite",
+		"showTitle": true,
+		"image": "https://cdn.discordapp.com/attachments/1118282749384593459/1175790519826251826/invites.png?ex=65bf91c1&is=65ad1cc1&hm=65bda6251d1b67266c4694d5ca347ca1c75d195af038d923339553826d474c21&",
+		"description": ["Visit [this form](https://progress.win) to join the server!"]
+	}
+}
