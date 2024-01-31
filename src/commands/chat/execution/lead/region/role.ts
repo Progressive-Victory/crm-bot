@@ -2,7 +2,7 @@ import { ChatInputCommandInteraction, Snowflake } from 'discord.js';
 
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { logger } from 'discord-client';
+import { logger } from '@progressive-victory/client';
 import { memberStates } from 'src/structures';
 
 const regionLeadRoleID: Snowflake = process.env.REGIONAL_ROLE_ID;

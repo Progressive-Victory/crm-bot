@@ -1,5 +1,5 @@
+import { Event, logger } from '@progressive-victory/client';
 import { serverLeaves } from '@util/database';
-import { Event, logger } from 'discord-client';
 import { Events, GuildMember } from 'discord.js';
 
 export default new Event().setName(Events.GuildMemberRemove).setExecute(async (member: GuildMember) => {

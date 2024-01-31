@@ -1,7 +1,7 @@
-import { EventsDB, tempRoles } from '@util/database';
 import {
 	Client, Event, logger 
-} from 'discord-client';
+} from '@progressive-victory/client';
+import { EventsDB, tempRoles } from '@util/database';
 import { Events, VoiceBasedChannel } from 'discord.js';
 import { VCChannelIDs } from '../structures/Constants';
 import { renameOrganizing } from '../structures/helpers';

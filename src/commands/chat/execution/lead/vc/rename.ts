@@ -1,6 +1,6 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { logger } from 'discord-client';
+import { logger } from '@progressive-victory/client';
 import {
 	ChatInputCommandInteraction, PermissionFlagsBits, Snowflake, VoiceChannel 
 } from 'discord.js';

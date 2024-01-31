@@ -1,8 +1,8 @@
 import { ns } from '@builders/lead';
 import { t } from '@i18n';
-import { logger } from 'discord-client';
+import { logger } from '@progressive-victory/client';
 import {
-	ChannelType, ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits 
+	ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits
 } from 'discord.js';
 import { states } from 'src/structures/';
 
@@ -17,7 +17,7 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	await interaction.deferReply({ ephemeral: true });
 
 	// Get the channel option from the interaction's options, if provided.
-	const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]) || interaction.channel;
+	const { channel } = interaction;
 
 	// Check if the bot has permission to send messages in the channel.
 	if (channel.guild && !channel.permissionsFor(interaction.client.user).has(PermissionFlagsBits.SendMessages)) {
@@ -33,8 +33,22 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	}
 
 	// Get the state role of the interaction member.
-	const stateRole = interaction.options.getRole('role') || states.find((s) => interaction.member.roles.cache.find((r) => r.name === s.abbreviation));
+	const stateAbbreviation = states.find(
+		(s) => interaction.channel.name.toLowerCase() === s.name.toLowerCase()
+			|| interaction.channel.parent?.name.toLowerCase() === s.name.toLowerCase())?.abbreviation;
+	const stateRole = stateAbbreviation && interaction.guild.roles.cache.find((r) => stateAbbreviation.toLowerCase() === r.name.toLowerCase());
 
+	if (!stateRole) {
+		// If the state role is not found, send an error response.
+		return interaction.followUp({
+			content: t({
+				key: 'ping-no-state-role',
+				locale,
+				ns
+			})
+		});
+	}
+	
 	// Create the message content for pinging the role.
 	const pingMessage: MessageCreateOptions = { content: stateRole.toString() };
 
