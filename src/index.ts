@@ -7,7 +7,7 @@ import './structures/prototypes';
 import { init } from '@i18n';
 import { Client } from '@progressive-victory/client';
 import {
-	GatewayIntentBits as Intents, Locale, Partials 
+	GatewayIntentBits as Intents, Locale, Partials
 } from 'discord.js';
 import { config } from 'dotenv';
 import { connect } from 'mongoose';
@@ -41,30 +41,26 @@ export const client = new Client({
 	useGuildCommands: false
 });
 
-(async function start() {
-	await Promise.all([
-		client.init({
-			eventPath: join(__dirname, 'events'),
-			buttonPath: join(__dirname, 'interactions', 'buttons'),
-			selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
-			modalPath: join(__dirname, 'interactions', 'modals'),
-			commandPath: join(__dirname, 'commands', 'chat', 'builders'),
-			contextMenuPath: join(__dirname, 'commands', 'context_menu')
-		}),
-		async () => {
-			try {
-				const URI = process.env.DB_URI;
-				if (!URI) {
-					throw new Error('MongDB login URI is undefined');
-				}
-				await connect(URI);
-			}
-			catch (err) {
-				client.emit('error', err);
-				throw err;
-			}
+(async () => {
+	try {
+		if (!process.env.DB_URI) {
+			throw new Error('MongoDB URI is undefined');
 		}
-	]);
+
+		await connect(process.env.DB_URI);
+	}
+	catch (err) {
+		client.emit('error', err);
+	}
+
+	await client.init({
+		eventPath: join(__dirname, 'events'),
+		buttonPath: join(__dirname, 'interactions', 'buttons'),
+		selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
+		modalPath: join(__dirname, 'interactions', 'modals'),
+		commandPath: join(__dirname, 'commands', 'chat', 'builders'),
+		contextMenuPath: join(__dirname, 'commands', 'context_menu')
+	});
 
 	await client.login(process.env.TOKEN);
 
