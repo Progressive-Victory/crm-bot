@@ -121,23 +121,6 @@ export default new ChatInputCommand()
 					.setDescription(t({ key: 'ping-description', ns }))
 					.setNameLocalizations(localization('ping-name', ns))
 					.setDescriptionLocalizations(localization('ping-description', ns))
-					.addRoleOption((option) =>
-						option
-							.setName(t({ key: 'role', ns }))
-							.setDescription(t({ key: 'ping-role-description', ns }))
-							.setNameLocalizations(localization('role', ns))
-							.setDescriptionLocalizations(localization('ping-role-description', ns))
-							.setRequired(true)
-					)
-					.addChannelOption((option) =>
-						option
-							.setName(t({ key: 'channel', ns }))
-							.setDescription(t({ key: 'ping-channel-description', ns }))
-							.setNameLocalizations(localization('channel', ns))
-							.setDescriptionLocalizations(localization('ping-channel-description', ns))
-							.addChannelTypes(ChannelType.GuildText)
-							.setRequired(false)
-					)
 					.addStringOption((option) =>
 						option
 							.setName(t({ key: 'message', ns }))

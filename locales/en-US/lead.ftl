@@ -81,6 +81,7 @@ event-success-button-chat = Text Channel
 event-select-menu = Select Roles or members
 event-select-reply = Permission Override Updated
 event-channel-bad-category = Please choose a channel in the event category
+ping-no-state-role = There was no state role for this channel, please contact staff
 
 ### Event Modals
 modal-title-event-create = Create Event
