@@ -24,4 +24,6 @@ jobs:
                   username: ${{ secrets.SSH_USERNAME_PROD }}
                   port: ${{ secrets.SSH_PORT_PROD }}
                   password: ${{ secrets.SSH_PASSWORD_PROD }}
-                  script: cd crm-bot && git fetch --all && git reset --hard origin/prod && yarn install && pm2 delete crm-bot && yarn pm2
+                  script: |
+                      source ~/.bashrc
+                      cd crm-bot && git fetch --all && git reset --hard origin/prod && yarn install && pm2 delete crm-bot && yarn pm2
