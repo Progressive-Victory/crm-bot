@@ -2,7 +2,7 @@ import { ns } from '@builders/lead';
 import { t } from '@i18n';
 import { logger } from '@progressive-victory/client';
 import {
-	ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits
+	ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits 
 } from 'discord.js';
 import { states } from 'src/structures/';
 
@@ -33,9 +33,10 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	}
 
 	// Get the state role of the interaction member.
-	const stateAbbreviation = states.find(
-		(s) => interaction.channel.name.toLowerCase() === s.name.toLowerCase()
-			|| interaction.channel.parent?.name.toLowerCase() === s.name.toLowerCase())?.abbreviation;
+	const stateAbbreviation = states.find((s) => {
+		const adaptedStateName = s.name.toLowerCase().replace(/ /g, '-');
+		return interaction.channel.name.toLowerCase() === adaptedStateName || interaction.channel.parent?.name.toLowerCase() === adaptedStateName;
+	})?.abbreviation;
 	const stateRole = stateAbbreviation && interaction.guild.roles.cache.find((r) => stateAbbreviation.toLowerCase() === r.name.toLowerCase());
 
 	if (!stateRole) {
@@ -48,7 +49,7 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 			})
 		});
 	}
-	
+
 	// Create the message content for pinging the role.
 	const pingMessage: MessageCreateOptions = { content: stateRole.toString() };
 
