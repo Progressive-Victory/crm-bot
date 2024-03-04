@@ -4,7 +4,9 @@ import { logger } from '@progressive-victory/client';
 import {
 	ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits 
 } from 'discord.js';
-import { states } from 'src/structures/';
+import {
+	Channels, getSMERole, isMemberStateLead, memberStates, states 
+} from '../../../../structures';
 
 /**
  * Executes the ping command to send a message to a channel.
@@ -32,26 +34,77 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 		});
 	}
 
-	// Get the state role of the interaction member.
-	const stateAbbreviation = states.find((s) => {
+	const stateChannel = states.find((s) => {
 		const adaptedStateName = s.name.toLowerCase().replace(/ /g, '-');
 		return interaction.channel.name.toLowerCase() === adaptedStateName || interaction.channel.parent?.name.toLowerCase() === adaptedStateName;
-	})?.abbreviation;
+	});
+	const stateAbbreviation = stateChannel?.abbreviation;
+	const smeChannel = Channels.some((name) => interaction.channel.name === name || interaction.channel.parent?.name === name);
+
+	// Get the SME role of the interaction member, the alternative to the state lead ping is SME (Subject Matter Expert) role.
+	const smeRole = smeChannel && getSMERole(interaction.member);
+	// Get the state role of the interaction member.
 	const stateRole = stateAbbreviation && interaction.guild.roles.cache.find((r) => stateAbbreviation.toLowerCase() === r.name.toLowerCase());
 
-	if (!stateRole) {
-		// If the state role is not found, send an error response.
+	const isStateLead = stateAbbreviation && isMemberStateLead(interaction.member);
+	const hasStateRole = memberStates(interaction.member).some((r) => r.id === stateRole?.id);
+
+	if (!stateChannel && !smeChannel) {
 		return interaction.followUp({
 			content: t({
-				key: 'ping-no-state-role',
+				key: 'ping-invalid-channel',
 				locale,
 				ns
 			})
 		});
 	}
 
+	if (stateChannel) {
+		if (!stateRole) {
+			return interaction.followUp({
+				content: t({
+					key: 'ping-state-role-not-found',
+					locale,
+					ns
+				})
+			});
+		}
+
+		if (!hasStateRole) {
+			return interaction.followUp({
+				content: t({
+					key: 'ping-no-state-role',
+					locale,
+					ns
+				})
+			});
+		}
+
+		if (!isStateLead) {
+			return interaction.followUp({
+				content: t({
+					key: 'ping-not-state-lead',
+					locale,
+					ns
+				})
+			});
+		}
+	}
+
+	if (smeChannel && !smeRole) {
+		return interaction.followUp({
+			content: t({
+				key: 'ping-no-sme-role',
+				locale,
+				ns
+			})
+		});
+	}
+
+	const pingRole = stateRole || smeRole;
+
 	// Create the message content for pinging the role.
-	const pingMessage: MessageCreateOptions = { content: stateRole.toString() };
+	const pingMessage: MessageCreateOptions = { content: pingRole.toString() };
 
 	// Get the additional message content from the 'message' option, if provided.
 	const message = interaction.options.getString('message');

@@ -72,16 +72,20 @@ event-option-channel = channel
 event-option-channel-description = Channel for event
 
 ### replies
-event-bad-date = Date is incorrectly formatted
-event-date-past = Date entered was in the past and cannot be used
+event-bad-date = Date is incorrectly formatted.
+event-date-past = Date entered was in the past and cannot be used.
 event-success-create = Successfully created, be sure to add roles or members to the event below.
 event-success-button-event = Event
 event-success-button-vc = Voice Channel
 event-success-button-chat = Text Channel
 event-select-menu = Select Roles or members
 event-select-reply = Permission Override Updated
-event-channel-bad-category = Please choose a channel in the event category
-ping-no-state-role = There was no state role for this channel, please contact staff
+event-channel-bad-category = Please choose a channel in the event category.
+ping-invalid-channel = You are not in a SME or state channel.
+ping-no-state-role = You do not have the corresponding state role to this channel.
+ping-not-state-lead = You must be a state lead to ping the state.
+ping-no-sme-role = You do not have a SME role.
+ping-state-role-not-found = There is not corresponding state role for this channel, please contact the bot developer.
 
 ### Event Modals
 modal-title-event-create = Create Event

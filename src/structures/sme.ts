@@ -17,9 +17,14 @@ export function getSMERoles(member: GuildMember) {
 	return SMERoles;
 }
 
-export function hasSMERole(member: GuildMember) {
+export function getSMERole(member: GuildMember) {
 	if (!SMERoleIDs) throw new Error('SME_ROLE_IDS not present in .env');
-	return SMERoleIDs.some((id) => member.roles.cache.has(id));
+	const foundID = SMERoleIDs.find((id) => member.roles.cache.has(id));
+	return member.guild.roles.cache.get(foundID);
+}
+
+export function hasSMERole(member: GuildMember) {
+	return !!getSMERole(member);
 }
 
 export function isSMERole(role: Role) {
@@ -29,3 +34,5 @@ export function isSMERole(role: Role) {
 export async function getSMELeads(role: Role): Promise<GuildMember[]> {
 	return Promise.all(smeConfig[role.id].map((id: string) => role.guild.members.fetch(id)));
 }
+
+export const Channels = ['design', 'coding', 'wiki', 'research-and-analysis', 'public-relations', 'audio-video'];
