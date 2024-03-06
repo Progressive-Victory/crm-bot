@@ -26,4 +26,7 @@ jobs:
                   password: ${{ secrets.SSH_PASSWORD_PROD }}
                   script: |
                       source ~/.bashrc
+                      export NVM_DIR="$HOME/.nvm"
+                      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+                      [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
                       cd crm-bot && git fetch --all && git reset --hard origin/prod && yarn install && pm2 delete crm-bot && yarn pm2
