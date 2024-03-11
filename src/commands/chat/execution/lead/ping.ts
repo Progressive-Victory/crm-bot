@@ -5,7 +5,7 @@ import {
 	ChatInputCommandInteraction, MessageCreateOptions, PermissionFlagsBits 
 } from 'discord.js';
 import {
-	Channels, getSMERole, isMemberStateLead, memberStates, states 
+	Channels, getSMERole, hasStateRole, isMemberStateLead, states 
 } from '../../../../structures';
 
 /**
@@ -47,7 +47,6 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	const stateRole = stateAbbreviation && interaction.guild.roles.cache.find((r) => stateAbbreviation.toLowerCase() === r.name.toLowerCase());
 
 	const isStateLead = stateAbbreviation && isMemberStateLead(interaction.member);
-	const hasStateRole = memberStates(interaction.member).some((r) => r.id === stateRole?.id);
 
 	if (!stateChannel && !smeChannel) {
 		return interaction.followUp({
@@ -70,7 +69,7 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 			});
 		}
 
-		if (!hasStateRole) {
+		if (!hasStateRole(interaction.member, stateRole)) {
 			return interaction.followUp({
 				content: t({
 					key: 'ping-no-state-role',
