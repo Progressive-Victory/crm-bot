@@ -4,6 +4,7 @@ import {
 } from 'discord.js';
 
 const stateLeadRoleID = process.env.STATE_LEAD_ROLE_ID;
+const stateOrganizingCommitteeRoleID = process.env.STATE_COMMITTEE_ROLE_ID;
 
 export interface state {
 	name: string;
@@ -72,7 +73,15 @@ export const statesConfig = [
 export const states = new Collection<StateAbbreviation, state>();
 statesConfig.map((s) => states.set(s.abbreviation.toLocaleLowerCase() as StateAbbreviation, s));
 
+export function isStateCommitteeMember(member: GuildMember) {
+	if (!stateOrganizingCommitteeRoleID) throw Error('Missing STATE_COMMITTEE_ROLE_ID in .env');
+	const bypassRole = member.guild.roles.cache.get(stateOrganizingCommitteeRoleID);
+	if (!bypassRole) throw Error('STATE_COMMITTEE_ROLE_ID is not a valid role');
+	return member.roles.cache.has(stateOrganizingCommitteeRoleID);
+}
+
 export function isMemberStateLead(member: GuildMember) {
+	if (isStateCommitteeMember(member)) return true;
 	if (!stateLeadRoleID) throw Error('Missing STATE_LEAD_ROLE_ID in .env');
 	const role = member.guild.roles.cache.get(stateLeadRoleID);
 	if (!role) throw Error('Invalid role ID please check STATE_LEAD_ROLE_ID in .env');
@@ -86,4 +95,8 @@ export function isStateLeadRole(role: Role) {
 
 export function memberStates(member: GuildMember) {
 	return member.roles.cache.filter((r) => states.has(r.name.toLowerCase() as StateAbbreviation));
+}
+
+export function hasStateRole(member: GuildMember, stateRole: Role) {
+	return memberStates(member).some((r) => r.id === stateRole.id) || isStateCommitteeMember(member);
 }

@@ -1,4 +1,4 @@
-export { isMemberStateLead, isStateLeadRole, memberStates, states } from './states';
+export { hasStateRole, isMemberStateLead, isStateLeadRole, memberStates, states } from './states';
 
 export * as prototype from './prototypes';
 
