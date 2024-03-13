@@ -113,16 +113,18 @@ export default new Interaction<ModalSubmitInteraction>().setName('event').setExe
 		ephemeral: true
 	});
 
-	await EventsDB.create({
-		eventID: event.id,
-		guildID: event.guildId,
-		textID: eventChat.id,
-		vcID: event.channelId,
-		creatorID: interaction.user.id,
-		status: event.status,
-		name: event.name,
-		description: event.description,
-		participants: []
-	});
-	logger.debug('Event created from Modal window');
+	if (event.guildId && interaction.user.id) {
+		await EventsDB.create({
+			eventID: event.id,
+			guildID: event.guildId,
+			textID: eventChat.id,
+			vcID: event.channelId,
+			creatorID: interaction.user.id,
+			status: event.status,
+			name: event.name,
+			description: event.description,
+			participants: []
+		});
+		logger.debug('Event created from Modal window');
+	}
 });
