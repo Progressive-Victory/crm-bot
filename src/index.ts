@@ -7,7 +7,7 @@ import './structures/prototypes';
 import { init } from '@i18n';
 import { Client } from '@progressive-victory/client';
 import {
-	GatewayIntentBits as Intents, Locale, Partials
+	GatewayIntentBits as Intents, Locale, Partials 
 } from 'discord.js';
 import { config } from 'dotenv';
 import { connect } from 'mongoose';
@@ -31,7 +31,7 @@ export const client = new Client({
 		Intents.GuildScheduledEvents,
 		Intents.GuildMessageReactions
 	],
-	partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember, Partials.GuildScheduledEvent],
+	partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember],
 	receiveMessageComponents: true,
 	receiveModals: true,
 	receiveAutocomplete: true,
