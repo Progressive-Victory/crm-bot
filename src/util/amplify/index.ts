@@ -23,11 +23,11 @@ export async function newAmplifyMessage(message: Message) {
  * @param user
  */
 export async function newAmplifyMessageReaction(reaction: MessageReaction, user: User) {
-	const {
-		channelId, guild, author 
-	} = reaction.message;
-	const member = guild.members.cache.get(author.id);
-	if (!user.bot && author !== user && channelId === AMPLIFY_CHANNEL_ID && reaction.emoji.name === AMPLIFY_EMOJI) {
+	if (reaction.message.partial) await reaction.message.fetch();
+	if (!user.bot && reaction.message.author !== user && reaction.message.channelId === AMPLIFY_CHANNEL_ID && reaction.emoji.name === AMPLIFY_EMOJI) {
+		const { guild, author } = reaction.message;
+		const member = guild.members.cache.get(author.id);
+
 		if (!AMPLIFY_ROLE_ID) {
 			logger.error('Missing AMPLIFY_ROLE_ID');
 		}

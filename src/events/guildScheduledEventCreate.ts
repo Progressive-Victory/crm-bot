@@ -8,8 +8,8 @@ async function execute(guildScheduledEvent: GuildScheduledEvent) {
 	} = guildScheduledEvent;
 
 	setTimeout(async () => {
-		const exsiting = await EventsDB.findOne({ eventID: id });
-		if (!exsiting) {
+		const existing = await EventsDB.findOne({ eventID: id });
+		if (!existing && creatorId && guildId) {
 			await EventsDB.create({
 				eventID: id,
 				guildID: guildId,

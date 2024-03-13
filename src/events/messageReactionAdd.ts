@@ -39,7 +39,7 @@ async function onMessageReactionAdd(reaction: MessageReaction, user: User) {
 
 		setTimeout(
 			async () => {
-				await reaction.message.fetch();
+				if (reaction.message.partial) await reaction.message.fetch();
 				if (reaction.message.reactions.cache.has(process.env.CONNECT_EMOJI)) {
 					return;
 				}
