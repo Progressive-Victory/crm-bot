@@ -54,8 +54,6 @@ const eventSchema = new Schema<IEvent>(
 				let DBEvents = await this.find();
 
 				for (const [eventID, event] of scheduledEvents.cache.entries()) {
-					// eslint-disable-next-line no-console
-					console.log(eventID, event); // TODO: Remove
 					const foundEvent = DBEvents.find((e) => e.eventID === eventID);
 
 					if (foundEvent) {
@@ -63,6 +61,8 @@ const eventSchema = new Schema<IEvent>(
 						foundEvent.description = event.description;
 						foundEvent.status = event.status;
 						foundEvent.vcID = event.channelId;
+						foundEvent.creatorID = event.creatorId;
+						foundEvent.guildID = event.guildId;
 						if (event.status === GuildScheduledEventStatus.Active && !event.channel) {
 							for (const [memberID] of event.channel.members) {
 								if (!foundEvent.participants.includes(memberID)) {
@@ -71,7 +71,11 @@ const eventSchema = new Schema<IEvent>(
 							}
 						}
 
+						// eslint-disable-next-line no-console
+						console.log('before saving', foundEvent);
 						await foundEvent.save();
+						// eslint-disable-next-line no-console
+						console.log('after saving', foundEvent);
 						DBEvents = DBEvents.filter((e) => e.eventID !== eventID);
 					}
 					else if (event.creatorId && event.guildId) {
