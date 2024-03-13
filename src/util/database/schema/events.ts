@@ -54,6 +54,8 @@ const eventSchema = new Schema<IEvent>(
 				let DBEvents = await this.find();
 
 				for (const [eventID, event] of scheduledEvents.cache.entries()) {
+					// eslint-disable-next-line no-console
+					console.log(eventID, event); // TODO: Remove
 					const foundEvent = DBEvents.find((e) => e.eventID === eventID);
 
 					if (foundEvent) {
