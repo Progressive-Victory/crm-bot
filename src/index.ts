@@ -5,7 +5,7 @@ import './structures/prototypes';
 /* prettier-ignore-end */
 
 import { init } from '@i18n';
-import { Client } from '@progressive-victory/client';
+import { Client, logger } from '@progressive-victory/client';
 import { GatewayIntentBits as Intents, Locale } from 'discord.js';
 import { config } from 'dotenv';
 import { connect } from 'mongoose';
@@ -67,3 +67,11 @@ export const client = new Client({
 		await client.deploy();
 	}
 })();
+
+process.on('unhandledRejection', (err) => {
+	logger.error(err);
+});
+
+process.on('uncaughtException', (err) => {
+	logger.error(err);
+});
