@@ -72,7 +72,7 @@ const eventSchema = new Schema<IEvent>(
 						await foundEvent.save();
 						DBEvents = DBEvents.filter((e) => e.eventID !== eventID);
 					}
-					else {
+					else if (event.creatorId && event.guildId) {
 						logger.debug('Event added to DB on Recovery');
 						await this.create({
 							eventID,
