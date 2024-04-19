@@ -2,9 +2,8 @@
 
 
 ## Command
-command-name = lead
-command-description = Commands for leads to help manage their respective regions
-
+lead-name = lead
+lead-description = Commands for leads to help manage their respective regions
 
 
 region-name = region

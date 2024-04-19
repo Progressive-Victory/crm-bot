@@ -1,21 +1,7 @@
-/* pettier-ignore-start */
-import 'module-alias/register';
-import 'source-map-support/register';
-import './structures/prototypes';
-/* prettier-ignore-end */
-
-import { init } from '@i18n';
-import { Client, logger } from '@progressive-victory/client';
-import { GatewayIntentBits as Intents, Locale } from 'discord.js';
-import { config } from 'dotenv';
-import { connect } from 'mongoose';
-import { join } from 'path';
-
-// Load .env file contents
-config();
-
-// i18n Initialization
-init(join(__dirname, '../locales'), { fallback: Locale.EnglishUS, hasGlobal: true });
+import { Client } from 'Classes/index.js';
+import { GatewayIntentBits as Intents } from 'discord.js';
+import * as commands from './commands/index.js';
+import * as events from './events/index.js';
 
 // Initialization (specify intents and partials)
 export const client = new Client({
@@ -34,44 +20,41 @@ export const client = new Client({
 	receiveModals: true,
 	receiveAutocomplete: true,
 	replyOnError: true,
-	splitCustomID: true,
 	splitCustomIDOn: '_',
-	useGuildCommands: false
+	useDefaultInterctionEvent: true
 });
 
-(async () => {
-	try {
-		if (!process.env.DB_URI) {
-			throw new Error('MongoDB URI is undefined');
-		}
+// Load Events
+for (const event of Object.values(events)) 
+	client.events.add(event);
 
-		await connect(process.env.DB_URI);
-	}
-	catch (err) {
-		client.emit('error', err);
-	}
 
-	await client.init({
-		eventPath: join(__dirname, 'events'),
-		buttonPath: join(__dirname, 'interactions', 'buttons'),
-		selectMenuPath: join(__dirname, 'interactions', 'select_menus'),
-		modalPath: join(__dirname, 'interactions', 'modals'),
-		commandPath: join(__dirname, 'commands', 'chat', 'builders'),
-		contextMenuPath: join(__dirname, 'commands', 'context_menu')
+// Load commands 
+for (const command of Object.values(commands)) 
+	client.commands.add(command);
+
+
+// Load buttons
+// for (const button of Object.values(buttons)) 
+// 	client.interactions.addButton(button);
+
+// // Load modals
+// for (const modal of Object.values(modals)) 
+// 	client.interactions.addModal(modal);
+
+// // Load selectMenus
+// for (const selectMenu of Object.values(selectMenus)) 
+// 	client.interactions.addSelectMenu(selectMenu);
+
+// Bot logins to Discord services
+client.login(process.env.TOKEN)
+	.then(() => {
+        
+		// Skip if no-deployment flag is set, else deploys command
+		if (!process.argv.includes('--no-deployment')) 
+			// removes guild command from set guild
+			// client.commands.deregisterGuildCommands(process.env.GUILDID);
+			// deploys commands
+			client.commands.register();
+		
 	});
-
-	await client.login(process.env.TOKEN);
-
-	// Skip if no-deployment flag is set, else deploys commands
-	if (!process.argv.includes('--no-deployment')) {
-		await client.deploy();
-	}
-})();
-
-process.on('unhandledRejection', (err) => {
-	logger.error(err);
-});
-
-process.on('uncaughtException', (err) => {
-	logger.error(err);
-});
