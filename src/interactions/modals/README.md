@@ -26,7 +26,6 @@ export { default as string } from './modal.js'
 3. In the main make sure the following is present
 ```ts
 // src/index.ts
-import { GatewayIntentBits as Intents } from 'discord.js';
 import { Client } from './Classes/index.js';
 import * as modals from './interactions/modals/index.js'
 
