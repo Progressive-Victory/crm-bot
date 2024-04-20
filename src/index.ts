@@ -3,6 +3,9 @@ import 'source-map-support/register.js';
 import { Client } from './Classes/index.js';
 import * as commands from './commands/index.js';
 import * as events from './events/index.js';
+// import * as buttons from './interactions/buttons/index.js'
+// import * as modals from './interactions/modals/index.js';
+// import * as selectMenus from './interactions/select_menus/index.js'
 
 
 // Initialization (specify intents and partials)
@@ -40,11 +43,11 @@ for (const command of Object.values(commands))
 // for (const button of Object.values(buttons)) 
 // 	client.interactions.addButton(button);
 
-// // Load modals
+// Load modals
 // for (const modal of Object.values(modals)) 
 // 	client.interactions.addModal(modal);
 
-// // Load selectMenus
+// Load selectMenus
 // for (const selectMenu of Object.values(selectMenus)) 
 // 	client.interactions.addSelectMenu(selectMenu);
 
