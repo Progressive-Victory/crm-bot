@@ -36,7 +36,7 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	// check to see if the person trying to use the command has the role being pinged
 	if(!member.roles.cache.has(role.id)) 
 		return interaction.followUp({
-			content: local.t('ping-cant-send', ns, { channel: channel.toString() }),
+			content: local.t('WrongRegionChannel', 'common', { channel: channel.toString() }),
 			ephemeral: true 
 		});
 	
