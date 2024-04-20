@@ -1,6 +1,6 @@
-import { ns } from 'commands/chat/state.js';
 import { AttachmentBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { localize } from 'i18n.js';
+import { ns } from '../../commands/chat/state.js';
+import { localize } from '../../i18n.js';
 
 /**
  * Executes a chat input command interaction to export role members to a CSV file.
@@ -9,7 +9,7 @@ import { localize } from 'i18n.js';
 export async function memberList(interaction: ChatInputCommandInteraction<'cached'>) {
 	// Extract the locale and options from the interaction.
 	const { locale, options } = interaction;
-	const { t } = localize.getLocale(locale);
+	const local = localize.getLocale(locale);
 	
 	// Defer the reply to indicate that the bot is processing the command.
 	await interaction.deferReply({ ephemeral: true });
@@ -29,7 +29,7 @@ export async function memberList(interaction: ChatInputCommandInteraction<'cache
 
 	// Send a follow-up message with a content and the CSV file attached.
 	await interaction.followUp({
-		content: t('member-list-message-followup', ns, { role: role.toString() }),
+		content: local.t('member-list-message-followup', ns, { role: role.toString() }),
 		files: [csv]
 	});
 }

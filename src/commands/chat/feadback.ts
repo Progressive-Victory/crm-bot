@@ -1,8 +1,8 @@
-import { ChatInputCommand } from 'Classes/index.js';
 import {
 	ActionRowBuilder, ButtonBuilder, ButtonStyle
 } from 'discord.js';
-import { localize } from 'i18n.js';
+import { ChatInputCommand } from '../../Classes/index.js';
+import { localize } from '../../i18n.js';
 
 export const ns = 'feadback';
 
@@ -20,6 +20,7 @@ export default new ChatInputCommand()
 			components: [new ActionRowBuilder<ButtonBuilder>()
 				.addComponents(new ButtonBuilder()
 					.setLabel(localize.t('feadback-button', ns, interaction.locale))
+					.setEmoji('📝')
 					.setStyle(ButtonStyle.Link)
 					.setURL('https://github.com/Progressive-Victory/crm-bot/issues'))]
 		});

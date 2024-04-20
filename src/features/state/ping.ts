@@ -1,10 +1,13 @@
-import { ns } from 'commands/chat/state.js';
-import { ChannelType, ChatInputCommandInteraction } from 'discord.js';
-import { localize } from 'i18n.js';
+import {
+	ChannelType, ChatInputCommandInteraction,
+	quote
+} from 'discord.js';
+import { ns } from '../../commands/chat/state.js';
+import { localize } from '../../i18n.js';
 import {
 	getStateFromChannel,
 	getStatesFromMember
-} from 'util/states/index.js';
+} from '../../util/states/index.js';
 
 /**
  * Executes the ping command to send a message to a channel.
@@ -13,37 +16,36 @@ import {
  */
 export default async function ping(interaction: ChatInputCommandInteraction<'cached'>) {
 	const {
-		locale, options, guild, member, deferReply, followUp
+		locale, options, guild, member
 	} = interaction;
 	let { channel } = interaction;
-	const { t } = localize.getLocale(locale);
+	const local = localize.getLocale(locale);
 	const message = options.getString('message');
 	// Defer the reply to indicate that the bot is processing the command.
-	await deferReply({ ephemeral: true });
+	await interaction.deferReply({ ephemeral: true });
 	if( channel.type === ChannelType.PublicThread || channel.type === ChannelType.PrivateThread)
-		return followUp({
-			content: t('ping-no-thread', ns),
+		return interaction.followUp({
+			content: local.t('ping-no-thread', ns),
 			ephemeral: true
 		});
 	
 	const stateFromChannel = getStateFromChannel(channel);
 	const statesFromMember = getStatesFromMember(member);
 	if(!statesFromMember.includes(stateFromChannel)) 
-		return followUp({
-			content: t('ping-cant-send', ns, { channel: channel.toString() }),
+		return interaction.followUp({
+			content: local.t('ping-cant-send', ns, { channel: channel.toString() }),
 			ephemeral: true 
 		});
 	const role = guild.roles.cache.find(r => stateFromChannel.abbreviation === r.name.toLowerCase());
+	let temp: string;
+	if(message) 
+		temp = quote(message) + '\n';
+	else 
+		temp = '';
 
-	const sent = await channel.send({
-		content: t('ping-sent-by', ns, {
-			role: role.toString(),
-			message,
-			user: member.toString()
-		})
-	});
-	return followUp({
-		content: t('ping-succes',ns, { url: sent.url }),
+	const sent = await channel.send({ content: `${role}\n${temp.toString()}${local.t('ping-sent-by', ns, { user: member.toString() })}` });
+	return interaction.followUp({
+		content: local.t('ping-success',ns),
 		ephemeral: true
 	});
 	

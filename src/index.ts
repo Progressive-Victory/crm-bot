@@ -1,7 +1,9 @@
-import { Client } from 'Classes/index.js';
 import { GatewayIntentBits as Intents } from 'discord.js';
+import 'source-map-support/register.js';
+import { Client } from './Classes/index.js';
 import * as commands from './commands/index.js';
 import * as events from './events/index.js';
+
 
 // Initialization (specify intents and partials)
 export const client = new Client({

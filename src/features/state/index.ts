@@ -1,5 +1,5 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
-import { getStatesFromMember } from 'util/states/index.js';
+import { getStatesFromMember } from '../../util/states/index.js';
 import { memberList } from './member-list.js';
 import ping from './ping.js';
 
@@ -15,7 +15,7 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
 	switch (subcommand) {
 		case 'ping':
 			return ping(interaction);
-		case 'member-list':
+		case 'members':
 			return memberList(interaction);
 		default:
 			throw Error('No Subcommand');

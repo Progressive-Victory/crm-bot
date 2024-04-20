@@ -148,7 +148,17 @@ export class LocaleBundle {
 	t(key: string, bundleName: string, options?: fluentVariables) {
 
 		// finds the message and retuens it with the budle where it was found
-		const { bundle, message } = this.getMessageBundle(key, bundleName);
+		let bundle: FluentBundle;
+		let message: Message;
+		try { 
+			const reply = this.getMessageBundle(key, bundleName);
+			bundle = reply.bundle;
+			message = reply.message;
+		}
+		catch (error) {
+			return 'Error, please let the admins know';
+		}
+		
 
 		const errors: Error[] = [];
 

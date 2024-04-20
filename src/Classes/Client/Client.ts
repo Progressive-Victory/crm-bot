@@ -1,4 +1,4 @@
-import { Client } from 'discord.js';
+import { Client, Events } from 'discord.js';
 import {
 	CommandHandler, EventHandler, InteractionHandler
 } from '../Handlers/index.js';
@@ -65,7 +65,7 @@ export class ExtendedClient extends Client<true> {
 	constructor(options: ExtendedClientOptions) {
 		super(options);
 
-		this.emit('debug', 'Client starting up...');
+		this.emit(Events.Debug, 'Client starting up...');
 
 		// Paths
 		const {

@@ -157,7 +157,7 @@ export default [
 			'max-classes-per-file': 'off',
 			'no-await-in-loop': 'off',
 			'no-bitwise': 'off',
-			'no-console': 'error',
+			'no-console': 'off',
 			'no-continue': 'off',
 			'no-tabs': 'off',
 			'no-param-reassign': 0,
