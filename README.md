@@ -11,7 +11,7 @@ This command has two sub commands
  Directs members to [GitHub issues](https://github.com/Progressive-Victory/crm-bot/issues) page to sublit feadback and report bugs
 
 # How to Contribute
-To contribute to this repo, start by forking it and working on the fork. Then when you are ready to create a pull request. The  pull request will be revied as sonn as posible
+To contribute to this repo, start by forking it and working on the fork. Then when you are ready to create a pull request. The  pull request will be revied as soon as posible
 
 ### Software
 To get started we recommend you install the following software:
