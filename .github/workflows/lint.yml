@@ -5,6 +5,15 @@ name: Lint # name of the action (displayed in the github interface)
 on: # event list
     pull_request: # on a pull request to each of these branches
         branches: [main]
+        paths:
+            - '**/*.ts'
+            - '**/*.js'
+            - '**/*.json'
+        paths-ignore:
+            - '.config/**'
+            - '.github/**'
+            - '.vscode/**'
+            - 'assests/**'
     push:
         branches: [main]
 

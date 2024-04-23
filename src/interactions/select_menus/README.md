@@ -1,5 +1,5 @@
 # Select Menus
-[Select menus](https://discordjs.guide/message-components/select-menus.html) are a message [component interaction](https://discordjs.guide/message-components/interactions.html#responding-to-component-interactions) that creats a dropdown allowing the user to select one or more items in the menu.
+[Select menus](https://discordjs.guide/message-components/select-menus.html) are a [message component](https://discordjs.guide/message-components/interactions.html#responding-to-component-interactions) interaction that creats a dropdown allowing the user to select one or more items in the menu.
 
 ### Types
 The main type of select menu is a `String` select menu how ever Discord allows for four Auto-populating types

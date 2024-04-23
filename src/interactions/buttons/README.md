@@ -1,5 +1,5 @@
 # Buttons
-[Buttons](https://discordjs.guide/interactions/modals.html) interactions create a pop up window in the Discord client for form like text entry
+[Buttons](https://discordjs.guide/interactions/modals.html) are a [message component](https://discordjs.guide/message-components/interactions.html#responding-to-component-interactions) interaction that can be used to create an interaction event
 
 ### Creating an Interaction
 Interactions start with the bot [sending the button](https://discordjs.guide/message-components/buttons.html), to recive this interaction opon it being used follow the below steps:
