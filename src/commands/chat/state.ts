@@ -11,7 +11,7 @@ export default new ChatInputCommand()
 		.setDescription('Commands for state leads to help manage their state')
 		.setNameLocalizations(localize.discordLocalizationRecord('state-name', ns))
 		.setDescriptionLocalizations(localize.discordLocalizationRecord('state-description', ns))
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles | PermissionFlagsBits.ManageChannels | PermissionFlagsBits.ManageEvents)
+		.setDefaultMemberPermissions(PermissionFlagsBits.MentionEveryone)
 		.setDMPermission(false)
 		.addSubcommand((subcommand) => subcommand
 			.setName('ping')
