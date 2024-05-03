@@ -47,7 +47,10 @@ export default async function ping(interaction: ChatInputCommandInteraction<'cac
 	else 
 		temp = '';
 
-	const sent = await channel.send({ content: `${role}\n${temp.toString()}${local.t('ping-sent-by', ns, { user: member.toString() })}` });
+	const sent = await channel.send({
+		content: `${role}\n${temp.toString()}${local.t('ping-sent-by', ns, { user: member.toString() })}`,
+		options: { allowedMentions: { parse: ['roles'] } } 
+	});
 	return interaction.followUp({
 		content: local.t('ping-success',ns),
 		ephemeral: true
