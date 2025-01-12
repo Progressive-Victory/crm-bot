@@ -22,6 +22,7 @@ RUN yarn install --frozen-lockfile --production
 COPY --from=builder /bot/dist/ ./dist
 # COPY ./src/*.json ./dist
 
+EXPOSE 8080
 USER node
 
 CMD [ "yarn", "start" ]
