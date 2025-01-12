@@ -20,7 +20,7 @@ COPY ./locales ./locales
 RUN yarn install --frozen-lockfile --production
 
 COPY --from=builder /bot/dist/ ./dist
-COPY ./src/*.json ./dist
+# COPY ./src/*.json ./dist
 
 USER node
 
