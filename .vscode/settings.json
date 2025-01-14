@@ -8,7 +8,7 @@
 		"source.fixAll": "explicit",
 		"source.organizeImports": "explicit"
 	},
-    "eslint.experimental.useFlatConfig": true,
+    "eslint.useFlatConfig": true,
 	"eslint.workingDirectories": [
 		{
 			"mode": "auto"
