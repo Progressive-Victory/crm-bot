@@ -4,6 +4,7 @@
 	"editor.tabSize": 4,
 	"editor.insertSpaces": false,
     "editor.detectIndentation": false,
+    "editor.detectIndentation": false,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "explicit",
 		"source.organizeImports": "explicit"

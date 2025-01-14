@@ -5,7 +5,17 @@
 		"type": "git",
 		"url": "git+https://https://github.com/Progressive-Victory/crm-bot.git"
 	},
+	"version": "4.0.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://https://github.com/Progressive-Victory/crm-bot.git"
+	},
 	"author": {
+		"name": "William Bowen",
+		"email": "wbowen@progress.win"
+	},
+	"bugs": {
+		"url": "https://github.com/Progressive-Victory/crm-bot/issues"
 		"name": "William Bowen",
 		"email": "wbowen@progress.win"
 	},
@@ -15,18 +25,24 @@
 	"license": "MIT",
 	"private": true,
 	"type": "module",
+	"type": "module",
 	"main": "./dist/index.js",
 	"scripts": {
 		"prebuild": "bash rm_dist.sh",
 		"build": "tsc --project tsconfig.json",
 		"start": "node --env-file=.env .",
+		"build": "tsc --project tsconfig.json",
+		"start": "node --env-file=.env .",
 		"predev": "yarn build",
+		"dev": "yarn start",
 		"dev": "yarn start",
 		"prepm2": "yarn build",
 		"pm2": "pm2 start dist/index.js --name crm-bot",
 		"lint": "eslint --fix {src}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern"
+		"lint": "eslint --fix {src}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern"
 	},
 	"engines": {
+		"node": ">=20.12.2"
 		"node": ">=20.12.2"
 	},
 	"dependencies": {
