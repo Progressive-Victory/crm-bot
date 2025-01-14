@@ -26,9 +26,7 @@ export default [
 		},
 		plugins: { '@stylistic': stylistic },
 		rules: {
-			'@typescript-eslint/no-non-null-assertion': 'off',
-			'@typescript-eslint/ban-ts-comment': 'off',
-			'@typescript-eslint/type-annotation-spacing': [
+			'@stylistic/type-annotation-spacing': [
 				'error',
 				{
 					'before': false,
@@ -57,7 +55,7 @@ export default [
 			],
 			'@stylistic/brace-style': [
 				'error',
-			    'stroustrup'
+				'stroustrup'
 			],
 			'@stylistic/indent': [
 				'error',
