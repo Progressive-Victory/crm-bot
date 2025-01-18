@@ -20,18 +20,17 @@ steps:
       - "-c"
       - |
         echo "Retrieving SSH key from Secret Manager..."
-        gcloud secrets versions access latest --secret=cloud-build-ssh-key > ./id_rsa
-        chmod 600 ./id_rsa
+        gcloud secrets versions access latest --secret=cloud-build-ssh-key > id_rsa
+        chmod 600 id_rsa
 
   # Step 4: SSH into the instance and deploy the Docker container
-  - name: "gcr.io/cloud-builders/gcloud"
+  - name: "ubuntu"
+    entrypoint: "bash"
     args:
-      - "compute"
-      - "ssh"
-      - "--zone=us-central1-a"
-      - "discord-bot-dev"
-      - "--command"
-      - >
+      - "-c"
+      - |
+        ssh -i id_rsa -o StrictHostKeyChecking=no \
+        cloud-build-deploy@discord-bot-dev.us-central1-a.compute.internal \
         "sudo docker pull gcr.io/$PROJECT_ID/discord-bot:$COMMIT_SHA &&
         sudo docker stop discord-container || true &&
         sudo docker rm discord-container || true &&
@@ -39,3 +38,7 @@ steps:
 
 options:
   logging: CLOUD_LOGGING_ONLY
+
+secrets:
+  - secretEnv:
+      SSH_KEY: cloud-build-ssh-key
