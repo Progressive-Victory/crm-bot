@@ -23,15 +23,7 @@ steps:
         gcloud secrets versions access latest --secret=cloud-build-ssh-key > ./id_rsa
         chmod 600 ./id_rsa
 
-  # Step 4: Add the target instance to known_hosts
-  - name: "ubuntu"
-    entrypoint: "bash"
-    args:
-      - "-c"
-      - |
-        ssh-keyscan -H discord-bot-dev.us-central1-a.compute.internal >> ./.ssh/known_hosts
-
-  # Step 5: SSH into the instance and deploy the Docker container
+  # Step 4: SSH into the instance and deploy the Docker container
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       - "compute"
