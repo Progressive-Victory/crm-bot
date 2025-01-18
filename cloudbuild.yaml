@@ -29,7 +29,7 @@ steps:
     args:
       - "-c"
       - |
-        ssh-keyscan -H discord-bot-dev.us-central1-a.compute.internal >> /root/.ssh/known_hosts
+        ssh-keyscan -H discord-bot-dev.us-central1-a.compute.internal >> ./.ssh/known_hosts
 
   # Step 5: SSH into the instance and deploy the Docker container
   - name: "gcr.io/cloud-builders/gcloud"
