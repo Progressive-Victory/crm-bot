@@ -1,4 +1,5 @@
 steps:
+  # Step 1: Build the Docker image
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "build"
@@ -6,11 +7,31 @@ steps:
       - "gcr.io/$PROJECT_ID/discord-bot:$COMMIT_SHA"
       - "."
 
+  # Step 2: Push the Docker image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "push"
       - "gcr.io/$PROJECT_ID/discord-bot:$COMMIT_SHA"
 
+  # Step 3: Retrieve SSH private key from Secret Manager
+  - name: "gcr.io/cloud-builders/gcloud"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        echo "Retrieving SSH key from Secret Manager..."
+        gcloud secrets versions access latest --secret=cloud-build-ssh-key > /root/.ssh/id_rsa
+        chmod 600 /root/.ssh/id_rsa
+
+  # Step 4: Add the target instance to known_hosts
+  - name: "ubuntu"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        ssh-keyscan -H discord-bot-dev.us-central1-a.compute.internal >> /root/.ssh/known_hosts
+
+  # Step 5: SSH into the instance and deploy the Docker container
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       - "compute"
@@ -23,5 +44,9 @@ steps:
         sudo docker stop discord-container || true &&
         sudo docker rm discord-container || true &&
         sudo docker run -d --name discord-container gcr.io/$PROJECT_ID/discord-bot:$COMMIT_SHA"
+
 options:
   logging: CLOUD_LOGGING_ONLY
+
+secrets:
+  - kmsKeyName: projects/$PROJECT_ID/locations/global/keyRings/<KEY_RING>/cryptoKeys/<KEY>
