@@ -47,6 +47,3 @@ steps:
 
 options:
   logging: CLOUD_LOGGING_ONLY
-
-secrets:
-  - kmsKeyName: projects/$PROJECT_ID/locations/global/keyRings/<KEY_RING>/cryptoKeys/<KEY>
