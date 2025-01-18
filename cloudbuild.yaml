@@ -1,5 +1,4 @@
 steps:
-  # Step 1: Build the Docker image
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "build"
@@ -7,13 +6,11 @@ steps:
       - "gcr.io/$PROJECT_ID/discord-bot:$COMMIT_SHA"
       - "."
 
-  # Step 2: Push the Docker image to Container Registry
   - name: "gcr.io/cloud-builders/docker"
     args:
       - "push"
       - "gcr.io/$PROJECT_ID/discord-bot:$COMMIT_SHA"
 
-  # Step 3: Retrieve SSH private key from Secret Manager
   - name: "gcr.io/cloud-builders/gcloud"
     entrypoint: "bash"
     args:
@@ -23,7 +20,6 @@ steps:
         gcloud secrets versions access latest --secret=cloud-build-ssh-key > id_rsa
         chmod 600 id_rsa
 
-  # Step 4: SSH into the instance and deploy the Docker container
   - name: "ubuntu"
     entrypoint: "bash"
     args:
