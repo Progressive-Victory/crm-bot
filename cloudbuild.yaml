@@ -15,6 +15,7 @@ steps:
     args:
       - "compute"
       - "ssh"
+      - "--zone=us-central1-a"
       - "discord-bot-dev"
       - "--command"
       - >
