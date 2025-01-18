@@ -20,8 +20,8 @@ steps:
       - "-c"
       - |
         echo "Retrieving SSH key from Secret Manager..."
-        gcloud secrets versions access latest --secret=cloud-build-ssh-key > /root/.ssh/id_rsa
-        chmod 600 /root/.ssh/id_rsa
+        gcloud secrets versions access latest --secret=cloud-build-ssh-key > ./id_rsa
+        chmod 600 ./id_rsa
 
   # Step 4: Add the target instance to known_hosts
   - name: "ubuntu"
