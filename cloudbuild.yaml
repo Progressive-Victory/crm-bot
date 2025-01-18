@@ -22,3 +22,5 @@ steps:
         sudo docker stop discord-container || true &&
         sudo docker rm discord-container || true &&
         sudo docker run -d --name discord-container gcr.io/$PROJECT_ID/discord-bot:$COMMIT_SHA"
+options:
+  logging: CLOUD_LOGGING_ONLY
