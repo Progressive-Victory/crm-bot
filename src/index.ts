@@ -1,10 +1,5 @@
 import { GatewayIntentBits as Intents } from "discord.js";
-import dotenv from "dotenv";
 import express from "express";
-
-dotenv.config();
-
-import "source-map-support/register.js";
 import { Client } from "./Classes/index.js";
 import * as commands from "./commands/index.js";
 import * as events from "./events/index.js";
