@@ -1,4 +1,5 @@
 import { AutocompleteInteraction, ChatInputCommandInteraction } from 'discord.js';
+import { isGuildMember } from '../../util/index.js';
 import { getStatesFromMember } from '../../util/states/index.js';
 import { memberList } from './member-list.js';
 import ping from './ping.js';
@@ -8,7 +9,7 @@ import ping from './ping.js';
  * @param interaction - The chat input command interaction object.
  * @returns Interaction from subcommand
  */
-export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
+export async function lead(interaction: ChatInputCommandInteraction) {
 	const subcommand = interaction.options.getSubcommand(true);
 	// const subcommandGroup = interaction.options.getSubcommandGroup();
 
@@ -29,26 +30,31 @@ export async function lead(interaction: ChatInputCommandInteraction<'cached'>) {
  * @param interaction - The autocomplete interaction object.
  * @returns The interaction response.
  */
-export function autoComplete(interaction: AutocompleteInteraction<'cached'>) {
+export function autoComplete(interaction: AutocompleteInteraction): Promise<void>  {
 	const {
 		member, options, guild 
 	} = interaction;
 	const focusedOption = options.getFocused(true);
-	
-	if (focusedOption.name === 'state'){
-		let choices = getStatesFromMember(member);
-		if (!choices) return interaction.respond([]);
-		// Filter the choices based on the focused option.
-		const filtered = choices.filter((choice) => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()));
+	if(isGuildMember(member) && focusedOption.name === 'state' && guild != null) {
 
-		// Respond with the filtered choices as an interaction response.
-		return interaction.respond(filtered.map((choice) =>
-			({
+		const choices = getStatesFromMember(member);
+		if (!choices) {
+			return interaction.respond([]);
+		}
+		// Filter the choices based on the focused option.
+		const filtered = choices.filter((choice) => choice.name.toLowerCase().startsWith(focusedOption.value.toLowerCase()))
+			.map((choice) =>({
 				name: choice.name,
 				value: guild.roles.cache.findKey((r) => 
-					r.name.toLowerCase() === choice.abbreviation)
-			})).slice(0, 14));
-	}
+					r.name.toLowerCase() === choice.abbreviation) ?? ''
+			}))
+			.slice(0, 14);
+	
+		// Respond with the filtered choices as an interaction response.
+		return interaction.respond(filtered);
+		}
+
+		return interaction.respond([]);
 }
 
 // Export the lead and autoComplete functions as properties of the exported object.

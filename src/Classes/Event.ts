@@ -12,9 +12,10 @@ export class Event {
 	private _once: boolean;
 
 	// Method to be run when the event occurs
-	private _execute?: (...args: any[]) => Promise<void> | void;
+	private _execute?: (...args: any[]) => void;
 
 	get name() {
+		if(this._name == undefined) throw Error('Name of event not set');
 		return this._name;
 	}
 
@@ -23,12 +24,13 @@ export class Event {
 	}
 
 	get execute() {
+		if(this._execute == undefined) throw Error('execute function of event not set');
 		return this._execute;
 	}
 
 	constructor(options: Partial<Event> = {}) {
 		if (options.name) this._name = options.name;
-		this._once = options.once || false;
+		this._once = options.once ?? false;
 		if (options.execute) this._execute = options.execute;
 	}
 
@@ -57,7 +59,7 @@ export class Event {
 	 * @param execute function passed in
 	 * @returns The modified object
 	 */
-	public setExecute(execute: (...args: any[]) => Promise<void>) {
+	public setExecute(execute: (...args: any[]) => void) {
 		this._execute = execute;
 		return this;
 	}

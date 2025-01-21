@@ -1,7 +1,7 @@
 # state
 ## command
 state-name = state
-state-description = FUctions to help state leads
+state-description = Functions to help state leads
 
 ## Ping command
 ping-name = ping

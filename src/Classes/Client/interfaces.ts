@@ -6,6 +6,6 @@ export interface ExtendedClientOptions extends ClientOptions {
 	receiveAutocomplete?: boolean;
 	replyOnError?: boolean;
 	replyMessageOnError?: string;
-	splitCustomIDOn?: string;
-	useDefaultInterctionEvent?: boolean;
+	splitCustomIdOn?: string;
+	useDefaultInteractionEvent?: boolean;
 }

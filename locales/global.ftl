@@ -3,7 +3,7 @@
 ## Formatting
 # Italics markers, put these around text to italicize it
 -i = {"*"}
-# Bold markers, put these around text to bolden it
+# Bold markers, put these around text to bold it
 -b = {"**"}
 # Underline markers, put these around text to underline it
 -u = {"__"}
@@ -19,5 +19,11 @@
 -cl = {"`"}
 # Code Block
 -cb =  {"```"}
-# Hashtag
--h = {"#"}
+# Heading 1
+-h1 = {"#"}
+# Heading 2
+-h2 = {"##"}
+# Heading 3
+-h3 = {"###"}
+# Subheading
+-sh = {"-#"}

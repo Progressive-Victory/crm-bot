@@ -31,7 +31,7 @@ export function getStateFromChannel(channel: GuildTextBasedChannel){
 
 /**
  * Get a state from a role
- * @param role traget role to get state from
+ * @param role target role to get state from
  * @returns A state
  */
 export function getStateFromRole(role: Role) {

@@ -33,10 +33,10 @@ export class ExtendedClient extends Client<true> {
 	readonly errorMessage: string = 'There was an error while executing this interaction.';
 
 	// The sting that is used to split the custom id
-	readonly splitCustomIDOn?: string;
+	readonly splitCustomIdOn?: string;
 
-	// shoult the bot use the provided InteractionCreate event 
-	readonly useDefaultInterctionEvent: boolean = true;
+	// should the bot use the provided InteractionCreate event 
+	readonly useDefaultInteractionEvent: boolean = true;
 
 	// Checks if the init function has run
 	private _hasInitRun = false;
@@ -74,23 +74,23 @@ export class ExtendedClient extends Client<true> {
 			receiveAutocomplete,
 			replyOnError,
 			replyMessageOnError,
-			splitCustomIDOn,
-			useDefaultInterctionEvent
+			splitCustomIdOn,
+			useDefaultInteractionEvent
 		} = options;
 
 		// Misc configuration
 
-		if (useDefaultInterctionEvent) 
+		if (useDefaultInteractionEvent) 
 			this.events.add(onInteractionCreate);
         
 		else 
-			this.useDefaultInterctionEvent = false;
+			this.useDefaultInteractionEvent = false;
         
-		this.receiveMessageComponents = receiveMessageComponents === undefined ? false : receiveMessageComponents;
-		this.receiveModals = receiveModals === undefined ? false : receiveModals;
-		this.receiveAutocomplete = receiveAutocomplete === undefined ? false : receiveAutocomplete;
-		this.replyOnError = replyOnError === undefined ? false : replyOnError;
-		this.splitCustomIDOn = splitCustomIDOn || undefined;
+		this.receiveMessageComponents = receiveMessageComponents ?? false;
+		this.receiveModals = receiveModals ?? false;
+		this.receiveAutocomplete = receiveAutocomplete ?? false;
+		this.replyOnError = replyOnError ?? false;
+		this.splitCustomIdOn = splitCustomIdOn ?? undefined;
 		if (replyMessageOnError) this.errorMessage = replyMessageOnError;
 	}
 
@@ -105,5 +105,21 @@ export class ExtendedClient extends Client<true> {
         
 		this._hasInitRun = true;
 		return super.login(token);
+	}
+
+	/**
+	 * Insert the CustomId in between stings in the array
+	 * @param args arguments to be separated
+	 * @returns string with array elements separated by `splitCustomIdOn`
+	 */
+	public arrayToCustomId(...args: string[]) {
+
+		if(this.splitCustomIdOn == undefined) 
+			throw Error('splitCustomIdOn is undefined set value to use arrayToCustomId');
+
+		let output = args[0];
+		for (let index = 1; index < args.length; index++) 
+			output = output.concat(this.splitCustomIdOn, args[index]);
+		return output;
 	}
 }

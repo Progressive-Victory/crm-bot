@@ -1,10 +1,9 @@
 import {
-	ChatInputCommandInteraction, ContextMenuCommandBuilder, ContextMenuCommandInteraction, SlashCommandBuilder,
+	ChatInputCommandInteraction, ContextMenuCommandBuilder, ContextMenuCommandInteraction,
+	InteractionCallbackResponse,
 	Snowflake
 } from 'discord.js';
 import { ReturnableInteraction, SlashCommandBuilders } from './types.js';
-
-SlashCommandBuilder;
 
 /**
  * Slash command or context command
@@ -14,14 +13,15 @@ export class BaseCommand<
 	TypeInteraction extends ChatInputCommandInteraction | ContextMenuCommandInteraction
 > {
 	// The constructor for the registration for the command
-	protected _builder: TypeBuilder;
+	protected _builder: TypeBuilder | undefined;
 
-	protected _guildIds: Snowflake[] = [];
+	protected _guildIds: Snowflake[];
 
 	// Method that is run when command is executed
-	protected _execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction;
+	protected _execute: ((interaction: TypeInteraction) => Promise<ReturnableInteraction | InteractionCallbackResponse>) | undefined;
 
 	get name() {
+		if(this._builder == undefined) throw Error('Builder is function is undefined');
 		return this._builder.name;
 	}
 
@@ -37,6 +37,7 @@ export class BaseCommand<
 	}
 
 	get builder() {
+		if(this._builder == undefined) throw Error('builder is undefined');
 		return this._builder;
 	}
 
@@ -45,10 +46,11 @@ export class BaseCommand<
 	}
 
 	get execute() {
+		if(this._execute == undefined) throw Error('execute function is undefined');
 		return this._execute;
 	}
 
-	set execute(execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction) {
+	set execute(execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction | InteractionCallbackResponse>) {
 		this._execute = execute;
 	}
 
@@ -62,18 +64,19 @@ export class BaseCommand<
 	 * @param execute function passed in
 	 * @returns The modified object
 	 */
-	setExecute(execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction> | ReturnableInteraction): this {
+	setExecute(execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction | InteractionCallbackResponse>): this {
 		this.execute = execute;
 		return this;
 	}
 
 	toJSON() {
+		if(this._builder == undefined) throw Error('builder is undefined');
 		return this._builder.toJSON();
 	}
 
 	constructor(options: Partial<BaseCommand<TypeBuilder, TypeInteraction>> = {}) {
-		if (options.guildIds) this._guildIds = options.guildIds;
-		if (options.builder) this.builder = options.builder;
-		if (options.execute) this.execute = options.execute;
+		this._guildIds = options.guildIds ?? [];
+		this._builder = options.builder;
+		this._execute = options.execute;
 	}
 }
