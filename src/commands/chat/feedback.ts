@@ -14,12 +14,12 @@ export default new ChatInputCommand()
 		.setDescriptionLocalizations(localize.discordLocalizationRecord('feedback-description', ns))
 	)
 	.setExecute(async (interaction) => {
-		interaction.reply({
+		await interaction.reply({
 			content: localize.t('feedback-message', ns, interaction.locale),
 			ephemeral: true,
 			components: [new ActionRowBuilder<ButtonBuilder>()
 				.addComponents(new ButtonBuilder()
-					.setLabel(localize.t('feedback-button', ns, interaction.locale))
+					.setLabel(localize.t('feedback-button', ns, interaction.locale) ?? 'Feedback')
 					.setEmoji('📝')
 					.setStyle(ButtonStyle.Link)
 					.setURL('https://github.com/Progressive-Victory/crm-bot/issues'))]

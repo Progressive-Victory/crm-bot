@@ -1,6 +1,6 @@
 import {
 	ApplicationCommandType,
-	AutocompleteInteraction, ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder
+	AutocompleteInteraction, ChatInputCommandInteraction, SlashCommandBuilder
 } from 'discord.js';
 import { BaseCommand } from './BaseCommand.js';
 import { SlashCommandBuilders } from './types.js';
@@ -17,6 +17,7 @@ export class ChatInputCommand extends BaseCommand<SlashCommandBuilders, ChatInpu
 	protected _autocomplete?: (interaction: AutocompleteInteraction) => Promise<void>;
 
 	get autocomplete() {
+		if(this._autocomplete == undefined) throw Error('autocomplete function not undefined');
 		return this._autocomplete;
 	}
 
@@ -30,10 +31,10 @@ export class ChatInputCommand extends BaseCommand<SlashCommandBuilders, ChatInpu
     
 	/**
 	 * Set the command builder method
-	 * @param input Slah command builder or callback
+	 * @param input slash command builder or callback
 	 * @returns The modified object
 	 */
-	setBuilder(input: SlashCommandBuilder | ((commandBuilder: SlashCommandBuilder) => SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder | Omit<SlashCommandBuilder, 'addSubcommand' | 'addSubcommandGroup'>)): this {
+	setBuilder(input: SlashCommandBuilders | ((commandBuilder: SlashCommandBuilder) => SlashCommandBuilders)): this {
 		if (typeof input === 'function') 
 			this._builder = input(new SlashCommandBuilder());
         

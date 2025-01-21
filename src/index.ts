@@ -25,8 +25,8 @@ export const client = new Client({
   receiveModals: true,
   receiveAutocomplete: true,
   replyOnError: true,
-  splitCustomIDOn: "_",
-  useDefaultInterctionEvent: true,
+  splitCustomIdOn: "_",
+  useDefaultInteractionEvent: true,
 });
 
 // Load Events
@@ -48,17 +48,18 @@ for (const command of Object.values(commands)) client.commands.add(command);
 // 	client.interactions.addSelectMenu(selectMenu);
 
 // Bot logins to Discord services
-client.login(process.env.TOKEN).then(() => {
+void client.login(process.env.TOKEN).then(() => {
   // Skip if no-deployment flag is set, else deploys command
   if (!process.argv.includes("--no-deployment"))
     // removes guild command from set guild
     // client.commands.deregisterGuildCommands(process.env.GUILDID);
     // deploys commands
-    client.commands.register();
+    void client.commands.register();
 });
 
 // Express Server
 const app = express();
-app.listen(process.env.PORT, () => {
-  console.log(`Server started on port ${process.env.PORT}`);
+const port = process.env.PORT ?? 'No port set'
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });
