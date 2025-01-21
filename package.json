@@ -19,9 +19,9 @@
   "scripts": {
     "prebuild": "bash rm_dist.sh",
     "build": "tsc --project tsconfig.json",
+    "dev": "node --env-file=.env .",
     "start": "node .",
     "predev": "yarn build",
-    "dev": "yarn start",
     "prepm2": "yarn build",
     "pm2": "pm2 start dist/index.js --name crm-bot",
     "lint": "eslint --fix {src}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern"
@@ -31,8 +31,7 @@
   },
   "dependencies": {
     "@fluent/bundle": "^0.18.0",
-    "discord.js": "^14.17.3",
-    "dotenv": "^16.4.7",
+    "discord.js": "14.14.1",
     "express": "^4.21.2",
     "mongoose": "^8.9.5"
   },
