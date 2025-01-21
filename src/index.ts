@@ -1,11 +1,11 @@
-import { GatewayIntentBits as Intents } from "discord.js";
+import { AnySelectMenuInteraction, GatewayIntentBits as Intents } from "discord.js";
 import express from "express";
-import { Client } from "./Classes/index.js";
+import { Client, Interaction } from "./Classes/index.js";
 import * as commands from "./commands/index.js";
 import * as events from "./events/index.js";
 // import * as buttons from './interactions/buttons/index.js'
 // import * as modals from './interactions/modals/index.js';
-// import * as selectMenus from './interactions/select_menus/index.js'
+import * as selectMenus from './interactions/select_menus/index.js';
 
 // Initialization (specify intents and partials)
 
@@ -44,8 +44,8 @@ for (const command of Object.values(commands)) client.commands.add(command);
 // 	client.interactions.addModal(modal);
 
 // Load selectMenus
-// for (const selectMenu of Object.values(selectMenus))
-// 	client.interactions.addSelectMenu(selectMenu);
+for (const selectMenu of Object.values(selectMenus))
+	client.interactions.addSelectMenu(selectMenu as Interaction<AnySelectMenuInteraction>);
 
 // Bot logins to Discord services
 void client.login(process.env.TOKEN).then(() => {

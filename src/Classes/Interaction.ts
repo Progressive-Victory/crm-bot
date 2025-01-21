@@ -39,13 +39,9 @@ export class Interaction<E extends DiscordInteraction> {
 		return this._run;
 	}
 
-	private set run(execute: (interaction: E) => Promise<void>) {
-		this._run = execute;
-	}
-
 	constructor(options: Partial<Interaction<E>> = {}) {
 		if (options.customIdPrefix) this._customIdPrefix = options.customIdPrefix ?? undefined;
-		if (options.run) this.run = options.run ?? undefined;
+		if (options.run) this._run = options.run ?? undefined;
 	}
 
 	/**
@@ -76,7 +72,7 @@ export class Interaction<E extends DiscordInteraction> {
 	 * @returns The modified object
 	 */
 	public setExecute(execute: (interaction: E) => Promise<void>) {
-		this.run = execute;
+		this._run = execute;
 		return this;
 	}
 
@@ -86,7 +82,7 @@ export class Interaction<E extends DiscordInteraction> {
 	 * @returns The modified object
 	 */
 	public setRun(run: (interaction: E) => Promise<void>) {
-		this.run = run;
+		this._run = run;
 		return this;
 	}
 }
