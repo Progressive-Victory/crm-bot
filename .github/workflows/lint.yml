@@ -20,7 +20,7 @@ jobs: # list of things to do
 
     strategy:
       matrix:
-        NODE_VERSION: [22.x]
+        NODE_VERSION: [22.13]
 
     steps: # list of steps
       - name: Install NodeJS
