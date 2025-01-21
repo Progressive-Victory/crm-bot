@@ -17,7 +17,6 @@
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {
-    "prebuild": "bash rm_dist.sh",
     "build": "tsc --project tsconfig.json",
     "dev": "node --env-file=.env .",
     "start": "node .",

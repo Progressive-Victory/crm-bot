@@ -15,12 +15,11 @@ import { ChatInputCommand, ContextMenuCommand } from '../Commands/index.js';
 
 
 export class CommandHandler {
+  // Parent client of the handler
+  readonly client: Client;
 
-	// Parent client of the handler
-	readonly client: Client;
-
-	// Slash commands in the handler
-	protected _chatCommands = new Collection<string, ChatInputCommand>();
+  // Slash commands in the handler
+  protected _chatCommands = new Collection<string, ChatInputCommand>();
 
 	// User context commands in the handler
 	protected _userContextMenus = new Collection<string, ContextMenuCommand<UserContextMenuCommandInteraction>>();
@@ -32,13 +31,13 @@ export class CommandHandler {
 		return this._userContextMenus;
 	}
 
-	get chatCommands() {
-		return this._chatCommands;
-	}
+  get chatCommands() {
+    return this._chatCommands;
+  }
 
-	get rest() {
-		return this.client.rest;
-	}
+  get rest() {
+    return this.client.rest;
+  }
 
 	// /**
 	//  * Command validates, checks expected values are present
@@ -138,12 +137,13 @@ export class CommandHandler {
 		return this;
 	}
 
-	/**
-	 * Deploy Application Commands to Discord
-	 * @see https://discord.com/developers/docs/interactions/application-commands
-	 */
-	async register() {
-		if (!this.client.loggedIn) throw Error('Client cannot register commands before init');
+  /**
+   * Deploy Application Commands to Discord
+   * @see https://discord.com/developers/docs/interactions/application-commands
+   */
+  async register() {
+    if (!this.client.loggedIn)
+      throw Error("Client cannot register commands before init");
 
 		this.client.emit(Events.Debug, 'Deploying commands...');
 		const globalCommandData = this.chatCommands.filter((f) => f.isGlobal === true).map((m) => m.toJSON())

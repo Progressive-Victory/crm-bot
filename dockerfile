@@ -1,4 +1,4 @@
-FROM node:lts-iron AS builder
+FROM node:22.13-alpine AS builder
 WORKDIR /bot
 
 COPY package.json .
@@ -10,7 +10,7 @@ COPY . .
 
 RUN yarn build
 
-FROM node:lts-iron AS runner
+FROM node:22.13-alpine AS runner
 WORKDIR /bot
 
 COPY package.json .
