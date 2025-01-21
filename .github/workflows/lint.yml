@@ -3,51 +3,51 @@
 name: Lint # name of the action (displayed in the github interface)
 
 on: # event list
-    pull_request: # on a pull request to each of these branches
-        branches: [main]
-        paths:
-            - 'src/**/*.ts'
-            - 'src/**/*.js'
-            - 'src/**/*.json'
-            - '*.json'    
-    push:
-        branches: [main]
+  pull_request: # on a pull request to each of these branches
+    branches: [main]
+    paths:
+      - "src/**/*.ts"
+      - "src/**/*.js"
+      - "src/**/*.json"
+      - "*.json"
+  push:
+    branches: [main]
 
 jobs: # list of things to do
-    linting:
-        name: Linting # job name (unique id)
-        runs-on: ubuntu-latest # on which machine to run
+  linting:
+    name: Linting # job name (unique id)
+    runs-on: ubuntu-latest # on which machine to run
 
-        strategy:
-            matrix:
-                NODE_VERSION: [20.x]
+    strategy:
+      matrix:
+        NODE_VERSION: [22.x]
 
-        steps: # list of steps
-            - name: Install NodeJS
-              uses: actions/setup-node@v3
-              with:
-                  node-version: ${{ matrix.NODE_VERSION }}
+    steps: # list of steps
+      - name: Install NodeJS
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.NODE_VERSION }}
 
-            - name: Code Checkout
-              uses: actions/checkout@v3
+      - name: Code Checkout
+        uses: actions/checkout@v3
 
-            - name: Get yarn cache directory path
-              id: yarn-cache-dir-path
-              run: echo "::set-output name=dir::$(yarn cache dir)"
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "::set-output name=dir::$(yarn cache dir)"
 
-            - name: Cache Node.js modules
-              id: yarn-cache
-              uses: actions/cache@v3
-              with:
-                  path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-
+      - name: Cache Node.js modules
+        id: yarn-cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-            - name: Install Dependencies
-              run: yarn install --frozen-lockfile --silent
-              env:
-                  CI: true
+      - name: Install Dependencies
+        run: yarn install --frozen-lockfile --silent
+        env:
+          CI: true
 
-            - name: Lint with Yarn
-              run: yarn lint
+      - name: Lint with Yarn
+        run: yarn lint
