@@ -35,7 +35,7 @@ export class i18n {
         
 	}
 
-	get fallbacklLocale() {
+	get fallbackLocale() {
 		return this._fallbackLocale;
 	}
 
@@ -44,18 +44,19 @@ export class i18n {
 	 * @returns LocaleBundle for the fall back locale
 	 */
 	getFallbackLocale() {
+		if(this._fallbackLocale == undefined) throw Error('fallbackLocale not set');
 		return this.getLocale(this._fallbackLocale);
 	}
 
 	/**
-	 * Set the gobal resource file
+	 * Set the global resource file
 	 * @param filePath file path to the file in question
 	 * @returns the i18n object
 	 */
 	setGlobalResource(filePath: string) {
 		// get file
 		const file = readFileSync(join(filePath, 'global.ftl'), { encoding: 'utf-8' });
-		// resovle file
+		// resolve file
 		this.global = new FluentResource(file);
 		return this;
 	}
@@ -104,7 +105,7 @@ export class i18n {
 	 */
 	getLocale(locale: Locale) {
 		const hasLocale = this.locales.has(locale);
-		const hasFallbackLocale = this.locales.has(this._fallbackLocale);
+		const hasFallbackLocale = this._fallbackLocale ? this.locales.has(this._fallbackLocale) : false;
 		let returnLocale: Locale;
 
 		// Return requested locale
@@ -135,13 +136,13 @@ export class i18n {
 	/**
 	 * Translate and formate a key
 	 * @param key key for the message to get
-	 * @param bundleName the bundle wher it is located
+	 * @param bundleName the bundle where it is located
 	 * @param locale the locale to target
 	 * @param options Additional options
-	 * @returns The traslated and formated string
+	 * @returns The translated and formatted string
 	 */
 	t(key: string, bundleName: string, locale: Locale, options?: fluentVariables) {
-		return this.getLocale(locale).t(key, bundleName, options);
+		return this.getLocale(locale)?.t(key, bundleName, options);
 	}
 
 	/**

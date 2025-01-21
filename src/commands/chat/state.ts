@@ -1,4 +1,4 @@
-import { PermissionFlagsBits } from 'discord.js';
+import { InteractionContextType, PermissionFlagsBits } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 import { autoComplete, lead } from '../../features/state/index.js';
 import { localize } from '../../i18n.js';
@@ -12,7 +12,7 @@ export default new ChatInputCommand()
 		.setNameLocalizations(localize.discordLocalizationRecord('state-name', ns))
 		.setDescriptionLocalizations(localize.discordLocalizationRecord('state-description', ns))
 		.setDefaultMemberPermissions(PermissionFlagsBits.MentionEveryone)
-		.setDMPermission(false)
+		.setContexts(InteractionContextType.Guild)
 		.addSubcommand((subcommand) => subcommand
 			.setName('ping')
 			.setDescription('Ping State Role')

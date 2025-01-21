@@ -2,7 +2,7 @@ import { Events } from 'discord.js';
 import { Client, Event } from '../../Classes/index.js';
 
 /**
- * fuction to run on the client ready event
+ * function to run on the client ready event
  * @param client client object
  */
 async function onReady(client: Client) {
