@@ -4,15 +4,15 @@ import { ClientEvents as DiscordClientEvents } from 'discord.js';
 /**
  * Event Class
  */
-export class Event {
+export class Event<K extends keyof DiscordClientEvents> {
 	// Name of the Event
-	private _name?: keyof DiscordClientEvents;
+	private _name?: K;
 
 	// Flag if the event should only run once
 	private _once: boolean;
 
 	// Method to be run when the event occurs
-	private _execute?: (...args: any[]) => void;
+	private _execute?: (...args: DiscordClientEvents[K]) => void;
 
 	get name() {
 		if(this._name == undefined) throw Error('Name of event not set');
@@ -28,10 +28,10 @@ export class Event {
 		return this._execute;
 	}
 
-	constructor(options: Partial<Event> = {}) {
-		if (options.name) this._name = options.name;
+	constructor(options: Partial<Event<K>> = {}) {
+		this._name = options.name;
 		this._once = options.once ?? false;
-		if (options.execute) this._execute = options.execute;
+		this._execute = options.execute;
 	}
 
 	/**
@@ -49,7 +49,7 @@ export class Event {
 	 * @param input value to set
 	 * @returns The modified object
 	 */
-	public setName(input: keyof DiscordClientEvents) {
+	public setName(input: K) {
 		this._name = input;
 		return this;
 	}
@@ -59,7 +59,7 @@ export class Event {
 	 * @param execute function passed in
 	 * @returns The modified object
 	 */
-	public setExecute(execute: (...args: any[]) => void) {
+	public setExecute(execute: (...args: DiscordClientEvents[K]) => void) {
 		this._execute = execute;
 		return this;
 	}
