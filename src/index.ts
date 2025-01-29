@@ -1,5 +1,6 @@
 import { AnySelectMenuInteraction, GatewayIntentBits as Intents } from "discord.js";
 import express from "express";
+import { getDuesPayingMembers } from "./automations/member/member.js";
 import { Client, Interaction } from "./Classes/index.js";
 import * as commands from "./commands/index.js";
 import * as events from "./events/index.js";
@@ -49,18 +50,22 @@ for (const selectMenu of Object.values(selectMenus))
 	client.interactions.addSelectMenu(selectMenu as Interaction<AnySelectMenuInteraction>);
 
 // Bot logins to Discord services
-void client.login(process.env.DISCORD_TOKEN).then(() => {
+void client.login(process.env.TOKEN).then(async () => {
   // Skip if no-deployment flag is set, else deploys command
-  if (!process.argv.includes("--no-deployment"))
+  if (!process.argv.includes("--no-deployment")) {
     // removes guild command from set guild
     // client.commands.deregisterGuildCommands(process.env.GUILDID);
     // deploys commands
     void client.commands.register();
-});
+  }
 
-// Express Server
-const app = express();
-const port = process.env.PORT ?? 'No port set'
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
+  // Express Server
+  const app = express();
+  const port = process.env.PORT ?? "No port set";
+  app.listen(port, () => {
+    console.log(`Server started on port ${port}`);
+  });
+
+  // Automation
+  await getDuesPayingMembers();
 });
