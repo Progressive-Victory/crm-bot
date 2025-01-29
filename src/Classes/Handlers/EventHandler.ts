@@ -1,34 +1,26 @@
-import { Client, Collection } from 'discord.js';
-// import assert from 'node:assert/strict';
+import { Client, ClientEvents, Collection } from 'discord.js';
 import { Event } from '../Event.js';
 
 export class EventHandler {
-	readonly client: Client;
+    readonly client: Client;
 
-	protected events: Collection<string, Event>;
+    protected events = new Collection<string, Event<keyof ClientEvents>>();
 
-	// protected validateEvent(event: Event) {
-	// 	assert(typeof event.name !== 'undefined');
-	// 	assert(typeof event.execute !== 'undefined');
-	// }
+    /**
+     * Add Event to Event handler
+     * @param event event to add to handler
+     */
+    add(event: Event<keyof ClientEvents>) {
+        if (event.once) this.client.once(event.name, event.execute);
+        else this.client.on(event.name, event.execute);
+        this.events.set(event.name, event);
+    }
 
-	/**
-	 * Add Event to Event handler
-	 * @param event event to add to handler
-	 */
-	add(event: Event) {
-		// this.validateEvent(event);
-		if (event.once) this.client.once(event.name, event.execute);
-		else this.client.on(event.name, event.execute);
-		this.events.set(event.name, event);
-	}
+    get size() {
+        return this.events.size;
+    }
 
-	get size() {
-		return this.events.size;
-	}
-
-	constructor(client: Client) {
-		this.client = client;
-		this.events = new Collection();
-	}
+    constructor(client: Client) {
+        this.client = client;
+    }
 }
