@@ -1,5 +1,5 @@
 import {
-	AnySelectMenuInteraction, ButtonInteraction, Collection, ModalSubmitInteraction
+    AnySelectMenuInteraction, ButtonInteraction, Collection, ModalSubmitInteraction
 } from 'discord.js';
 import { Client } from '../Client/index.js';
 import { Interaction } from '../Interaction.js';

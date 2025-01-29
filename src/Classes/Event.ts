@@ -3,15 +3,15 @@ import { ClientEvents } from 'discord.js';
 /**
  * Event Class
  */
-export class Event<K extends keyof ClientEvents> {
+export class Event<Key extends keyof ClientEvents> {
     // Name of the Event
-    private _name?: K;
+    private _name?: Key;
 
     // Flag if the event should only run once
     private _once: boolean;
 
     // Method to be run when the event occurs
-    private _execute?: (...args: ClientEvents[K]) => void;
+    private _execute?: (...args: ClientEvents[Key]) => void;
 
     get name() {
         if(this._name === undefined) throw Error('Invalid or missing event name.')
@@ -27,7 +27,7 @@ export class Event<K extends keyof ClientEvents> {
         return this._execute;
     }
 
-    constructor(options?: Partial<Event<K>>) {
+    constructor(options?: Partial<Event<Key>>) {
         this._name = options?.name ;
         this._once = options?.once ?? false;
         this._execute = options?.execute;
@@ -48,7 +48,7 @@ export class Event<K extends keyof ClientEvents> {
      * @param input value to set
      * @returns The modified object
      */
-    public setName(input: K) {
+    public setName(input: Key) {
         this._name = input;
         return this;
     }
@@ -58,7 +58,7 @@ export class Event<K extends keyof ClientEvents> {
      * @param execute function passed in
      * @returns The modified object
      */
-    public setExecute(execute: (...args: ClientEvents[K]) => void) {
+    public setExecute(execute: (...args: ClientEvents[Key]) => void) {
         this._execute = execute;
         return this;
     }
