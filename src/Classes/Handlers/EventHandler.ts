@@ -10,10 +10,10 @@ export class EventHandler {
      * Add Event to Event handler
      * @param event event to add to handler
      */
-    add(event: Event<keyof ClientEvents>) {
+    add<Key extends keyof ClientEvents>(event: Event<Key>) {
         if (event.once) this.client.once(event.name, event.execute);
         else this.client.on(event.name, event.execute);
-        this.events.set(event.name, event);
+        this.events.set(event.name, event as unknown as Event<keyof ClientEvents>);
     }
 
     get size() {

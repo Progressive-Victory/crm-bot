@@ -1,4 +1,4 @@
-import { TimestampStyles, TimestampStylesString } from 'discord.js';
+import { time, TimestampStyles, TimestampStylesString } from 'discord.js';
 import { ExtendedClient } from './Client.js';
 
 export const ExtraColor = {
@@ -10,42 +10,42 @@ declare global {
 	interface Date {
 		/**
 		 * Prints date to Discord Timestamp Styles
-		 * @param format Discord TimestampStylesString
+		 * @param style Discord TimestampStylesString
 		 * @returns date formatted fro a message
 		 * @see {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles}
 		 */
-		toDiscordString(format?: TimestampStylesString): `<t:${number}:${TimestampStylesString}>`;
+		toDiscordString(style?: TimestampStylesString): `<t:${bigint}:${TimestampStylesString}>`;
 	}
 }
 
-Date.prototype.toDiscordString = function(format: TimestampStylesString = TimestampStyles.ShortDateTime ) {
-	const code = Math.floor(this.getTime() / 1000);
-	return `<t:${code}:${format}>`;
+Date.prototype.toDiscordString = function(style: TimestampStylesString = TimestampStyles.ShortDateTime ) {
+	return time(this, style);
 };
 
+
 declare module 'discord.js' {
-	interface BaseInteraction {
-		client: ExtendedClient;
-	}
-	interface Component {
-		client: ExtendedClient;
-	}
-	interface Message {
-		client: ExtendedClient;
-	}
-	interface BaseChannel {
-		client: ExtendedClient;
-	}
-	interface Role {
-		client: ExtendedClient;
-	}
-	interface Guild {
-		client: ExtendedClient;
-	}
-	interface User {
-		client: ExtendedClient;
-	}
-	interface GuildMember {
-		client: ExtendedClient;
-	}
+    interface BaseInteraction {
+        client: ExtendedClient;
+    }
+    interface Component {
+        client: ExtendedClient;
+    }
+    interface Message {
+        client: ExtendedClient;
+    }
+    interface BaseChannel {
+        client: ExtendedClient;
+    }
+    interface Role {
+        client: ExtendedClient;
+    }
+    interface Guild {
+        client: ExtendedClient;
+    }
+    interface User {
+        client: ExtendedClient;
+    }
+    interface GuildMember {
+        client: ExtendedClient;
+    }
 }
