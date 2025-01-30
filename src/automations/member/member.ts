@@ -2,6 +2,10 @@
 // Automation for auto promoting/demoting dues paying members
 import { Buffer } from "buffer";
 import { parse } from "csv-parse/sync";
+import { ExtendedClient } from "../../Classes/Client/Client.js";
+import { client } from "../../index.js";
+import Donor from "../../models/Donor.js";
+import dbConnect from "../../util/libmongo.js";
 // CSV API endpoint for ActBlue
 const actBlueCSVEndpoint = "https://secure.actblue.com/api/v1/csvs";
 // Act Blue uses basic auth (e.g. username:password)
@@ -19,7 +23,8 @@ const donationSchema = [
 // Gets all contributions within the last 30 days of today
 // compares against the dues paying members on file and their contribution level
 // promotes/demotes accordingly, non-payment or reduced payment is demoted to appropriate role
-const getDuesPayingMembers = async () => {
+export const getDuesPayingMembers = async () => {
+  dbConnect();
   // Get start and end dates from today, final format is YYYY-MM-DD
   const daysSince = 30 * 24 * 60 * 60 * 1000;
   const today = new Date();
@@ -32,7 +37,6 @@ const getDuesPayingMembers = async () => {
     today.getMonth() + 1
   }-${today.getDate()}`;
 
-  console.log({ startDate, endDate });
   // Request the CSV from ActBlue
   const csvRequest = await fetch(actBlueCSVEndpoint, {
     method: "POST",
@@ -48,7 +52,7 @@ const getDuesPayingMembers = async () => {
   });
 
   if (!csvRequest.ok) {
-    console.log(csvRequest);
+    console.error(csvRequest);
     throw new Error("Failed to request CSV from ActBlue");
   }
 
@@ -78,6 +82,7 @@ const getDuesPayingMembers = async () => {
   const csvData = await fetch(downloadLink);
 
   if (!csvData.ok) {
+    console.error(csvData);
     throw new Error("Failed to request CSV from ActBlue");
   }
 
@@ -89,22 +94,120 @@ const getDuesPayingMembers = async () => {
 
   const donors = new Set();
 
+  interface Member {
+    role: string;
+    discordID: string;
+    lastAmount: number;
+    lastDonated: Date;
+  }
   for (const data of parsedData) {
+    const member: Member = {
+      role: "",
+      discordID: "",
+      lastAmount: 0,
+      lastDonated: new Date(),
+    };
     if (
       data["Custom Field 1 Label"] === "Discord ID" &&
       data["Custom Field 1 Value"] !== ""
     ) {
-      donors.add(data["Custom Field 1 Value"]);
+      member.discordID = data["Custom Field 1 Value"];
+      for (const level of donationSchema) {
+        if (data["Amount"] >= level.amount) {
+          member.role = level.name;
+        }
+      }
+
+      if (member.role !== "") {
+        donors.add(member);
+      }
+
+      member.lastAmount = data["Amount"];
+      member.lastDonated = new Date(data["Date"]);
     }
+  }
+
+  for (const member of donors as Set<Member>) {
+    const existing = await Donor.findOne({ discordID: member.discordID });
+    if (existing) {
+      existing.role = member.role;
+      existing.lastDonated = member.lastDonated;
+      existing.lastAmount = member.lastAmount;
+      await existing.save();
+      continue;
+    }
+    Donor.create({
+      discordID: member.discordID,
+      role: member.role,
+      lastDonated: member.lastDonated,
+      lastAmount: member.lastAmount,
+    });
+  }
+
+  // Use updated donors to update roles
+  updateRoles(client);
+};
+
+const ensureProperID = (name: string) => {
+  if (name[0] !== ".") {
+    return "." + name;
+  } else {
+    return name;
   }
 };
 
-const promoteDuesPayingMembers = async () => {};
+const updateRoles = async (client: ExtendedClient) => {
+  const members = await Donor.find();
+  const guild = await client.guilds.fetch(process.env.GUILD_ID as string);
+  const guildMembers = await guild.members.list();
+  for (const member of members) {
+    const user = guildMembers.find(
+      (m) => m.user.username === ensureProperID(member.discordID)
+    );
 
-const demoteDuesPayingMembers = async () => {};
+    if (user) {
+      const userRoles = user.roles.cache.map((role) => role.name);
+      // Zerothly check if they have made a contribution in last 31 days (extra room in case of timezone issues)
+      if (
+        member.lastDonated.getTime() + 31 * 24 * 60 * 60 * 1000 <
+        Date.now()
+      ) {
+        // remove any donator roles
+        for (const roleString of donationSchema.map((s) => s.name)) {
+          const toRemove = guild.roles.cache.find((r) => r.name === roleString);
+          if (!toRemove) {
+            continue;
+          }
+          await user.roles.remove(toRemove);
+        }
 
-export {
-  demoteDuesPayingMembers,
-  getDuesPayingMembers,
-  promoteDuesPayingMembers,
+        continue;
+      }
+
+      // First make sure they don't have any of the other roles
+      // If they do we remove them
+      for (const roleString of userRoles) {
+        if (
+          roleString !== member.role &&
+          donationSchema.map((s) => s.name).includes(roleString)
+        ) {
+          const toRemove = guild.roles.cache.find((r) => r.name === roleString);
+          if (!toRemove) {
+            continue;
+          }
+          await user.roles.remove(toRemove);
+        }
+      }
+
+      // Second check if they have the correct role
+      if (userRoles.includes(member.role)) {
+        continue;
+      }
+
+      const role = guild.roles.cache.find((r) => r.name === member.role);
+      if (role) {
+        await user.roles.add(role);
+      }
+    }
+  }
 };

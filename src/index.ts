@@ -68,4 +68,7 @@ void client.login(process.env.TOKEN).then(async () => {
 
   // Automation
   await getDuesPayingMembers();
+  setInterval(async () => {
+    await getDuesPayingMembers();
+  }, 1000 * 60 * 60);
 });
