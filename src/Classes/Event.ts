@@ -3,7 +3,7 @@ import { ClientEvents } from 'discord.js';
 /**
  * Event Class
  */
-export class Event<Key extends keyof ClientEvents> {
+export class Event<Key extends keyof ClientEvents = any> {
     // Name of the Event
     private _name?: Key;
 
