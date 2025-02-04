@@ -4,7 +4,7 @@ import { Event } from '../Event.js';
 export class EventHandler {
     readonly client: Client;
 
-    protected events = new Collection<string, Event<keyof ClientEvents>>();
+    protected events = new Collection<string, Event>();
 
     /**
      * Add Event to Event handler
@@ -13,7 +13,7 @@ export class EventHandler {
     add<Key extends keyof ClientEvents>(event: Event<Key>) {
         if (event.once) this.client.once(event.name, event.execute);
         else this.client.on(event.name, event.execute);
-        this.events.set(event.name, event as unknown as Event<keyof ClientEvents>);
+        this.events.set(event.name, event);
     }
 
     get size() {
