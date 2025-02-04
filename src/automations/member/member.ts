@@ -130,6 +130,14 @@ export const getDuesPayingMembers = async () => {
   for (const member of donors as Set<Member>) {
     const existing = await Donor.findOne({ discordID: member.discordID });
     if (existing) {
+      const previousLastDonated = new Date(existing.lastDonated);
+      const currentLastDonated = new Date(member.lastDonated);
+
+      // Make sure this is the most recent donation
+      if (previousLastDonated.getTime() >= currentLastDonated.getTime()) {
+        continue;
+      }
+
       existing.role = member.role;
       existing.lastDonated = member.lastDonated;
       existing.lastAmount = member.lastAmount;
