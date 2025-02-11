@@ -1,15 +1,23 @@
 import { Events, VoiceState } from 'discord.js';
 import { Event } from '../../Classes/index.js';
+import { VoiceSession } from '../../features/attendence/index.js';
 
 export default new Event({
 	name: Events.VoiceStateUpdate,
-	execute: (oldState: VoiceState, newState: VoiceState) => {
+	execute: async (oldState: VoiceState, newState: VoiceState) => {
 		if (oldState.channelId != newState.channelId) {
 			if (oldState.channelId) {
-				console.log(`${oldState.member?.user.username} left ${oldState.channel?.name}`);
+				const now = new Date();
+				for await (const e of VoiceSession.find({userId: oldState.member?.id, endedAt: null})) {
+					e.endedAt = now;
+					e.save();
+				}
 			}
 			if (newState.channelId) {
-				console.log(`${oldState.member?.user.username} joined ${newState.channel?.name}`);
+				new VoiceSession({
+					userId: newState.member?.id,
+					displayName: newState.member?.displayName,
+				}).save();
 			}
 		}
 	},

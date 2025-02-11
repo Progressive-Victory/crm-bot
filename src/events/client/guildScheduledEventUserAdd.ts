@@ -1,9 +1,15 @@
 import { Events, GuildScheduledEvent, PartialGuildScheduledEvent, User } from 'discord.js';
 import { Event } from '../../Classes/index.js';
+import { ScheduledEventInterest } from '../../features/attendence/index.js';
 
 export default new Event({
 	name: Events.GuildScheduledEventUserAdd,
 	execute: (guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User) => {
-		console.log(`${user.username} has registered interest in ${guildScheduledEvent.name}`)
+		new ScheduledEventInterest({
+			userId: user.id,
+			displayName: user.displayName,
+			eventId: guildScheduledEvent.id,
+			eventName: guildScheduledEvent.name,
+		}).save();
 	},
 });
