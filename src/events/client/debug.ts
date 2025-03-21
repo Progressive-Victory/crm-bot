@@ -6,6 +6,6 @@ export default new Event({
 	execute: async (info: string) => {
 		if(info.startsWith('[WS => '))
 			return;
-		console.debug(info);
+		// console.debug(info);
 	}
 });

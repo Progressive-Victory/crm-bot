@@ -1,1 +1,1 @@
-export { warnCreate } from './warn-create.js';
+export { warnCreate, warnUpdated } from './warn.js';

@@ -1,4 +1,4 @@
-import { ColorResolvable, Colors, CommandInteraction, EmbedBuilder, GuildMember, TimestampStyles } from 'discord.js';
+import { ColorResolvable, Colors, CommandInteraction, EmbedBuilder, GuildMember, inlineCode, TimestampStyles } from 'discord.js';
 import { client } from '../../index.js';
 import { WarningRecord } from '../../models/Warn.js';
 import { WarmEmbedColor } from './types.js';
@@ -9,13 +9,12 @@ import { WarmEmbedColor } from './types.js';
  * @param start
  * @returns
  */
-export function viewWarningMessageRender(warns: WarningRecord[], start:number = 0) {
+export async function viewWarningMessageRender(warns: WarningRecord[], start:number = 0) {
     const embeds: EmbedBuilder[] = [];
-    const numberOfWarns = warns.length;
 
-    for (let index = start; index < start + 3 && index < numberOfWarns; index++) {
+    for (let index = start; index < start + 3 && index < warns.length; index++) {
         const record = warns[index];
-		const embed = warningEmbed(record, false, record.expireAt > new Date() ? WarmEmbedColor.Active : WarmEmbedColor.Inactive)
+		const embed = await warningEmbed(record, record.expireAt > new Date() ? WarmEmbedColor.Active : WarmEmbedColor.Inactive)
 		if(!embed) continue;
         embeds.push(embed);
     }
@@ -30,28 +29,43 @@ export function viewWarningMessageRender(warns: WarningRecord[], start:number = 
  * @param embedColor
  * @returns
  */
-export function warningEmbed(warn: WarningRecord, timeUpdated:boolean = false, embedColor: ColorResolvable = WarmEmbedColor.Issued) {
+export async function warningEmbed(warn: WarningRecord, embedColor: ColorResolvable = WarmEmbedColor.Issued) {
+
 	const guild = client.guilds.cache.get(warn.guildId)
 	if (!guild) return
-	const target = guild.members.cache.get(warn.targetDiscordId)
-	const moderator = guild.members.cache.get(warn.moderatorDiscordId)
+	const target = guild.members.cache.get(warn.targetDiscordId) ?? await guild.members.fetch(warn.targetDiscordId)
+	const moderator = guild.members.cache.get(warn.moderatorDiscordId) ?? await guild.members.fetch(warn.moderatorDiscordId)
 	if(!target || !moderator) return
 
-	return new EmbedBuilder()
+
+	const embed = new EmbedBuilder()
 		.setTitle('Warn')
 		.setDescription(`**Reason:** ${warn.reason}`)
 		.addFields(
-			{ name: 'Target', value: `${target}\n${target.user.username}`, inline: true },
-			{ name: 'Moderator', value: `<${moderator}>\n${moderator.user.username}`, inline: true },
-			{
-				name: 'Expires',
-				value: `${warn.expireAt.toDiscordString(TimestampStyles.RelativeTime)}:\n ${warn.expireAt.toDiscordString(TimestampStyles.LongDateTime)}>`,
-				inline: true })
+			{ name: 'Reason', value: warn.reason, inline: false},
+			{ name: 'Member', value: `${target}\n${inlineCode(target.user.username)}`, inline: true },
+			{ name: 'Moderator', value: `${moderator}\n${inlineCode(moderator.user.username)}`, inline: true },
+			)
 
 		.setColor(embedColor)
-		.setThumbnail(target.avatarURL())
-		.setFooter({ text: `ID: ${warn.id}` })
-		.setTimestamp(timeUpdated ? warn.updatedAt : warn.createdAt);
+		.setThumbnail(target.avatarURL({forceStatic: true}) ?? target.user.avatarURL({forceStatic: true}))
+		.setFooter({ text: `Warn ID: ${warn.id}` })
+		.setTimestamp(warn.updaterDiscordId ? warn.updatedAt : warn.createdAt);
+		if(warn.updaterDiscordId){
+			const updater = guild.members.cache.get(warn.updaterDiscordId) ?? await guild.members.fetch(warn.updaterDiscordId)
+			if (updater)
+				embed.addFields({
+					name: 'Updated By',
+					value: `${updater}\n${inlineCode(updater.user.username)}`,
+					inline: true
+				})
+		}
+			
+		embed.addFields({
+			name: 'Expires',
+			value: `${warn.expireAt.toDiscordString(TimestampStyles.RelativeTime)}:\n ${warn.expireAt.toDiscordString(TimestampStyles.LongDateTime)}`,
+			inline: false })
+		return embed
 }
 
 /**

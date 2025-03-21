@@ -4,17 +4,22 @@ import { model, Schema } from "mongoose";
 export interface IWarnSearch {
 	targetDiscordId?: Snowflake,
 	moderatorDiscordId?: Snowflake,
-	expireAfter?: Date
+	expireAfter: Date
 	searcherDiscordId?: Snowflake
 	searcherUsername?: string
 	pageStart: number
+	createdAt: Date
 
 }
 
 const search = new Schema<IWarnSearch>({
 	targetDiscordId: String,
 	moderatorDiscordId: String,
-	expireAfter: Date,
+	expireAfter: {
+		type: Date,
+		required: true,
+		default: Date.now()
+	},
 	searcherDiscordId: {
 		type: String,
 		required: true
@@ -24,6 +29,11 @@ const search = new Schema<IWarnSearch>({
 		type: Number,
 		default: 0
 	},
+	createdAt: {
+		type: Date,
+		default: Date.now(),
+		expires: 86400
+	}
 },{
 	timestamps: true
 });

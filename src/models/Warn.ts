@@ -3,9 +3,13 @@ import { FilterQuery, FlatRecord, HydratedDocument, Model, Schema, model } from 
 
 interface IWarn {
     guildId: Snowflake,
+	guildName: string
     targetDiscordId: Snowflake,
+	targetUsername: string
 	moderatorDiscordId: Snowflake,
+	moderatorUsername: string
     updaterDiscordId?: Snowflake,
+	updaterUsername?: string
     reason: string,
     expireAt: Date,
     createdAt: Date,
@@ -34,15 +38,23 @@ const warn = new Schema<IWarn, WarnModel>(
 			required: true,
 			immutable: true
 		},
+		targetUsername: {
+			type: String,
+			required: true,
+			immutable: true
+		},
         moderatorDiscordId: {
 			type: String,
 			required: true,
 			immutable: true
 		},
-        updaterDiscordId: {
+		moderatorUsername: {
 			type: String,
-			required: false
+			required: true,
+			immutable: true
 		},
+        updaterDiscordId: { type: String, required: false },
+		updaterUsername : { type: String, required: false },
         reason: {
 			type: String,
 			required: true,
@@ -53,10 +65,7 @@ const warn = new Schema<IWarn, WarnModel>(
 			required: true,
 			setDate
 		},
-        updatedAt: {
-			type: Date,
-			required: true
-		},
+        updatedAt: { type: Date, default: new Date() },
     },
     {
         timestamps: true,
@@ -72,8 +81,11 @@ const warn = new Schema<IWarn, WarnModel>(
             createWarning(target:GuildMember, officer:GuildMember, reason?: string, days?: number) {
                 return this.create({
                     guildId: target.guild.id,
-                    targetId: target.id,
-                    officerId: officer.id,
+					guildName: target.guild.name,
+                    targetDiscordId: target.id,
+					targetUsername: target.user.username,
+					moderatorDiscordId: officer.id,
+					moderatorUsername: officer.user.username,
                     reason: reason,
                     expireAt: setDate(days),
                 });
@@ -130,7 +142,7 @@ export const Warn = model<IWarn, WarnModel>('Warn', warn, 'warnings');
  * @param days number of days to set the date
  * @returns New Date
  */
-function setDate(days:number = 90) {
+export function setDate(days:number = 90) {
     const d = new Date();
     d.setDate(d.getDate() + days);
     return d;

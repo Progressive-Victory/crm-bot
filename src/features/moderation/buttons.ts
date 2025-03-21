@@ -6,7 +6,7 @@ import { AddSplitCustomId } from "../../util/index.js";
 
 export const warnButtons = {
     // viewWarnButton: viewbutton,
-    updateButton: updateButton,
+    updateIssueButton: updateIssueButton,
     removeButton: removeButton,
     leftButton: leftButton,
     rightButton: rightButton,
@@ -29,11 +29,12 @@ export const warnButtons = {
  * @param warn the warning object witch to update
  * @returns ButtonBuilder object
  */
-function updateButton(warn:WarningRecord) {
+function updateIssueButton(warn:WarningRecord) {
     return new ButtonBuilder()
-        .setCustomId(AddSplitCustomId('warn','u', warn.id))
+        .setCustomId(AddSplitCustomId('wiu', warn.id))
+		.setEmoji('📝')
         .setLabel('Update Reason')
-        .setStyle(ButtonStyle.Success);
+        .setStyle(ButtonStyle.Secondary);
 }
 /**
  * Create Button builder to remove a warning

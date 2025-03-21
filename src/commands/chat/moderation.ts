@@ -6,7 +6,7 @@ import { isRightArrowDisabled } from "../../features/moderation/index.js";
 import { viewWarningMessageRender } from "../../features/moderation/warningRender.js";
 import { Warn, WarningRecord } from "../../models/Warn.js";
 import { WarningSearch } from "../../models/WarnSearch.js";
-import { AddSplitCustomId } from "../../util/index.js";
+import { AddSplitCustomId, isGuildMember } from "../../util/index.js";
 // import { localize } from "../../i18n.js";
 
 export const ns = "moderation"
@@ -34,6 +34,7 @@ export default new ChatInputCommand({
 				.setName('duration')
 				.setDescription('Number of days, the warning till end of the warn')
 				.setMinValue(0)
+				.setMaxValue(999)
 				.setRequired(false)
 			)
 		)
@@ -86,10 +87,30 @@ export default new ChatInputCommand({
  * @param interaction command interaction from user
  */
 function chatAdd(interaction: ChatInputCommandInteraction) {
-	const target = interaction.options.getUser('member', true);
+	const target = interaction.options.getMember('member');
+	if (!isGuildMember(target)) return
 	const chatDuration = interaction.options.getInteger('duration')
 	const chatReason = interaction.options.getString('reason');
-
+	if (target == interaction.member) {
+		interaction.reply({
+			flags: MessageFlags.Ephemeral,
+			content: 'You can not warn your self'
+		})
+		return
+	}
+	else if (target.user.bot) {
+		interaction.reply({
+			flags: MessageFlags.Ephemeral,
+			content: 'You can not issue a warning to a bot'
+		})
+		return
+	} else if(target.permissions.has("ManageGuild", true)) {
+		interaction.reply({
+			flags: MessageFlags.Ephemeral,
+			content: 'You can not issue a warning to Admin'
+		})
+		return
+	}
 	
 	const reason = new TextInputBuilder()
 		.setCustomId('reason')
@@ -104,6 +125,8 @@ function chatAdd(interaction: ChatInputCommandInteraction) {
 		.setCustomId('duration')
 		.setLabel('Number of days till warning expires')
 		.setPlaceholder('90')
+		.setMinLength(1)
+		.setMaxLength(3)
 		.setStyle(TextInputStyle.Short)
 		.setRequired(false)
 	
@@ -132,12 +155,10 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 	const mod = interaction.options.getUser('issuer') ?? undefined
 	const target = interaction.options.getUser('recipient') ?? undefined
 	const monthsAgo = interaction.options.getInteger('scope') ?? -1
-	const interactionReply: InteractionReplyOptions = {}
 	const filter: FilterQuery<WarningRecord> = {}
+	const reply: InteractionReplyOptions ={}
 	let expireAfter: Date | undefined = undefined
-
-	interactionReply.flags = MessageFlags.Ephemeral
-
+	
 	if (monthsAgo === -1) {
 		expireAfter = new Date
 		filter.expireAt = { $gte: expireAfter };
@@ -152,34 +173,38 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 	}
 	if (target) filter.targetDiscordId = target.id
 
-	interaction.deferReply({flags: MessageFlags.Ephemeral })
-
 	const searchRecord = await WarningSearch.create({
 		searcherDiscordId: interaction.user.id,
 		searcherUsername: interaction.user.username,
-		targetDiscordId: target?.id,
-		moderatorDiscordId: mod?.id,
+		targetDiscordId: target?.id ,
+		moderatorDiscordId: mod?.id ,
 		expireAfter,
 		pageStart: 0,
 	})
-
+	
 	const records = await Warn.find(filter);
 
+	// console.log(records)
 
     if (records.length == 0) {
-        interaction.followUp({ content: `${target} has no active warns or warns in the selected scope`});
+        interaction.reply({
+			flags: MessageFlags.Ephemeral,
+			content: `${target} has no active warns or warns in the selected scope`
+		});
         return;
     }
     else if (records.length > 3) {
-        const actionRow = new ActionRowBuilder<ButtonBuilder>()
-			.addComponents(
+        const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				warnButtons.leftButton(searchRecord),
 				warnButtons.rightButton(searchRecord, isRightArrowDisabled(searchRecord.pageStart, records.length))
 			);
-			interactionReply.components = [actionRow]
+		reply.components = [actionRow]
     }
 
-	interactionReply.embeds = viewWarningMessageRender(records)
+	reply.embeds = await viewWarningMessageRender(records)
+	reply.flags = MessageFlags.Ephemeral
 
-    interaction.reply(interactionReply);
+	// console.log(reply)
+
+    interaction.reply(reply);
 }
