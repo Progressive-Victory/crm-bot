@@ -14,7 +14,7 @@ export default new Event({
 			if (oldState.channelId) {
 				const now = new Date();
 				// mark all older objects as ended
-				for await (const e of VoiceSession.find({userId: oldState.member?.id, endedAt: null})) {
+				for await (const e of VoiceSession.find({userId: oldState.member!.id, endedAt: null})) {
 					e.endedAt = now;
 					e.save();
 				}
@@ -22,7 +22,7 @@ export default new Event({
 			// if the user entered a channel
 			if (newState.channelId) {
 				new VoiceSession({
-					userId: newState.member?.id,
+					userId: newState.member!.id,
 					displayName: newState.member?.displayName,
 				}).save();
 			}
