@@ -1,10 +1,8 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction } from 'discord.js';
-import { FilterQuery } from 'mongoose';
+import { ButtonInteraction } from 'discord.js';
 import { Interaction } from '../../Classes/index.js';
-import { warnButtons } from '../../features/moderation/buttons.js';
-import { dateDiffInDays, isRightArrowDisabled } from '../../features/moderation/index.js';
-import { viewWarningMessageRender } from '../../features/moderation/warningRender.js';
-import { Warn, WarningRecord } from '../../models/Warn.js';
+import { dateDiffInDays } from '../../features/moderation/index.js';
+import { warnSearch } from '../../features/moderation/WarnEmbed.js';
+import { Warn } from '../../models/Warn.js';
 import { WarningSearch } from '../../models/WarnSearch.js';
 import { AddSplitCustomId } from '../../util/index.js';
 import { warnModal } from '../modals/warn.js';
@@ -17,37 +15,8 @@ export const warnViewLeft = new Interaction<ButtonInteraction>({
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const [_id, searchId] = customId.split(client.splitCustomIdOn!)
-		
-		interaction.deferUpdate()
 
-		const searchRecord = await WarningSearch.findById(searchId);
-
-		if(!searchRecord) {
-			throw Error(`Unknown searchRecord Id: ${searchId}`)
-		}
-
-		const {expireAfter, moderatorDiscordId, targetDiscordId, pageStart} = searchRecord
-		const filter: FilterQuery<WarningRecord> = {}
-
-		if (moderatorDiscordId) filter.moderatorDiscordId = moderatorDiscordId
-		if (targetDiscordId) filter.targetDiscordId = targetDiscordId
-		if (expireAfter) filter.expireAt = { $gte: expireAfter }
-		
-		searchRecord.pageStart -= 3
-		searchRecord.save();
-		
-		const records = await Warn.find(filter)
-
-		const actionRow = new ActionRowBuilder<ButtonBuilder>()
-			.addComponents(
-				warnButtons.leftButton(searchRecord),
-				warnButtons.rightButton(searchRecord, isRightArrowDisabled(pageStart, records.length))
-			)
-
-		interaction.update({
-			embeds: await viewWarningMessageRender(records, pageStart),
-			components:[actionRow]
-		})
+		interaction.update(await warnSearch(searchId, false))
 	}
 });
 
@@ -59,37 +28,8 @@ export const warnViewRight = new Interaction<ButtonInteraction>({
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const [_id, searchId] = customId.split(client.splitCustomIdOn!)
-		
-		interaction.deferUpdate()
 
-		const searchRecord = await WarningSearch.findById(searchId);
-
-		if(!searchRecord) {
-			throw Error(`Unknown searchRecord Id: ${searchId}`)
-		}
-
-		const {expireAfter, moderatorDiscordId, targetDiscordId, pageStart} = searchRecord
-		const filter: FilterQuery<WarningRecord> = {}
-
-		if (moderatorDiscordId) filter.moderatorDiscordId = moderatorDiscordId
-		if (targetDiscordId) filter.targetDiscordId = targetDiscordId
-		if (expireAfter) filter.expireAt = { $gte: expireAfter }
-		
-		searchRecord.pageStart += 3
-		searchRecord.save();
-		
-		const records = await Warn.find(filter)
-
-		const actionRow = new ActionRowBuilder<ButtonBuilder>()
-			.addComponents(
-				warnButtons.leftButton(searchRecord),
-				warnButtons.rightButton(searchRecord, isRightArrowDisabled(pageStart, records.length))
-			)
-
-		interaction.update({
-			embeds: await viewWarningMessageRender(records, pageStart),
-			components:[actionRow]
-		})
+		interaction.update(await warnSearch(searchId, true))
 
 	}
 });
@@ -114,3 +54,20 @@ export const warnIssueUpdate = new Interaction<ButtonInteraction>({
 		interaction.showModal(modal)
 	}
 });
+
+export const warnViewUser = new Interaction<ButtonInteraction>({
+	customIdPrefix:'vuw',
+	run: async (interaction: ButtonInteraction) => {
+		const {user, customId} = interaction
+		const targetId = customId.split(interaction.client.splitCustomIdOn!)[1]
+		const search = await WarningSearch.create({
+			searcherDiscordId: user.id,
+			searcherUsername: user.username,
+			targetDiscordId: targetId
+		})
+
+		interaction.update(await warnSearch(search,undefined,true))
+		
+	}
+})
+

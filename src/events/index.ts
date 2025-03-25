@@ -1,7 +1,9 @@
-export { default as ready } from './client/ready.js';
+export { ready } from './client/ready.js';
 
-export { default as warn } from './client/warn.js';
+export { warn } from './client/warn.js';
 
-export { default as debug } from './client/debug.js';
+export { debug } from './client/debug.js';
 
-export { default as error } from './client/error.js';
+export { error } from './client/error.js';
+
+export { interactionCreate } from './interactionCreate.js';

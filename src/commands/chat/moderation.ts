@@ -1,17 +1,15 @@
-import { ActionRowBuilder, ButtonBuilder, ChatInputCommandInteraction, InteractionContextType, InteractionReplyOptions, MessageFlags, ModalBuilder, PermissionFlagsBits, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ChatInputCommandInteraction, InteractionContextType, InteractionReplyOptions, MessageFlags, ModalBuilder, PermissionFlagsBits, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { FilterQuery } from "mongoose";
 import { ChatInputCommand } from "../../Classes/index.js";
-import { warnButtons } from "../../features/moderation/buttons.js";
-import { isRightArrowDisabled } from "../../features/moderation/index.js";
-import { viewWarningMessageRender } from "../../features/moderation/warningRender.js";
-import { Warn, WarningRecord } from "../../models/Warn.js";
+import { warnSearch } from "../../features/moderation/WarnEmbed.js";
+import { WarningRecord } from "../../models/Warn.js";
 import { WarningSearch } from "../../models/WarnSearch.js";
 import { AddSplitCustomId, isGuildMember } from "../../util/index.js";
 // import { localize } from "../../i18n.js";
 
 export const ns = "moderation"
 
-export default new ChatInputCommand({
+export const warn = new ChatInputCommand({
 	builder: new SlashCommandBuilder()
 		.setName('warn')
 		.setDescription('Moderation commands')
@@ -156,7 +154,7 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 	const target = interaction.options.getUser('recipient') ?? undefined
 	const monthsAgo = interaction.options.getInteger('scope') ?? -1
 	const filter: FilterQuery<WarningRecord> = {}
-	const reply: InteractionReplyOptions ={}
+	
 	let expireAfter: Date | undefined = undefined
 	
 	if (monthsAgo === -1) {
@@ -181,30 +179,9 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 		expireAfter,
 		pageStart: 0,
 	})
-	
-	const records = await Warn.find(filter);
 
-	// console.log(records)
-
-    if (records.length == 0) {
-        interaction.reply({
-			flags: MessageFlags.Ephemeral,
-			content: `${target} has no active warns or warns in the selected scope`
-		});
-        return;
-    }
-    else if (records.length > 3) {
-        const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
-				warnButtons.leftButton(searchRecord),
-				warnButtons.rightButton(searchRecord, isRightArrowDisabled(searchRecord.pageStart, records.length))
-			);
-		reply.components = [actionRow]
-    }
-
-	reply.embeds = await viewWarningMessageRender(records)
+	const reply: InteractionReplyOptions = await warnSearch(searchRecord,undefined, true)
 	reply.flags = MessageFlags.Ephemeral
-
-	// console.log(reply)
-
+	
     interaction.reply(reply);
 }

@@ -1,35 +1,27 @@
-import { ButtonBuilder, ButtonStyle } from "discord.js";
+import { ButtonBuilder, ButtonStyle, Snowflake } from "discord.js";
 import { HydratedDocument } from "mongoose";
 import { WarningRecord } from "../../models/Warn.js";
 import { IWarnSearch } from "../../models/WarnSearch.js";
 import { AddSplitCustomId } from "../../util/index.js";
 
-export const warnButtons = {
-    // viewWarnButton: viewbutton,
-    updateIssueButton: updateIssueButton,
-    removeButton: removeButton,
-    leftButton: leftButton,
-    rightButton: rightButton,
-};
-
-// /**
-//  * Button to view the warnings of the target
-//  * @param target user to view
-//  * @param filter
-//  * @returns ButtonBuilder object
-//  */
-// function viewbutton(filter:FilterQuery<WarningRecord>) {
-//     return new ButtonBuilder()
-//         .setCustomId(AddSplitCustomId('warn','v', filter.targetDiscordId, filter.moderatorDiscordId, filter))
-//         .setLabel('View Warnings')
-//         .setStyle(ButtonStyle.Secondary);
-// }
+/**
+ * Button to view the warnings of the target
+ * @param targetId user to view
+ * @returns ButtonBuilder object
+ */
+export function viewUserWarns(targetId:Snowflake ) {
+    return new ButtonBuilder()
+        .setCustomId(AddSplitCustomId('vuw', targetId))
+		.setEmoji('🔎')
+        .setLabel('View Warning History')
+        .setStyle(ButtonStyle.Secondary);
+}
 /**
  * Button to update a Warning
  * @param warn the warning object witch to update
  * @returns ButtonBuilder object
  */
-function updateIssueButton(warn:WarningRecord) {
+export function updateIssueButton(warn:WarningRecord) {
     return new ButtonBuilder()
         .setCustomId(AddSplitCustomId('wiu', warn.id))
 		.setEmoji('📝')
@@ -41,7 +33,7 @@ function updateIssueButton(warn:WarningRecord) {
  * @param warn the warning to be removed
  * @returns new button builder
  */
-function removeButton(warn:WarningRecord) {
+export function removeButton(warn:WarningRecord) {
     return new ButtonBuilder()
         .setCustomId(AddSplitCustomId('warn','r', warn.id))
         .setLabel('End Warning')
@@ -53,12 +45,12 @@ function removeButton(warn:WarningRecord) {
  * @param searchRecord
  * @returns
  */
-function leftButton(searchRecord:HydratedDocument<IWarnSearch>) {
+export function leftButton(searchRecord:HydratedDocument<IWarnSearch>) {
     return new ButtonBuilder()
         .setCustomId(AddSplitCustomId('wvl', searchRecord.id))
         .setEmoji('⬅️')
         .setStyle(ButtonStyle.Secondary)
-        .setDisabled(searchRecord.pageStart > 0);
+        .setDisabled(searchRecord.pageStart == 0);
 }
 
 /**
@@ -67,10 +59,24 @@ function leftButton(searchRecord:HydratedDocument<IWarnSearch>) {
  * @param disabled
  * @returns
  */
-function rightButton(searchRecord:HydratedDocument<IWarnSearch>, disabled:boolean = true) {
+export function rightButton(searchRecord:HydratedDocument<IWarnSearch>, disabled:boolean = true) {
     return new ButtonBuilder()
         .setCustomId(AddSplitCustomId('wvr', searchRecord.id))
         .setEmoji('➡️')
         .setStyle(ButtonStyle.Secondary)
         .setDisabled(disabled);
+}
+
+/**
+ *
+ * @param current
+ * @param total
+ * @returns
+ */
+export function pageNumber(current: number, total:number) {
+	return new ButtonBuilder()
+	.setDisabled(true)
+	.setCustomId('Button does not use ID')
+	.setLabel(`${current}/${total}`)
+	.setStyle(ButtonStyle.Primary)
 }

@@ -28,7 +28,6 @@ export const client = new Client({
   receiveAutocomplete: true,
   replyOnError: true,
   splitCustomIdOn: "_",
-  useDefaultInteractionEvent: true,
 });
 
 // Load Events

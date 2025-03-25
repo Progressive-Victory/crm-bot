@@ -3,7 +3,7 @@ import {
 	DiscordAPIError, Events, Interaction,
 	InteractionType
 } from 'discord.js';
-import { Event } from '../Event.js';
+import { Event } from '../Classes/Event.js';
 
 /**
  * Handles the creation of a new interaction.
@@ -15,7 +15,7 @@ function onInteractionCreate(interaction: Interaction): void {
 		commands, interactions, errorMessage, replyOnError
 	} = client;
 
-	// eslint-disable-next-line @typescript-eslint/no-base-to-string
+	 
 	client.emit(Events.Debug, interaction.toString());
 	try {
 		switch (type) {
@@ -91,7 +91,7 @@ function onInteractionCreate(interaction: Interaction): void {
 	}
 }
 
-export default new Event({
+export const interactionCreate = new Event({
 	name: Events.InteractionCreate,
 	once: false,
 	execute: onInteractionCreate

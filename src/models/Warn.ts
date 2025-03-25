@@ -1,5 +1,5 @@
 import { Guild, GuildMember, Snowflake } from 'discord.js';
-import { FilterQuery, FlatRecord, HydratedDocument, Model, Schema, model } from 'mongoose';
+import { HydratedDocument, Model, Schema, model } from 'mongoose';
 
 interface IWarn {
     guildId: Snowflake,
@@ -63,7 +63,7 @@ const warn = new Schema<IWarn, WarnModel>(
         expireAt: {
 			type: Date,
 			required: true,
-			setDate
+			default: setDate()
 		},
         updatedAt: { type: Date, default: new Date() },
     },
@@ -78,7 +78,7 @@ const warn = new Schema<IWarn, WarnModel>(
 			 * @param days 
 			 * @returns 
 			 */
-            createWarning(target:GuildMember, officer:GuildMember, reason?: string, days?: number) {
+            createWarning(target:GuildMember, officer:GuildMember, reason: string, days?: number) {
                 return this.create({
                     guildId: target.guild.id,
 					guildName: target.guild.name,
@@ -89,49 +89,7 @@ const warn = new Schema<IWarn, WarnModel>(
                     reason: reason,
                     expireAt: setDate(days),
                 });
-            },
-			/**
-			 * 
-			 * @param member 
-			 * @param expireAfter 
-			 * @returns 
-			 */
-            getWarns(member:GuildMember, expireAfter?:Date) {
-                const { guild, id } = member;
-                const filter: FilterQuery<FlatRecord<IWarn>> = { guildId: guild.id, targetId: id };
-
-                if (expireAfter) {filter.expireAt = { $gte: expireAfter }; }
-
-                return this.find(filter);
-            },
-			/**
-			 * 
-			 * @param guild 
-			 * @param expireAfter 
-			 * @returns 
-			 */
-            getWarnsInGuild(guild:Guild, expireAfter?:Date) {
-                const { id } = guild;
-                const filter: FilterQuery<FlatRecord<IWarn>> = { guildId: id };
-
-                if (expireAfter) {filter.expireAt = { $gte: expireAfter }; }
-
-                return this.find(filter);
-            },
-			/**
-			 * 
-			 * @param officer 
-			 * @param expireAfter 
-			 * @returns 
-			 */
-            getWarnsOfOfficer(officer:GuildMember, expireAfter?:Date) {
-                const { guild, id } = officer;
-                const filter: FilterQuery<FlatRecord<IWarn>> = { guildId: guild.id, officerId: id };
-
-                if (expireAfter) {filter.expireAt = { $gte: expireAfter }; }
-
-                return this.find(filter);
-            },
+            }
         },
     });
 

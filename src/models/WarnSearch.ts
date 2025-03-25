@@ -17,8 +17,7 @@ const search = new Schema<IWarnSearch>({
 	moderatorDiscordId: String,
 	expireAfter: {
 		type: Date,
-		required: true,
-		default: Date.now()
+		required: false,
 	},
 	searcherDiscordId: {
 		type: String,
