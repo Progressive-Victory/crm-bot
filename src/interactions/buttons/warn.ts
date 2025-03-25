@@ -1,4 +1,4 @@
-import { ButtonInteraction } from 'discord.js';
+import { ButtonInteraction, InteractionReplyOptions, MessageFlags } from 'discord.js';
 import { Interaction } from '../../Classes/index.js';
 import { dateDiffInDays } from '../../features/moderation/index.js';
 import { warnSearch } from '../../features/moderation/WarnEmbed.js';
@@ -61,12 +61,18 @@ export const warnViewUser = new Interaction<ButtonInteraction>({
 		const {user, customId} = interaction
 		const targetId = customId.split(interaction.client.splitCustomIdOn!)[1]
 		const search = await WarningSearch.create({
-			searcherDiscordId: user.id,
-			searcherUsername: user.username,
+			searcher: {
+				discordId: user.id,
+				username: user.username
+			},
 			targetDiscordId: targetId
 		})
 
-		interaction.update(await warnSearch(search,undefined,true))
+		const reply:InteractionReplyOptions = await warnSearch(search,undefined,true)
+
+		reply.flags = MessageFlags.Ephemeral
+
+		interaction.reply(reply)
 		
 	}
 })

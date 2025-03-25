@@ -4,8 +4,7 @@ import { client } from '../../index.js';
 import { Warn, WarningRecord } from '../../models/Warn.js';
 import { IWarnSearch, WarningSearch } from '../../models/WarnSearch.js';
 import { leftButton, pageNumber, rightButton } from './buttons.js';
-import { numberOfWarnEmbedsOnPage } from './index.js';
-import { WarmEmbedColor } from './types.js';
+import { numberOfWarnEmbedsOnPage, WarmEmbedColor } from './types.js';
 
 /**
  *
@@ -37,8 +36,8 @@ export async function viewWarningMessageRender(warns: WarningRecord[], start:num
 export async function warningEmbed(warn: WarningRecord, embedColor: ColorResolvable = WarmEmbedColor.Issued) {
 
 	const guild = client.guilds.cache.get(warn.guildId) ?? await client.guilds.fetch(warn.guildId)
-	const target = guild.members.cache.get(warn.targetDiscordId) ?? await guild.members.fetch(warn.targetDiscordId)
-	const moderator = guild.members.cache.get(warn.moderatorDiscordId) ?? await guild.members.fetch(warn.moderatorDiscordId)
+	const target = guild.members.cache.get(warn.target.discordId) ?? await guild.members.fetch(warn.target.discordId)
+	const moderator = guild.members.cache.get(warn.moderator.discordId) ?? await guild.members.fetch(warn.moderator.discordId)
 	if(!target || !moderator) return
 
 	const embed = new EmbedBuilder()
@@ -52,7 +51,7 @@ export async function warningEmbed(warn: WarningRecord, embedColor: ColorResolva
 
 		if(!target) {
 			embed.addFields(
-				{ name: 'Member', value: inlineCode(warn.targetUsername), inline: true }
+				{ name: 'Member', value: inlineCode(warn.target.username), inline: true }
 			)
 		} else {
 			embed.addFields(
@@ -61,7 +60,7 @@ export async function warningEmbed(warn: WarningRecord, embedColor: ColorResolva
 		}
 		if (!moderator) {
 			embed.addFields(
-				{ name: 'Moderator', value: inlineCode(warn.moderatorUsername), inline: true },
+				{ name: 'Moderator', value: inlineCode(warn.moderator.username), inline: true },
 
 			)
 		} else {
@@ -71,8 +70,8 @@ export async function warningEmbed(warn: WarningRecord, embedColor: ColorResolva
 			)
 		}
 
-		if(warn.updaterDiscordId){
-			const updater = guild.members.cache.get(warn.updaterDiscordId) ?? await guild.members.fetch(warn.updaterDiscordId)
+		if(warn.updater?.discordId && warn.updater?.username){
+			const updater = guild.members.cache.get(warn.updater.discordId) ?? await guild.members.fetch(warn.updater.discordId)
 			if (updater)
 				embed.addFields({
 					name: 'Last Updated By',
@@ -105,8 +104,8 @@ export async function warningEmbed(warn: WarningRecord, embedColor: ColorResolva
 export async function removeWarnEmbed(record:WarningRecord, remover:GuildMember, deleted: boolean = false) {
 	const guild = client.guilds.cache.get(record.guildId)
 	if (!guild) return
-	const target = guild.members.cache.get(record.targetDiscordId) ?? await guild.members.fetch(record.targetDiscordId)
-	const moderator = guild.members.cache.get(record.moderatorDiscordId) ?? await guild.members.fetch(record.moderatorDiscordId)
+	const target = guild.members.cache.get(record.target.discordId) ?? await guild.members.fetch(record.target.discordId)
+	const moderator = guild.members.cache.get(record.moderator.discordId) ?? await guild.members.fetch(record.moderator.discordId)
 	if(!target || !moderator) return
 
     const embed = new EmbedBuilder()
@@ -176,7 +175,7 @@ export function banDmEmbed(interaction:CommandInteraction<"cached">, banReason:s
  * @returns
  */
 export async function warnSearch(record: HydratedDocument<IWarnSearch> | string, isRightMove: boolean = false, isStart:boolean = false) {
-	
+
 	let searchRecord: HydratedDocument<IWarnSearch> | null;
 	
 	if ((typeof record) === 'string')
@@ -192,10 +191,10 @@ export async function warnSearch(record: HydratedDocument<IWarnSearch> | string,
 	const filter: FilterQuery<WarningRecord> = {}
 
 	if (moderatorDiscordId)
-		filter.moderatorDiscordId = moderatorDiscordId
+		filter['moderator.discordId'] =  moderatorDiscordId
 
 	if (targetDiscordId)
-		filter.targetDiscordId = targetDiscordId
+		filter['target.discordId'] = targetDiscordId
 
 	if (expireAfter)
 		filter.expireAt = { $gte: expireAfter }
@@ -228,4 +227,3 @@ export async function warnSearch(record: HydratedDocument<IWarnSearch> | string,
 	}
 	
 }
-

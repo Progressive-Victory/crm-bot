@@ -13,9 +13,3 @@ export function dateDiffInDays(a:Date, b: Date): number {
 
   return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
-
-/**
- * The number of embeds that will show when viewing warning. Value can not be greater than 5. This is a Discord limit
- * @see {@link https://discord.com/developers/docs/resources/message#create-message-jsonform-params}
- */
-export const numberOfWarnEmbedsOnPage = 3

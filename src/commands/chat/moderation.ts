@@ -166,14 +166,12 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 		expireAfter.setMonth(-monthsAgo)
 		filter.expireAt = { $gte: expireAfter };
 	}
-	if (mod) {
-		filter.moderatorDiscordId = mod.id
-	}
-	if (target) filter.targetDiscordId = target.id
 
 	const searchRecord = await WarningSearch.create({
-		searcherDiscordId: interaction.user.id,
-		searcherUsername: interaction.user.username,
+		searcher: {
+			discordId: interaction.user.id,
+			username: interaction.user.username
+		},
 		targetDiscordId: target?.id ,
 		moderatorDiscordId: mod?.id ,
 		expireAfter,

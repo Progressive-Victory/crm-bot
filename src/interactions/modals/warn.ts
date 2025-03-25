@@ -102,8 +102,8 @@ export const warnUpdated = new Interaction<ModalSubmitInteraction>({
 		if (!record) return
 		
 		const numberRegex:RegExp = /^\d{1,3}$/is
-		const target = guild?.members.cache.get(record.targetDiscordId) ?? await guild?.members.fetch(record.targetDiscordId);
-		const mod = guild?.members.cache.get(record.moderatorDiscordId) ?? await guild?.members.fetch(record.moderatorDiscordId);
+		const target = guild?.members.cache.get(record.target.discordId) ?? await guild?.members.fetch(record.target.discordId);
+		const mod = guild?.members.cache.get(record.moderator.discordId) ?? await guild?.members.fetch(record.moderator.discordId);
 
 		if( !target || !mod) return
 
@@ -117,8 +117,10 @@ export const warnUpdated = new Interaction<ModalSubmitInteraction>({
 			duration = Number(modalDuration)
 			record.expireAt = setDate(duration)
 		}
-		record.updaterDiscordId = interaction.user.id
-		record.updaterUsername = interaction.user.username
+		record.updater = {
+			discordId:interaction.user.id, 
+			username:interaction.user.username
+		}
 		record.updatedAt = new Date()
 		record.save()
 

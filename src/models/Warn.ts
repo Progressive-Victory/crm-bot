@@ -1,28 +1,23 @@
-import { Guild, GuildMember, Snowflake } from 'discord.js';
+import { GuildMember, Snowflake } from 'discord.js';
 import { HydratedDocument, Model, Schema, model } from 'mongoose';
+import { IUser, user } from './index.js';
 
-interface IWarn {
+export interface IWarn {
     guildId: Snowflake,
-	guildName: string
-    targetDiscordId: Snowflake,
-	targetUsername: string
-	moderatorDiscordId: Snowflake,
-	moderatorUsername: string
-    updaterDiscordId?: Snowflake,
-	updaterUsername?: string
+	guildName: string,
+	target: IUser
+	moderator: IUser
+	updater?: IUser
     reason: string,
     expireAt: Date,
     createdAt: Date,
     updatedAt: Date,
 }
 
-export type WarningRecord = HydratedDocument<IWarn> // Document<unknown, object, IWarn> & IWarn & {_id: Types.ObjectId;}
+export type WarningRecord = HydratedDocument<IWarn>
 
 interface WarnModel extends Model<IWarn> {
     createWarning(target:GuildMember, officer:GuildMember, reason?: string, days?: number): Promise<WarningRecord>
-    getWarnsOfMember(member:GuildMember, expireAfter?:Date): Promise<WarningRecord[]>
-    getWarnsInGuild(guild:Guild, expireAfter?:Date): Promise<WarningRecord[]>
-    getWarnsOfOfficer(officer:GuildMember, expireAfter?:Date): Promise<WarningRecord[]>
 }
 
 const noReason = 'No Reason Given';
@@ -33,28 +28,9 @@ const warn = new Schema<IWarn, WarnModel>(
 			required: true,
 			immutable: true
 		},
-        targetDiscordId: {
-			type: String,
-			required: true,
-			immutable: true
-		},
-		targetUsername: {
-			type: String,
-			required: true,
-			immutable: true
-		},
-        moderatorDiscordId: {
-			type: String,
-			required: true,
-			immutable: true
-		},
-		moderatorUsername: {
-			type: String,
-			required: true,
-			immutable: true
-		},
-        updaterDiscordId: { type: String, required: false },
-		updaterUsername : { type: String, required: false },
+		target:  user(true,true),
+		moderator: user(true,true),
+		updater: user(false,false),
         reason: {
 			type: String,
 			required: true,
@@ -82,10 +58,14 @@ const warn = new Schema<IWarn, WarnModel>(
                 return this.create({
                     guildId: target.guild.id,
 					guildName: target.guild.name,
-                    targetDiscordId: target.id,
-					targetUsername: target.user.username,
-					moderatorDiscordId: officer.id,
-					moderatorUsername: officer.user.username,
+                    target: {
+						discordId: target.id,
+						username: target.user.username
+					},
+					moderator: {
+						discordId: officer.id,
+						username: officer.user.username
+					},
                     reason: reason,
                     expireAt: setDate(days),
                 });

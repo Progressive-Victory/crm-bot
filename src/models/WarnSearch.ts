@@ -1,12 +1,12 @@
 import { Snowflake } from "discord.js";
 import { model, Schema } from "mongoose";
+import { IUser, user } from "./index.js";
 
 export interface IWarnSearch {
 	targetDiscordId?: Snowflake,
 	moderatorDiscordId?: Snowflake,
 	expireAfter: Date
-	searcherDiscordId?: Snowflake
-	searcherUsername?: string
+	searcher: IUser
 	pageStart: number
 	createdAt: Date
 
@@ -19,11 +19,7 @@ const search = new Schema<IWarnSearch>({
 		type: Date,
 		required: false,
 	},
-	searcherDiscordId: {
-		type: String,
-		required: true
-	},
-	searcherUsername: String,
+	searcher: user(true,true),
 	pageStart: {
 		type: Number,
 		default: 0
