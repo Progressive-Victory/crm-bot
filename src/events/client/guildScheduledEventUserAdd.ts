@@ -3,6 +3,7 @@ import { Event } from '../../Classes/index.js';
 import { ScheduledEventInterest } from '../../features/attendence/index.js';
 import dbConnect from "../../util/libmongo.js";
 
+/** Records when a user presses the interested button on the scheduled event */
 export default new Event({
 	name: Events.GuildScheduledEventUserAdd,
 	execute: async (guildScheduledEvent: GuildScheduledEvent | PartialGuildScheduledEvent, user: User) => {
