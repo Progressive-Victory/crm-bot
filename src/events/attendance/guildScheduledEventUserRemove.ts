@@ -1,6 +1,6 @@
 import { Events, GuildScheduledEvent, PartialGuildScheduledEvent, User } from 'discord.js';
 import { Event } from '../../Classes/index.js';
-import { ScheduledEventInterest } from '../../features/attendence/index.js';
+import { ScheduledEventInterest } from '../../features/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
 
 /** Records when users remove their interest in the scheduled event */

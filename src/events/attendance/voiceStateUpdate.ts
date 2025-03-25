@@ -1,6 +1,6 @@
 import { Events, VoiceState } from 'discord.js';
 import { Event } from '../../Classes/index.js';
-import { VoiceSession } from '../../features/attendence/index.js';
+import { VoiceSession } from '../../features/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
 
 /** Records when people enter and leave channels */

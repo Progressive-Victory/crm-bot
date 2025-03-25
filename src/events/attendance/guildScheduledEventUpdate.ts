@@ -1,6 +1,6 @@
 import { Events, GuildScheduledEvent, GuildScheduledEventStatus, PartialGuildScheduledEvent } from 'discord.js';
 import { Event } from '../../Classes/index.js';
-import { ActivatedEvent } from '../../features/attendence/index.js';
+import { ActivatedEvent } from '../../features/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
 
 /** Records when scheduled events start and stop */
