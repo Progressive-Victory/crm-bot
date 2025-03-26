@@ -1,2 +1,2 @@
-export { warnIssueUpdate, warnViewLeft, warnViewRight, warnViewUser } from './warn.js';
+export { banAppeal, warnIssueUpdate, warnViewLeft, warnViewRight, warnViewUser } from './warn.js';
 

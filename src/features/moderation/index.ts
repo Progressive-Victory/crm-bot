@@ -1,15 +1,18 @@
+// milliseconds in a day
+const _MS_PER_DAY = 1000 * 60 * 60 * 24;
 
 /**
- *
- * @param a
- * @param b
- * @returns
+ * Find the difference in days between two date Objects
+ * @param a smaller date
+ * @param b lager date
+ * @returns number of days
  */
 export function dateDiffInDays(a:Date, b: Date): number {
- const _MS_PER_DAY = 1000 * 60 * 60 * 24;
-  // Discard the time and time-zone information.
-  const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
-  const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+	
+	// converting dates to number of milliseconds between midnight, January 1, 1970 Universal Coordinated Time and the specified date
+	const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+	const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
 
-  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+	// find the deference in days
+	return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }

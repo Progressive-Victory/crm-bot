@@ -3,6 +3,7 @@ import { model, Schema } from "mongoose";
 import { IUser, user } from "./index.js";
 
 export interface IWarnSearch {
+	guildId: Snowflake
 	targetDiscordId?: Snowflake,
 	moderatorDiscordId?: Snowflake,
 	expireAfter: Date
@@ -13,6 +14,11 @@ export interface IWarnSearch {
 }
 
 const search = new Schema<IWarnSearch>({
+	guildId: {
+		type: String,
+		required:true,
+		immutable: true
+	},
 	targetDiscordId: String,
 	moderatorDiscordId: String,
 	expireAfter: {

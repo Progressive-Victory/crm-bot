@@ -44,15 +44,18 @@ const warn = new Schema<IWarn, WarnModel>(
         updatedAt: { type: Date, default: new Date() },
     },
     {
-        timestamps: true,
+        timestamps:{
+			createdAt: true,
+			updatedAt: true
+		},
         statics: {
 			/**
 			 * Create new warning 
-			 * @param target 
-			 * @param officer 
-			 * @param reason 
-			 * @param days 
-			 * @returns 
+			 * @param target guild member targeted for warn
+			 * @param officer moderator issuing the warn
+			 * @param reason of the warn
+			 * @param days time the warn will last
+			 * @returns the record of the warn
 			 */
             createWarning(target:GuildMember, officer:GuildMember, reason: string, days?: number) {
                 return this.create({

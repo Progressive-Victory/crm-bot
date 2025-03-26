@@ -1,8 +1,9 @@
-import { ActionRowBuilder, ChatInputCommandInteraction, InteractionContextType, InteractionReplyOptions, MessageFlags, ModalBuilder, PermissionFlagsBits, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ChatInputCommandInteraction, InteractionContextType, InteractionReplyOptions, MessageFlags, ModalBuilder, PermissionFlagsBits, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
 import { FilterQuery } from "mongoose";
 import { ChatInputCommand } from "../../Classes/index.js";
-import { warnSearch } from "../../features/moderation/WarnEmbed.js";
-import { WarningRecord } from "../../models/Warn.js";
+import { updatedByIdButton, viewUserWarns } from "../../features/moderation/buttons.js";
+import { viewWarningMessageRender, warnSearch } from "../../features/moderation/WarnEmbed.js";
+import { Warn, WarningRecord } from "../../models/Warn.js";
 import { WarningSearch } from "../../models/WarnSearch.js";
 import { AddSplitCustomId, isGuildMember } from "../../util/index.js";
 // import { localize } from "../../i18n.js";
@@ -39,6 +40,12 @@ export const warn = new ChatInputCommand({
 		.addSubcommand(subCommand => subCommand
 			.setName('view')
 			.setDescription('View warnings')
+			.addStringOption(option => option
+				.setName('id')
+				.setDescription('Search by Record Id. Overrides other search options')
+				.setMinLength(24)
+				.setRequired(false)
+			)
 			.addUserOption(option => option
 				.setName('recipient')
 				.setDescription('Filter be the member who received the warning')
@@ -138,7 +145,7 @@ function chatAdd(interaction: ChatInputCommandInteraction) {
 
 	const model = new ModalBuilder()
 		.setTitle('Create Warning')
-		.setCustomId(AddSplitCustomId('warn','create', target.id))
+		.setCustomId(AddSplitCustomId('wc', target.id))
 		.addComponents(firstActionRow,secondActionRow)
 		
 	interaction.showModal(model)
@@ -149,12 +156,37 @@ function chatAdd(interaction: ChatInputCommandInteraction) {
  * @param interaction command interaction from user
  */
 async function viewWarning(interaction: ChatInputCommandInteraction) {
-	
-	const mod = interaction.options.getUser('issuer') ?? undefined
-	const target = interaction.options.getUser('recipient') ?? undefined
+
+	const mod = interaction.options.getUser('issuer')
+	const target = interaction.options.getUser('recipient')
 	const monthsAgo = interaction.options.getInteger('scope') ?? -1
+	const id = interaction.options.getString('id')
 	const filter: FilterQuery<WarningRecord> = {}
-	
+
+	if (id) {
+		const warning = await Warn.findById(id)
+		if (warning) {
+			const embeds = await viewWarningMessageRender([warning])
+			const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(updatedByIdButton(warning), viewUserWarns(warning.target.username))
+			interaction.reply({
+				flags: MessageFlags.Ephemeral,
+				embeds,
+				components:[actionRow]
+			})
+			return
+		} else if(!mod && !target && monthsAgo === -1) {
+			
+			interaction.reply({
+				flags: MessageFlags.Ephemeral,
+				content: 'No search record found. Please let an admin know if you see this message'
+			})
+			return
+		}
+	}
+
+
+
+
 	let expireAfter: Date | undefined = undefined
 	
 	if (monthsAgo === -1) {
@@ -168,6 +200,7 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 	}
 
 	const searchRecord = await WarningSearch.create({
+		guildId: interaction.guild?.id,
 		searcher: {
 			discordId: interaction.user.id,
 			username: interaction.user.username

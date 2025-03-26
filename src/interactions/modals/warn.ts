@@ -1,7 +1,8 @@
 import { ActionRowBuilder, ButtonBuilder, GuildMember, MessageFlags, ModalBuilder, ModalSubmitInteraction, TextInputBuilder, TextInputStyle } from 'discord.js';
 import { Interaction } from '../../Classes/index.js';
-import { updateIssueButton, viewUserWarns } from '../../features/moderation/buttons.js';
-import { dmEmbed, warningEmbed } from '../../features/moderation/WarnEmbed.js';
+import { appealDm, updateIssueButton, viewUserWarns } from '../../features/moderation/buttons.js';
+import { issueWarningDm, warningEmbed, warnLog } from '../../features/moderation/WarnEmbed.js';
+import { GuildSetting } from '../../models/Setting.js';
 import { setDate, Warn, WarningRecord } from '../../models/Warn.js';
 import { isGuildMember } from '../../util/index.js';
 
@@ -52,40 +53,58 @@ export function warnModal(customId:string, title: string, reason?:string, day?: 
 
 
 export const warnCreate = new Interaction<ModalSubmitInteraction>({
-	customIdPrefix:'warn',
+	customIdPrefix:'wc',
 	run: async (interaction: ModalSubmitInteraction) => {
 
 		const {customId, client, guild, member, fields} = interaction
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const [_id, action, targetId] = customId.split(client.splitCustomIdOn!)
+		const targetId = customId.split(client.splitCustomIdOn!)[1]
 		
-		if(action == 'create') {
-			const numberRegex:RegExp = /^\d{1,3}$/is
-			const target = guild?.members.cache.get(targetId);
-			const mod = member;
-			if( !(target && isGuildMember(mod))) return
+		const numberRegex:RegExp = /^\d{1,3}$/is
+		const target = guild?.members.cache.get(targetId);
+		const mod = member;
+		if( !(target && isGuildMember(mod))) return
 
-			const reason = fields.getTextInputValue('reason')
-			const modalDuration = fields.getTextInputValue('duration');
-			let duration: number | undefined
-			if(!numberRegex.test(modalDuration)) {
-				duration = undefined
-			} else {
-				duration = Number(modalDuration)
-			}
-			
-			const record = await Warn.createWarning(target,mod,reason, duration)
-
-			target.send({
-				embeds: [dmEmbed(record, guild!)]
-			})
-			interaction.reply({
-				flags: MessageFlags.Ephemeral,
-				embeds:[(await warningEmbed(record))!.setTitle('Warning Issued')],
-				components:[WarnCreateActionRow(record, target)]
-			})
+		const reason = fields.getTextInputValue('reason')
+		const modalDuration = fields.getTextInputValue('duration');
+		let duration: number | undefined
+		if(!numberRegex.test(modalDuration)) {
+			duration = undefined
+		} else {
+			duration = Number(modalDuration)
 		}
 		
+		const record = await Warn.createWarning(target,mod,reason, duration)
+		const setting = await GuildSetting.findOne({guildId:interaction.guildId})
+
+		const userActionRow = new ActionRowBuilder<ButtonBuilder>()
+
+		if (setting?.warn.appealChannelId) {
+			userActionRow.addComponents(appealDm(record))
+		}
+
+		userActionRow.addComponents(viewUserWarns(target.id, interaction.guildId!).setLabel('View Your History'))
+
+		target.send({
+			embeds: [issueWarningDm(record, guild!)],
+			components:[]
+		})
+
+		interaction.reply({
+			flags: MessageFlags.Ephemeral,
+			embeds:[(await warningEmbed(record))!.setTitle('Warning Issued')],
+			components:[WarnCreateActionRow(record, target)]
+		})
+
+		
+		if (setting?.warn.logChannelId) {
+			const channel = interaction.guild?.channels.cache.get(setting?.warn.logChannelId) ?? await interaction.guild?.channels.fetch(setting?.warn.logChannelId)
+			if (channel?.isSendable()) {
+				channel.send({
+					embeds: [warnLog(record,mod,target)],
+					components: []
+				})
+			}
+		}
 	}
 });
 
@@ -146,3 +165,5 @@ function WarnCreateActionRow(record:WarningRecord, target: GuildMember) {
 	)
 	return actionRow
 }
+
+
