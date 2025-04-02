@@ -7,3 +7,5 @@ export { warn } from './chat/moderation.js';
 // export { userProfile } from './context_menu/profile.js';
 
 export { settings } from './chat/setting.js';
+
+export { reportMessage, reportUser } from './context_menu/report.js';
