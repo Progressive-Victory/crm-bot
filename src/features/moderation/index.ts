@@ -1,3 +1,4 @@
+
 // milliseconds in a day
 const _MS_PER_DAY = 1000 * 60 * 60 * 24;
 
@@ -16,3 +17,5 @@ export function dateDiffInDays(a:Date, b: Date): number {
 	// find the deference in days
 	return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
+
+

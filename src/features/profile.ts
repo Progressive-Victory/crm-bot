@@ -1,4 +1,5 @@
 import { codeBlock, ColorResolvable, EmbedBuilder, GuildMember, TimestampStyles } from "discord.js";
+import { getAuthorOptions } from "./moderation/embeds.js";
 
 /**
  *
@@ -7,9 +8,9 @@ import { codeBlock, ColorResolvable, EmbedBuilder, GuildMember, TimestampStyles 
  * @returns
  */
 export function memberInspectEmbed(member:GuildMember, colors: ColorResolvable) {
-    const iconURL = member.displayAvatarURL({ forceStatic: true, size: 4096 });
+    const iconURL = member.displayAvatarURL();
     return new EmbedBuilder()
-        .setAuthor({ name: member.user.tag, iconURL: iconURL })
+        .setAuthor(getAuthorOptions(member, { forceStatic: true, size: 4096 }))
         .setThumbnail(iconURL)
         .setColor(colors)
         .setFields(

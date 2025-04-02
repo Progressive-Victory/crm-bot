@@ -1,8 +1,12 @@
-import { ActionRowBuilder, ButtonBuilder, ChatInputCommandInteraction, InteractionContextType, InteractionReplyOptions, MessageFlags, ModalBuilder, PermissionFlagsBits, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, inlineCode, InteractionContextType, InteractionReplyOptions, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
 import { FilterQuery } from "mongoose";
 import { ChatInputCommand } from "../../Classes/index.js";
-import { updatedByIdButton, viewUserWarns } from "../../features/moderation/buttons.js";
-import { viewWarningMessageRender, warnSearch } from "../../features/moderation/WarnEmbed.js";
+import { modViewWarningHistory, updateWarnById } from "../../features/moderation/buttons.js";
+import { viewWarningEmbed, viewWarningEmbeds } from "../../features/moderation/embeds.js";
+import { dateDiffInDays } from "../../features/moderation/index.js";
+import { warnModal } from "../../features/moderation/modals.js";
+import { WarnButtonsPrefixes, WarnModalPrefixes } from "../../features/moderation/types.js";
+import { warnSearch } from "../../features/moderation/warnSearch.js";
 import { Warn, WarningRecord } from "../../models/Warn.js";
 import { WarningSearch } from "../../models/WarnSearch.js";
 import { AddSplitCustomId, isGuildMember } from "../../util/index.js";
@@ -34,6 +38,31 @@ export const warn = new ChatInputCommand({
 				.setDescription('Number of days, the warning till end of the warn')
 				.setMinValue(0)
 				.setMaxValue(999)
+				.setRequired(false)
+			)
+		)
+		.addSubcommand(subCommand => subCommand
+			.setName('update')
+			.setDescription('Update Warning')
+			.addStringOption(option => option
+				.setName('id')
+				.setDescription('Record Id')
+				.setMinLength(24)
+				.setRequired(true)
+			)
+		)
+		.addSubcommand(subCommand => subCommand
+			.setName('remove')
+			.setDescription('Remove warn')
+			.addStringOption(option => option
+				.setName('id')
+				.setDescription('Record Id')
+				.setMinLength(24)
+				.setRequired(true)
+			)
+			.addBooleanOption(option => option
+				.setName('delete')
+				.setDescription('To delete the record')
 				.setRequired(false)
 			)
 		)
@@ -76,6 +105,12 @@ export const warn = new ChatInputCommand({
 			case 'create':
 				chatAdd(interaction)
 				break;
+			case 'update':
+				update(interaction)
+				break;
+			case 'remove':
+				remove(interaction)
+				break;
 			case 'view':
 				viewWarning(interaction)
 				break;
@@ -94,8 +129,8 @@ export const warn = new ChatInputCommand({
 function chatAdd(interaction: ChatInputCommandInteraction) {
 	const target = interaction.options.getMember('member');
 	if (!isGuildMember(target)) return
-	const chatDuration = interaction.options.getInteger('duration')
-	const chatReason = interaction.options.getString('reason');
+	const chatDuration = interaction.options.getInteger('duration') ?? undefined
+	const chatReason = interaction.options.getString('reason') ?? undefined;
 	if (target == interaction.member) {
 		interaction.reply({
 			flags: MessageFlags.Ephemeral,
@@ -104,6 +139,7 @@ function chatAdd(interaction: ChatInputCommandInteraction) {
 		return
 	}
 	else if (target.user.bot) {
+
 		interaction.reply({
 			flags: MessageFlags.Ephemeral,
 			content: 'You can not issue a warning to a bot'
@@ -116,39 +152,15 @@ function chatAdd(interaction: ChatInputCommandInteraction) {
 		})
 		return
 	}
+
+	const modal = warnModal(
+		AddSplitCustomId(WarnModalPrefixes.createWarning, target.id),
+		'Create Warning',
+		chatReason,
+		chatDuration
+	)
 	
-	const reason = new TextInputBuilder()
-		.setCustomId('reason')
-		.setLabel('Reason for issuing this warning')
-		.setStyle(TextInputStyle.Paragraph)
-		.setRequired(true)
-
-	if(chatReason)
-		reason.setValue(chatReason)
-
-	const duration = new TextInputBuilder()
-		.setCustomId('duration')
-		.setLabel('Number of days till warning expires')
-		.setPlaceholder('90')
-		.setMinLength(1)
-		.setMaxLength(3)
-		.setStyle(TextInputStyle.Short)
-		.setRequired(false)
-	
-		if(chatDuration)
-			duration.setValue(chatDuration.toString())
-
-	const firstActionRow = new ActionRowBuilder<TextInputBuilder>()
-		.addComponents(reason)
-	const secondActionRow = new ActionRowBuilder<TextInputBuilder>()
-		.addComponents(duration)
-
-	const model = new ModalBuilder()
-		.setTitle('Create Warning')
-		.setCustomId(AddSplitCustomId('wc', target.id))
-		.addComponents(firstActionRow,secondActionRow)
-		
-	interaction.showModal(model)
+	interaction.showModal(modal)
 }
 
 /**
@@ -164,10 +176,16 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 	const filter: FilterQuery<WarningRecord> = {}
 
 	if (id) {
-		const warning = await Warn.findById(id)
-		if (warning) {
-			const embeds = await viewWarningMessageRender([warning])
-			const actionRow = new ActionRowBuilder<ButtonBuilder>().addComponents(updatedByIdButton(warning), viewUserWarns(warning.target.username))
+		const record = await Warn.findById(id)
+		if (record) {
+			const embeds = await viewWarningEmbeds([record], true)
+			const actionRow = new ActionRowBuilder<ButtonBuilder>()
+			if (record.expireAt > new Date()) {
+				actionRow.addComponents(updateWarnById(record))
+			}
+
+			actionRow.addComponents(modViewWarningHistory(record.target.discordId))
+
 			interaction.reply({
 				flags: MessageFlags.Ephemeral,
 				embeds,
@@ -211,8 +229,85 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 		pageStart: 0,
 	})
 
-	const reply: InteractionReplyOptions = await warnSearch(searchRecord,undefined, true)
+	const reply: InteractionReplyOptions = await warnSearch(searchRecord, true, undefined, true)
 	reply.flags = MessageFlags.Ephemeral
 	
     interaction.reply(reply);
+}
+
+/**
+ *
+ * @param interaction
+ */
+async function update(interaction: ChatInputCommandInteraction) {
+	const warnId = interaction.options.getString('id', true)
+	const record = await Warn.findById(warnId)
+
+	if(!record) {
+		interaction.reply({
+			content: 'Warning could not be found',
+			flags: MessageFlags.Ephemeral
+		})
+	} else {
+		interaction.showModal(warnModal(
+				AddSplitCustomId(WarnModalPrefixes.updateById, warnId),
+				'Update Warning',
+				record.reason,
+				dateDiffInDays(new Date(), record.expireAt)
+			)
+		)
+	}
+}
+
+/**
+ *
+ * @param interaction
+ */
+async function remove(interaction: ChatInputCommandInteraction) {
+	const warnId = interaction.options.getString('id', true)
+	const record = await Warn.findById(warnId)
+	const del = interaction.options.getBoolean('delete') ?? false;
+	const reply: InteractionReplyOptions = { flags: MessageFlags.Ephemeral }
+	if(!record) {
+		reply.content = 'Warn could not be found. Check your the warn Id'
+		interaction.reply(reply)
+		return
+	}
+	const embed = await viewWarningEmbed(record, true)
+	if(!embed) {
+		reply.content = 'An Error occurred. Please contact an admin'
+		interaction.reply(reply)
+		return
+	}
+	
+	reply.embeds = [embed]
+	
+	const cancelButton: ButtonBuilder =  new ButtonBuilder()
+		.setLabel('Cancel')
+		.setStyle(ButtonStyle.Success)
+	const approveButton: ButtonBuilder = new ButtonBuilder()
+		.setStyle(ButtonStyle.Danger)
+
+
+	if(del) {
+		reply.content = `Are you sure you want to delete warning: ${inlineCode(warnId)}`
+		
+		cancelButton.setCustomId(AddSplitCustomId(WarnButtonsPrefixes.deleteWarnNo, warnId))
+		approveButton.setLabel('Delete')
+			.setCustomId(AddSplitCustomId(WarnButtonsPrefixes.deleteWarnYes, warnId))
+		
+	} else {
+		reply.content = `Are you sure you want to end warning: ${inlineCode(warnId)}`
+		
+		cancelButton.setCustomId(AddSplitCustomId(WarnButtonsPrefixes.removeWarnNo, warnId))
+		approveButton.setLabel('End')
+			.setCustomId(AddSplitCustomId(WarnButtonsPrefixes.removeWarnYes, warnId))
+		
+	}
+	
+	reply.components = [new ActionRowBuilder<ButtonBuilder>()
+		.addComponents(cancelButton, approveButton)]
+	
+	interaction.reply(reply)
+
 }

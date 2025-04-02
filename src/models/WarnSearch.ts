@@ -1,5 +1,5 @@
 import { Snowflake } from "discord.js";
-import { model, Schema } from "mongoose";
+import { HydratedDocument, model, Schema } from "mongoose";
 import { IUser, user } from "./index.js";
 
 export interface IWarnSearch {
@@ -10,8 +10,10 @@ export interface IWarnSearch {
 	searcher: IUser
 	pageStart: number
 	createdAt: Date
+	isModerator: boolean
 
 }
+export type WarnSearch = HydratedDocument<IWarnSearch>
 
 const search = new Schema<IWarnSearch>({
 	guildId: {
@@ -34,6 +36,10 @@ const search = new Schema<IWarnSearch>({
 		type: Date,
 		default: Date.now(),
 		expires: 86400
+	},
+	isModerator: {
+		type: Boolean,
+		default: false,
 	}
 },{
 	timestamps: true

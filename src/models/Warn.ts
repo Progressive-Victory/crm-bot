@@ -1,5 +1,6 @@
 import { GuildMember, Snowflake } from 'discord.js';
 import { HydratedDocument, Model, Schema, model } from 'mongoose';
+import { defaultNumberOfDaysBeforeExpiration } from '../features/moderation/types.js';
 import { IUser, user } from './index.js';
 
 export interface IWarn {
@@ -83,7 +84,7 @@ export const Warn = model<IWarn, WarnModel>('Warn', warn, 'warnings');
  * @param days number of days to set the date
  * @returns New Date
  */
-export function setDate(days:number = 90) {
+export function setDate(days:number = defaultNumberOfDaysBeforeExpiration) {
     const d = new Date();
     d.setDate(d.getDate() + days);
     return d;

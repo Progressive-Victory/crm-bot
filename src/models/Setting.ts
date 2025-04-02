@@ -35,7 +35,7 @@ const settings = new Schema<ISettings>({
 		},
 	},
 	report: {
-		reportLogChannelId: {
+		logChannelId: {
 			type: String
 		},
 	}

@@ -2,16 +2,17 @@ import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, InteractionReplyOpt
 import { Interaction } from '../../Classes/index.js';
 import { appealDmSubmitted } from '../../features/moderation/buttons.js';
 import { dateDiffInDays } from '../../features/moderation/index.js';
-import { warnSearch } from '../../features/moderation/WarnEmbed.js';
+import { warnModal } from '../../features/moderation/modals.js';
+import { WarnButtonsPrefixes, WarnModalPrefixes } from '../../features/moderation/types.js';
+import { warnSearch } from '../../features/moderation/warnSearch.js';
 import { GuildSetting } from '../../models/Setting.js';
 import { Warn } from '../../models/Warn.js';
 import { WarningSearch } from '../../models/WarnSearch.js';
 import { AddSplitCustomId } from '../../util/index.js';
-import { warnModal } from '../modals/warn.js';
 
 // button to move warn view left
 export const warnViewLeft = new Interaction<ButtonInteraction>({
-	customIdPrefix:'wvl',
+	customIdPrefix: WarnButtonsPrefixes.viewWarningsLeft,
 	run: async (interaction: ButtonInteraction) => {
 
 		const {customId, client} = interaction
@@ -19,44 +20,32 @@ export const warnViewLeft = new Interaction<ButtonInteraction>({
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		const [_id, searchId] = customId.split(client.splitCustomIdOn!)
 
-		interaction.update(await warnSearch(searchId, false))
+		interaction.update(await warnSearch(searchId,interaction.inGuild() ? true : false, false))
 	}
 });
 
 // button to move warn view right
 export const warnViewRight = new Interaction<ButtonInteraction>({
-	customIdPrefix:'wvr',
+	customIdPrefix: WarnButtonsPrefixes.viewWarningsRight,
 	run: async (interaction: ButtonInteraction) => {
 
 		const {customId, client} = interaction
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const [_id, searchId] = customId.split(client.splitCustomIdOn!)
+		const searchId = customId.split(client.splitCustomIdOn!)[1]
 
-		interaction.update(await warnSearch(searchId, true))
+		interaction.update(await warnSearch(searchId, interaction.inGuild() ? true : false, true))
 
 	}
 });
 
 
 export const updateById = new Interaction<ButtonInteraction>({
-	customIdPrefix:'ubi',
+	customIdPrefix: WarnButtonsPrefixes.updateWarnById,
 	run: async (interaction: ButtonInteraction) => {
 		const {customId, client} = interaction
 
 		const warnId = customId.split(client.splitCustomIdOn!)[1]
-	}
-})
 
-// updated issued warning
-export const warnIssueUpdate = new Interaction<ButtonInteraction>({
-	customIdPrefix:'wiu',
-	run: async (interaction: ButtonInteraction) => {
-		const {customId, client} = interaction
-		
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		const [_id, warnId] = customId.split(client.splitCustomIdOn!)
-		
 		// check that warning exists
 		const record = await Warn.findById(warnId)
 		if (!record) {
@@ -67,14 +56,19 @@ export const warnIssueUpdate = new Interaction<ButtonInteraction>({
 			return;
 		}
 
-		// create Warn Modal to update 
-		const modal = warnModal(AddSplitCustomId('wu', warnId), 'Update Warning', record.reason, dateDiffInDays(new Date(), record.expireAt))
+		const modal = warnModal(
+			AddSplitCustomId(WarnModalPrefixes.updateById, warnId),
+			'Update Warning',
+			record.reason,
+			dateDiffInDays(new Date(), record.expireAt)
+		)
+
 		interaction.showModal(modal)
 	}
-});
+})
 
 export const warnViewUser = new Interaction<ButtonInteraction>({
-	customIdPrefix:'vuw',
+	customIdPrefix:WarnButtonsPrefixes.modViewWarningHistory,
 	run: async (interaction: ButtonInteraction) => {
 		const {user, customId} = interaction
 		const args = customId.split(interaction.client.splitCustomIdOn!)
@@ -97,7 +91,7 @@ export const warnViewUser = new Interaction<ButtonInteraction>({
 			targetDiscordId: targetId
 		})
 
-		const reply:InteractionReplyOptions = await warnSearch(search,undefined,true)
+		const reply:InteractionReplyOptions = await warnSearch(search, true, undefined,true)
 
 		reply.flags = MessageFlags.Ephemeral
 
@@ -107,7 +101,7 @@ export const warnViewUser = new Interaction<ButtonInteraction>({
 })
 
 export const banAppeal = new Interaction<ButtonInteraction>({
-	customIdPrefix:'wa',
+	customIdPrefix: WarnButtonsPrefixes.appealWarn,
 	run: async (interaction:ButtonInteraction) => {
 		
 		const warning = await Warn.findById(interaction.customId.split(interaction.client.splitCustomIdOn!)[1])

@@ -17,25 +17,29 @@ export const settings = new ChatInputCommand({
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
 		.setContexts(InteractionContextType.Guild)
 		.addSubcommandGroup(subcommandGroup => subcommandGroup
-			.setName('channels')
-			.setDescription('channel settings')
+			.setName('warn')
+			.setDescription('configure wanning system')
 			.addSubcommand(subCommand => subCommand
-				.setName('warn')
-				.setDescription('warn channels')
+				.setName('channels')
+				.setDescription('configure channels for warn system')
 				.addStringOption(option => option
 					.setName('setting')
 					.setDescription('Setting to edit')
 					.setChoices(
 						{ name: 'log', value: 'warn.logChannelId' },
-						{ name: 'appeal', value: 'warn.appealChannelId' },
+						// { name: 'appeal', value: 'warn.appealChannelId' },
 					)
 					.setRequired(true)
 				)
 				.addChannelOption(channel)
 			)
+		)
+		.addSubcommandGroup(subcommandGroup => subcommandGroup
+			.setName('report')
+			.setDescription('Config user report')
 			.addSubcommand(subCommand => subCommand
-				.setName('report')
-				.setDescription('report channels')
+				.setName('channels')
+				.setDescription('configure channels for warn system')
 				.addStringOption(option => option
 					.setName('setting')
 					.setDescription('Setting to edit')
@@ -47,26 +51,23 @@ export const settings = new ChatInputCommand({
 				.addChannelOption(channel)
 			)
 		),
-		execute: async (interaction) => {
+	execute: async (interaction) => {
 
-			const subCommandGroup = interaction.options.getSubcommandGroup()
-			// const subCommand = interaction.options.getSubcommand(true)
+		const subCommand = interaction.options.getSubcommand(true)
 
-			if(subCommandGroup === 'channels') {
-				const setting = interaction.options.getString('setting', true)
-				const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText, ChannelType.PublicThread])
+		if(subCommand === 'channels') {
+			const setting = interaction.options.getString('setting', true)
+			const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText, ChannelType.PublicThread])
 
-				const update: UpdateQuery<ISettings> = {}
-				update[setting] = channel.id
-				
-				await GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, update)
-
-				interaction.reply({
-					flags: MessageFlags.Ephemeral,
-					content: `${inlineCode(setting)} has been updated to ${channel}`
-				})
-			}
+			const update: UpdateQuery<ISettings> = {}
+			update[setting] = channel.id
 			
+			await GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, update)
 
+			interaction.reply({
+				flags: MessageFlags.Ephemeral,
+				content: `${inlineCode(setting)} has been updated to ${channel}`
+			})
 		}
+	}
 })
