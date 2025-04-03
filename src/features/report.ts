@@ -1,11 +1,14 @@
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { ActionRowBuilder, ColorResolvable, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+
+export const userReportColor:ColorResolvable = '#9ad360'
+export const messageReportColor:ColorResolvable = '#f5f5dc'
+
+
 
 export enum reportModalPrefix {
 	userReport = 'ur',
 	messageReport = 'mr'
 }
-
-
 
 const comment = new TextInputBuilder()
 	.setCustomId('comment')

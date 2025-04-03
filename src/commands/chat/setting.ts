@@ -39,12 +39,29 @@ export const settings = new ChatInputCommand({
 			.setDescription('Config user report')
 			.addSubcommand(subCommand => subCommand
 				.setName('channels')
-				.setDescription('configure channels for warn system')
+				.setDescription('configure channels for report system')
 				.addStringOption(option => option
 					.setName('setting')
 					.setDescription('Setting to edit')
 					.setChoices(
 						{name: 'log', value: 'report.logChannelId'},
+					)
+					.setRequired(true)
+				)
+				.addChannelOption(channel)
+			)
+		)
+		.addSubcommandGroup(subcommandGroup => subcommandGroup
+			.setName('logging')
+			.setDescription('Config logs')
+			.addSubcommand(subCommand => subCommand
+				.setName('channels')
+				.setDescription('configure channels for log system')
+				.addStringOption(option => option
+					.setName('setting')
+					.setDescription('Setting to edit')
+					.setChoices(
+						{name: 'timeout', value: 'logging.timeoutChannelId'},
 					)
 					.setRequired(true)
 				)

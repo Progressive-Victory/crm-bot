@@ -7,3 +7,5 @@ export { debug } from './client/debug.js';
 export { error } from './client/error.js';
 
 export { interactionCreate } from './interactionCreate.js';
+
+export { guildAuditLogEntryCreate } from './guild/GuildAuditLogEntryCreate.js';

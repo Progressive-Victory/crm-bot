@@ -10,6 +10,9 @@ export interface ISettings {
 	},
 	report: {
 		logChannelId?: Snowflake,
+	},
+	logging: {
+		timeoutChannelId?: Snowflake,
 	}
 }
 
@@ -38,6 +41,11 @@ const settings = new Schema<ISettings>({
 		logChannelId: {
 			type: String
 		},
+	},
+	logging: {
+		timeoutChannelId: {
+			type:String
+		}
 	}
 
 },

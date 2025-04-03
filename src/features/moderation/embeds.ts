@@ -14,7 +14,7 @@ export function newWarnModEmbed(record: WarningRecord, moderator: GuildMember, t
 	const embed = new EmbedBuilder()
 		.setTitle('Warning Issued')
 		.setColor(WarnEmbedColor.Issued)
-		.setThumbnail((target.avatarURL({forceStatic: true}) ?? target.user.avatarURL({forceStatic: true})))
+		.setThumbnail(target.displayAvatarURL({forceStatic: true}))
 		.setFields(
 			reasonField(record.reason),
 			userField('Member', target.user),
@@ -37,7 +37,7 @@ export function warnLogUpdateEmbed(record: WarningRecord, moderator: GuildMember
 	const embed = new EmbedBuilder()
 		.setTitle('Warning updated')
 		.setColor(WarnEmbedColor.Issued)
-		.setThumbnail((target.avatarURL({forceStatic: true}) ?? target.user.avatarURL({forceStatic: true})))
+		.setThumbnail(target.displayAvatarURL({forceStatic: true}))
 		.setFields(
 			reasonField(record.reason),
 			userField('Member', target.user),
@@ -63,7 +63,7 @@ export function warnIssueUpdateEmbed(record: WarningRecord, target: GuildMember)
 	const embed = new EmbedBuilder()
 		.setTitle('Warning updated')
 		.setColor(WarnEmbedColor.Issued)
-		.setThumbnail((target.avatarURL({forceStatic: true}) ?? target.user.avatarURL({forceStatic: true})))
+		.setThumbnail(target.displayAvatarURL({forceStatic: true}))
 		.setFields(
 			reasonField(record.reason),
 			userField('Member', target.user),
@@ -108,8 +108,8 @@ export function newWarningLogEmbed(record: WarningRecord, moderator: GuildMember
 	const embed = new EmbedBuilder()
 		.setTitle('Warning Issued')
 		.setColor(WarnEmbedColor.Issued)
-		.setAuthor({name: moderator.displayName, iconURL: (moderator.avatarURL({forceStatic: true}) ?? moderator.user.avatarURL({forceStatic: true}) ?? undefined)})
-		.setThumbnail((target.avatarURL({forceStatic: true}) ?? target.user.avatarURL({forceStatic: true})))
+		.setAuthor(getAuthorOptions(moderator))
+		.setThumbnail(target.displayAvatarURL({forceStatic:true}))
 		.setFields(
 			reasonField(record.reason),
 			userField('Member', target.user),
@@ -186,7 +186,7 @@ export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, emb
 		// if target is present use GuildMember for username and avatar
 		else embed.addFields(userField(targetFieldName, target.user))
 			// If user does not have a server avatar try user avatar
-			.setThumbnail(target.avatarURL({forceStatic: true}) ?? target.user.avatarURL({forceStatic: true}))
+			.setThumbnail(target.displayAvatarURL({forceStatic: true}))
 	
 
 		const moderatorFieldName = 'Moderator'

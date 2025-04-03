@@ -87,7 +87,7 @@ export const deleteWarnYes = new Interaction<ButtonInteraction>({
 			)
 			.setTimestamp()
 		if (target) {
-			embed.setThumbnail(target.avatarURL({forceStatic:true}) ?? target.user.avatarURL({forceStatic:true}))
+			embed.setThumbnail(target.displayAvatarURL({forceStatic:true}))
 		}
 		
 		const settings = await GuildSetting.findOne({guildId: interaction.guildId})

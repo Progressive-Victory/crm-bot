@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, GuildMember, inlineCode, MessageFlags, ModalSubmitInteraction } from "discord.js";
 import { Interaction } from "../../Classes/Interaction.js";
 import { getAuthorOptions } from "../../features/moderation/embeds.js";
-import { reportModalPrefix } from "../../features/report.js";
+import { messageReportColor, reportModalPrefix, userReportColor } from "../../features/report.js";
 import { GuildSetting } from "../../models/Setting.js";
 
 export const userReport = new Interaction<ModalSubmitInteraction>({
@@ -37,7 +37,7 @@ export const userReport = new Interaction<ModalSubmitInteraction>({
 							value: comment.length === 0 ? 'No comment provided' : comment
 						})
 						.setAuthor(getAuthorOptions(reporter))
-						.setColor('#9ad360')
+						.setColor(userReportColor)
 				]
 			})
 		}
@@ -84,7 +84,7 @@ export const messageReport = new Interaction<ModalSubmitInteraction>({
 			.setTitle('Message Report')
 			.setDescription(`${author}'s message was reported by ${interaction.member}`)
 			.setAuthor(getAuthorOptions(reporter))
-			.setColor('#f5f5dc')
+			.setColor(messageReportColor)
 
 			if(message.content.length > 0) {
 				embed.addFields({
