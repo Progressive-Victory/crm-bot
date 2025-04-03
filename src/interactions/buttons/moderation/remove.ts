@@ -1,6 +1,7 @@
-import { ButtonInteraction, EmbedBuilder, GuildMember, inlineCode } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, EmbedBuilder, GuildMember, inlineCode } from "discord.js";
 import { Interaction } from "../../../Classes/Interaction.js";
-import { getAuthorOptions, warnLogUpdateEmbed } from "../../../features/moderation/embeds.js";
+import { modViewWarningHistory } from "../../../features/moderation/buttons.js";
+import { getAuthorOptions, userField, warnLogUpdateEmbed } from "../../../features/moderation/embeds.js";
 import { WarnButtonsPrefixes, WarnEmbedColor } from "../../../features/moderation/types.js";
 import { GuildSetting } from "../../../models/Setting.js";
 import { Warn } from "../../../models/Warn.js";
@@ -36,22 +37,27 @@ export const removeWarnYes = new Interaction<ButtonInteraction>({
 		const embed = warnLogUpdateEmbed(record, mod, target, updater)
 
 		const settings = await GuildSetting.findOne({guildId})
+
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(modViewWarningHistory(target.id))
+
+		interaction.update({
+			content: '',
+			embeds:[embed.setAuthor(null)],
+			components: [row]
+		})
+
 		if (settings?.warn.logChannelId) {
 			const log = guild?.channels.cache.get(settings.warn.logChannelId) ?? await guild?.channels.fetch(settings.warn.logChannelId)
 			if (log?.isSendable()) {
 				
 				log.send({
 					embeds: [embed.setAuthor(getAuthorOptions(updater))],
-					// components: [] add buttons to view user history
+					components: [row]
 				})
 			}
 		}
 		
-		interaction.update({
-			content: '',
-			embeds:[embed.setAuthor(null)],
-			components: []
-		})
+		
 	}
 })
 
@@ -73,8 +79,10 @@ export const deleteWarnYes = new Interaction<ButtonInteraction>({
 
 		const record = await getWarnRecord(interaction)
 		if(!record) return;
-		const target = interaction.guild?.members.cache.get(record.target.discordId) ?? await interaction.guild?.members.fetch(record.target.discordId) ?? undefined
 		
+		const target = interaction.guild?.members.cache.get(record.target.discordId) ?? await interaction.guild?.members.fetch(record.target.discordId) ?? undefined
+		if (!target) return
+
 		const embed = new EmbedBuilder()
 			.setTitle('Warning Deleted')
 			.setDescription(`Warn deleted for ${target ?? record.target.username}`)
@@ -83,7 +91,8 @@ export const deleteWarnYes = new Interaction<ButtonInteraction>({
 				{
 					name: 'Reason for warn',
 					value: record.reason
-				}
+				},
+				userField('Action By', interaction.user)
 			)
 			.setTimestamp()
 		if (target) {
@@ -94,6 +103,14 @@ export const deleteWarnYes = new Interaction<ButtonInteraction>({
 		
 		record?.deleteOne()
 
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(modViewWarningHistory(target.id))
+		
+		interaction.update({
+			content: '',
+			embeds:[embed.setAuthor(null)],
+			components: [row]
+		})
+		
 		if (settings?.warn.logChannelId) {
 			const log = interaction.guild?.channels.cache.get(settings.warn.logChannelId) ?? await interaction.guild?.channels.fetch(settings.warn.logChannelId)
 			if (log?.isSendable()) {
@@ -106,16 +123,12 @@ export const deleteWarnYes = new Interaction<ButtonInteraction>({
 				}
 				log.send({
 					embeds: [embed.setAuthor(getAuthorOptions(member))],
-					// components: [] add buttons to view user history
+					components: [row]
 				})
 			}
 		}
 		
-		interaction.update({
-			content: '',
-			embeds:[embed.setAuthor(null)],
-			components: []
-		})
+		
 
 	}
 })

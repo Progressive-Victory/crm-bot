@@ -1,8 +1,7 @@
 import {
 	Events,
 	GuildMember,
-	InteractionContextType, MessageFlags, PermissionFlagsBits,
-	TimestampStyles
+	InteractionContextType, MessageFlags, PermissionFlagsBits
 } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 import { timeoutEmbed } from '../../features/timeout.js';
@@ -11,6 +10,22 @@ import { GuildSetting } from '../../models/Setting.js';
 import { isGuildMember } from '../../util/index.js';
 
 export const ns = 'timeout';
+
+const durationText = {
+	'60': '60 secs',
+	'300': '5 mins',
+	'600': '10 mins',
+	'1800': '30 mins',
+	'3600': '1 hour',
+	'7200': '2 hours',
+	'21600': '6 hours',
+	'43200': '12 hours',
+	'86400': '1 Day',
+	'259200': '3 Days',
+	'604800': '1 week'
+}
+type durationValue = '60' | '300' | '600' | '1800' | '3600' | '7200' | '21600' | '43200' | '86400' | '259200' | '604800'
+
 
 export const timeout = new ChatInputCommand()
 	.setBuilder((builder) => builder
@@ -21,7 +36,7 @@ export const timeout = new ChatInputCommand()
 		.setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
 		.setContexts(InteractionContextType.Guild)
 		.addUserOption(option => option
-			.setName('member')
+			.setName('user')
 			.setDescription('The user to timeout')
 			// .setNameLocalizations(localize.discordLocalizationRecord('option_member_name', ns))
 			// .setNameLocalizations(localize.discordLocalizationRecord('option_member_description', ns))
@@ -55,24 +70,23 @@ export const timeout = new ChatInputCommand()
 			options, locale, user, guild, member
 		} = interaction;
 
-		let target = options.getMember('member');
+		let target = options.getMember('user');
 
 		if(!isGuildMember(target)) {
 			interaction.client.emit(Events.Error, Error('received APIInteractionDataResolvedGuildMember when expecting guild member'));
 			return interaction.reply({ content: localize.t('reply_error', ns, locale), flags: MessageFlags.Ephemeral });
 		}
 
-		const reason = options.getString('reason', false) ?? undefined;
-		const duration = options.getNumber('duration', true);
-		const endNumber = Math.floor(new Date().getTime() / 1000) + duration;
+		const reason = options.getString('reason', false) ?? 'No reason given';
+		const duration = options.getNumber('duration', true)
+		// const endNumber = Math.floor(new Date().getTime() / 1000) + duration;
 
 		target = await target.timeout(duration * 1000, `Member was timed out by ${user.username} for ${reason}`);
-
 
 		interaction.reply({
 			content: localize.t('reply_timeout', ns, locale, {
 				member: target.toString(),
-				endDate: `<t:${endNumber}:${TimestampStyles.LongDateTime}>`
+				endDate: durationText[duration.toString() as durationValue]
 			}),
 			flags: MessageFlags.Ephemeral
 		});
@@ -86,5 +100,5 @@ export const timeout = new ChatInputCommand()
 					
 		const embed = timeoutEmbed(target, member, new Date(), target.communicationDisabledUntil!, reason)
 					
-	timeoutChannel.send({embeds:[embed]})
+		timeoutChannel.send({embeds:[embed]})
 	});

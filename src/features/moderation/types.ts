@@ -1,8 +1,9 @@
 
 export enum WarnEmbedColor {
     Active = '#57F287',
-    Issued = '#FEE75C',
-    Inactive = '#ED4245'
+    updated = '#ff9900',
+    Inactive = '#ED4245',
+	issued = '#FEE75C'
 }
 
 /**
@@ -12,6 +13,8 @@ export enum WarnEmbedColor {
 export const numberOfWarnEmbedsOnPage = 3
 
 export const defaultNumberOfDaysBeforeExpiration = 90
+
+export const numberRegex:RegExp = /^\d{1,3}$/is
 
 export enum WarnButtonsPrefixes {
 	viewWarningsLeft = 'vwl',

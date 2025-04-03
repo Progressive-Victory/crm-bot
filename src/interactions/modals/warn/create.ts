@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, MessageFlags, ModalSubmitInteraction } from "discord.js";
 import { Interaction } from "../../../Classes/Interaction.js";
-import { userViewWarnHistory } from "../../../features/moderation/buttons.js";
+import { modViewWarningHistory, userViewWarnHistory } from "../../../features/moderation/buttons.js";
 import { newWarningDmEmbed, newWarningLogEmbed, newWarnModEmbed } from "../../../features/moderation/embeds.js";
 import { WarnModalPrefixes } from "../../../features/moderation/types.js";
 import { GuildSetting } from "../../../models/Setting.js";
@@ -46,10 +46,12 @@ export const warnCreate = new Interaction<ModalSubmitInteraction>({
 			components:[]
 		})
 
+		const row = new ActionRowBuilder<ButtonBuilder>().addComponents(modViewWarningHistory(targetId))
+
 		interaction.reply({
 			flags: MessageFlags.Ephemeral,
 			embeds:[newWarnModEmbed(record, mod, target)],
-			// components:[warnCreateActionRow(record, target)]
+			components:[row]
 		})
 
 		
@@ -58,8 +60,7 @@ export const warnCreate = new Interaction<ModalSubmitInteraction>({
 			if (channel?.isSendable()) {
 				channel.send({
 					embeds: [newWarningLogEmbed(record,mod,target)],
-					components: []
-					// TODO: Add button to view
+					components: [row]
 				})
 			}
 		}

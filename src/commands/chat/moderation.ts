@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, inlineCode, InteractionContextType, InteractionReplyOptions, MessageFlags, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChatInputCommandInteraction, inlineCode, InteractionContextType, InteractionReplyOptions, MessageFlags, PermissionFlagsBits, SlashCommandBuilder, SlashCommandStringOption } from "discord.js";
 import { FilterQuery } from "mongoose";
 import { ChatInputCommand } from "../../Classes/index.js";
 import { modViewWarningHistory, updateWarnById } from "../../features/moderation/buttons.js";
@@ -13,7 +13,12 @@ import { AddSplitCustomId, isGuildMember } from "../../util/index.js";
 // import { localize } from "../../i18n.js";
 
 export const ns = "moderation"
-
+const idOptions = new SlashCommandStringOption()
+	.setName('id')
+	.setDescription('Record Id')
+	.setMinLength(24)
+	.setMaxLength(24)
+	.setRequired(true)
 export const warn = new ChatInputCommand({
 	builder: new SlashCommandBuilder()
 		.setName('warn')
@@ -44,20 +49,14 @@ export const warn = new ChatInputCommand({
 		.addSubcommand(subCommand => subCommand
 			.setName('update')
 			.setDescription('Update Warning')
-			.addStringOption(option => option
-				.setName('id')
-				.setDescription('Record Id')
-				.setMinLength(24)
+			.addStringOption(idOptions
 				.setRequired(true)
 			)
 		)
 		.addSubcommand(subCommand => subCommand
 			.setName('remove')
 			.setDescription('Remove warn')
-			.addStringOption(option => option
-				.setName('id')
-				.setDescription('Record Id')
-				.setMinLength(24)
+			.addStringOption(idOptions
 				.setRequired(true)
 			)
 			.addBooleanOption(option => option
@@ -69,10 +68,8 @@ export const warn = new ChatInputCommand({
 		.addSubcommand(subCommand => subCommand
 			.setName('view')
 			.setDescription('View warnings')
-			.addStringOption(option => option
-				.setName('id')
+			.addStringOption(idOptions
 				.setDescription('Search by Record Id. Overrides other search options')
-				.setMinLength(24)
 				.setRequired(false)
 			)
 			.addUserOption(option => option

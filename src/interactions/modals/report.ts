@@ -36,7 +36,7 @@ export const userReport = new Interaction<ModalSubmitInteraction>({
 							name:'Comment',
 							value: comment.length === 0 ? 'No comment provided' : comment
 						})
-						.setAuthor(getAuthorOptions(reporter))
+						.setAuthor(getAuthorOptions(target))
 						.setColor(userReportColor)
 				]
 			})
@@ -83,12 +83,12 @@ export const messageReport = new Interaction<ModalSubmitInteraction>({
 			const embed = new EmbedBuilder()
 			.setTitle('Message Report')
 			.setDescription(`${author}'s message was reported by ${interaction.member}`)
-			.setAuthor(getAuthorOptions(reporter))
+			.setAuthor(getAuthorOptions(author))
 			.setColor(messageReportColor)
 
 			if(message.content.length > 0) {
 				embed.addFields({
-					name: 'Content',
+					name: 'Message Content',
 					value: message.content
 				})
 			}
@@ -99,18 +99,18 @@ export const messageReport = new Interaction<ModalSubmitInteraction>({
 				})
 			}
 
-
-
 			embed.addFields({
 				name:'Comment',
 				value: comment.length === 0 ? 'No comment provided' : comment
 			})
+
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
 				new ButtonBuilder()
 					.setStyle(ButtonStyle.Link)
 					.setURL(message.url)
 					.setLabel('Jump to Message')
 			)
+
 			logChannel.send({
 				embeds:[embed],
 				components: [row]
@@ -121,6 +121,5 @@ export const messageReport = new Interaction<ModalSubmitInteraction>({
 			flags: MessageFlags.Ephemeral,
 			content: 'Your report has been received and will be reviewed. Thank you'
 		})
-
 	}
 })

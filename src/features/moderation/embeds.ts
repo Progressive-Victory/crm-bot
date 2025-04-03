@@ -13,7 +13,7 @@ import { numberOfWarnEmbedsOnPage, WarnEmbedColor } from "./types.js";
 export function newWarnModEmbed(record: WarningRecord, moderator: GuildMember, target: GuildMember) {
 	const embed = new EmbedBuilder()
 		.setTitle('Warning Issued')
-		.setColor(WarnEmbedColor.Issued)
+		.setColor(WarnEmbedColor.updated)
 		.setThumbnail(target.displayAvatarURL({forceStatic: true}))
 		.setFields(
 			reasonField(record.reason),
@@ -36,8 +36,8 @@ export function newWarnModEmbed(record: WarningRecord, moderator: GuildMember, t
 export function warnLogUpdateEmbed(record: WarningRecord, moderator: GuildMember, target: GuildMember, updater: GuildMember) {
 	const embed = new EmbedBuilder()
 		.setTitle('Warning updated')
-		.setColor(WarnEmbedColor.Issued)
-		.setThumbnail(target.displayAvatarURL({forceStatic: true}))
+		.setColor(WarnEmbedColor.issued)
+		// .setThumbnail(target.displayAvatarURL({forceStatic: true}))
 		.setFields(
 			reasonField(record.reason),
 			userField('Member', target.user),
@@ -48,7 +48,7 @@ export function warnLogUpdateEmbed(record: WarningRecord, moderator: GuildMember
 		)
 		.setFooter(documentIdFooter(record))
 		.setTimestamp()
-		.setAuthor(getAuthorOptions(updater))
+		.setAuthor(getAuthorOptions(target))
 	return embed
 }
 
@@ -62,7 +62,7 @@ export function warnLogUpdateEmbed(record: WarningRecord, moderator: GuildMember
 export function warnIssueUpdateEmbed(record: WarningRecord, target: GuildMember) {
 	const embed = new EmbedBuilder()
 		.setTitle('Warning updated')
-		.setColor(WarnEmbedColor.Issued)
+		.setColor(WarnEmbedColor.updated)
 		.setThumbnail(target.displayAvatarURL({forceStatic: true}))
 		.setFields(
 			reasonField(record.reason),
@@ -85,7 +85,7 @@ export function warnIssueUpdateEmbed(record: WarningRecord, target: GuildMember)
 export function newWarningDmEmbed(record:WarningRecord, count:number, guild:Guild) {
 	return new EmbedBuilder()
 		.setTitle('You Have Received a Waring')
-		.setColor(WarnEmbedColor.Issued)
+		.setColor(WarnEmbedColor.updated)
 		.addFields(
 			reasonField(record.reason, 'Reason for this warning'),
 			activeWarningCountField(count)
@@ -107,8 +107,8 @@ export function newWarningDmEmbed(record:WarningRecord, count:number, guild:Guil
 export function newWarningLogEmbed(record: WarningRecord, moderator: GuildMember, target: GuildMember) {
 	const embed = new EmbedBuilder()
 		.setTitle('Warning Issued')
-		.setColor(WarnEmbedColor.Issued)
-		.setAuthor(getAuthorOptions(moderator))
+		.setColor(WarnEmbedColor.updated)
+		.setAuthor(getAuthorOptions(target))
 		.setThumbnail(target.displayAvatarURL({forceStatic:true}))
 		.setFields(
 			reasonField(record.reason),
@@ -160,7 +160,7 @@ export async function viewWarningEmbeds(records: WarningRecord[], isMod:boolean,
  * @param embedColor color of the embed
  * @returns EmbedBuilder or undefined
  */
-export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, embedColor: ColorResolvable = WarnEmbedColor.Issued) {
+export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, embedColor: ColorResolvable = WarnEmbedColor.updated) {
 
 	// Get guild from cache or fetch
 	const guild = client.guilds.cache.get(record.guildId) ?? await client.guilds.fetch(record.guildId).catch(console.error)
