@@ -108,7 +108,7 @@ export function newWarningLogEmbed(record: WarningRecord, moderator: GuildMember
 	const embed = new EmbedBuilder()
 		.setTitle('Warning Issued')
 		.setColor(WarnEmbedColor.updated)
-		.setAuthor(getAuthorOptions(target))
+		.setAuthor(getAuthorOptions(moderator))
 		.setThumbnail(target.displayAvatarURL({forceStatic:true}))
 		.setFields(
 			reasonField(record.reason),
