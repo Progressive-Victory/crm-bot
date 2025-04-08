@@ -55,18 +55,19 @@ export async function warnSearch(record: WarnSearch  | string, isMod:boolean, is
 	}
 	// save search record
 	searchRecord.save();
-	
+
+	const now = Date.now()
+
 	// Find and sort warning documents 
 	const records = (await Warn.find(filter)).toSorted((a, b) => {
 		
 		// checks if on of the records has expired
-		const aExpired = a.expireAt.getTime() - Date.now();
-		const bExpired = b.expireAt.getTime() - Date.now();
+		const aExpired = a.expireAt.getTime() < now;
+		const bExpired = b.expireAt.getTime() < now;
 
-		if(aExpired > 0 && bExpired < 0) return -1
-		else if (aExpired < 0 && bExpired > 0) return 1
+		if (!aExpired && bExpired) return -1
+		if (aExpired && !bExpired) return 1
 
-		
 		// if none or both records are expired compare createdAt
 		return b.createdAt.getTime() - a.createdAt.getTime();
 	} )
