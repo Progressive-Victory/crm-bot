@@ -1,4 +1,4 @@
-import { time, TimestampStyles, TimestampStylesString } from 'discord.js';
+import { TimestampStyles, TimestampStylesString } from 'discord.js';
 import { ExtendedClient } from './Client.js';
 
 export const ExtraColor = {
@@ -10,16 +10,17 @@ declare global {
 	interface Date {
 		/**
 		 * Prints date to Discord Timestamp Styles
-		 * @param style Discord TimestampStylesString
+		 * @param format Discord TimestampStylesString
 		 * @returns date formatted fro a message
 		 * @see {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles}
 		 */
-		toDiscordString(style?: TimestampStylesString): `<t:${bigint}:${TimestampStylesString}>`;
+		toDiscordString(format?: TimestampStylesString): `<t:${number}:${TimestampStylesString}>`;
 	}
 }
 
-Date.prototype.toDiscordString = function(style: TimestampStylesString = TimestampStyles.ShortDateTime ) {
-	return time(this, style);
+Date.prototype.toDiscordString = function(format: TimestampStylesString = TimestampStyles.ShortDateTime ) {
+	const code = Math.floor(this.getTime() / 1000);
+	return `<t:${code}:${format}>`;
 };
 
 declare module 'discord.js' {
