@@ -55,7 +55,7 @@ export class CommandHandler {
 	 * @param command Command to add
 	 * @returns the command handler
 	 */
-	add(command: ChatInputCommand | ContextMenuCommand<UserContextMenuCommandInteraction | MessageContextMenuCommandInteraction>) {
+	add(command: ChatInputCommand | ContextMenuCommand<MessageContextMenuCommandInteraction> | ContextMenuCommand<UserContextMenuCommandInteraction>) {
 		const { type } = command;
 		// try {
 		// 	this.validateApplicationCommand(command, type);

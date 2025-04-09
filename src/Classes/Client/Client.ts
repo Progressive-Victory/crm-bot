@@ -2,7 +2,6 @@ import { Client, Events } from 'discord.js';
 import {
 	CommandHandler, EventHandler, InteractionHandler
 } from '../Handlers/index.js';
-import onInteractionCreate from './interactionCreate.js';
 import { ExtendedClientOptions } from './interfaces.js';
 
 /**
@@ -74,18 +73,10 @@ export class ExtendedClient extends Client<true> {
 			receiveAutocomplete,
 			replyOnError,
 			replyMessageOnError,
-			splitCustomIdOn,
-			useDefaultInteractionEvent
+			splitCustomIdOn
 		} = options;
 
 		// Misc configuration
-
-		if (useDefaultInteractionEvent) 
-			this.events.add(onInteractionCreate);
-        
-		else 
-			this.useDefaultInteractionEvent = false;
-        
 		this.receiveMessageComponents = receiveMessageComponents ?? false;
 		this.receiveModals = receiveModals ?? false;
 		this.receiveAutocomplete = receiveAutocomplete ?? false;
