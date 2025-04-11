@@ -1,32 +1,31 @@
-import { ChannelType, ChatInputCommandInteraction, PermissionsBitField } from 'discord.js';
+import { ChannelType, ChatInputCommandInteraction, InteractionContextType, PermissionsBitField } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
-import { localize } from '../../i18n.js';
-
-export const ns = 'scrapeJoinLogs';
 
 export default new ChatInputCommand()
     .setBuilder((builder) => builder
         .setName('scrapejoinlogs')
         .setDescription('Scrapes join logs and exports to CSV')
-        .setDefaultMemberPermissions(PermissionsBitField.Flags.ReadMessageHistory)
-        .setDMPermission(false))
+        .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageGuild)
+        .setContexts(InteractionContextType.Guild)
+		.addChannelOption(option => option
+			.setName('channel')
+			.setDescription('target channel')
+			.addChannelTypes(ChannelType.GuildText)
+			.setRequired(true)
+		))
     .setExecute(async (interaction: ChatInputCommandInteraction) => {
-        if (!interaction.guild) return;
+        if (!interaction.inGuild()) return;
+
+		const { guild, options} = interaction
 
         await interaction.deferReply({ ephemeral: true });
 
-        const joinLogsChannel = interaction.guild.channels.cache.find(
-            channel => channel.name === 'join-logs' && channel.type === ChannelType.GuildText
-        );
-
-        if (!joinLogsChannel) {
-            return interaction.editReply('Could not find #join-logs channel.');
-        }
+        const joinLogsChannel = options.getChannel('channel',true, [ChannelType.GuildText])
 
         try {
             //get all needed details
             const messages = await joinLogsChannel.messages.fetch({ limit: 100 });
-            await interaction.guild.members.fetch();
+            await guild?.members.fetch();
 
             const records = [];
 
@@ -42,15 +41,15 @@ export default new ChatInputCommand()
                 else continue;
 
                 //find member with join time closest to join msg
-                const potentialMembers = interaction.guild.members.cache.filter(m => 
+                const potentialMembers = guild?.members.cache.filter(m => 
                     (m.user.username === username || m.nickname === username) &&
                     m.joinedAt &&
                     Math.abs(m.joinedAt.getTime() - message.createdAt.getTime()) < 10000
                 );
 
-                if (potentialMembers.size === 0) continue;
+                if (potentialMembers?.size === 0) continue;
 
-                const closestMember = potentialMembers.sort((a, b) => 
+                const closestMember = potentialMembers?.sort((a, b) => 
                     Math.abs(a.joinedAt!.getTime() - message.createdAt.getTime()) - 
                     Math.abs(b.joinedAt!.getTime() - message.createdAt.getTime())
                 ).first()!;
@@ -89,3 +88,5 @@ export default new ChatInputCommand()
             await interaction.editReply('An error occurred while processing the command.');
         }
     });
+
+	
