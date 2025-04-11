@@ -70,7 +70,7 @@ export default new ChatInputCommand()
 
 			// CSV TIME
             const csvContent = [
-                'Server Nickname,Discord Name,Date,Time',
+                'Nickname,Discord Username,Date,Time',
                 ...records.map(r => 
                     `"${r.nickname.replace(/"/g, '""')}","${r.username.replace(/"/g, '""')}",${r.date},${r.time}`
                 )
