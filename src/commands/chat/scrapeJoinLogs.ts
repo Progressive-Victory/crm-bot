@@ -1,9 +1,17 @@
-import { ChannelType, ChatInputCommandInteraction, InteractionContextType, PermissionsBitField } from 'discord.js';
+import { ChannelType, ChatInputCommandInteraction, InteractionContextType, Message, MessageFlags, MessageType, PermissionsBitField, Snowflake } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
+
+interface Record {
+	username: string
+	nickname: string
+	date: string
+	time: string
+}
+
 
 export default new ChatInputCommand()
     .setBuilder((builder) => builder
-        .setName('scrapejoinlogs')
+        .setName('scrape-join-logs')
         .setDescription('Scrapes join logs and exports to CSV')
         .setDefaultMemberPermissions(PermissionsBitField.Flags.ManageGuild)
         .setContexts(InteractionContextType.Guild)
@@ -11,61 +19,54 @@ export default new ChatInputCommand()
 			.setName('channel')
 			.setDescription('target channel')
 			.addChannelTypes(ChannelType.GuildText)
-			.setRequired(true)
-		))
+			.setRequired(true))
+	)
     .setExecute(async (interaction: ChatInputCommandInteraction) => {
-        if (!interaction.inGuild()) return;
 
 		const { guild, options} = interaction
 
-        await interaction.deferReply({ ephemeral: true });
+        await interaction.deferReply({ flags: MessageFlags.Ephemeral});
 
         const joinLogsChannel = options.getChannel('channel',true, [ChannelType.GuildText])
 
+		let messages: Message<true>[] = []
+			.map((value) => value)
+		let messageId: Snowflake | undefined 
+		const endDate = new Date()
+		endDate.setMonth(2,1)
+		let date = new Date()
+		let end = false
+
+		while (date > endDate && !end) {
+
+			const fetchBlock = (await joinLogsChannel.messages.fetch({ limit: 100, before: messageId })).map((value) => value)
+
+			if(fetchBlock.length === 0) {
+				end = true
+				continue;
+			}
+			const lastMessage = fetchBlock[fetchBlock.length-1]
+			messages = messages.concat(fetchBlock)
+			messageId = lastMessage?.id
+			date = lastMessage.createdAt
+		}
+		
+		messages = messages.filter((message) => message.type === MessageType.UserJoin)
+
+		const records:Record[] = [];
+
         try {
-            //get all needed details
-            const messages = await joinLogsChannel.messages.fetch({ limit: 100 });
-            await guild?.members.fetch();
+            for (const message of messages) {
 
-            const records = [];
-
-            for (const message of messages.values()) {
-                //check message
-                const content = message.content;
-                const showedUpMatch = content.match(/^(.+) just showed up!$/);
-                const goodToSeeYouMatch = content.match(/^Good to see you, (.+)\.$/);
-
-                let username;
-                if (showedUpMatch) username = showedUpMatch[1];
-                else if (goodToSeeYouMatch) username = goodToSeeYouMatch[1];
-                else continue;
-
-                //find member with join time closest to join msg
-                const potentialMembers = guild?.members.cache.filter(m => 
-                    (m.user.username === username || m.nickname === username) &&
-                    m.joinedAt &&
-                    Math.abs(m.joinedAt.getTime() - message.createdAt.getTime()) < 10000
-                );
-
-                if (potentialMembers?.size === 0) continue;
-
-                const closestMember = potentialMembers?.sort((a, b) => 
-                    Math.abs(a.joinedAt!.getTime() - message.createdAt.getTime()) - 
-                    Math.abs(b.joinedAt!.getTime() - message.createdAt.getTime())
-                ).first()!;
+				const member = guild?.members.cache.get(message.author.id) ?? await guild?.members.fetch(message.author.id)
 
                 records.push({
-                    nickname: closestMember.nickname || '',
-                    username: closestMember.user.username,
+                    nickname: (member?.nickname ?? member?.displayName) ?? '',
+                    username: !member ? message.author.username : member.user.username,
                     date: message.createdAt.toISOString().split('T')[0],
                     time: message.createdAt.toLocaleTimeString('en-US', { hour12: false })
                 });
             }
-
-            if (records.length === 0) {
-                return interaction.editReply('No valid join messages found.');
-            }
-
 
 			// CSV TIME
             const csvContent = [
