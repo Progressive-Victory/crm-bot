@@ -1,6 +1,6 @@
 import { Events, GuildScheduledEvent, PartialGuildScheduledEvent, User } from 'discord.js';
 import { Event } from '../../Classes/index.js';
-import { ScheduledEventInterest } from '../../features/attendence/index.js';
+import { ScheduledEventInterest } from '../../features/attendance/index.js';
 
 export default new Event({
 	name: Events.GuildScheduledEventUserRemove,

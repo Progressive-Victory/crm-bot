@@ -1,6 +1,6 @@
 import { Events, GuildScheduledEvent, GuildScheduledEventStatus, PartialGuildScheduledEvent } from 'discord.js';
 import { Event } from '../../Classes/index.js';
-import { ActivatedEvent } from '../../features/attendence/index.js';
+import { ActivatedEvent } from '../../features/attendance/index.js';
 
 export default new Event({
 	name: Events.GuildScheduledEventUpdate,
@@ -13,10 +13,10 @@ export default new Event({
 			}
 		}
 		if (oldGuildScheduledEvent?.status != GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status == GuildScheduledEventStatus.Active) {
-			new ActivatedEvent({
+			ActivatedEvent.create({
 				eventId: newGuildScheduledEvent.id,
 				eventName: newGuildScheduledEvent.name,
-			}).save();
+			})
 		}
 	},
 });

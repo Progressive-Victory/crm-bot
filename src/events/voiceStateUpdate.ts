@@ -1,6 +1,6 @@
 import { Events, VoiceState } from 'discord.js';
-import { Event } from '../../Classes/index.js';
-import { VoiceSession } from '../../features/attendence/index.js';
+import { Event } from '../Classes/index.js';
+import { VoiceSession } from '../features/attendance/index.js';
 
 export default new Event({
 	name: Events.VoiceStateUpdate,
@@ -14,10 +14,10 @@ export default new Event({
 				}
 			}
 			if (newState.channelId) {
-				new VoiceSession({
+				VoiceSession.create({
 					userId: newState.member?.id,
 					displayName: newState.member?.displayName,
-				}).save();
+				})
 			}
 		}
 	},
