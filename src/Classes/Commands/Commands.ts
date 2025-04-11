@@ -59,7 +59,7 @@ export class ChatInputCommand extends BaseCommand<AnySlashCommandBuilder, ChatIn
     }
 }
 
-export class ContextMenuCommand extends BaseCommand<ContextMenuCommandBuilder, ContextMenuCommandInteraction> {
+export class ContextMenuCommand<CommandInteraction extends ContextMenuCommandInteraction> extends BaseCommand<ContextMenuCommandBuilder, CommandInteraction> {
     /**
      * Set the Context Menu command builder method
      * @param input Context Menu command builder or callback

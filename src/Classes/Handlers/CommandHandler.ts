@@ -1,10 +1,12 @@
 import {
 	ApplicationCommandDataResolvable,
 	ApplicationCommandType,
-	AutocompleteInteraction, ChatInputCommandInteraction, Collection, ContextMenuCommandInteraction,
+	AutocompleteInteraction, ChatInputCommandInteraction, Collection,
 	Events,
+	MessageContextMenuCommandInteraction,
 	Routes,
-	Snowflake
+	Snowflake,
+	UserContextMenuCommandInteraction
 } from 'discord.js';
 import { Client } from '../Client/index.js';
 import { ChatInputCommand, ContextMenuCommand } from '../Commands/index.js';
@@ -19,10 +21,10 @@ export class CommandHandler {
     protected _chatCommands = new Collection<string, ChatInputCommand>();
 
     // User context commands in the handler
-    protected _userContextMenus = new Collection<string, ContextMenuCommand>();
+    protected _userContextMenus = new Collection<string, ContextMenuCommand<UserContextMenuCommandInteraction>>();
 
     // Message context commands in the handler
-    protected _messageContextMenus = new Collection<string, ContextMenuCommand>();
+    protected _messageContextMenus = new Collection<string, ContextMenuCommand<MessageContextMenuCommandInteraction>>();
 
     get userContextMenus() {
         return this._userContextMenus;
@@ -41,7 +43,7 @@ export class CommandHandler {
      * @param command Command to add
      * @returns the command handler
      */
-    add(command: ChatInputCommand | ContextMenuCommand) {
+    add(command: ChatInputCommand | ContextMenuCommand<MessageContextMenuCommandInteraction> | ContextMenuCommand<UserContextMenuCommandInteraction>) {
         const { type, name } = command;
 		
         switch (type) {
@@ -49,10 +51,10 @@ export class CommandHandler {
                 this._chatCommands.set(name, command);
                 break;
             case ApplicationCommandType.Message:
-                this._messageContextMenus.set(name, command as ContextMenuCommand);
+                this._messageContextMenus.set(name, command as ContextMenuCommand<MessageContextMenuCommandInteraction>);
                 break;
             case ApplicationCommandType.User:
-                this._userContextMenus.set(name, command as ContextMenuCommand);
+                this._userContextMenus.set(name, command as ContextMenuCommand<UserContextMenuCommandInteraction>);
                 break;
             default:
                 break;
@@ -77,7 +79,7 @@ export class CommandHandler {
      * @param commands Collections of user context commands
      * @returns The command handler
      */
-    addUserContextMenus(commands: Collection<string, ContextMenuCommand>) {
+    addUserContextMenus(commands: Collection<string, ContextMenuCommand<UserContextMenuCommandInteraction>>) {
         for (const [ name, command ] of commands) {
             this._userContextMenus.set(name, command);
         }
@@ -89,7 +91,7 @@ export class CommandHandler {
      * @param commands Collections of message context commands
      * @returns the command handler
      */
-    addMessageContextMenus(commands: Collection<string, ContextMenuCommand>) {
+    addMessageContextMenus(commands: Collection<string, ContextMenuCommand<MessageContextMenuCommandInteraction>>) {
         for (const [ name, command ] of commands) {
             this._messageContextMenus.set(name, command);
         }
@@ -221,7 +223,7 @@ export class CommandHandler {
      * Run function for a user context command in handler
      * @param interaction received interaction
      */
-    runUserContextMenus(interaction: ContextMenuCommandInteraction) {
+    runUserContextMenus(interaction: UserContextMenuCommandInteraction) {
         this._userContextMenus.get(interaction.commandName)?.execute(interaction);
     }
 
@@ -229,7 +231,7 @@ export class CommandHandler {
      * Run function for a message context command in handler
      * @param interaction received interaction
      */
-    runMessageContextMenus(interaction: ContextMenuCommandInteraction) {
+    runMessageContextMenus(interaction: MessageContextMenuCommandInteraction) {
         this._messageContextMenus.get(interaction.commandName)?.execute(interaction);
     }
     /**
