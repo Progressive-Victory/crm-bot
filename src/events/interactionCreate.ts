@@ -3,19 +3,32 @@ import {
 	DiscordAPIError, Events, Interaction,
 	InteractionType
 } from 'discord.js';
-import { Event } from '../Event.js';
+import { Event } from '../Classes/Event.js';
+import { GuildSetting } from '../models/Setting.js';
 
 /**
  * Handles the creation of a new interaction.
  * @param interaction - The interaction object.
  */
-function onInteractionCreate(interaction: Interaction): void {
+async function onInteractionCreate(interaction: Interaction): Promise<void> {
 	const { client, type } = interaction;
 	const {
 		commands, interactions, errorMessage, replyOnError
 	} = client;
 
-	// eslint-disable-next-line @typescript-eslint/no-base-to-string
+	if(interaction.inGuild()) {
+		const setting = await GuildSetting.findOne({guildId:interaction.guildId})
+		if(!setting)
+			GuildSetting.create({
+			guildId: interaction.guildId,
+			guildName: interaction.guild?.name
+		})
+		else if (interaction.guild?.name !== setting.guildName) {
+			setting.guildName = interaction.guild?.name ?? 'Name Unknown'
+			setting.save()
+		}	
+	}
+	 
 	client.emit(Events.Debug, interaction.toString());
 	try {
 		switch (type) {
@@ -91,7 +104,7 @@ function onInteractionCreate(interaction: Interaction): void {
 	}
 }
 
-export default new Event({
+export const interactionCreate = new Event({
 	name: Events.InteractionCreate,
 	once: false,
 	execute: onInteractionCreate

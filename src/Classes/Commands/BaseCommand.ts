@@ -1,82 +1,73 @@
 import {
 	ChatInputCommandInteraction, ContextMenuCommandBuilder, ContextMenuCommandInteraction,
-	InteractionCallbackResponse,
 	Snowflake
 } from 'discord.js';
-import { ReturnableInteraction, SlashCommandBuilders } from './types.js';
+import { AnySlashCommandBuilder } from './types.js';
 
-/**
- * Slash command or context command
- */
 export class BaseCommand<
-	TypeBuilder extends SlashCommandBuilders | ContextMenuCommandBuilder,
-	TypeInteraction extends ChatInputCommandInteraction | ContextMenuCommandInteraction
+    TypeBuilder extends AnySlashCommandBuilder | ContextMenuCommandBuilder,
+    TypeInteraction extends ChatInputCommandInteraction | ContextMenuCommandInteraction
 > {
-	// The constructor for the registration for the command
-	protected _builder: TypeBuilder | undefined;
+    // The constructor for the registration for the command
+    protected _builder?: TypeBuilder;
 
-	protected _guildIds: Snowflake[];
+    protected _guildIds: Snowflake[];
 
-	// Method that is run when command is executed
-	protected _execute: ((interaction: TypeInteraction) => Promise<ReturnableInteraction | InteractionCallbackResponse>) | undefined;
+    // Method that is run when command is executed
+    protected _execute?: (interaction: TypeInteraction) => void;
 
-	get name() {
-		if(this._builder == undefined) throw Error('Builder is function is undefined');
-		return this._builder.name;
-	}
+    get name() {
+        return this.builder.name;
+    }
 
-	get isGlobal() {
-		return this._guildIds.length == 0;
-	}
+    get isGlobal() {
+        return this._guildIds.length == 0;
+    }
 
-	get guildIds() {
-		return this._guildIds;
-	}
-	set guildIds(ids: Snowflake[]) {
-		this._guildIds = ids;
-	}
+    get guildIds() {
+        return this._guildIds;
+    }
 
-	get builder() {
-		if(this._builder == undefined) throw Error('builder is undefined');
-		return this._builder;
-	}
+    get builder() {
+        if(this._builder === undefined) throw Error('Command builder is undefined')
+        return this._builder;
+    }
 
-	set builder(builder: TypeBuilder) {
-		this._builder = builder;
-	}
+    get execute() {
+        if(this._execute === undefined) throw Error('Command execute is undefined')
+        return this._execute;
+    }
 
-	get execute() {
-		if(this._execute == undefined) throw Error('execute function is undefined');
-		return this._execute;
-	}
+    setGuildIds(...ids: Snowflake[]) {
+        this._guildIds = ids;
+        return this;
+    }
 
-	set execute(execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction | InteractionCallbackResponse>) {
-		this._execute = execute;
-	}
+    /**
+     * Set the execute method
+     * @param execute function passed in
+     * @returns The modified object
+     */
+    setExecute(execute: (interaction: TypeInteraction) => void): this {
+        this._execute = execute;
+        return this;
+    }
 
-	setGuildIds(... ids: Snowflake[]) {
-		this._guildIds = ids;
-		return this;
-	}
+    /**
+     * This method runs validations on the data before serializing it. As such, it may throw an error if the data is invalid.
+     * @returns Serializes to API-compatible JSON data.
+     */
+    toJSON() {
+        return this.builder.toJSON();
+    }
 
-	/**
-	 * Set the execute method
-	 * @param execute function passed in
-	 * @returns The modified object
-	 */
-	setExecute(execute: (interaction: TypeInteraction) => Promise<ReturnableInteraction | InteractionCallbackResponse>): this {
-		this.execute = execute;
-		return this;
-	}
-
-	toJSON() {
-		if(this._builder == undefined) throw Error('builder is undefined');
-		return this._builder.toJSON();
-	}
-
-	constructor(options: Partial<BaseCommand<TypeBuilder, TypeInteraction>> = {}) {
-		this._guildIds = options.guildIds ?? [];
-		this._builder = options.builder;
-		this._execute = options.execute;
-	}
+    /**
+     * Represents Slash command or context command
+     * @param options partial object 
+     */
+    constructor(options?: Partial<BaseCommand<TypeBuilder, TypeInteraction>>) {
+        this._guildIds = options?.guildIds ?? [];
+        this._builder = options?.builder;
+        this._execute = options?.execute;
+    }
 }

@@ -1,6 +1,6 @@
 export { ChatInputCommand, ContextMenuCommand } from './Commands/index.js';
 
-export { } from './Interaction.js';
+export { Interaction } from './Interaction.js';
 
 export { Client, ExtraColor } from './Client/index.js';
 

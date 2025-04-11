@@ -1,5 +1,6 @@
 import {
-	ActionRowBuilder, ButtonBuilder, ButtonStyle
+	ActionRowBuilder, ButtonBuilder, ButtonStyle,
+	MessageFlags
 } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 import { localize } from '../../i18n.js';
@@ -16,7 +17,7 @@ export default new ChatInputCommand()
 	.setExecute(async (interaction) => {
 		await interaction.reply({
 			content: localize.t('feedback-message', ns, interaction.locale),
-			ephemeral: true,
+			flags: MessageFlags.Ephemeral,
 			components: [new ActionRowBuilder<ButtonBuilder>()
 				.addComponents(new ButtonBuilder()
 					.setLabel(localize.t('feedback-button', ns, interaction.locale) ?? 'Feedback')
