@@ -19,9 +19,5 @@ export const userProfile = new ContextMenuCommand<UserContextMenuCommandInteract
 		if (member === targetMember) {
 			/* self profile */
 		}
-
-		
-
-		
 	}
 })
