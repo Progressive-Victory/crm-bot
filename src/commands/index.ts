@@ -12,5 +12,3 @@ export { settings } from './chat/setting.js';
 export { reportMessage, reportUser } from './context_menu/report.js';
 
 export { timeout } from './chat/timeout.js';
-
-export { message } from './context_menu/message.js';
