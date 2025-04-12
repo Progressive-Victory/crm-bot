@@ -27,7 +27,7 @@ options:
 
 availableSecrets:
   secretManager:
-    - versionName: "projects/$PROJECT_ID/secrets/bot_token/versions/latest"
+    - versionName: "projects/$PROJECT_NUMBER/secrets/bot_token/versions/latest"
       env: "DISCORD_TOKEN"
-    - versionName: "projects/$PROJECT_ID/secrets/mongo_uri/versions/latest"
+    - versionName: "projects/$PROJECT_NUMBER/secrets/mongo_uri/versions/latest"
       env: "MONGODB_URI"
