@@ -1,4 +1,4 @@
-import { ChannelType, inlineCode, InteractionContextType, InteractionReplyOptions, MessageFlags, PermissionFlagsBits, SlashCommandBuilder, SlashCommandChannelOption, SlashCommandRoleOption } from "discord.js";
+import { ChannelType, inlineCode, InteractionContextType, InteractionReplyOptions, MessageFlags, PermissionFlagsBits, SlashCommandBuilder, SlashCommandChannelOption } from "discord.js";
 import { UpdateQuery } from "mongoose";
 import { ChatInputCommand } from "../../Classes/index.js";
 import { GuildSetting, ISettings } from "../../models/Setting.js";
@@ -10,10 +10,10 @@ const channel = new SlashCommandChannelOption()
 	.addChannelTypes(ChannelType.GuildText, ChannelType.PublicThread)
 	.setRequired(true)
 
-const role = new SlashCommandRoleOption()
-	.setName('role')
-	.setDescription('target role')
-	.setRequired(true)
+// const role = new SlashCommandRoleOption()
+// 	.setName('role')
+// 	.setDescription('target role')
+// 	.setRequired(true)
 
 export const settings = new ChatInputCommand({
 	builder: new SlashCommandBuilder()
@@ -64,11 +64,11 @@ export const settings = new ChatInputCommand({
 				.setDescription('configure channels for log system')
 				.addChannelOption(channel)
 			)
-			.addSubcommand(subCommand => subCommand
-				.setName('role')
-				.setDescription('configure channels for log system')
-				.addRoleOption(role)
-			)
+			// .addSubcommand(subCommand => subCommand
+			// 	.setName('role')
+			// 	.setDescription('configure channels for log system')
+			// 	.addRoleOption(role)
+			// )
 		)
 		.addSubcommandGroup(subcommandGroup => subcommandGroup
 			.setName('logging')
@@ -103,11 +103,11 @@ export const settings = new ChatInputCommand({
 				reply.content = `welcome channel set to ${channel}`
 			}
 
-			else if (subCommand === 'role') {
-				const role = interaction.options.getRole('role', true)
-				await GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, {"welcome.roleId": role.id})
-				reply.content = `welcome role set to ${role}`
-			}
+			// else if (subCommand === 'role') {
+			// 	const role = interaction.options.getRole('role', true)
+			// 	await GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, {"welcome.roleId": role.id})
+			// 	reply.content = `welcome role set to ${role}`
+			// }
 
 			else return
 

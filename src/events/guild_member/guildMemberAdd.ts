@@ -32,8 +32,8 @@ export const guildMemberAdd = new Event({
 			embeds:[
 				new EmbedBuilder()
 					.setAuthor(getAuthorOptions(member))
-					.setTitle('New Member Joined')
-					.setDescription(`${member.toString()} has Joined the server\n`)
+					.setTitle('Member Joined')
+					.setDescription(`${member.toString()} has Joined the server`)
 					// .setFields({name:'Welcome Message Status', value:inlineCode('not sent')})
 					// .setThumbnail(member.displayAvatarURL({forceStatic: true}))
 					.setTimestamp(member.joinedAt)
