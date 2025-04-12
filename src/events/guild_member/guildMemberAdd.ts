@@ -1,6 +1,6 @@
-import { Events, MessageCreateOptions, Role } from "discord.js";
-import { console } from "inspector";
+import { Colors, EmbedBuilder, Events, MessageCreateOptions } from "discord.js";
 import Event from "../../Classes/Event.js";
+import { getAuthorOptions } from "../../features/moderation/embeds.js";
 import { GuildSetting } from "../../models/Setting.js";
 
 export const guildMemberAdd = new Event({
@@ -20,28 +20,43 @@ export const guildMemberAdd = new Event({
 		const joinChannel = guild.channels.cache.get(joinChannelId) ?? await guild.channels.fetch(joinChannelId) ?? undefined
 		if(!joinChannel?.isSendable()) return
 
-		let welcomeRole: Role | undefined = undefined
-		const welcomeRoleId = settings?.welcome.roleId
+		// let welcomeRole: Role | undefined = undefined
+		// const welcomeRoleId = settings?.welcome.roleId
 		
-		if(welcomeRoleId) welcomeRole = guild.roles.cache.get(welcomeRoleId) ?? await guild.roles.fetch(welcomeRoleId) ?? undefined
+		// if(welcomeRoleId) welcomeRole = guild.roles.cache.get(welcomeRoleId) ?? await guild.roles.fetch(welcomeRoleId) ?? undefined
 
 
-		console.log(welcomeRole)
+		// console.log(welcomeRole)
 
-		if (!welcomeRole) {
-			message = {
-				content: `new member ${member} has joined the server`,
-				components:[], // add button for tacking team engagement
-				allowedMentions: {users: []}
-			}
+		message = {
+			embeds:[
+				new EmbedBuilder()
+					.setAuthor(getAuthorOptions(member))
+					.setTitle('New Member Joined')
+					.setDescription(`${member.toString()} has Joined the server\n`)
+					// .setFields({name:'Welcome Message Status', value:inlineCode('not sent')})
+					// .setThumbnail(member.displayAvatarURL({forceStatic: true}))
+					.setTimestamp(member.joinedAt)
+					.setFooter({text: `User ID: ${member.user.id}`})
+					.setColor(Colors.Blue)
+			]
 		}
-		else {
-			message = {
-				content: `${welcomeRole.toString()}, new member ${member} has joined the server`,
-				components:[], // add button for tacking team engagement
-				allowedMentions: {users: [], roles:[welcomeRole.id]}
-			}
-		}
+
+		// if (!welcomeRole) {
+		// 	message = {
+		// 		content: `new member ${member} has joined the server`,
+		// 		components:[], // add button for tacking team engagement
+		// 		allowedMentions: {users: []}
+		// 	}
+		// }
+		// else {
+
+		// 	message = {
+		// 		content: `${welcomeRole.toString()}, new member ${member} has joined the server`,
+		// 		components:[], // add button for tacking team engagement
+		// 		allowedMentions: {users: [], roles:[welcomeRole.id]}
+		// 	}
+		// }
 
 		joinChannel.send(message)
 
