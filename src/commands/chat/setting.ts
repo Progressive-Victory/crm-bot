@@ -62,6 +62,8 @@ export const settings = new ChatInputCommand({
 					.setDescription('Setting to edit')
 					.setChoices(
 						{name: 'timeout', value: 'logging.timeoutChannelId'},
+						{name: 'joins', value: 'logging.joinChannelId'},
+						{name: 'leaves', value: 'logging.leaveChannelId'},
 					)
 					.setRequired(true)
 				)
