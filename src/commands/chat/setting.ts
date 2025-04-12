@@ -94,18 +94,18 @@ export const settings = new ChatInputCommand({
 		const subcommandGroup = interaction.options.getSubcommandGroup(true)
 		const subCommand = interaction.options.getSubcommand(true)
 		const reply:InteractionReplyOptions = {flags: MessageFlags.Ephemeral}
-		
+		// console.log(subcommandGroup, subCommand)
 		if(subcommandGroup === 'welcome') {
 
 			if (subCommand === 'channel') {
 				const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText, ChannelType.PublicThread])
-				GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, {"welcome.channelId": channel.id})
+				await GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, {"welcome.channelId": channel.id})
 				reply.content = `welcome channel set to ${channel}`
 			}
 
 			else if (subCommand === 'role') {
 				const role = interaction.options.getRole('role', true)
-				GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, {"welcome.roleId": role.id})
+				await GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, {"welcome.roleId": role.id})
 				reply.content = `welcome role set to ${role}`
 			}
 
