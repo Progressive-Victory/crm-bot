@@ -22,6 +22,9 @@ steps:
         --container-env="PORT=${_PORT},DISCORD_TOKEN=$$DISCORD_TOKEN, MONGODB_URI=$$MONGODB_URI"
     secretEnv: ["MONGODB_URI", "DISCORD_TOKEN"]
 
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
+
 availableSecrets:
   secretManager:
     - versionName: "projects/$PROJECT_ID/secrets/bot_token/versions/latest"
