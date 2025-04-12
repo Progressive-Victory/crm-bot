@@ -8,7 +8,7 @@ export { error } from './client/error.js';
 
 export { interactionCreate } from './interactionCreate.js';
 
-export { guildAuditLogEntryCreate } from './guild_audit_log/suildAuditLogEntryCreate.js';
+export { guildAuditLogEntryCreate } from './guild_audit_log/guildAuditLogEntryCreate.js';
 
 export { guildMemberAdd } from './guild_member/guildMemberAdd.js';
 
