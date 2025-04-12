@@ -1,5 +1,5 @@
 import { Events } from 'discord.js';
-import { Client, Event } from '../../Classes/index.js';
+import { Event } from '../../Classes/index.js';
 
 export const ready = new Event({
 	name:Events.ClientReady,
@@ -8,7 +8,7 @@ export const ready = new Event({
 	 * function to run on the client ready event
 	 * @param client client object
 	 */
-	execute: (client: Client) => {
-		console.log(`Ready! Logged in as ${client.user.tag}`);
+	execute: (client) => {
+		console.log(`Ready! Logged in as ${client.user.username}`);
 	}
 })
