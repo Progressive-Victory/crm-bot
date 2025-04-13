@@ -11,10 +11,14 @@ export interface ISettings {
 	report: {
 		logChannelId?: Snowflake,
 	},
+	welcome: {
+		channelId?: Snowflake,
+		roleId?: Snowflake
+	},
 	logging: {
 		timeoutChannelId?: Snowflake,
-		joinChannelId?: Snowflake,
-		leaveChannelId?: Snowflake,
+		leaveChannelId?: Snowflake
+		channelUpdatesChannelId?: Snowflake
 	}
 }
 
@@ -44,16 +48,20 @@ const settings = new Schema<ISettings>({
 			type: String
 		},
 	},
+	welcome: {
+		channelId: String,
+		roleId: String
+	},
 	logging: {
 		timeoutChannelId: {
 			type:String
 		},
-		joinChannelId: {
-			type:String
-		},
 		leaveChannelId: {
 			type:String
-		}
+		},
+		channelUpdatesChannelId: {
+			type:String
+		},
 	}
 
 },
