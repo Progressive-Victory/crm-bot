@@ -15,18 +15,12 @@ steps:
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: bash
     args:
-      [
-        "-c",
-        "gcloud",
-        "compute",
-        "instances",
-        "update-container",
-        "instance-pv-bot-dev",
-        "--zone=us-central1-c",
-        "--container-image=us-central1-docker.pkg.dev/$PROJECT_ID/docker-deploy/pv-bot:$SHORT_SHA",
-        "--container-env",
-        "PORT=${_PORT},DISCORD_TOKEN=$$DISCORD_TOKEN,MONGODB_URI=$$MONGODB_URI",
-      ]
+      - "-c"
+      - |
+        gcloud compute instances update-container instance-pv-bot-dev \
+          --zone=us-central1-c \
+          --container-image=us-central1-docker.pkg.dev/$PROJECT_ID/docker-deploy/pv-bot:$SHORT_SHA \
+          --container-env "PORT=${_PORT},DISCORD_TOKEN=$$DISCORD_TOKEN,MONGODB_URI=$$MONGODB_URI"
     secretEnv: ["MONGODB_URI", "DISCORD_TOKEN"]
 
 options:
