@@ -10,4 +10,4 @@ export { interactionCreate } from './interactionCreate.js';
 
 export { guildAuditLogEntryCreate } from './guild/GuildAuditLogEntryCreate.js';
 
-export { channelUpdate } from './channel_Update/channelUpdate.js'; 
+//export { channelUpdate } from './channel_Update/channelUpdate.js'; 
