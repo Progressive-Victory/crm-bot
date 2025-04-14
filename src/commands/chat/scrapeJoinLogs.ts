@@ -33,11 +33,11 @@ export default new ChatInputCommand()
 			.map((value) => value)
 		let messageId: Snowflake | undefined 
 		const endDate = new Date()
-		endDate.setMonth(2,1)
+		endDate.setMonth(0,1)
 		let date = new Date()
 		let end = false
 
-		while (date > endDate && !end) {
+		while (date >= endDate && !end) {
 
 			const fetchBlock = (await joinLogsChannel.messages.fetch({ limit: 100, before: messageId })).map((value) => value)
 
