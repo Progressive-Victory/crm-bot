@@ -25,9 +25,9 @@ export default new ChatInputCommand()
 
 		const { guild, options} = interaction
 
-        interaction.deferReply({ flags: MessageFlags.Ephemeral});
+    interaction.deferReply({ flags: MessageFlags.Ephemeral});
 
-        const joinLogsChannel = options.getChannel('channel',true, [ChannelType.GuildText])
+    const joinLogsChannel = options.getChannel('channel',true, [ChannelType.GuildText])
 
 		let messages: Message<true>[] = []
 			.map((value) => value)
@@ -57,13 +57,12 @@ export default new ChatInputCommand()
 
         try {
             for (const message of messages) {
-
-				const member = guild?.members.cache.get(message.author.id) ?? await guild?.members.fetch(message.author.id).catch(e => {
-					if (e instanceof DiscordAPIError && e.status === 404) {
-						return undefined
-					}
-					throw e
-				})
+              const member = guild?.members.cache.get(message.author.id) ?? await guild?.members.fetch(message.author.id).catch(e => {
+                if (e instanceof DiscordAPIError && e.status === 404) {
+                  return undefined
+                }
+					      throw e
+				      })
 
                 records.push({
                     nickname: member?.displayName ?? message.author.id,
