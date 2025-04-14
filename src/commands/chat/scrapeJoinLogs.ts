@@ -1,4 +1,4 @@
-import { ChannelType, ChatInputCommandInteraction, InteractionContextType, Message, MessageFlags, MessageType, PermissionsBitField, Snowflake } from 'discord.js';
+import { ChannelType, ChatInputCommandInteraction, DiscordAPIError, InteractionContextType, Message, MessageFlags, MessageType, PermissionsBitField, Snowflake } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 
 interface Record {
@@ -25,7 +25,7 @@ export default new ChatInputCommand()
 
 		const { guild, options} = interaction
 
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral});
+        interaction.deferReply({ flags: MessageFlags.Ephemeral});
 
         const joinLogsChannel = options.getChannel('channel',true, [ChannelType.GuildText])
 
@@ -58,11 +58,16 @@ export default new ChatInputCommand()
         try {
             for (const message of messages) {
 
-				const member = guild?.members.cache.get(message.author.id) ?? await guild?.members.fetch(message.author.id)
+				const member = guild?.members.cache.get(message.author.id) ?? await guild?.members.fetch(message.author.id).catch(e => {
+					if (e instanceof DiscordAPIError && e.status === 404) {
+						return undefined
+					}
+					throw e
+				})
 
                 records.push({
-                    nickname: (member?.nickname ?? member?.displayName) ?? '',
-                    username: !member ? message.author.username : member.user.username,
+                    nickname: member?.displayName ?? message.author.id,
+                    username: message.author.username,
                     date: message.createdAt.toISOString().split('T')[0],
                     time: message.createdAt.toLocaleTimeString('en-US', { hour12: false })
                 });
@@ -76,7 +81,7 @@ export default new ChatInputCommand()
                 )
             ].join('\n');
 
-            await interaction.editReply({
+            interaction.editReply({
                 content: 'Join logs exported:',
                 files: [{
                     attachment: Buffer.from(csvContent, 'utf-8'),
@@ -86,8 +91,6 @@ export default new ChatInputCommand()
 
         } catch (error) {
             console.error(error);
-            await interaction.editReply('An error occurred while processing the command.');
+            interaction.editReply('An error occurred while processing the command.');
         }
     });
-
-	
