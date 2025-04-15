@@ -93,5 +93,3 @@ export default new ChatInputCommand()
             interaction.editReply('An error occurred while processing the command.');
         }
     });
-
-	
