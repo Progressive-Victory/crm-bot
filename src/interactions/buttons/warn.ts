@@ -8,7 +8,7 @@ import { warnSearch } from '../../features/moderation/warnSearch.js';
 import { GuildSetting } from '../../models/Setting.js';
 import { Warn } from '../../models/Warn.js';
 import { WarningSearch } from '../../models/WarnSearch.js';
-import { AddSplitCustomId } from '../../util/index.js';
+import { AddSplitCustomId, getGuildChannel } from '../../util/index.js';
 
 // button to move warn view left
 export const warnViewLeft = new Interaction<ButtonInteraction>({
@@ -115,18 +115,20 @@ export const banAppeal = new Interaction<ButtonInteraction>({
 			return
 		}
 	
-		const guild = interaction.client.guilds.cache.get(warning?.guildId) ?? await interaction.client.guilds.fetch(warning?.guildId)
+		const guild = interaction.client.guilds.cache.get(warning?.guildId) ?? await interaction.client.guilds.fetch(warning?.guildId).catch(console.error)
+
+		if(!guild) {
+			return interaction.reply('guild does not exist')
+		}
 		
 		const setting = await GuildSetting.findOne({guildId: warning?.guildId})
 		if (!setting?.warn.appealChannelId) {
 			throw Error('Missing channel warn.appealChannelId')
 		}
 		
-		const channel = guild.channels.cache.get(setting?.warn.appealChannelId) ?? await guild.channels.fetch(setting?.warn.appealChannelId)
+		const channel = await getGuildChannel(guild, setting.warn.appealChannelId);
 		
-		if (channel?.isSendable()) {
-			/* empty */
-		} else {
+		if (!channel?.isSendable()) {
 			throw Error('warn.appealChannelId is not sendable, how did you get here')
 		}
 

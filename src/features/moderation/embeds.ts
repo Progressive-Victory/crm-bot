@@ -1,6 +1,7 @@
 import { APIEmbedField, ColorResolvable, EmbedAuthorOptions, EmbedBuilder, EmbedFooterOptions, Guild, GuildMember, ImageURLOptions, inlineCode, TimestampStyles, User } from "discord.js";
 import { client } from "../../index.js";
 import { WarningRecord } from "../../models/Warn.js";
+import { getMember } from "../../util/index.js";
 import { numberOfWarnEmbedsOnPage, WarnEmbedColor } from "./types.js";
 
 /**
@@ -174,10 +175,10 @@ export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, emb
 		.setFooter(documentIdFooter(record))
 	if (isMod) {
 		// Get target from cache or fetch
-		const target = guild.members.cache.get(record.target.discordId) ?? await guild.members.fetch(record.target.discordId).catch(console.error)
+		const target = await getMember(guild, record.target.discordId)
 		
 		// Get moderator from cache or fetch
-		const moderator = guild.members.cache.get(record.moderator.discordId) ?? await guild.members.fetch(record.moderator.discordId).catch(console.error)
+		const moderator = await getMember(guild, record.moderator.discordId)
 
 		const targetFieldName = 'Member'
 		
@@ -201,8 +202,7 @@ export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, emb
 		if(record.updater?.discordId && record.updater?.username){
 
 			// Get updater from cache or fetch
-			const updater = guild.members.cache.get(record.updater.discordId)
-				?? await guild.members.fetch(record.updater.discordId).catch(console.error)
+			const updater = await getMember(guild, record.updater.discordId)
 			const updaterFieldName = 'Last Updated By'
 			
 			// If updater is present add felid to embed
@@ -304,18 +304,6 @@ function activeWarningCountField(count:number, inline: boolean = false): APIEmbe
 	}
 	
 }
-
-// /**
-//  *
-//  * @param guild
-//  * @param userId
-//  * @returns
-//  */
-// async function getOrFetchMember(guild:Guild, userId:Snowflake) {
-// 	return guild.members.cache.get(userId)
-// 		?? await guild.members.fetch(userId).catch(console.error)
-// 		?? undefined
-// }
 
 /**
  * get the URL for the avatar of a guild member

@@ -1,6 +1,7 @@
 import { bold, Colors, EmbedBuilder, Events, TimestampStyles } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
+import { getGuildChannel } from "../../util/index.js";
 
 export const GuildMemberRemove = new Event({
 	name: Events.GuildMemberRemove,
@@ -13,7 +14,7 @@ export const GuildMemberRemove = new Event({
 		if(!leaveChannelId) return
 
 		// check that Join channel exists in guild
-		const leaveChannel = guild.channels.cache.get(leaveChannelId) ?? await guild.channels.fetch(leaveChannelId) ?? undefined
+		const leaveChannel = await getGuildChannel(guild, leaveChannelId)
 		if(!leaveChannel?.isSendable()) return
 		const icon = member.user.avatarURL({forceStatic:true})
 		leaveChannel.send({
