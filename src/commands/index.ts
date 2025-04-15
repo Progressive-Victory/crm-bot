@@ -14,6 +14,5 @@ export { reportMessage, reportUser } from './context_menu/report.js';
 export { timeout } from './chat/timeout.js';
 
 export { default as scrapeJoinLogs } from './chat/scrapeJoinLogs.js';
-export { default as feadback } from './chat/feedback.js';
 
 export { default as purge } from './chat/purgeRoleless.js';
