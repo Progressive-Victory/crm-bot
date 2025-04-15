@@ -2,6 +2,7 @@ import { AuditLogEvent, Events, Guild, GuildAuditLogsEntry, User } from "discord
 import Event from "../../Classes/Event.js";
 import { timeoutEmbed } from "../../features/timeout.js";
 import { GuildSetting } from "../../models/Setting.js";
+import { getGuildChannel } from "../../util/index.js";
 
 export const guildAuditLogEntryCreate = new Event({
 	name: Events.GuildAuditLogEntryCreate,
@@ -14,12 +15,12 @@ export const guildAuditLogEntryCreate = new Event({
 			&& (target instanceof User)
 			&& executorId
 		) { 
-			const executorMember = guild.members.cache.get(executorId) ?? await guild.members.fetch(executorId)
+			const executorMember = guild.members.resolve(executorId)
 			const targetMember = guild.members.resolve(target)
 	
 			if(executorMember?.user.bot || !(targetMember && executorMember)) return
 			
-			const timeoutChannel = guild.channels.cache.get(settings?.logging.timeoutChannelId) ?? await guild.channels.fetch(settings?.logging.timeoutChannelId) ?? undefined
+			const timeoutChannel = await getGuildChannel(guild, settings.logging.timeoutChannelId)
 			
 			if(!timeoutChannel?.isSendable()) return
 			

@@ -1,4 +1,4 @@
-import { ChannelType, ChatInputCommandInteraction, DiscordAPIError, InteractionContextType, Message, MessageFlags, MessageType, PermissionsBitField, Snowflake } from 'discord.js';
+import { ChannelType, ChatInputCommandInteraction, InteractionContextType, Message, MessageFlags, MessageType, PermissionsBitField, Snowflake } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 
 interface Record {
@@ -24,6 +24,8 @@ export default new ChatInputCommand()
     .setExecute(async (interaction: ChatInputCommandInteraction) => {
 
 		const { guild, options} = interaction
+		
+		if(!guild) return;
 
         interaction.deferReply({ flags: MessageFlags.Ephemeral});
 
@@ -38,8 +40,14 @@ export default new ChatInputCommand()
 		let end = false
 
 		while (date >= endDate && !end) {
+			let fetchBlock: Message<true>[] = []
 
-			const fetchBlock = (await joinLogsChannel.messages.fetch({ limit: 100, before: messageId })).map((value) => value)
+			try {
+				fetchBlock = (await joinLogsChannel.messages.fetch({ limit: 100, before: messageId })).map((value) => value)
+			} catch (error) {
+				console.error(error)
+				return
+			}
 
 			if(fetchBlock.length === 0) {
 				end = true
