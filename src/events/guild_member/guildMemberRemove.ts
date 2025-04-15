@@ -1,4 +1,4 @@
-import { Colors, EmbedBuilder, Events, TimestampStyles } from "discord.js";
+import { bold, Colors, EmbedBuilder, Events, TimestampStyles } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
 
@@ -15,15 +15,13 @@ export const GuildMemberRemove = new Event({
 		// check that Join channel exists in guild
 		const leaveChannel = guild.channels.cache.get(leaveChannelId) ?? await guild.channels.fetch(leaveChannelId) ?? undefined
 		if(!leaveChannel?.isSendable()) return
-
+		const icon = member.user.avatarURL({forceStatic:true})
 		leaveChannel.send({
 			embeds:[new EmbedBuilder()
-				.setTitle('Member Left')
-				.setDescription(member.toString())
-				.setFields(
-					{name:'Joined At', value:`${member.joinedAt?.toDiscordString(TimestampStyles.LongDateTime)}`}
-				)
-				.setThumbnail(member.user.avatarURL({forceStatic:true}))
+				.setAuthor({iconURL:icon ?? undefined, name:`${member.displayName} Left`})
+				.setDescription(`${member.toString()} ${member.user.username}\n${bold('Joined At:')} ${member.joinedAt?.toDiscordString(TimestampStyles.LongDateTime)}\n${bold('Agreed to Rules:')} ${member.pending?.valueOf() ?? false}`)
+				.setThumbnail(icon)
+				.setFooter({text:`ID: ${member.id}`})
 				.setTimestamp()
 				.setColor(Colors.Red)
 			]
