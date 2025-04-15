@@ -3,6 +3,7 @@ import { Interaction } from "../../Classes/Interaction.js";
 import { getAuthorOptions } from "../../features/moderation/embeds.js";
 import { messageReportColor, reportModalPrefix, userReportColor } from "../../features/report.js";
 import { GuildSetting } from "../../models/Setting.js";
+import { getGuildChannel, getMember } from "../../util/index.js";
 
 export const userReport = new Interaction<ModalSubmitInteraction>({
 	customIdPrefix: reportModalPrefix.userReport,
@@ -14,10 +15,12 @@ export const userReport = new Interaction<ModalSubmitInteraction>({
 		const {guild, guildId, customId, client, member} = interaction
 
 		const targetId = customId.split(client.splitCustomIdOn!)[1]
-		const target = guild?.members.cache.get(targetId) ?? await guild?.members.fetch(targetId) ?? undefined
+		if(!guild) return
+		const target = await getMember(guild, targetId)
+
 		if(!target) return
 
-		const reporter = member instanceof GuildMember ? member : guild?.members.cache.get(member.user.id) ?? await guild?.members.fetch(member.user.id) ?? undefined
+		const reporter = member instanceof GuildMember ? member : await getMember(guild, member.user.id)
 		if(!reporter) return
 		
 		const setting = await GuildSetting.findOne({guildId})
@@ -25,7 +28,7 @@ export const userReport = new Interaction<ModalSubmitInteraction>({
 		const comment = interaction.fields.getTextInputValue('comment')
 
 		if (setting?.report.logChannelId) {
-			const logChannel = guild?.channels.cache.get(setting.report.logChannelId) ?? await guild?.channels.fetch(setting.report.logChannelId) ?? undefined
+			const logChannel = await getGuildChannel(guild, setting.report.logChannelId)
 			if(!logChannel?.isSendable()) return
 			logChannel.send({
 				embeds:[
@@ -59,18 +62,21 @@ export const messageReport = new Interaction<ModalSubmitInteraction>({
 		const {guild, guildId, customId, client, member} = interaction
 
 		const channelId = customId.split(client.splitCustomIdOn!)[1]
-		const channel = guild?.channels.cache.get(channelId) ?? await guild?.channels.fetch(channelId) ?? undefined
+		if (!guild) return;
+
+		const channel = await getGuildChannel(guild, channelId)
 		if(!channel?.isSendable()) return
 
 		const messageId = customId.split(client.splitCustomIdOn!)[2]
 		const message = channel.messages.cache.get(messageId) ?? await channel.messages.fetch(messageId) ?? undefined
 		if(!message) return
 
-		const author = message.member ?? guild?.members.cache.get(message.author.id) ?? await guild?.members.fetch(message.author.id) ?? undefined
+		const author = message.member ?? await getMember(guild, message.author.id)
 
 		if(!author) return
 
-		const reporter = member instanceof GuildMember ? member : guild?.members.cache.get(member.user.id) ?? await guild?.members.fetch(member.user.id) ?? undefined
+		const reporter = member instanceof GuildMember ? member : await getMember(guild, member.user.id)
+
 		if(!reporter) return
 		
 		const setting = await GuildSetting.findOne({guildId})
@@ -78,7 +84,7 @@ export const messageReport = new Interaction<ModalSubmitInteraction>({
 		const comment = interaction.fields.getTextInputValue('comment')
 
 		if (setting?.report.logChannelId) {
-			const logChannel = guild?.channels.cache.get(setting.report.logChannelId) ?? await guild?.channels.fetch(setting.report.logChannelId) ?? undefined
+			const logChannel = await getGuildChannel(guild, setting.report.logChannelId)
 			if(!logChannel?.isSendable()) return
 			const embed = new EmbedBuilder()
 			.setTitle('Message Report')

@@ -2,6 +2,7 @@ import { Colors, EmbedBuilder, Events, MessageCreateOptions } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { getAuthorOptions } from "../../features/moderation/embeds.js";
 import { GuildSetting } from "../../models/Setting.js";
+import { getGuildChannel } from "../../util/index.js";
 
 export const guildMemberAdd = new Event({
 	name: Events.GuildMemberAdd,
@@ -17,7 +18,7 @@ export const guildMemberAdd = new Event({
 		if(!joinChannelId) return
 
 		// check that Join channel exists in guild
-		const joinChannel = guild.channels.cache.get(joinChannelId) ?? await guild.channels.fetch(joinChannelId) ?? undefined
+		const joinChannel = await getGuildChannel(guild, joinChannelId)
 		if(!joinChannel?.isSendable()) return
 
 		// let welcomeRole: Role | undefined = undefined

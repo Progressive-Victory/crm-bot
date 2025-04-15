@@ -5,22 +5,24 @@ import { getAuthorOptions, userField, warnLogUpdateEmbed } from "../../../featur
 import { WarnButtonsPrefixes, WarnEmbedColor } from "../../../features/moderation/types.js";
 import { GuildSetting } from "../../../models/Setting.js";
 import { Warn } from "../../../models/Warn.js";
+import { getGuildChannel, getMember } from "../../../util/index.js";
 
 export const removeWarnYes = new Interaction<ButtonInteraction>({
 	customIdPrefix: WarnButtonsPrefixes.removeWarnYes,
 	run: async (interaction:ButtonInteraction) => {
 		const record = await getWarnRecord(interaction)
-		if (!record) return;
 		const {user, member, guild, guildId} = interaction
-		const target = guild?.members.cache.get(record.target.discordId) ?? await guild?.members.fetch(record.target.discordId) ?? undefined
+		if (!record || !guild) return;
+		
+		const target = await getMember(guild, record.target.discordId)
 		if(!target) return
 
-		const mod = guild?.members.cache.get(record.moderator.discordId) ?? await guild?.members.fetch(record.moderator.discordId) ?? undefined
+		const mod = await getMember(guild, record.moderator.discordId)
 		if(!mod) return
 
 		let updater = member ?? undefined
 		if (!(updater instanceof GuildMember)) {
-			updater  = guild?.members.cache.get(user.id) ?? await guild?.members.fetch(user.id) ?? undefined
+			updater = await getMember(guild, user)
 		}
 		if(!updater) {
 			throw Error('undefined member some how')
@@ -47,7 +49,7 @@ export const removeWarnYes = new Interaction<ButtonInteraction>({
 		})
 
 		if (settings?.warn.logChannelId) {
-			const log = guild?.channels.cache.get(settings.warn.logChannelId) ?? await guild?.channels.fetch(settings.warn.logChannelId)
+			const log = await getGuildChannel(guild, settings.warn.logChannelId)
 			if (log?.isSendable()) {
 				
 				log.send({
@@ -77,10 +79,11 @@ export const deleteWarnYes = new Interaction<ButtonInteraction>({
 	customIdPrefix: WarnButtonsPrefixes.deleteWarnYes,
 	run: async (interaction:ButtonInteraction) => {
 
+		const {user, guild} = interaction
 		const record = await getWarnRecord(interaction)
-		if(!record) return;
+		if(!record || !guild) return;
 		
-		const target = interaction.guild?.members.cache.get(record.target.discordId) ?? await interaction.guild?.members.fetch(record.target.discordId) ?? undefined
+		const target = await getMember(guild, record.target.discordId)
 		if (!target) return
 
 		const embed = new EmbedBuilder()
@@ -92,7 +95,7 @@ export const deleteWarnYes = new Interaction<ButtonInteraction>({
 					name: 'Reason for warn',
 					value: record.reason
 				},
-				userField('Action By', interaction.user)
+				userField('Action By', user)
 			)
 			.setTimestamp()
 		if (target) {
@@ -112,11 +115,11 @@ export const deleteWarnYes = new Interaction<ButtonInteraction>({
 		})
 		
 		if (settings?.warn.logChannelId) {
-			const log = interaction.guild?.channels.cache.get(settings.warn.logChannelId) ?? await interaction.guild?.channels.fetch(settings.warn.logChannelId)
+			const log = await getGuildChannel(guild, settings.warn.logChannelId)
 			if (log?.isSendable()) {
 				let member = interaction.member ?? undefined
 				if (!(member instanceof GuildMember)) {
-					member  = interaction.guild?.members.cache.get(interaction.user.id) ?? await interaction.guild?.members.fetch(interaction.user.id) ?? undefined
+					member = await getMember(guild, interaction.user.id)
 				}
 				if(!member) {
 					throw Error('undefined member some how')

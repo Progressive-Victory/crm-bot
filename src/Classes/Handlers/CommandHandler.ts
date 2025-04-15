@@ -184,7 +184,11 @@ export class CommandHandler {
             }
             
             else {
-                for ([guildId] of await (this.client.guilds.fetch())) {
+
+				const guilds = await this.client.guilds.fetch().catch(console.error)
+				if(!guilds) return
+
+                for ([guildId] of guilds) {
                     await this.rest.put(Routes.applicationGuildCommands(this.client.user.id, guildId), { body: [] })
                         .catch((e: unknown) => {
                             if(e instanceof Error)
