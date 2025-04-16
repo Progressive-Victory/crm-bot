@@ -1,4 +1,4 @@
-import { AnySelectMenuInteraction, GatewayIntentBits as Intents } from "discord.js";
+import { AnySelectMenuInteraction, GatewayIntentBits as Intents, Partials } from "discord.js";
 import express from "express";
 import { Client, Interaction } from "./Classes/index.js";
 import * as commands from "./commands/index.js";
@@ -19,10 +19,13 @@ export const client = new Client({
     Intents.MessageContent,
     Intents.GuildMembers,
     Intents.GuildModeration,
+	Intents.GuildPresences,
     Intents.GuildScheduledEvents,
     Intents.GuildMessageReactions,
   ],
-  // partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.GuildMember, Partials.GuildScheduledEvent],
+  partials: [
+	Partials.GuildMember
+],
   receiveMessageComponents: true,
   receiveModals: true,
   receiveAutocomplete: true,

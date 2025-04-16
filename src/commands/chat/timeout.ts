@@ -7,7 +7,7 @@ import { ChatInputCommand } from '../../Classes/index.js';
 import { timeoutEmbed } from '../../features/timeout.js';
 import { localize } from '../../i18n.js';
 import { GuildSetting } from '../../models/Setting.js';
-import { isGuildMember } from '../../util/index.js';
+import { getGuildChannel, isGuildMember } from '../../util/index.js';
 
 export const ns = 'timeout';
 
@@ -92,9 +92,9 @@ export const timeout = new ChatInputCommand()
 		});
 
 		const settings = await GuildSetting.findOne({guildId: interaction.guild?.id})
-		if (!settings?.logging.timeoutChannelId) return
+		if (!settings?.logging.timeoutChannelId || !guild) return
 
-		const timeoutChannel = guild?.channels.cache.get(settings.logging.timeoutChannelId) ?? await guild?.channels.fetch(settings.logging.timeoutChannelId) ?? undefined
+		const timeoutChannel = await getGuildChannel(guild, settings.logging.timeoutChannelId)
 					
 		if(!timeoutChannel?.isSendable() || !(member instanceof GuildMember)) return
 					

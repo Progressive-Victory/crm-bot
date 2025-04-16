@@ -1,4 +1,4 @@
-FROM node:22.13-alpine AS builder
+FROM node:lts-slim AS builder
 WORKDIR /bot
 
 COPY package.json .
@@ -10,7 +10,7 @@ COPY . .
 
 RUN yarn build
 
-FROM node:22.13-alpine AS runner
+FROM node:lts-slim AS runner
 WORKDIR /bot
 
 COPY package.json .

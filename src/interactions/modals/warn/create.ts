@@ -5,7 +5,7 @@ import { newWarningDmEmbed, newWarningLogEmbed, newWarnModEmbed } from "../../..
 import { WarnModalPrefixes } from "../../../features/moderation/types.js";
 import { GuildSetting } from "../../../models/Setting.js";
 import { Warn } from "../../../models/Warn.js";
-import { isGuildMember } from "../../../util/index.js";
+import { getGuildChannel, isGuildMember } from "../../../util/index.js";
 
 export const warnCreate = new Interaction<ModalSubmitInteraction>({
 	customIdPrefix: WarnModalPrefixes.createWarning,
@@ -56,7 +56,7 @@ export const warnCreate = new Interaction<ModalSubmitInteraction>({
 
 		
 		if (setting?.warn.logChannelId) {
-			const channel = interaction.guild?.channels.cache.get(setting?.warn.logChannelId) ?? await interaction.guild?.channels.fetch(setting?.warn.logChannelId)
+			const channel = await getGuildChannel(guild!, setting?.warn.logChannelId)
 			if (channel?.isSendable()) {
 				channel.send({
 					embeds: [newWarningLogEmbed(record,mod,target)],

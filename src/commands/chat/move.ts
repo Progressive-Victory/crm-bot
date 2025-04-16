@@ -8,6 +8,7 @@ import {
 import { ChatInputCommand } from '../../Classes/index.js';
 import { localize } from '../../i18n.js';
 import { client } from '../../index.js';
+import { getMember } from '../../util/index.js';
 
 export const ns = 'move';
 
@@ -44,7 +45,7 @@ export default new ChatInputCommand()
 			return; 
 		
 		// Get voice current state of voice channels
-		const source = (await guild.members.fetch(user.id))?.voice.channel;
+		const source = (await getMember(guild,user))?.voice.channel;
 		const destination = options.getChannel('destination', true, [ChannelType.GuildVoice]);
 
 		// user must be in a VC to use this command
