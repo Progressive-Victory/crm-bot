@@ -12,5 +12,3 @@ export { settings } from './chat/setting.js';
 export { reportMessage, reportUser } from './context_menu/report.js';
 
 export { timeout } from './chat/timeout.js';
-
-export { default as scrapeJoinLogs } from './chat/scrapeJoinLogs.js';
