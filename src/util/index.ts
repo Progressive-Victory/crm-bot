@@ -1,6 +1,7 @@
-import { APIInteractionDataResolvedGuildMember, APIRole, GuildMember, Role } from 'discord.js';
+import { APIInteractionDataResolvedGuildMember, APIRole, DiscordAPIError, Guild, GuildChannelResolvable, GuildMember, GuildMemberResolvable, Role } from 'discord.js';
 import { Types } from 'mongoose';
 import { client } from '../index.js';
+import { DiscordAPIErrorCodes } from './discord/DiscordAPIErrorCodes.js';
 
 
 /**
@@ -34,4 +35,47 @@ export function AddSplitCustomId(...args: (string | number | boolean | Types.Obj
 		output = output.concat(client.splitCustomIdOn, args[index].toString())
 	}
 	return output
+}
+
+/**
+ * Get member from user Resolvable object
+ * @param guild guild to find from
+ * @param member user resolvable object
+ * @returns Guild Member
+ */
+export async function getMember(guild:Guild, member:GuildMemberResolvable) {
+
+	try {
+		if (member instanceof GuildMember) return member.fetch();
+		return guild.members.resolve(member) ?? await guild?.members.fetch(member)
+	} catch (error) {
+		if (error instanceof DiscordAPIError && error.code === DiscordAPIErrorCodes.UnknownMember) {
+			return undefined
+	  }
+	  throw error
+		
+	}
+}
+
+/**
+ *
+ * @param guild
+ * @param channel
+ */
+export async function getGuildChannel(guild:Guild, channel:GuildChannelResolvable) {
+	let resolvedChannel = guild.channels.resolve(channel) ?? null
+	if (resolvedChannel) return resolvedChannel ?? undefined;
+	try {
+		if (typeof channel === 'string') {
+			resolvedChannel = await guild.channels.fetch(channel)
+		} else {
+			resolvedChannel = await channel.fetch()
+		}
+		
+	} catch (error) {
+		if (error instanceof DiscordAPIError && error.code === DiscordAPIErrorCodes.UnknownChannel) {
+			return undefined
+	  }
+	  throw error
+	}
 }

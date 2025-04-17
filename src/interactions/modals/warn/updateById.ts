@@ -5,6 +5,7 @@ import { warnLogUpdateEmbed } from "../../../features/moderation/embeds.js";
 import { numberRegex, WarnModalPrefixes } from "../../../features/moderation/types.js";
 import { GuildSetting } from "../../../models/Setting.js";
 import { setDate, Warn } from "../../../models/Warn.js";
+import { getGuildChannel, getMember } from "../../../util/index.js";
 
 export const warnUpdatedById = new Interaction<ModalSubmitInteraction>({
 	customIdPrefix: WarnModalPrefixes.updateById,
@@ -12,24 +13,23 @@ export const warnUpdatedById = new Interaction<ModalSubmitInteraction>({
 	run: async (interaction: ModalSubmitInteraction) => {
 
 		 
-		const {customId, client, guild} = interaction
+		const {customId, client, guild, member} = interaction
 		const  warnId = customId.split(client.splitCustomIdOn!)[1]
 
 		const record = await Warn.findById(warnId)
-		if (!record) return
+		if (!record || !guild) return
 		
-		const target = guild?.members.cache.get(record.target.discordId) ?? await guild?.members.fetch(record.target.discordId);
-		const mod = guild?.members.cache.get(record.moderator.discordId) ?? await guild?.members.fetch(record.moderator.discordId);
+		const [target, mod] = await Promise.all([
+			getMember(guild, record.target.discordId),
+			getMember(guild, record.moderator.discordId)
+		])
 
 		if( !target || !mod) return
 
-
-		let updater = interaction.member
-		if (!(updater instanceof GuildMember)) {
-			updater = guild?.members.cache.get(interaction.user.id) ?? await guild?.members.fetch(interaction.user.id) ?? null
-			if (updater === null) return
-		}
-
+		let updater = member ?? undefined
+		if (!updater) return
+		else if (!(updater instanceof GuildMember)) updater = await getMember(guild, updater?.user.id)
+		if (!updater) return
 		const reason = interaction.fields.getTextInputValue('reason')
 
 		record.reason = reason
@@ -60,7 +60,7 @@ export const warnUpdatedById = new Interaction<ModalSubmitInteraction>({
 		
 
 		if (setting?.warn.logChannelId) {
-			const channel = interaction.guild?.channels.cache.get(setting?.warn.logChannelId) ?? await interaction.guild?.channels.fetch(setting?.warn.logChannelId)
+			const channel = await getGuildChannel(guild, setting.warn.logChannelId)
 			if (channel?.isSendable()) {
 				channel.send({
 					embeds: [warnLogUpdateEmbed(record,mod,target, updater)],
