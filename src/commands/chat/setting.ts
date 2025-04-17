@@ -90,7 +90,7 @@ export const settings = new ChatInputCommand({
 			)
 		),
 	execute: async (interaction) => {
-
+    
 		const subcommandGroup = interaction.options.getSubcommandGroup(true)
 		const subCommand = interaction.options.getSubcommand(true)
 		const reply:InteractionReplyOptions = {flags: MessageFlags.Ephemeral}

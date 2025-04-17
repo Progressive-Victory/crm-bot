@@ -37,7 +37,6 @@ export class CommandHandler {
     get rest() {
         return this.client.rest;
     }
-
     /**
      * Add command to command handler
      * @param command Command to add
