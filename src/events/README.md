@@ -3,7 +3,7 @@ Client Events is how the bot interacts with Discord. Buit in to the bot is an ev
 1. Create the a new event object
 	- `name` - is the name of the client event, see the full list in the [discord.js documentation](https://discord.js.org/docs/packages/discord.js/14.14.1/Client:Class) 
 	- `once` - by defualt `false` this proporty allows the event to be limited to run only once
-	- `execute` - the fuction with runs on the occuracne of the event
+	- `execute` - the fuction with runs on the occurance of the event
 ```ts
 // src/events/messageCreate.ts
 import { Events, Message } from 'discord.js';

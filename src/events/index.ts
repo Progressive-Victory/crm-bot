@@ -15,3 +15,5 @@ export { guildAuditLogEntryCreate } from './guild_audit_log/guildAuditLogEntryCr
 export { GuildMemberRemove } from './guild_member/guildMemberRemove.js';
 
 export { guildMemberUpdate } from './guild_member/guildMemberUpdate.js';
+
+export { guildMemberVoiceUpdate } from './guild_member/guildMemberVoiceUpdate.js';
