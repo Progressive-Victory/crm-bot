@@ -1,3 +1,4 @@
+import { Collection } from "discord.js";
 
 export type StateAbbreviation =
 	| 'al'
@@ -61,7 +62,7 @@ export interface IState {
 	name: string, abbreviation: StateAbbreviation 
 }
 
-export const statesConfig: { name: string, abbreviation: StateAbbreviation }[] = [
+export const states: { name: string, abbreviation: StateAbbreviation }[] = [
 	{ name: 'Alabama', abbreviation: 'al' },
 	{ name: 'Alaska', abbreviation: 'ak' },
 	{ name: 'Arizona', abbreviation: 'az' },
@@ -119,3 +120,21 @@ export const statesConfig: { name: string, abbreviation: StateAbbreviation }[] =
 	{ name: 'Wisconsin', abbreviation: 'wi' },
 	{ name: 'Wyoming', abbreviation: 'wy' }
 ];
+
+export const stateNames = new Collection<StateAbbreviation, IState>()
+
+states.map((value) => stateNames.set(value.abbreviation, value))
+
+const abbreviations = states.map((value) => value.abbreviation)
+
+export const statesConfig = states
+
+
+/**
+ *
+ * @param a
+ */
+export function isStateAbbreviations(a:string): a is StateAbbreviation {
+	if(a.length !==2) return false
+	return abbreviations.includes(a as StateAbbreviation)
+}
