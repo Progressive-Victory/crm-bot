@@ -266,7 +266,7 @@ async function remove(interaction: ChatInputCommandInteraction) {
 	const del = interaction.options.getBoolean('delete') ?? false;
 	const reply: InteractionReplyOptions = { flags: MessageFlags.Ephemeral }
 	if(!record) {
-		reply.content = 'Warn could not be found. Check your the warn Id'
+		reply.content = 'Warn could not be found. Check your the warn id'
 		interaction.reply(reply)
 		return
 	}

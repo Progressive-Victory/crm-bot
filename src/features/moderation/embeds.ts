@@ -80,12 +80,12 @@ export function warnIssueUpdateEmbed(record: WarningRecord, target: GuildMember)
  * @param record document of a warning
  * @param records
  * @param count
- * @param guild guild where waring was issued
+ * @param guild guild where warning was issued
  * @returns embedBuilder
  */
 export function newWarningDmEmbed(record:WarningRecord, count:number, guild:Guild) {
 	return new EmbedBuilder()
-		.setTitle('You Have Received a Waring')
+		.setTitle('You Have Received a Warning')
 		.setColor(WarnEmbedColor.updated)
 		.addFields(
 			reasonField(record.reason, 'Reason for this warning'),
@@ -225,7 +225,7 @@ export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, emb
  * @returns footer option
  */
 export function documentIdFooter(record: WarningRecord): EmbedFooterOptions {
-	return { text: `Warn Id: ${record.id}` }
+	return { text: `Warn ID: ${record.id}` }
 }
 
 /**
@@ -268,9 +268,9 @@ export function userField(name:string, user:User | string, inline:boolean = true
 	let value:string
 
 	if(typeof user === 'string') {
-		value = inlineCode(user)
+		value = user
 	} else {
-		value = `${user.toString()}\n${inlineCode(user.username)}`
+		value = `${user.toString()}\n${user.username}`
 	}
 
 	return {name, value, inline}
