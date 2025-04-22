@@ -37,13 +37,12 @@ export const guildMemberVoiceUpdate = new Event({
 })
 
 /**
- *
- * @param newSate
- * @param member
- * @param title
- * @param description
- * @param color
- * @returns
+ * Create embed for log
+ * @param member Member changing state
+ * @param title Title for the embed
+ * @param description description for the embed
+ * @param color Color for the embed
+ * @returns embed builder
  */
 function vcLogEmbed(member:GuildMember, title:string, description:string, color:ColorResolvable ) {
 	
