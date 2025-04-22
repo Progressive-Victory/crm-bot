@@ -10,7 +10,7 @@ export const guildMemberVoiceUpdate = new Event({
 		const {guild, member} = newState
 		const settings = await GuildSetting.findOne({guildId: guild.id})
 		// check that logging channel ID is set
-		const loggingChannelId = settings?.logging.voiceChannelUpdatesId
+		const loggingChannelId = settings?.logging.voiceUpdatesChannelId
 		if(!loggingChannelId) return
 
 		// check that logging channel exists in guild
