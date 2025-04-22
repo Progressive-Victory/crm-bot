@@ -40,4 +40,4 @@ const state = new Schema<IState>({
 	}
 })
 
-export const States = model<IState>('state', state, 'States')
+export const States = model<IState>('state', state, 'states')

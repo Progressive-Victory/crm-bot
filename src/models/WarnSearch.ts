@@ -45,4 +45,4 @@ const search = new Schema<IWarnSearch>({
 	timestamps: true
 });
 
-export const WarningSearch = model<IWarnSearch>('Search', search, 'warningSearch');
+export const WarningSearch = model<IWarnSearch>('search', search, 'warningSearch');

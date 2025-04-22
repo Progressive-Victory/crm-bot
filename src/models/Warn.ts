@@ -77,7 +77,7 @@ const warn = new Schema<IWarn, WarnModel>(
         },
     });
 
-export const Warn = model<IWarn, WarnModel>('Warn', warn, 'warnings');
+export const Warn = model<IWarn, WarnModel>('warn', warn, 'warnings');
 
 /**
  *
