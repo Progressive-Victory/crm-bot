@@ -1,6 +1,6 @@
 import { InteractionContextType, PermissionFlagsBits } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
-import { autoComplete, lead } from '../../features/state/index.js';
+import { lead } from '../../features/state/index.js';
 import { localize } from '../../i18n.js';
 
 export const ns = 'state';
@@ -42,5 +42,4 @@ export default new ChatInputCommand()
 			)
 		)
 	)
-	.setAutocomplete(autoComplete)
 	.setExecute(lead);

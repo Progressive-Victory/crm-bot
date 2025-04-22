@@ -76,4 +76,4 @@ const settings = new Schema<ISettings>({
 	}
 })
 
-export const GuildSetting = model<ISettings>('setting', settings, 'Settings')
+export const GuildSetting = model<ISettings>('setting', settings, 'settings')
