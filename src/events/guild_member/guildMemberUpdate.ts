@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events, inlineCode } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
@@ -21,7 +21,7 @@ export const guildMemberUpdate = new Event({
 			const embed = new EmbedBuilder()
 				.setAuthor({iconURL: icon, name: 'Member Joined'})
 				// .setTitle('Member Joined')
-				.setDescription(`${newMember.toString()} ${inlineCode(newMember.user.username)}`)
+				.setDescription(`${newMember.toString()} ${newMember.user.username}`)
 				// .setFields({name:'Welcome Message Status', value:inlineCode('not sent')})
 				// .setThumbnail(icon)
 				.setTimestamp(newMember.joinedAt)
