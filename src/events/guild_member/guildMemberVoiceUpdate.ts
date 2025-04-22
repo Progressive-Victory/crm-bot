@@ -1,4 +1,4 @@
-import { ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
+import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
@@ -6,13 +6,35 @@ import { getGuildChannel } from "../../util/index.js";
 export const guildMemberVoiceUpdate = new Event({
 	name: Events.VoiceStateUpdate,
 	execute: async (oldState, newState) => {
-
-		if (oldState.channelId === newState.channelId) return
-
+		// console.log(oldState.toJSON(), newState.toJSON())
+		
 		const {guild} = newState
 		const member = newState.member === null ? await guild.members.fetch(newState.id).catch(console.error) : newState.member;
-
 		if(!member) return
+
+		const newStateChannelMention = channelMention(newState.channelId ?? 'error')
+		const oldStateChannelMention = channelMention(oldState.channelId ?? 'error')
+		
+		let embed:EmbedBuilder
+
+		if (oldState.channelId === newState.channelId) {
+			if (newState.channelId && oldState.suppress !== newState.suppress) {
+				if (!newState.suppress) {
+					embed = vcLogEmbed(member, 'Speaking on Stage', `${member} is now speaking on ${newStateChannelMention}`, Colors.Orange)
+				}
+				else {
+					embed = vcLogEmbed(member,'Left Stage', `${member} returned to audience in ${newStateChannelMention}`, Colors.DarkBlue)
+				}
+			} else return
+		} else {
+			if (oldState.channel === null && newState.channel !== null) {
+				embed = vcLogEmbed(member, 'Joined Voice Channel',`${member} joined ${newStateChannelMention}`,Colors.Green)
+			} else if (oldState.channel !== null && newState.channel === null) {
+				embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldStateChannelMention}`, Colors.Red)
+			} else {
+				embed = vcLogEmbed(member, 'Switched Voice Channel', `${member} switched from ${oldStateChannelMention} to ${newStateChannelMention}`, Colors.Blue)
+			}
+		}
 
 		const settings = await GuildSetting.findOne({guildId: guild.id})
 		// check that logging channel ID is set
@@ -22,15 +44,6 @@ export const guildMemberVoiceUpdate = new Event({
 		// check that logging channel exists in guild
 		const loggingChannel = await getGuildChannel(guild, loggingChannelId)
 		if(!loggingChannel?.isSendable()) return
-
-		let embed:EmbedBuilder
-		if (oldState.channel === null && newState.channel !== null) {
-			embed = vcLogEmbed(member, 'Joined Voice Channel',`${member} joined ${newState.channel}.`,Colors.Green)
-		} else if (oldState.channel !== null && newState.channel === null) {
-			embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldState.channel}.`, Colors.Red)
-		} else {
-			embed = vcLogEmbed(member, 'Switched Voice Channel', `${member} switched from ${oldState.channel} to ${newState.channel}.`, Colors.Blue)
-		}
 
 		loggingChannel.send({embeds:[embed]})
 	}
@@ -48,11 +61,10 @@ function vcLogEmbed(member:GuildMember, title:string, description:string, color:
 	
 	const icon = member.user.displayAvatarURL({forceStatic:true})
 	return new EmbedBuilder()
-		.setAuthor({iconURL: icon, name: member.displayName})
-		.setTitle(title)
+		.setAuthor({iconURL: icon, name: title})
 		.setDescription(description)
 		.setTimestamp()
-		.setFooter({text:`ID: ${member.id}`})
+		.setFooter({text:`User ID: ${member.id}`})
 		.setColor(color)
 
 }
