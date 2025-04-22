@@ -225,7 +225,7 @@ export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, emb
  * @returns footer option
  */
 export function documentIdFooter(record: WarningRecord): EmbedFooterOptions {
-	return { text: `Warn Id: ${record.id}` }
+	return { text: `Warn ID: ${record.id}` }
 }
 
 /**
@@ -268,9 +268,9 @@ export function userField(name:string, user:User | string, inline:boolean = true
 	let value:string
 
 	if(typeof user === 'string') {
-		value = inlineCode(user)
+		value = user
 	} else {
-		value = `${user.toString()}\n${inlineCode(user.username)}`
+		value = `${user.toString()}\n${user.username}`
 	}
 
 	return {name, value, inline}

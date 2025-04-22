@@ -23,7 +23,7 @@ export const guildMemberVoiceUpdate = new Event({
 					embed = vcLogEmbed(member, 'Speaking on Stage', `${member} is now speaking on ${newStateChannelMention}`, Colors.Orange)
 				}
 				else {
-					embed = vcLogEmbed(member,'Left Stage', `${member} returned to audience in ${newStateChannelMention}`, Colors.DarkBlue)
+					embed = vcLogEmbed(member,'Left Stage', `${member} returned to audience in ${newStateChannelMention}`, Colors.Blue)
 				}
 			} else return
 		} else {
