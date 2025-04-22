@@ -83,6 +83,7 @@ export const settings = new ChatInputCommand({
 						{name: 'timeouts', value: 'logging.timeoutChannelId'},
 						{name: 'leaves', value: 'logging.leaveChannelId'},
 						{name: 'channel updates', value: 'logging.channelUpdatesChannelId'},
+						{name: 'Member role updates', value: 'logging.memberRoleUpdatesChannelId'},
 					)
 					.setRequired(true)
 				)
