@@ -80,12 +80,12 @@ export function warnIssueUpdateEmbed(record: WarningRecord, target: GuildMember)
  * @param record document of a warning
  * @param records
  * @param count
- * @param guild guild where waring was issued
+ * @param guild guild where warning was issued
  * @returns embedBuilder
  */
 export function newWarningDmEmbed(record:WarningRecord, count:number, guild:Guild) {
 	return new EmbedBuilder()
-		.setTitle('You Have Received a Waring')
+		.setTitle('You Have Received a Warning')
 		.setColor(WarnEmbedColor.updated)
 		.addFields(
 			reasonField(record.reason, 'Reason for this warning'),
