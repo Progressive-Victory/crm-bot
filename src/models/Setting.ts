@@ -19,6 +19,7 @@ export interface ISettings {
 		timeoutChannelId?: Snowflake,
 		leaveChannelId?: Snowflake
 		channelUpdatesChannelId?: Snowflake
+		voiceUpdatesChannelId?: Snowflake
 	}
 }
 
@@ -62,6 +63,9 @@ const settings = new Schema<ISettings>({
 		channelUpdatesChannelId: {
 			type:String
 		},
+		voiceUpdatesChannelId: {
+			type:String
+		}
 	}
 
 },
