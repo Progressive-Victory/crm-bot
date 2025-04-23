@@ -1,7 +1,8 @@
-import { InteractionContextType, PermissionFlagsBits } from 'discord.js';
+import { ApplicationCommandOptionType, InteractionContextType, PermissionFlagsBits } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 import { lead } from '../../features/state/index.js';
 import { localize } from '../../i18n.js';
+import { states } from '../../util/states/types.js';
 
 export const ns = 'state';
 
@@ -18,14 +19,11 @@ export default new ChatInputCommand()
 			.setDescription('Ping State Role')
 			.setNameLocalizations(localize.discordLocalizationRecord('ping-name', ns))
 			.setDescriptionLocalizations(localize.discordLocalizationRecord('ping-description', ns))
-			.addStringOption((option) =>
-				option
-					.setName('message')
-					.setDescription('Message you wish to add to the ping')
-					.setNameLocalizations(localize.discordLocalizationRecord('ping-message-name', ns))
-					.setDescriptionLocalizations(localize.discordLocalizationRecord('ping-message-description', ns))
-					.setMaxLength(2000)
-					.setRequired(false)
+			.addStringOption(option => option
+				.setName('state')
+				.setDescription('abbreviation of the state to ping')
+				.setRequired(true)
+				.setAutocomplete(true)
 			)
 		)
 		.addSubcommand((subcommand) => subcommand
@@ -42,4 +40,19 @@ export default new ChatInputCommand()
 			)
 		)
 	)
+	.setAutocomplete((interaction)=>{
+			const focus = interaction.options.getFocused(true)
+			if(focus.type !== ApplicationCommandOptionType.String && focus.name !== 'state') {
+				interaction.respond([]);
+				return
+			}
+	
+			const choices = states.filter(s => s.name.toLowerCase().startsWith(focus.value.toLowerCase()) || s.abbreviation.startsWith(focus.value.toLowerCase())).slice(0, 14)
+				.map((state) =>({
+					name: state.name,
+					value: state.abbreviation
+				}))
+				
+			interaction.respond(choices).catch(console.error)
+		})
 	.setExecute(lead);
