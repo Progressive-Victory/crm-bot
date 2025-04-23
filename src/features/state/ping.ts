@@ -1,12 +1,16 @@
 import {
-	ChannelType, ChatInputCommandInteraction,
-	GuildTextBasedChannel,
-	quote
+	ActionRowBuilder,
+	ChatInputCommandInteraction,
+	Guild,
+	GuildMember,
+	MessageFlags,
+	ModalBuilder,
+	TextInputBuilder,
+	TextInputStyle
 } from 'discord.js';
-import { ns } from '../../commands/chat/state.js';
-import { localize } from '../../i18n.js';
-import { isGuildMember } from '../../util/index.js';
-import { getStateFromChannel } from '../../util/states/index.js';
+import { States } from '../../models/State.js';
+import { AddSplitCustomId } from '../../util/index.js';
+import { isStateAbbreviations } from '../../util/states/types.js';
 
 /**
  * Executes the ping command to send a message to a channel.
@@ -14,53 +18,60 @@ import { getStateFromChannel } from '../../util/states/index.js';
  * @returns interaction
  */
 export default async function ping(interaction: ChatInputCommandInteraction) {
-	const {
-		locale, options, guild, member
-	} = interaction;
-	if ( guild == null || !isGuildMember(member)) {
-		return;
+	let guild:Guild;
+	let member:GuildMember
+	const {client, options} = interaction
+
+	// interaction.deferReply({flags:MessageFlags.Ephemeral})
+
+	if(interaction.inCachedGuild()) {
+		guild = interaction.guild
+		member = interaction.member
+	} else if(interaction.inRawGuild()){
+		try {
+			guild = await client.guilds.fetch(interaction.guildId)
+			member = await guild.members.fetch(interaction.user)
+		} catch (error) {
+			console.log(error)
+			interaction.reply({
+				flags: MessageFlags.Ephemeral,
+				content:'An Error has occurred, contact your administrator'
+			})
+			return
+		}
+	}else {
+		throw Error('ping not in guild')
 	}
+	const stateAbbreviation = options.getString('state', true)
 
-	const channel = interaction.channel as GuildTextBasedChannel;
+	if(!isStateAbbreviations(stateAbbreviation)) return
 	
-	const local = localize.getLocale(locale);
-	const message = options.getString('message');
-
-	// Defer the reply to indicate that the bot is processing the command.
-	await interaction.deferReply({ ephemeral: true });
-
-	// checks to see if the command is being used in a thread
-	if( channel.type === ChannelType.PublicThread || channel.type === ChannelType.PrivateThread)
-		return interaction.followUp({
-			content: local?.t('ping-no-thread', ns),
-			ephemeral: true
-		});
+	const state = await States.findOne({guildId: interaction.guildId, abbreviation: stateAbbreviation}).catch(console.error)
+	if(!state || !state.roleId || !state.channelId) return	
 	
-	const stateFromChannel = getStateFromChannel(channel);
-
-	const role = guild.roles.cache.find(r => stateFromChannel?.abbreviation === r.name.toLowerCase());
-
 	// check to see if the person trying to use the command has the role being pinged
-	if(!member.roles.cache.has(role!.id)) 
-		return interaction.followUp({
-			content: local?.t('WrongRegionChannel', 'common', { channel: channel.toString() }),
-			ephemeral: true 
-		});
-	
-	
-	let temp: string;
-	if(message) 
-		temp = quote(message) + '\n';
-	else 
-		temp = '';
+	if (!member.roles.cache.has(state.roleId) || interaction.channelId !== state.channelId) {
+		interaction.reply({
+			flags: MessageFlags.Ephemeral,
+			content: 'You are not allowed to run this command in this channel'
+		})
+		return
+	}
+	const message = new TextInputBuilder()
+		.setCustomId('message')
+		.setLabel('Message')
+		.setPlaceholder(`Your message to ${state.name} member`)
+		.setMaxLength(2000)
+		.setRequired(true)
+		.setStyle(TextInputStyle.Paragraph)
 
-	await channel.send({
-		content: `${role?.toString()}\n${temp.toString()}${local?.t('ping-sent-by', ns, { user: member.toString() })}`,
-		options: { allowedMentions: { parse: ['roles'] } } 
-	});
-	return interaction.followUp({
-		content: local?.t('ping-success', ns),
-		ephemeral: true
-	});
-	
+	const firstRow = new ActionRowBuilder<TextInputBuilder>()
+		.setComponents(message)
+
+	const modal = new ModalBuilder()
+		.setCustomId(AddSplitCustomId('sp',stateAbbreviation))
+		.setTitle('State Ping Message')
+		.setComponents(firstRow)
+
+	interaction.showModal(modal)
 }
