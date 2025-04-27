@@ -12,7 +12,7 @@ export const statePing = new Interaction<ModalSubmitInteraction>({
 		
 		const stateAbbreviation = customId.split(client.splitCustomIdOn!)[1]
 		if(!isStateAbbreviations(stateAbbreviation)) return
-
+    
 		const state = await States.findOne({guildId: interaction.guildId, abbreviation: stateAbbreviation}).catch(console.error)
 		if(!state || !state.roleId || !state.channelId) return	
 
