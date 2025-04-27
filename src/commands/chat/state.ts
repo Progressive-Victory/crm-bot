@@ -1,6 +1,7 @@
 import { ApplicationCommandOptionType, InteractionContextType, PermissionFlagsBits } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 import { lead } from '../../features/state/index.js';
+import { messageMaxLength, titleMaxLength } from '../../features/state/types.js';
 import { localize } from '../../i18n.js';
 import { states } from '../../util/states/types.js';
 
@@ -24,6 +25,18 @@ export default new ChatInputCommand()
 				.setDescription('abbreviation of the state to ping')
 				.setRequired(true)
 				.setAutocomplete(true)
+			)
+			.addStringOption(title => title
+				.setName('title')
+				.setDescription('Title of announcement')
+				.setMaxLength(titleMaxLength)
+				.setRequired(false)
+			)
+			.addStringOption(option => option
+				.setName('message')
+				.setDescription('Text to send in message')
+				.setMaxLength(messageMaxLength)
+				.setRequired(false)
 			)
 		)
 		.addSubcommand((subcommand) => subcommand
