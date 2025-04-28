@@ -1,4 +1,4 @@
-import { bold, Colors, EmbedBuilder, Events, TimestampStyles } from "discord.js";
+import { bold, Colors, EmbedBuilder, Events, time, TimestampStyles } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
@@ -22,7 +22,7 @@ export const GuildMemberRemove = new Event({
 			.setAuthor({iconURL:icon ?? undefined, name:'Member Left'})
 			.setDescription(`${bold(member.displayName)} ${member.user.username}`)
 			.addFields(
-				{name:'Joined:', value: `${member.joinedAt?.toDiscordString(TimestampStyles.LongDateTime)}`, inline:true},
+				{name:'Joined:', value: `${time(member.joinedAt!,TimestampStyles.LongDateTime)}`, inline:true},
 			)
 			.setThumbnail(icon)
 			.setFooter({text:`User ID: ${member.id}`})

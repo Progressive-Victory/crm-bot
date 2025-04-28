@@ -1,4 +1,4 @@
-import { ColorResolvable, Colors, EmbedBuilder, GuildMember, inlineCode, TimestampStyles } from "discord.js";
+import { ColorResolvable, Colors, EmbedBuilder, GuildMember, inlineCode, time, TimestampStyles } from "discord.js";
 import { getAuthorOptions, reasonField, userField } from "./moderation/embeds.js";
 
 const timeoutEmbedColor: ColorResolvable = Colors.LuminousVividPink 
@@ -18,7 +18,7 @@ export function timeoutEmbed(target:GuildMember, executor:GuildMember, createdAt
 		.setTitle('Timeout')
 		.setAuthor(getAuthorOptions(executor))
 		.setThumbnail(target.displayAvatarURL({forceStatic: true}))
-		.setDescription(`${target} ${inlineCode(target.user.username)} was timed out until ${expiresAt.toDiscordString(TimestampStyles.LongDateTime)}`)
+		.setDescription(`${target} ${inlineCode(target.user.username)} was timed out until ${time(expiresAt, TimestampStyles.LongDateTime)}`)
 		.setFields(
 			reasonField(reason),
 			userField('Action By',executor.user)

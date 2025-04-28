@@ -1,4 +1,4 @@
-import { codeBlock, ColorResolvable, EmbedBuilder, GuildMember, TimestampStyles } from "discord.js";
+import { codeBlock, ColorResolvable, EmbedBuilder, GuildMember, time, TimestampStyles } from "discord.js";
 import { getAuthorOptions } from "./moderation/embeds.js";
 
 /**
@@ -17,8 +17,8 @@ export function memberInspectEmbed(member:GuildMember, colors: ColorResolvable) 
             { name: 'Display name:', value: codeBlock(member.displayName), inline: true },
 			{ name: 'Username:', value: codeBlock(member.user.username), inline: true },
             { name: 'User ID:', value: codeBlock(member.id), inline: true },
-            { name: 'Created at:', value: member.user.createdAt.toDiscordString(TimestampStyles.LongDateTime), inline: true },
-            { name: 'Joined at:', value: member.joinedAt!.toDiscordString(TimestampStyles.LongDateTime), inline: true },
+            { name: 'Created at:', value:time( member.user.createdAt, TimestampStyles.LongDateTime), inline: true },
+            { name: 'Joined at:', value: time(member.joinedAt!, TimestampStyles.LongDateTime), inline: true },
         )
         .setImage(member.bannerURL({forceStatic: true}) ?? (member.user.bannerURL({ forceStatic: true }) ?? null));
 }

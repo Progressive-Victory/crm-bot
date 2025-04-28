@@ -1,4 +1,4 @@
-import { APIEmbedField, ColorResolvable, EmbedAuthorOptions, EmbedBuilder, EmbedFooterOptions, Guild, GuildMember, ImageURLOptions, inlineCode, TimestampStyles, User } from "discord.js";
+import { APIEmbedField, ColorResolvable, EmbedAuthorOptions, EmbedBuilder, EmbedFooterOptions, Guild, GuildMember, ImageURLOptions, inlineCode, time, TimestampStyles, User } from "discord.js";
 import { client } from "../../index.js";
 import { WarningRecord } from "../../models/Warn.js";
 import { getMember } from "../../util/index.js";
@@ -237,7 +237,7 @@ export function documentIdFooter(record: WarningRecord): EmbedFooterOptions {
 export function expireAtField(record: WarningRecord, inline:boolean = false): APIEmbedField {
 	return {
 		name: 'Remaining Time',
-		value: `Expire ${record.expireAt.toDiscordString(TimestampStyles.RelativeTime)} On ${record.expireAt.toDiscordString(TimestampStyles.LongDate)}`,
+		value: `Expire ${time(record.expireAt, TimestampStyles.RelativeTime)} On ${time(record.expireAt, TimestampStyles.LongDate)}`,
 		inline
 	}
 	

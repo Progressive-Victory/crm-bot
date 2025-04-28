@@ -1,12 +1,12 @@
 import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
-import Event from "../../Classes/Event.js";
-import { GuildSetting } from "../../models/Setting.js";
-import { getGuildChannel } from "../../util/index.js";
+import Event from "../Classes/Event.js";
+import { GuildSetting } from "../models/Setting.js";
+import { getGuildChannel } from "../util/index.js";
 
-export const guildMemberVoiceUpdate = new Event({
+export const voiceStateUpdate = new Event({
 	name: Events.VoiceStateUpdate,
 	execute: async (oldState, newState) => {
-		// console.log(oldState.toJSON(), newState.toJSON())
+		console.log(newState.toJSON())
 		
 		const {guild} = newState
 		const member = newState.member === null ? await guild.members.fetch(newState.id).catch(console.error) : newState.member;

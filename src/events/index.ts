@@ -16,4 +16,10 @@ export { GuildMemberRemove } from './guild_member/guildMemberRemove.js';
 
 export { guildMemberUpdate } from './guild_member/guildMemberUpdate.js';
 
-export { guildMemberVoiceUpdate } from './guild_member/guildMemberVoiceUpdate.js';
+export { voiceStateUpdate } from './voiceStateUpdate.js';
+
+export { guildScheduledEventCreate } from './guild_scheduled_event/guildScheduledEventCreate.js';
+
+export { guildScheduledEventUpdate } from './guild_scheduled_event/guildScheduledEventUpdate.js';
+
+export { guildScheduledEventDelete } from './guild_scheduled_event/GuildScheduledEventDelete.js';
