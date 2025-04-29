@@ -10,6 +10,7 @@ import ping from './ping.js';
  * @returns Interaction from subcommand
  */
 export async function lead(interaction: ChatInputCommandInteraction) {
+	
 	const subcommand = interaction.options.getSubcommand(true);
 	// const subcommandGroup = interaction.options.getSubcommandGroup();
 
