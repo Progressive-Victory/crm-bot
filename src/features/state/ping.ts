@@ -1,16 +1,29 @@
 import {
 	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
 	ChatInputCommandInteraction,
+	ContainerBuilder,
 	Guild,
 	GuildMember,
+	GuildMemberResolvable,
+	GuildTextBasedChannel,
+	heading,
+	Message,
 	MessageFlags,
 	ModalBuilder,
+	ModalSubmitInteraction,
+	roleMention,
+	SeparatorSpacingSize,
+	Snowflake,
+	subtext,
 	TextInputBuilder,
 	TextInputStyle
 } from 'discord.js';
 import { States } from '../../models/State.js';
-import { AddSplitCustomId } from '../../util/index.js';
+import { AddSplitCustomId, getGuildChannel } from '../../util/index.js';
 import { isStateAbbreviations } from '../../util/states/types.js';
+import { messageMaxLength, titleMaxLength } from './types.js';
 
 /**
  * Executes the ping command to send a message to a channel.
@@ -19,7 +32,7 @@ import { isStateAbbreviations } from '../../util/states/types.js';
  */
 export default async function ping(interaction: ChatInputCommandInteraction) {
 	let guild:Guild;
-	let member:GuildMember
+	let member:GuildMember;
 	const {client, options} = interaction
 
 	// interaction.deferReply({flags:MessageFlags.Ephemeral})
@@ -47,31 +60,112 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
 	if(!isStateAbbreviations(stateAbbreviation)) return
 	
 	const state = await States.findOne({guildId: interaction.guildId, abbreviation: stateAbbreviation}).catch(console.error)
-	if(!state || !state.roleId || !state.channelId) return	
+	if(!state || !state.roleId || !state.channelId) return
 	
 	// check to see if the person trying to use the command has the role being pinged
-	if (!member.roles.cache.has(state.roleId) || interaction.channelId !== state.channelId) {
+	if (!member.roles.cache.has(state.roleId)) {
 		interaction.reply({
 			flags: MessageFlags.Ephemeral,
-			content: 'You are not allowed to run this command in this channel'
+			content: `You are not allowed to run this command to ${state.name}`
 		})
 		return
 	}
+
+	const channel = await getGuildChannel(guild, state.channelId)
+	if (!channel || !channel.isSendable()) return
+
+	const messageOption = options.getString('message', false)
+	const titleOption = options.getString('title') ?? `${state.name} Announcement`
+
+	if(messageOption) {
+		const pingMessage = await sendStatePing(channel, state.roleId, member, messageOption, titleOption)
+		statePingReply(interaction, pingMessage)
+		return
+	}
+
+	const title = new TextInputBuilder()
+		.setCustomId('title')
+		.setLabel('Title')
+		.setMaxLength(titleMaxLength)
+		.setPlaceholder(`${state.name} Announcement`)
+		.setValue(titleOption)
+		.setRequired(true)
+		.setStyle(TextInputStyle.Short)
+
 	const message = new TextInputBuilder()
 		.setCustomId('message')
 		.setLabel('Message')
 		.setPlaceholder(`Your message to ${state.name} member`)
-		.setMaxLength(2000)
+		.setMaxLength(messageMaxLength)
 		.setRequired(true)
 		.setStyle(TextInputStyle.Paragraph)
 
-	const firstRow = new ActionRowBuilder<TextInputBuilder>()
-		.setComponents(message)
+	const titleRow = new ActionRowBuilder<TextInputBuilder>().setComponents(title)
+	const messageRow = new ActionRowBuilder<TextInputBuilder>().setComponents(message)
 
 	const modal = new ModalBuilder()
 		.setCustomId(AddSplitCustomId('sp',stateAbbreviation))
 		.setTitle('State Ping Message')
-		.setComponents(firstRow)
+		.setComponents(titleRow, messageRow)
 
 	interaction.showModal(modal)
+}
+
+/**
+ *
+ * @param channel
+ * @param stateRoleId
+ * @param member
+ * @param message
+ * @param title
+ * @returns
+ */
+export async function sendStatePing(channel:GuildTextBasedChannel, stateRoleId:Snowflake, member: GuildMemberResolvable, message:string, title:string) {
+
+	const guild = channel.guild
+	const resolvedMember = guild.members.resolve(member)
+
+
+	const container = new ContainerBuilder()
+	.setAccentColor()
+	.addTextDisplayComponents(builder => builder
+		.setContent([heading(title), message].join('\n'))
+	)
+	.addSeparatorComponents(builder => builder
+		.setDivider(true)
+		.setSpacing(SeparatorSpacingSize.Small)
+	)
+	.addTextDisplayComponents(builder => builder
+		.setContent([
+			subtext(`Message from your ${roleMention(stateRoleId)} team`),
+			resolvedMember
+		].join('\n'))
+	)
+
+
+	return channel.send({
+			flags: MessageFlags.IsComponentsV2,
+			components: [container]
+	})
+
+}
+
+/**
+ *
+ * @param interaction
+ * @param message
+ * @returns
+ */
+export async function statePingReply(interaction:ModalSubmitInteraction | ChatInputCommandInteraction, message:Message<true>) {
+	const button = new ButtonBuilder()
+		.setStyle(ButtonStyle.Link)
+		.setURL(message.url)
+		.setLabel('Jump to Message')
+	const row = new ActionRowBuilder<ButtonBuilder>().setComponents(button)
+	
+	return interaction.reply({
+		flags:MessageFlags.Ephemeral,
+		content: 'Your message has been sent',
+		components: [row]
+	})
 }

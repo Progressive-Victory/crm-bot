@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, InteractionReplyOptions, MessageFlags, Snowflake } from 'discord.js';
+import { ActionRow, ActionRowBuilder, ButtonBuilder, ButtonInteraction, InteractionReplyOptions, MessageFlags, Snowflake } from 'discord.js';
 import { Interaction } from '../../Classes/index.js';
 import { appealDmSubmitted } from '../../features/moderation/buttons.js';
 import { dateDiffInDays } from '../../features/moderation/index.js';
@@ -131,8 +131,10 @@ export const banAppeal = new Interaction<ButtonInteraction>({
 		if (!channel?.isSendable()) {
 			throw Error('warn.appealChannelId is not sendable, how did you get here')
 		}
-
-		const actionRow = new ActionRowBuilder<ButtonBuilder>(interaction.message.components[0])
+		if(interaction.message.flags.has(MessageFlags.IsComponentsV2)) return;
+		const messageComponents = interaction.message.components[0]
+		if(!(messageComponents instanceof ActionRow)) return
+		const actionRow = new ActionRowBuilder<ButtonBuilder>(messageComponents)
 		actionRow.components[0] = appealDmSubmitted()
 		
 		interaction.update({
