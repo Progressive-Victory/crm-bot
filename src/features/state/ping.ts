@@ -147,7 +147,6 @@ export function stateMessageCreate(stateRoleId:Snowflake, authorId: Snowflake, m
 		].join('\n'))
 	)
 
-
 	return {
 			flags: MessageFlags.IsComponentsV2,
 			components: [container],
@@ -176,6 +175,7 @@ export function legacyStateMessageCreate(stateRoleId:Snowflake, authorId: Snowfl
 
 	}
 }
+
 /**
  *
  * @param interaction

@@ -30,7 +30,6 @@ export const statePing = new Interaction<ModalSubmitInteraction>({
 		else stateMessageCreateOptions = stateMessageCreate(state.roleId, interaction.user.id, content, title)
 		
 		const pingMessage = await interaction.channel.send(stateMessageCreateOptions)
-		
 
 		statePingReply(interaction, pingMessage)
 	}}
