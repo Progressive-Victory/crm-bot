@@ -6,10 +6,9 @@ import {
 	ContainerBuilder,
 	Guild,
 	GuildMember,
-	GuildMemberResolvable,
-	GuildTextBasedChannel,
 	heading,
 	Message,
+	MessageCreateOptions,
 	MessageFlags,
 	ModalBuilder,
 	ModalSubmitInteraction,
@@ -18,12 +17,13 @@ import {
 	Snowflake,
 	subtext,
 	TextInputBuilder,
-	TextInputStyle
+	TextInputStyle,
+	userMention
 } from 'discord.js';
 import { States } from '../../models/State.js';
 import { AddSplitCustomId, getGuildChannel } from '../../util/index.js';
 import { isStateAbbreviations } from '../../util/states/types.js';
-import { messageMaxLength, titleMaxLength } from './types.js';
+import { messageMaxLength, titleMaxLength } from './constants.js';
 
 /**
  * Executes the ping command to send a message to a channel.
@@ -76,9 +76,16 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
 
 	const messageOption = options.getString('message', false)
 	const titleOption = options.getString('title') ?? `${state.name} Announcement`
+	const legacyOption = options.getBoolean('legacy') ?? false
 
+	let stateMessageCreateOptions: MessageCreateOptions
 	if(messageOption) {
-		const pingMessage = await sendStatePing(channel, state.roleId, member, messageOption, titleOption)
+
+		if(legacyOption) stateMessageCreateOptions = legacyStateMessageCreate(state.roleId, member.id, messageOption, titleOption)
+		else stateMessageCreateOptions = stateMessageCreate(state.roleId, member.id, messageOption, titleOption)
+		
+		const pingMessage = await channel.send(stateMessageCreateOptions)
+
 		statePingReply(interaction, pingMessage)
 		return
 	}
@@ -104,7 +111,7 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
 	const messageRow = new ActionRowBuilder<TextInputBuilder>().setComponents(message)
 
 	const modal = new ModalBuilder()
-		.setCustomId(AddSplitCustomId('sp',stateAbbreviation))
+		.setCustomId(AddSplitCustomId('sp',stateAbbreviation, legacyOption ? 1 : 0))
 		.setTitle('State Ping Message')
 		.setComponents(titleRow, messageRow)
 
@@ -114,20 +121,18 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
 /**
  *
  * @param channel
+ * @param guild
  * @param stateRoleId
  * @param member
+ * @param authorId
  * @param message
  * @param title
  * @returns
  */
-export async function sendStatePing(channel:GuildTextBasedChannel, stateRoleId:Snowflake, member: GuildMemberResolvable, message:string, title:string) {
-
-	const guild = channel.guild
-	const resolvedMember = guild.members.resolve(member)
-
-
+export function stateMessageCreate(stateRoleId:Snowflake, authorId: Snowflake, message:string, title:string): MessageCreateOptions {
+	
 	const container = new ContainerBuilder()
-	.setAccentColor()
+	// .setAccentColor()
 	.addTextDisplayComponents(builder => builder
 		.setContent([heading(title), message].join('\n'))
 	)
@@ -138,18 +143,39 @@ export async function sendStatePing(channel:GuildTextBasedChannel, stateRoleId:S
 	.addTextDisplayComponents(builder => builder
 		.setContent([
 			subtext(`Message from your ${roleMention(stateRoleId)} team`),
-			resolvedMember
+			subtext(userMention(authorId))
 		].join('\n'))
 	)
 
 
-	return channel.send({
+	return {
 			flags: MessageFlags.IsComponentsV2,
-			components: [container]
-	})
-
+			components: [container],
+			// allowedMentions:{parse:['roles']}
+	}
 }
 
+/**
+ *
+ * @param stateRoleId
+ * @param authorId
+ * @param message
+ * @param title
+ * @returns
+ */
+export function legacyStateMessageCreate(stateRoleId:Snowflake, authorId: Snowflake, message:string, title:string): MessageCreateOptions {
+
+	return {
+		content:[
+			heading(title),
+			message,
+			subtext(`Message from your ${roleMention(stateRoleId)} team`),
+			subtext(userMention(authorId))
+		].join('\n'),
+		// allowedMentions:{parse:[AllowedMentionsTypes.Role]}
+
+	}
+}
 /**
  *
  * @param interaction
