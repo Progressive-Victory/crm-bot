@@ -1,6 +1,10 @@
 # Progressive Victory Bot
 This bot supports operations in the Progresive Vicory Discord Server. To join by Sign up [here](https://www.progressivevictory.win/volunteer)
 
+## Getting Started
+copy `.env.sample` to `.env` and fill in the values
+run `docker compose up --build`
+
 ## Commands
 Commands help users interact with the server and mamage its members
 ### state
