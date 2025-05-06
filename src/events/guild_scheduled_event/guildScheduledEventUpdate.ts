@@ -1,4 +1,4 @@
-import { Events, GuildScheduledEventStatus, time } from 'discord.js';
+import { Events, GuildScheduledEventStatus, MessageFlags, TextDisplayBuilder, time } from 'discord.js';
 import { Event } from '../../Classes/index.js';
 import { ScheduledEvent, VoiceSession } from '../../models/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
@@ -17,13 +17,13 @@ export const guildScheduledEventUpdate = new Event({
 			const channel = await client.channels.fetch(LOG_CHANNEL);
 			const now = new Date();
 			// mark older objects as ended (there should only be one)
-			for await (const event of ScheduledEvent.find({eventId: oldGuildScheduledEvent.id, endedAt: null})) {
+			for await (const event of ScheduledEvent.find({ eventId: oldGuildScheduledEvent.id, endedAt: null })) {
 				event.endedAt = now;
 				event.save();
 				if (channel?.isSendable() && event.logMessage) {
 					let message = `\
 \`${newGuildScheduledEvent.name}\` ended
-${time(event.createdAt)} to ${time(event.endedAt)} (${Math.round((event.endedAt.getTime() - event.createdAt.getTime())/1000/60)}m)
+${time(event.createdAt)} to ${time(event.endedAt)} (${Math.round((event.endedAt.getTime() - event.createdAt.getTime()) / 1000 / 60)}m)
 Attended by:
 `;
 					const voiceSessions = new Map<string, number>();
@@ -32,8 +32,8 @@ Attended by:
 						channelId: newGuildScheduledEvent.channelId,
 						$or: [
 							{
-								createdAt: {$gte: event.endedAt},
-								endedAt: {$lte: event.createdAt},
+								createdAt: { $gte: event.endedAt },
+								endedAt: { $lte: event.createdAt },
 							},
 							{
 								endedAt: null,
@@ -48,9 +48,12 @@ Attended by:
 					}
 					for (const name of Array.from(voiceSessions.keys()).sort()) {
 						const duration = voiceSessions.get(name)!;
-						message += `${name}: ${Math.round(duration/1000/60)}m\n`;
+						message += `${name}: ${Math.round(duration / 1000 / 60)}m\n`;
 					}
-					(await channel.messages.fetch(event.logMessage)).edit(message);
+					const components = [
+						new TextDisplayBuilder().setContent(message),
+					];
+					(await channel.messages.fetch(event.logMessage)).edit({ flags: MessageFlags.IsComponentsV2, components });
 				}
 			}
 		}
@@ -58,7 +61,12 @@ Attended by:
 		if (oldGuildScheduledEvent?.status != GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status == GuildScheduledEventStatus.Active) {
 			const channel = await client.channels.fetch(LOG_CHANNEL);
 			let message: string | undefined;
-			if (channel?.isSendable()) message = (await channel.send(`${newGuildScheduledEvent.name} has started`)).id;
+			if (channel?.isSendable()) {
+				const components = [
+					new TextDisplayBuilder().setContent(`${newGuildScheduledEvent.name} has started`),
+				];
+				message = (await channel.send({ flags: MessageFlags.IsComponentsV2, components })).id;
+			}
 			ScheduledEvent.create({
 				eventId: newGuildScheduledEvent.id,
 				eventName: newGuildScheduledEvent.name,
