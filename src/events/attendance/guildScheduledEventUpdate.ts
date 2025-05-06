@@ -1,4 +1,4 @@
-import { Events, GuildScheduledEventStatus } from 'discord.js';
+import { Events, GuildScheduledEventStatus, time } from 'discord.js';
 import { Event } from '../../Classes/index.js';
 import { ScheduledEvent, VoiceSession } from '../../models/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
@@ -23,7 +23,7 @@ export const guildScheduledEventUpdate = new Event({
 				if (channel?.isSendable() && event.logMessage) {
 					let message = `\
 \`${newGuildScheduledEvent.name}\` ended
-<t:${Math.round(event.createdAt.getTime()/1000)}> to <t:${Math.round(event.endedAt.getTime()/1000)}> (${Math.round((event.endedAt.getTime() - event.createdAt.getTime())/1000/60)}m)
+${time(event.createdAt)} to ${time(event.endedAt)} (${Math.round((event.endedAt.getTime() - event.createdAt.getTime())/1000/60)}m)
 Attended by:
 `;
 					const voiceSessions = new Map<string, number>();
