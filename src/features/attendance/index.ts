@@ -12,6 +12,7 @@ export const ActivatedEvent = model('ActivatedEvent', new Schema({
 	eventId: { type: String, required: true },
 	eventName: { type: String, required: true },
 	endedAt: Date,
+	logMessage: String,
 }, { timestamps: true }));
 
 /** Records when people select the interested button on a scheduled event */
