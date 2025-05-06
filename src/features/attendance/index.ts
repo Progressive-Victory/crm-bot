@@ -8,7 +8,7 @@ export const VoiceSession = model('VoiceSession', new Schema({
 }, { timestamps: true }));
 
 /** Records when scheduled events happen */
-export const ActivatedEvent = model('ActivatedEvent', new Schema({
+export const ScheduledEvent = model('ScheduledEvent', new Schema({
 	eventId: { type: String, required: true },
 	eventName: { type: String, required: true },
 	endedAt: Date,

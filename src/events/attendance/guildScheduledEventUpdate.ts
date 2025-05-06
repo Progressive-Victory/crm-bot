@@ -1,6 +1,6 @@
 import { Events, GuildScheduledEventStatus } from 'discord.js';
 import { Event } from '../../Classes/index.js';
-import { ActivatedEvent, VoiceSession } from '../../features/attendance/index.js';
+import { ScheduledEvent, VoiceSession } from '../../features/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
 
 const { LOG_CHANNEL } = process.env;
@@ -17,7 +17,7 @@ export const guildScheduledEventUpdate = new Event({
 			const channel = await client.channels.fetch(LOG_CHANNEL);
 			const now = new Date();
 			// mark older objects as ended (there should only be one)
-			for await (const event of ActivatedEvent.find({eventId: oldGuildScheduledEvent.id, endedAt: null})) {
+			for await (const event of ScheduledEvent.find({eventId: oldGuildScheduledEvent.id, endedAt: null})) {
 				event.endedAt = now;
 				event.save();
 				if (channel?.isSendable() && event.logMessage) {
@@ -58,7 +58,7 @@ Attended by:
 			const channel = await client.channels.fetch(LOG_CHANNEL);
 			let message: string | undefined;
 			if (channel?.isSendable()) message = (await channel.send(`${newGuildScheduledEvent.name} has started`)).id;
-			new ActivatedEvent({
+			new ScheduledEvent({
 				eventId: newGuildScheduledEvent.id,
 				eventName: newGuildScheduledEvent.name,
 				logMessage: message,
