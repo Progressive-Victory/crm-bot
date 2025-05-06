@@ -1,6 +1,6 @@
 import { Events, GuildScheduledEventStatus } from 'discord.js';
 import { Event } from '../../Classes/index.js';
-import { ScheduledEvent, VoiceSession } from '../../features/attendance/index.js';
+import { ScheduledEvent, VoiceSession } from '../../models/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
 
 const { LOG_CHANNEL } = process.env;

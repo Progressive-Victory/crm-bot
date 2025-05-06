@@ -1,6 +1,6 @@
 import { Events } from 'discord.js';
 import { Event } from '../../Classes/index.js';
-import { ScheduledEventInterest } from '../../features/attendance/index.js';
+import { ScheduledEventInterest } from '../../models/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
 
 /** Records when a user presses the interested button on the scheduled event */
