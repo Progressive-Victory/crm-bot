@@ -29,6 +29,7 @@ Attended by:
 					const voiceSessions = new Map<string, number>();
 					// for every voice session 
 					for await (const voiceSession of VoiceSession.find({
+						channelId: newGuildScheduledEvent.channelId,
 						$or: [
 							{
 								createdAt: {$gte: event.endedAt},
