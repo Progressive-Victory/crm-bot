@@ -12,12 +12,7 @@ export const voiceStateUpdate = new Event({
 			await dbConnect();
 			// if the user left a channel
 			if (oldState.channelId) {
-				const now = new Date();
-				// mark all older objects as ended
-				for await (const e of VoiceSession.find({userId: oldState.member?.id, endedAt: null})) {
-					e.endedAt = now;
-					e.save();
-				}
+				VoiceSession.updateMany({ userId: oldState.member?.id, endedAt: null }, { endedAt: new Date() }).exec();
 			}
 			// if the user entered a channel
 			if (newState.channelId) {
