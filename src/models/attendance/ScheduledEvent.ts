@@ -4,6 +4,7 @@ import { Schema, model } from 'mongoose';
 export const ScheduledEvent = model('ScheduledEvent', new Schema({
 	eventId: { type: String, required: true, immutable: true },
 	eventName: { type: String, required: true, immutable: true },
+	scheduledStartTime: { type: Date, required: true, immutable: true },
 	endedAt: Date,
 	logMessage: String,
 }, { timestamps: true }));

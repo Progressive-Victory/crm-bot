@@ -62,6 +62,7 @@ Attended by:
 			ScheduledEvent.create({
 				eventId: newGuildScheduledEvent.id,
 				eventName: newGuildScheduledEvent.name,
+				scheduledStartTime: newGuildScheduledEvent.scheduledStartAt,
 				logMessage: message,
 			});
 		}
