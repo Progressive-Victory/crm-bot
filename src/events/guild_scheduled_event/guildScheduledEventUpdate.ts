@@ -17,45 +17,43 @@ export const guildScheduledEventUpdate = new Event({
 			const channel = await client.channels.fetch(LOG_CHANNEL);
 			const now = new Date();
 			// mark older objects as ended (there should only be one)
-			for await (const event of ScheduledEvent.find({ eventId: oldGuildScheduledEvent.id, endedAt: null })) {
-				event.endedAt = now;
-				event.save();
-				if (channel?.isSendable() && event.logMessage) {
-					let message = `\
+			const event = await ScheduledEvent.findOneAndUpdate({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }, { returnDocument: 'after' }).exec();
+			if (!event?.endedAt) return;
+			if (!channel?.isSendable()) return;
+			if (!event.logMessage) return;
+			let message = `\
 \`${newGuildScheduledEvent.name}\` ended
 ${time(event.createdAt)} to ${time(event.endedAt)} (${Math.round((event.endedAt.getTime() - event.createdAt.getTime()) / 1000 / 60)}m)
 Attended by:
 `;
-					const voiceSessions = new Map<string, number>();
-					// for every voice session 
-					for await (const voiceSession of VoiceSession.find({
-						channelId: newGuildScheduledEvent.channelId,
-						$or: [
-							{
-								createdAt: { $gte: event.endedAt },
-								endedAt: { $lte: event.createdAt },
-							},
-							{
-								endedAt: null,
-							},
-						],
-					})) {
-						const start = Math.max(voiceSession.createdAt.getTime(), event.createdAt.getTime());
-						const end = Math.min(voiceSession.endedAt?.getTime() ?? now.getTime(), event.endedAt.getTime());
-						const duration = end - start;
-						if (duration <= 0) continue;
-						voiceSessions.set(voiceSession.displayName, (voiceSessions.get(voiceSession.displayName) ?? 0) + duration);
-					}
-					for (const name of Array.from(voiceSessions.keys()).sort()) {
-						const duration = voiceSessions.get(name)!;
-						message += `${name}: ${Math.round(duration / 1000 / 60)}m\n`;
-					}
-					const components = [
-						new TextDisplayBuilder().setContent(message),
-					];
-					(await channel.messages.fetch(event.logMessage)).edit({ flags: MessageFlags.IsComponentsV2, components });
-				}
+			const voiceSessions = new Map<string, number>();
+			// for every voice session 
+			for await (const voiceSession of VoiceSession.find({
+				channelId: newGuildScheduledEvent.channelId,
+				$or: [
+					{
+						createdAt: { $gte: event.endedAt },
+						endedAt: { $lte: event.createdAt },
+					},
+					{
+						endedAt: null,
+					},
+				],
+			})) {
+				const start = Math.max(voiceSession.createdAt.getTime(), event.createdAt.getTime());
+				const end = Math.min(voiceSession.endedAt?.getTime() ?? now.getTime(), event.endedAt.getTime());
+				const duration = end - start;
+				if (duration <= 0) continue;
+				voiceSessions.set(voiceSession.displayName, (voiceSessions.get(voiceSession.displayName) ?? 0) + duration);
 			}
+			for (const name of Array.from(voiceSessions.keys()).sort()) {
+				const duration = voiceSessions.get(name)!;
+				message += `${name}: ${Math.round(duration / 1000 / 60)}m\n`;
+			}
+			const components = [
+				new TextDisplayBuilder().setContent(message),
+			];
+			(await channel.messages.fetch(event.logMessage)).edit({ flags: MessageFlags.IsComponentsV2, components });
 		}
 		// if the event get activated
 		if (oldGuildScheduledEvent?.status != GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status == GuildScheduledEventStatus.Active) {
