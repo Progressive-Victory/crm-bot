@@ -12,7 +12,7 @@ export { guildAuditLogEntryCreate } from './guild_audit_log/guildAuditLogEntryCr
 
 // export { guildMemberAdd } from './guild_member/guildMemberAdd.js';
 
-export { GuildMemberRemove } from './guild_member/guildMemberRemove.js';
+export { guildMemberRemove } from './guild_member/guildMemberRemove.js';
 
 export { guildMemberUpdate } from './guild_member/guildMemberUpdate.js';
 
