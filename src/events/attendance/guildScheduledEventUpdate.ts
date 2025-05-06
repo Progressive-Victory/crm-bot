@@ -59,11 +59,11 @@ Attended by:
 			const channel = await client.channels.fetch(LOG_CHANNEL);
 			let message: string | undefined;
 			if (channel?.isSendable()) message = (await channel.send(`${newGuildScheduledEvent.name} has started`)).id;
-			new ScheduledEvent({
+			ScheduledEvent.create({
 				eventId: newGuildScheduledEvent.id,
 				eventName: newGuildScheduledEvent.name,
 				logMessage: message,
-			}).save();
+			});
 		}
 	},
 });

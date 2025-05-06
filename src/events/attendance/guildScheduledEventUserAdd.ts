@@ -8,11 +8,11 @@ export const guildScheduledEventUserAdd = new Event({
 	name: Events.GuildScheduledEventUserAdd,
 	execute: async (guildScheduledEvent, user) => {
 		await dbConnect();
-		new ScheduledEventInterest({
+		ScheduledEventInterest.create({
 			userId: user.id,
 			displayName: user.displayName,
 			eventId: guildScheduledEvent.id,
 			eventName: guildScheduledEvent.name,
-		}).save();
+		});
 	},
 });

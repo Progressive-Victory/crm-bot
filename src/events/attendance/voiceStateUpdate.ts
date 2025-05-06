@@ -21,11 +21,11 @@ export const voiceStateUpdate = new Event({
 			}
 			// if the user entered a channel
 			if (newState.channelId) {
-				new VoiceSession({
+				VoiceSession.create({
 					channelId: newState.channelId,
 					userId: newState.member?.id,
 					displayName: newState.member?.displayName,
-				}).save();
+				});
 			}
 		}
 	},
