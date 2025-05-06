@@ -3,7 +3,7 @@ This bot supports operations in the Progresive Vicory Discord Server. To join by
 
 ## Getting Started
 copy `.env.sample` to `.env` and fill in the values
-run `docker compose up --build`
+run `docker compose up -w --build --attach bot`
 
 ## Commands
 Commands help users interact with the server and mamage its members

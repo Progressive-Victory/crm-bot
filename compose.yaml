@@ -23,3 +23,9 @@ services:
       MONGODB_URI: mongodb://root:example@mongo/admin
     env_file:
       - .env
+    develop:
+      watch:
+        - action: rebuild
+          path: ./src
+        - action: rebuild
+          path: package.json
