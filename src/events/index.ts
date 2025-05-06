@@ -17,3 +17,11 @@ export { GuildMemberRemove } from './guild_member/guildMemberRemove.js';
 export { guildMemberUpdate } from './guild_member/guildMemberUpdate.js';
 
 export { guildMemberVoiceUpdate } from './guild_member/guildMemberVoiceUpdate.js';
+
+export { guildScheduledEventUpdate } from './attendance/guildScheduledEventUpdate.js';
+
+export { guildScheduledEventUserAdd } from './attendance/guildScheduledEventUserAdd.js';
+
+export { guildScheduledEventUserRemove } from './attendance/guildScheduledEventUserRemove.js';
+
+export { voiceStateUpdate } from './attendance/voiceStateUpdate.js';
