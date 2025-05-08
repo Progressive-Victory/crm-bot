@@ -3,8 +3,8 @@ import { Event } from '../../Classes/index.js';
 import { ScheduledEvent, VoiceSession } from '../../models/attendance/index.js';
 import dbConnect from "../../util/libmongo.js";
 
-const { LOG_CHANNEL } = process.env;
-if (!LOG_CHANNEL) throw new Error("LOG_CHANNEL not set");
+const { EVENT_LOG_CHANNEL } = process.env;
+if (!EVENT_LOG_CHANNEL) throw new Error("EVENT_LOG_CHANNEL not set");
 
 /** Records when scheduled events start and stop */
 export const guildScheduledEventUpdate = new Event({
@@ -14,7 +14,7 @@ export const guildScheduledEventUpdate = new Event({
 		await dbConnect();
 		// if the event goes from active to something else
 		if (oldGuildScheduledEvent?.status == GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status != GuildScheduledEventStatus.Active) {
-			const channel = await client.channels.fetch(LOG_CHANNEL);
+			const channel = await client.channels.fetch(EVENT_LOG_CHANNEL);
 			const now = new Date();
 			// mark older objects as ended (there should only be one)
 			const event = await ScheduledEvent.findOneAndUpdate({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }, { returnDocument: 'after' }).exec();
@@ -73,7 +73,7 @@ Attended by:
 		}
 		// if the event get activated
 		if (oldGuildScheduledEvent?.status != GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status == GuildScheduledEventStatus.Active) {
-			const channel = await client.channels.fetch(LOG_CHANNEL);
+			const channel = await client.channels.fetch(EVENT_LOG_CHANNEL);
 			let message: string | undefined;
 			if (channel?.isSendable()) {
 				const components = [
