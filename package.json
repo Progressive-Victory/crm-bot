@@ -17,10 +17,10 @@
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc --project tsconfig.json",
-    "dev": "node --env-file=.env .",
+    "build": "tsc",
+    "dev": "concurrently \"tsc --watch\" \"node --env-file=.env --watch .\"",
     "start": "node .",
-    "predev": "yarn build",
+    "predev": "tsc",
     "lint": "eslint --fix {src}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern"
   },
   "engines": {
@@ -38,6 +38,7 @@
     "@types/express": "^5.0.1",
     "@types/node": "^22.13.10",
     "@typescript-eslint/parser": "^8.27.0",
+    "concurrently": "^9.1.2",
     "eslint": "^9.22.0",
     "eslint-plugin-jsdoc": "^50.6.8",
     "globals": "^16.0.0",
