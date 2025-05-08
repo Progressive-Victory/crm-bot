@@ -1,24 +1,24 @@
 # Progressive Victory Bot
-This bot supports operations in the Progresive Vicory Discord Server. To join by Sign up [here](https://www.progressivevictory.win/volunteer)
+This bot supports operations in the Progressive Victory Discord Server. To join, sign up [here](https://www.progressivevictory.win/volunteer).
 
 ## Getting Started
-copy `.env.sample` to `.env` and fill in the values
-run `docker compose up -w --build --attach bot`
+Copy `.env.sample` to `.env` and fill in the values.
+Run `docker compose up -w --build --attach bot`.
 
 ## Commands
-Commands help users interact with the server and mamage its members
+Commands help users interact with the server and manage its members.
 ### state
-This command has two sub commands
- - ping - Allows our state leads to ping member's state roles
- - members - Get a list of all members with a selected role
- ### feadback
- Directs members to [GitHub issues](https://github.com/Progressive-Victory/crm-bot/issues) page to sublit feadback and report bugs
+This command has two subcommands:
+ - ping - Allows our state leads to ping members' state roles.
+ - members - Get a list of all members with a selected role.
+### feedback
+Directs members to the [GitHub issues](https://github.com/Progressive-Victory/crm-bot/issues) page to submit feedback and report bugs.
 
 # How to Contribute
-To contribute to this repo, start by forking it and working on the fork. Then when you are ready to create a pull request. The  pull request will be revied as soon as posible
+To contribute to this repo, start by forking it and working on the fork. Then, when you are ready, create a pull request. The pull request will be reviewed as soon as possible.
 
 ### Software
-To get started we recommend you install the following software:
+To get started, we recommend you install the following software:
 
 - [Node.js](https://nodejs.org/en/download) v20.12.2 or later
   - [yarn](https://yarnpkg.com/getting-started/install)
