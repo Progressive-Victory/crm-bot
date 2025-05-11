@@ -12,12 +12,6 @@ export const guildScheduledEventUpdate = new Event({
 		await dbConnect();
 		// if the event goes from active to something else
 		if (oldGuildScheduledEvent?.status == GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status != GuildScheduledEventStatus.Active) {
-			const settings = await GuildSetting.findOne({guildId: newGuildScheduledEvent.guildId})
-			if (!settings?.logging?.eventUpdatesChannelId) {
-				console.error("eventUpdatesChannelId not set");
-				return;
-			}
-			const channel = await client.channels.fetch(settings?.logging?.eventUpdatesChannelId);
 			const now = new Date();
 			// mark older objects as ended (there should only be one)
 			const event = await ScheduledEvent.findOneAndUpdate({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }, { returnDocument: 'after' }).exec();
@@ -28,8 +22,9 @@ export const guildScheduledEventUpdate = new Event({
 				console.error("newGuildScheduledEvent had a null channelId");
 				return;
 			}
+			const channel = await client.channels.fetch(event.logMessageChannelId);
 			if (!channel?.isSendable()) {
-				console.error("LOG_CHANNEL is not sendable");
+				console.error("eventUpdatesChannelId is not sendable");
 				return;
 			}
 			// the goal is to update the log message with attendance information
@@ -72,7 +67,7 @@ Attended by:
 			const components = [
 				new TextDisplayBuilder().setContent(message),
 			];
-			(await channel.messages.fetch(event.logMessage)).edit({ flags: MessageFlags.IsComponentsV2, components });
+			(await channel.messages.fetch(event.logMessageId)).edit({ flags: MessageFlags.IsComponentsV2, components });
 		}
 		// if the event get activated
 		if (oldGuildScheduledEvent?.status != GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status == GuildScheduledEventStatus.Active) {
@@ -82,20 +77,21 @@ Attended by:
 				return;
 			}
 			const channel = await client.channels.fetch(settings?.logging?.eventUpdatesChannelId);
-			let message: string | undefined;
+			let messageId: string | undefined;
 			if (channel?.isSendable()) {
 				const components = [
 					new TextDisplayBuilder().setContent(`${newGuildScheduledEvent.name} has started`),
 				];
 				// log that this event has started
-				message = (await channel.send({ flags: MessageFlags.IsComponentsV2, components })).id;
+				messageId = (await channel.send({ flags: MessageFlags.IsComponentsV2, components })).id;
 			}
 			ScheduledEvent.create({
 				eventId: newGuildScheduledEvent.id,
 				eventName: newGuildScheduledEvent.name,
 				scheduledStartTime: newGuildScheduledEvent.scheduledStartAt,
 				channelId: newGuildScheduledEvent.channelId,
-				logMessage: message,
+				logMessageChannelId: settings?.logging?.eventUpdatesChannelId,
+				logMessageId: messageId,
 			});
 		}
 	},
