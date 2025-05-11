@@ -1,6 +1,6 @@
-import { GuildMember, ModalSubmitInteraction } from "discord.js";
+import { MessageCreateOptions, ModalSubmitInteraction } from "discord.js";
 import { Interaction } from "../../Classes/Interaction.js";
-import { sendStatePing, statePingReply } from "../../features/state/ping.js";
+import { legacyStateMessageCreate, stateMessageCreate, statePingReply } from "../../features/state/ping.js";
 import { States } from "../../models/State.js";
 import { isStateAbbreviations } from "../../util/states/types.js";
 
@@ -9,8 +9,10 @@ export const statePing = new Interaction<ModalSubmitInteraction>({
 	run: async (interaction) => {
 		// let guild:Guild;
 		const {customId, client} = interaction
+		const args = customId.split(client.splitCustomIdOn!)
 		
-		const stateAbbreviation = customId.split(client.splitCustomIdOn!)[1]
+		const stateAbbreviation = args[1]
+		const legacyOption = Boolean(args[2])
 		if(!isStateAbbreviations(stateAbbreviation)) return
     
 		const state = await States.findOne({guildId: interaction.guildId, abbreviation: stateAbbreviation}).catch(console.error)
@@ -20,9 +22,13 @@ export const statePing = new Interaction<ModalSubmitInteraction>({
 		const title = interaction.fields.getTextInputValue('title')
 		
 		if(!interaction.channel || !interaction.channel.isSendable() || !interaction.inGuild()) return
-		const member = interaction.member instanceof GuildMember ? interaction.member : interaction.member.user.id
-
-		const pingMessage = await sendStatePing(interaction.channel, state.roleId,member, content, title)
+		
+		let stateMessageCreateOptions: MessageCreateOptions
+		
+		if(legacyOption) stateMessageCreateOptions = legacyStateMessageCreate(state.roleId, interaction.user.id, content, title)
+		else stateMessageCreateOptions = stateMessageCreate(state.roleId, interaction.user.id, content, title)
+		
+		const pingMessage = await interaction.channel.send(stateMessageCreateOptions)
 
 		statePingReply(interaction, pingMessage)
 	}}

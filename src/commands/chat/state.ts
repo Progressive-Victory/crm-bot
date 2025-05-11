@@ -1,5 +1,6 @@
 import { ApplicationCommandOptionType, InteractionContextType, PermissionFlagsBits } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
+import { messageMaxLength, titleMaxLength } from '../../features/state/constants.js';
 import { lead } from '../../features/state/index.js';
 import { messageMaxLength, titleMaxLength } from '../../features/state/types.js';
 import { localize } from '../../i18n.js';
@@ -26,13 +27,18 @@ export default new ChatInputCommand()
 				.setRequired(true)
 				.setAutocomplete(true)
 			)
+			.addBooleanOption(legacy => legacy
+				.setName('legacy')
+				.setDescription('Use standard message format')
+				.setRequired(false)
+			)
 			.addStringOption(title => title
 				.setName('title')
 				.setDescription('Title of announcement')
 				.setMaxLength(titleMaxLength)
 				.setRequired(false)
 			)
-			.addStringOption(option => option
+			.addStringOption(message => message
 				.setName('message')
 				.setDescription('Text to send in message')
 				.setMaxLength(messageMaxLength)
@@ -60,11 +66,16 @@ export default new ChatInputCommand()
 				return
 			}
 	
-			const choices = states.filter(s => s.name.toLowerCase().startsWith(focus.value.toLowerCase()) || s.abbreviation.startsWith(focus.value.toLowerCase())).slice(0, 14)
-				.map((state) =>({
-					name: state.name,
-					value: state.abbreviation
-				}))
+			const choices = states.filter(s => s.name.toLowerCase()
+				.startsWith(
+					focus.value.replace('\n','')
+					.toLowerCase())
+				|| s.abbreviation.startsWith(focus.value.toLowerCase()))
+			.slice(0, 14)
+			.map((state) =>({
+				name: state.name,
+				value: state.abbreviation
+			}))
 				
 			interaction.respond(choices).catch(console.error)
 		})
