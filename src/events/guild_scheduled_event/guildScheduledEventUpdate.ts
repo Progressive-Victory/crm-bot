@@ -1,10 +1,8 @@
 import { Events, GuildScheduledEventStatus, MessageFlags, TextDisplayBuilder, time } from 'discord.js';
 import { Event } from '../../Classes/index.js';
 import { ScheduledEvent, VoiceSession } from '../../models/attendance/index.js';
+import { GuildSetting } from "../../models/Setting.js";
 import dbConnect from "../../util/libmongo.js";
-
-const { EVENT_LOG_CHANNEL } = process.env;
-if (!EVENT_LOG_CHANNEL) throw new Error("EVENT_LOG_CHANNEL not set");
 
 /** Records when scheduled events start and stop */
 export const guildScheduledEventUpdate = new Event({
@@ -14,7 +12,12 @@ export const guildScheduledEventUpdate = new Event({
 		await dbConnect();
 		// if the event goes from active to something else
 		if (oldGuildScheduledEvent?.status == GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status != GuildScheduledEventStatus.Active) {
-			const channel = await client.channels.fetch(EVENT_LOG_CHANNEL);
+			const settings = await GuildSetting.findOne({guildId: newGuildScheduledEvent.guildId})
+			if (!settings?.logging?.eventUpdatesChannelId) {
+				console.error("eventUpdatesChannelId not set");
+				return;
+			}
+			const channel = await client.channels.fetch(settings?.logging?.eventUpdatesChannelId);
 			const now = new Date();
 			// mark older objects as ended (there should only be one)
 			const event = await ScheduledEvent.findOneAndUpdate({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }, { returnDocument: 'after' }).exec();
@@ -73,7 +76,12 @@ Attended by:
 		}
 		// if the event get activated
 		if (oldGuildScheduledEvent?.status != GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status == GuildScheduledEventStatus.Active) {
-			const channel = await client.channels.fetch(EVENT_LOG_CHANNEL);
+			const settings = await GuildSetting.findOne({guildId: newGuildScheduledEvent.guildId})
+			if (!settings?.logging?.eventUpdatesChannelId) {
+				console.error("eventUpdatesChannelId not set");
+				return;
+			}
+			const channel = await client.channels.fetch(settings?.logging?.eventUpdatesChannelId);
 			let message: string | undefined;
 			if (channel?.isSendable()) {
 				const components = [
