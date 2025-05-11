@@ -12,17 +12,17 @@ export const guildScheduledEventUpdate = new Event({
 		await dbConnect();
 		// if the event goes from active to something else
 		if (oldGuildScheduledEvent?.status == GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status != GuildScheduledEventStatus.Active) {
+			const now = new Date();
+			// mark older objects as ended (there should only be one)
+			const event = await ScheduledEvent.findOneAndUpdate({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }, { returnDocument: 'after' }).exec();
+			// take care of left over rows
+			ScheduledEvent.updateMany({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }).exec();
 			const settings = await GuildSetting.findOne({guildId: newGuildScheduledEvent.guildId})
 			if (!settings?.logging?.eventUpdatesChannelId) {
 				console.error("eventUpdatesChannelId not set");
 				return;
 			}
 			const channel = await client.channels.fetch(settings?.logging?.eventUpdatesChannelId);
-			const now = new Date();
-			// mark older objects as ended (there should only be one)
-			const event = await ScheduledEvent.findOneAndUpdate({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }, { returnDocument: 'after' }).exec();
-			// take care of left over rows
-			ScheduledEvent.updateMany({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }).exec();
 			if (!event?.endedAt) throw new Error("event had a null endedAt time which should have been set in the query I just ran");
 			if (!newGuildScheduledEvent.channelId) {
 				console.error("newGuildScheduledEvent had a null channelId");
