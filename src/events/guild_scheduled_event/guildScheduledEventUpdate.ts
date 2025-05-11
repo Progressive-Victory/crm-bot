@@ -72,7 +72,7 @@ Attended by:
 			const components = [
 				new TextDisplayBuilder().setContent(message),
 			];
-			(await channel.messages.fetch(event.logMessage)).edit({ flags: MessageFlags.IsComponentsV2, components });
+			(await channel.messages.fetch(event.logMessageId)).edit({ flags: MessageFlags.IsComponentsV2, components });
 		}
 		// if the event get activated
 		if (oldGuildScheduledEvent?.status != GuildScheduledEventStatus.Active && newGuildScheduledEvent?.status == GuildScheduledEventStatus.Active) {
@@ -82,20 +82,20 @@ Attended by:
 				return;
 			}
 			const channel = await client.channels.fetch(settings?.logging?.eventUpdatesChannelId);
-			let message: string | undefined;
+			let messageId: string | undefined;
 			if (channel?.isSendable()) {
 				const components = [
 					new TextDisplayBuilder().setContent(`${newGuildScheduledEvent.name} has started`),
 				];
 				// log that this event has started
-				message = (await channel.send({ flags: MessageFlags.IsComponentsV2, components })).id;
+				messageId = (await channel.send({ flags: MessageFlags.IsComponentsV2, components })).id;
 			}
 			ScheduledEvent.create({
 				eventId: newGuildScheduledEvent.id,
 				eventName: newGuildScheduledEvent.name,
 				scheduledStartTime: newGuildScheduledEvent.scheduledStartAt,
 				channelId: newGuildScheduledEvent.channelId,
-				logMessage: message,
+				logMessageId: messageId,
 			});
 		}
 	},
