@@ -50,7 +50,7 @@ export async function getMember(guild:Guild, member:GuildMemberResolvable) {
 		return guild.members.resolve(member) ?? await guild?.members.fetch(member)
 	} catch (error) {
 		if (error instanceof DiscordAPIError && error.code === DiscordAPIErrorCodes.UnknownMember) {
-			return undefined
+			return null
 	  }
 	  throw error
 		

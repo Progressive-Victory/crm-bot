@@ -36,6 +36,13 @@ export const reportMessage = new ContextMenuCommand<MessageContextMenuCommandInt
 		.setContexts(InteractionContextType.Guild)
 		.setType(ApplicationCommandType.Message),
 	execute: (interaction) => {
+
+		interaction.targetMessage.reply({
+			content:'test',
+			allowedMentions: {
+				repliedUser:false
+			}
+		})
 		
 		if(interaction.targetMessage.author.bot) {
 			interaction.reply({
