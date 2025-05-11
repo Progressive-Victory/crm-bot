@@ -3,7 +3,7 @@ import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
 
-export const GuildMemberRemove = new Event({
+export const guildMemberRemove = new Event({
 	name: Events.GuildMemberRemove,
 	execute: async (member) => {
 		const {guild} = member
