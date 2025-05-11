@@ -29,7 +29,7 @@ export const guildScheduledEventUpdate = new Event({
 				return;
 			}
 			if (!channel?.isSendable()) {
-				console.error("LOG_CHANNEL is not sendable");
+				console.error("eventUpdatesChannelId is not sendable");
 				return;
 			}
 			// the goal is to update the log message with attendance information
