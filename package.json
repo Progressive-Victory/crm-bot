@@ -17,10 +17,10 @@
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {
-    "build": "tsc",
-    "dev": "concurrently \"tsc --watch\" \"node --env-file=.env --watch .\"",
+    "build": "tsc --project tsconfig.json",
+    "dev": "concurrently \"tsc --project tsconfig.js --watch\" \"node --env-file=.env --watch .\"",
     "start": "node .",
-    "predev": "tsc",
+    "predev": "yarn build",
     "lint": "eslint --fix {src}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern"
   },
   "engines": {
