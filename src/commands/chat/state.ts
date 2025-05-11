@@ -2,6 +2,7 @@ import { ApplicationCommandOptionType, InteractionContextType, PermissionFlagsBi
 import { ChatInputCommand } from '../../Classes/index.js';
 import { messageMaxLength, titleMaxLength } from '../../features/state/constants.js';
 import { lead } from '../../features/state/index.js';
+import { messageMaxLength, titleMaxLength } from '../../features/state/types.js';
 import { localize } from '../../i18n.js';
 import { states } from '../../util/states/types.js';
 

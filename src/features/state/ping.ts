@@ -85,7 +85,6 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
 		else stateMessageCreateOptions = stateMessageCreate(state.roleId, member.id, messageOption, titleOption)
 		
 		const pingMessage = await channel.send(stateMessageCreateOptions)
-
 		statePingReply(interaction, pingMessage)
 		return
 	}
@@ -172,7 +171,6 @@ export function legacyStateMessageCreate(stateRoleId:Snowflake, authorId: Snowfl
 			subtext(userMention(authorId))
 		].join('\n'),
 		// allowedMentions:{parse:[AllowedMentionsTypes.Role]}
-
 	}
 }
 

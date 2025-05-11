@@ -9,7 +9,6 @@ export const statePing = new Interaction<ModalSubmitInteraction>({
 	run: async (interaction) => {
 		// let guild:Guild;
 		const {customId, client} = interaction
-
 		const args = customId.split(client.splitCustomIdOn!)
 		
 		const stateAbbreviation = args[1]
