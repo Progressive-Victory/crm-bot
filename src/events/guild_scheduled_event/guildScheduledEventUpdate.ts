@@ -17,17 +17,12 @@ export const guildScheduledEventUpdate = new Event({
 			const event = await ScheduledEvent.findOneAndUpdate({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }, { returnDocument: 'after' }).exec();
 			// take care of left over rows
 			ScheduledEvent.updateMany({ eventId: oldGuildScheduledEvent.id, endedAt: null }, { endedAt: now }).exec();
-			const settings = await GuildSetting.findOne({guildId: newGuildScheduledEvent.guildId})
-			if (!settings?.logging?.eventUpdatesChannelId) {
-				console.error("eventUpdatesChannelId not set");
-				return;
-			}
-			const channel = await client.channels.fetch(settings?.logging?.eventUpdatesChannelId);
 			if (!event?.endedAt) throw new Error("event had a null endedAt time which should have been set in the query I just ran");
 			if (!newGuildScheduledEvent.channelId) {
 				console.error("newGuildScheduledEvent had a null channelId");
 				return;
 			}
+			const channel = await client.channels.fetch(event.logMessageChannelId);
 			if (!channel?.isSendable()) {
 				console.error("eventUpdatesChannelId is not sendable");
 				return;
@@ -95,6 +90,7 @@ Attended by:
 				eventName: newGuildScheduledEvent.name,
 				scheduledStartTime: newGuildScheduledEvent.scheduledStartAt,
 				channelId: newGuildScheduledEvent.channelId,
+				logMessageChannelId: settings?.logging?.eventUpdatesChannelId,
 				logMessageId: messageId,
 			});
 		}

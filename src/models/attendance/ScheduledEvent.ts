@@ -6,6 +6,7 @@ export const ScheduledEvent = model('ScheduledEvent', new Schema({
 	eventName: { type: String, required: true, immutable: true },
 	scheduledStartTime: { type: Date, required: true, immutable: true },
 	channelId: { type: String, required: true, immutable: true },
-	logMessage: { type: String, required: true, immutable: true },
+	logMessageChannelId: { type: String, required: true, immutable: true },
+	logMessageId: { type: String, required: true, immutable: true },
 	endedAt: Date,
 }, { timestamps: true }));
