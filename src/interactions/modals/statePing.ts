@@ -24,7 +24,8 @@ export const statePing = new Interaction<ModalSubmitInteraction>({
 		const args = customId.split(splitOn)
 		
 		const stateAbbreviation = args[1]
-		const legacyOption = Boolean(args[2])
+		const legacyOption = args[2] === 'true'
+		// console.log(args[2],legacyOption)
 		
 		if(!isStateAbbreviations(stateAbbreviation)) return
     
