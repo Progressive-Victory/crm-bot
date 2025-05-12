@@ -110,7 +110,7 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
 	const messageRow = new ActionRowBuilder<TextInputBuilder>().setComponents(message)
 
 	const modal = new ModalBuilder()
-		.setCustomId(AddSplitCustomId('sp',stateAbbreviation, legacyOption ? 1 : 0))
+		.setCustomId(AddSplitCustomId('sp',stateAbbreviation, legacyOption))
 		.setTitle('State Ping Message')
 		.setComponents(titleRow, messageRow)
 
