@@ -1,5 +1,5 @@
-import { Collection } from '@discordjs/collection';
 import { FluentBundle, Message } from '@fluent/bundle';
+import { Collection } from 'discord.js';
 import { i18n } from './i18n.js';
 import {
 	Locale, common, fluentVariables
