@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Events } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ContainerBuilder, EmbedBuilder, Events, MediaGalleryBuilder, MediaGalleryItemBuilder, MessageFlags, SectionBuilder, TextDisplayBuilder, ThumbnailBuilder } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
@@ -36,6 +36,34 @@ export const guildMemberUpdate = new Event({
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(welcomeButton)
 
 			joinChannel.send({embeds:[embed], components:[row]})
+		}
+		if(oldMember.nickname !== newMember.nickname){ 
+			const {guild} = newMember
+			const settings = await GuildSetting.findOne({guildId: guild.id})
+
+			const nicknameUpdatesChannelId = settings?.logging.nicknameUpdatesChannelId
+			if(!nicknameUpdatesChannelId) return 
+			let nicknameLogChannel
+			try{
+				nicknameLogChannel = await getGuildChannel(guild,nicknameUpdatesChannelId)
+			}catch(error){
+				return
+			}
+			if(nicknameLogChannel?.isSendable()){
+				const text = new TextDisplayBuilder().setContent(`User "${newMember.user.username}" changed their nickname from ${oldMember.nickname} to ${newMember.nickname}.`)
+				const icon = newMember.displayAvatarURL({forceStatic:true})
+				const content = new ContainerBuilder()
+					.setAccentColor(0x5da4fc)
+					.addSectionComponents(
+						new SectionBuilder()
+						.setThumbnailAccessory(new ThumbnailBuilder().setURL(icon))
+						.addTextDisplayComponents(text)
+					)
+				nicknameLogChannel.send({
+					components:[content],
+					flags:MessageFlags.IsComponentsV2
+				})
+			}
 		}
 	}
 })
