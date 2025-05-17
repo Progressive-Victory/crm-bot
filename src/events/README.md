@@ -1,7 +1,7 @@
 # Events
 Client Events is how the bot interacts with Discord. Buit in to the bot is an event handler. The following is how to add the `messageCreate` event to the bot
 1. Create the a new event object
-	- `name` - is the name of the client event, see the full list in the [discord.js documentation](https://discord.js.org/docs/packages/discord.js/14.14.1/Client:Class) 
+	- `name` - is the name of the client event, see the full list in the [discord.js documentation](https://discord.js.org/docs/packages/discord.js/14.19.3/ClientEvents:Interface) 
 	- `once` - by default `false` this property allows the event to be limited to run only once
 	- `execute` - the function with runs on the occurance of the event
 ```ts
