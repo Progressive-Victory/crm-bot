@@ -1,28 +1,20 @@
-FROM node:lts-slim AS builder
-WORKDIR /bot
+FROM node:lts-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+COPY . /app
+WORKDIR /app
 
-COPY package.json .
-COPY yarn.lock .
+FROM base AS prod-deps
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-RUN yarn install --frozen-lockfile
+FROM base AS build
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm run build
 
-COPY . .
-
-RUN yarn build
-
-FROM node:lts-slim AS runner
-WORKDIR /bot
-
-COPY package.json .
-COPY yarn.lock .
-COPY ./locales ./locales
-
-RUN yarn install --frozen-lockfile --production
-
-COPY --from=builder /bot/dist/ ./dist
-# COPY ./src/*.json ./dist
+FROM base
+COPY --from=prod-deps /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
 
 EXPOSE 8080
-USER node
-
-CMD [ "yarn", "start" ]
+CMD [ "pnpm", "start" ]

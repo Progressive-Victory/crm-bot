@@ -1,8 +1,8 @@
-import { Collection } from '@discordjs/collection';
 import {
 	FluentBundle,
 	FluentResource
 } from '@fluent/bundle';
+import { Collection } from 'discord.js';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 import { i18nOptions } from './interface.js';

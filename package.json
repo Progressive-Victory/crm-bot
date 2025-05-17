@@ -20,7 +20,7 @@
     "build": "tsc --project tsconfig.json",
     "dev": "node --env-file=.env .",
     "start": "node .",
-    "predev": "yarn build",
+    "predev": "pnpm build",
     "lint": "eslint --fix {src}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern"
   },
   "engines": {
@@ -30,18 +30,18 @@
     "@fluent/bundle": "^0.19.1",
     "discord.js": "^14.19.3",
     "express": "^5.1.0",
-    "mongoose": "^8.14.2"
+    "mongoose": "^8.15.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.26.0",
+    "@eslint/js": "^9.27.0",
     "@stylistic/eslint-plugin": "^4.2.0",
-    "@types/express": "^5.0.1",
-    "@types/node": "^22.15.17",
-    "@typescript-eslint/parser": "^8.32.0",
-    "eslint": "^9.26.0",
-    "eslint-plugin-jsdoc": "^50.6.14",
+    "@types/express": "^5.0.2",
+    "@types/node": "^22.15.18",
+    "@typescript-eslint/parser": "^8.32.1",
+    "eslint": "^9.27.0",
+    "eslint-plugin-jsdoc": "^50.6.17",
     "globals": "^16.1.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.32.0"
+    "typescript-eslint": "^8.32.1"
   }
 }
