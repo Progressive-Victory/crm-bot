@@ -8,7 +8,8 @@ export const ready = new Event({
 	 * function to run on the client ready event
 	 * @param client client object
 	 */
-	execute: (client) => {
+	execute: async (client) => {
+		client.guilds.cache.forEach(g => g.members.fetch())
 		console.log(`Ready! Logged in as ${client.user.username}`);
 	}
 })

@@ -1,6 +1,7 @@
-import { bold, Colors, EmbedBuilder, Events, TimestampStyles } from "discord.js";
+import { bold, Colors, ContainerBuilder, Events, heading, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder, TimestampStyles } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
+import { footer } from "../../util/componats.js";
 import { getGuildChannel } from "../../util/index.js";
 
 export const GuildMemberRemove = new Event({
@@ -16,23 +17,23 @@ export const GuildMemberRemove = new Event({
 		// check that Join channel exists in guild
 		const leaveChannel = await getGuildChannel(guild, leaveChannelId)
 		if(!leaveChannel?.isSendable()) return
-		const icon = member.user.avatarURL({forceStatic:true})
-		let description = `${bold(member.displayName)} ${member.user.username}`
-		const embed = new EmbedBuilder()
-			.setAuthor({iconURL:icon ?? undefined, name:'Member Left'})
-			.setDescription(`${bold(member.displayName)} ${member.user.username}`)
-			.addFields(
-				{name:'Joined:', value: `${member.joinedAt?.toDiscordString(TimestampStyles.LongDateTime)}`, inline:true},
-			)
-			.setThumbnail(icon)
-			.setFooter({text:`User ID: ${member.id}`})
-			.setTimestamp()
-			.setColor(Colors.Red)
-		if (member.pending === true) {
-			description = description + `\n*Didn't agree to rules`
-		} 
-		embed.setDescription(description)
+		const userAvatarURL = member.user.displayAvatarURL({forceStatic:true})
+		const text = [
+			heading('Member Left'),
+			`${bold(member.displayName)} ${member.user.username}`,
+			`Joined: ${member.joinedAt?.toDiscordString(TimestampStyles.LongDateTime)}`
+		]
 
-		leaveChannel.send({embeds:[embed]})
+		if (member.pending === true) text.push("*Didn't agree to rules") 
+		const thumbnail = new ThumbnailBuilder().setURL(userAvatarURL)
+		const display = new TextDisplayBuilder().setContent(text.join('\n'))
+
+		const container = new ContainerBuilder()
+			.addSectionComponents(new SectionBuilder().addTextDisplayComponents(display).setThumbnailAccessory(thumbnail))
+			.addSeparatorComponents(new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
+			.addTextDisplayComponents(footer(member.id))
+			.setAccentColor(Colors.Red)
+
+		leaveChannel.send({flags: MessageFlags.IsComponentsV2, components:[container]})
 	}
 })
