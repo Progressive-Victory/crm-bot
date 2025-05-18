@@ -1,7 +1,7 @@
-import { bold, Colors, ContainerBuilder, Events, heading, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder, TimestampStyles } from "discord.js";
+import { bold, Colors, ContainerBuilder, Events, heading, inlineCode, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder, TimestampStyles } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
-import { footer } from "../../util/componats.js";
+import { footer } from "../../util/components.js";
 import { getGuildChannel } from "../../util/index.js";
 
 export const GuildMemberRemove = new Event({
@@ -21,7 +21,7 @@ export const GuildMemberRemove = new Event({
 		const text = [
 			heading('Member Left'),
 			`${bold(member.displayName)} ${member.user.username}`,
-			`Joined: ${member.joinedAt?.toDiscordString(TimestampStyles.LongDateTime)}`
+			`Joined: ${member.joinedAt?.toDiscordString(TimestampStyles.LongDateTime) ?? inlineCode('not cached')}`
 		]
 
 		if (member.pending === true) text.push("*Didn't agree to rules") 
