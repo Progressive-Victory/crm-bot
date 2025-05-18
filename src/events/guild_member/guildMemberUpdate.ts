@@ -1,7 +1,7 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ContainerBuilder, EmbedBuilder, Events, GuildMemberFlags, heading, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder, time, TimestampStyles } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
-import { footer } from "../../util/componats.js";
+import { footer } from "../../util/components.js";
 import { getGuildChannel } from "../../util/index.js";
 
 export const guildMemberUpdate = new Event({

@@ -1,7 +1,7 @@
 import { bold, Colors, ContainerBuilder, Events, heading, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder, TimestampStyles } from "discord.js";
 import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
-import { footer } from "../../util/componats.js";
+import { footer } from "../../util/components.js";
 import { getGuildChannel } from "../../util/index.js";
 
 export const GuildMemberRemove = new Event({
