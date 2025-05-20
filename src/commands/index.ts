@@ -15,3 +15,4 @@ export { timeout } from './chat/timeout.js';
 
 export { stateAdmin } from './chat/state-admin.js';
 
+export { mute } from './chat/mute.js';
