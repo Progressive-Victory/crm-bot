@@ -1,6 +1,7 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, Colors, ContainerBuilder, EmbedBuilder, Events, GuildMemberFlags, heading, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder, time, TimestampStyles } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ContainerBuilder, EmbedBuilder, Events, GuildMemberFlags, heading, MessageFlags, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder, time, TimestampStyles } from "discord.js";
 
 import Event from "../../Classes/Event.js";
+import { welcomeButton, welcomeColors } from "../../features/welcome.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { footer } from "../../util/components.js";
 import { getGuildChannel } from "../../util/index.js";
@@ -27,7 +28,7 @@ export const guildMemberUpdate = new Event({
 				`Joined: ${time(joinedAt,TimestampStyles.RelativeTime)}`,
 			]
 			if(newMember.flags.has(GuildMemberFlags.DidRejoin))
-				text.push('Member rejoined the server')
+				text.push('Member previously has joined the server')
 
 			const display = new TextDisplayBuilder().setContent(text.join('\n'))
 
@@ -38,11 +39,6 @@ export const guildMemberUpdate = new Event({
 			const section = new SectionBuilder().addTextDisplayComponents(display)
 				.setThumbnailAccessory(thumbnail)
 			
-			const welcomeButton = new ButtonBuilder()
-				.setCustomId('welcomed')
-				// .setEmoji('👋')
-				.setLabel('Confirm Welcome')
-				.setStyle(ButtonStyle.Secondary)
 			const row = new ActionRowBuilder<ButtonBuilder>().addComponents(welcomeButton)
       
       const container = new ContainerBuilder()
@@ -50,10 +46,10 @@ export const guildMemberUpdate = new Event({
 				.addSeparatorComponents(
 					new SeparatorBuilder().setDivider(true).setSpacing(SeparatorSpacingSize.Small))
 				.addTextDisplayComponents(footer(newMember.id))
-				.addActionRowComponents(row.setId(1))
-				.setAccentColor(Colors.Blue)
+				.addActionRowComponents(row)
+				.setAccentColor(welcomeColors.Unwelcomed)
 
-			joinChannel.send({flags: MessageFlags.IsComponentsV2, components:[container]})
+			joinChannel.send({flags: MessageFlags.IsComponentsV2, components:[container], allowedMentions: {}})
       
 		if (oldMember.nickname !== newMember.nickname) {
 			const { guild } = newMember
