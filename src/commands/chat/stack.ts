@@ -1,5 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChannelType, ChatInputCommandInteraction, ComponentType, ContainerBuilder, GuildMember, Message, MessageFlags, SendableChannels, SeparatorBuilder, SeparatorSpacingSize, TextBasedChannel, TextDisplayBuilder } from 'discord.js';
-import { Error } from 'mongoose';
+import { ActionRowBuilder, ButtonBuilder, ButtonInteraction, ButtonStyle, CacheType, ChannelType, ChatInputCommandInteraction, ComponentType, ContainerBuilder, GuildMember, Message, MessageFlags, PermissionsBitField, SendableChannels, SeparatorBuilder, SeparatorSpacingSize, TextBasedChannel, TextDisplayBuilder } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 
 // this probably SUCKS we should find a prettier way to do it
@@ -13,20 +12,21 @@ export default new ChatInputCommand()
 	.setExecute(run);
 
 
+
 /**
  *
- * @param interaction
- * @param invoker
+ * @param interaction The interaction fed to the bot
+ * @param invoker The owner of the interaction
  */
 async function createStack(interaction: ChatInputCommandInteraction, invoker: GuildMember) {
 	const theStack = new StackBox(interaction, invoker);
-	theStack.run();
+	theStack.run().then(() => stackStore.delete(interaction.channelId));
 	await interaction.reply({content: "stack created!", flags: MessageFlags.Ephemeral});
 }
 
 /**
  *
- * @param interaction
+ * @param interaction The interaction fed to the bot
  */
 async function run(interaction: ChatInputCommandInteraction<CacheType>) {
 	// probably unnecessary but making sure we don't cache miss
@@ -79,17 +79,17 @@ class StackBox {
 	speaking?: GuildMember;
 	channel: TextBasedChannel;
 	message?: Message;
-	queue: GuildMember[];
 	speakerQueue: [GuildMember, boolean][]; // the member, and whether or not they've been marked time-sensitive
 	lastUpdateUnix: number;
+	initialRendered: boolean;
 
 	constructor(interaction: ChatInputCommandInteraction, initialOwner: GuildMember) {
 		this.running = false;
 		this.owner = initialOwner;
 		this.channel = interaction.channel!;
-		this.queue = [];
 		this.speakerQueue = [];
 		this.lastUpdateUnix = 0;
+		this.initialRendered = false;
 	}
 
 	async update() {
@@ -100,7 +100,7 @@ class StackBox {
 		this.lastUpdateUnix = Date.now();
 	}
 
-	async render() {
+	async render(): Promise<boolean> {
 		const container = new ContainerBuilder()
 			.setAccentColor(0x7289da)
 			.addTextDisplayComponents(new TextDisplayBuilder().setContent("im stackin it"))
@@ -118,16 +118,25 @@ class StackBox {
 		const buttons = new ActionRowBuilder<ButtonBuilder>()
 			.addComponents([
 				new ButtonBuilder()
-					.setStyle(ButtonStyle.Secondary)
+					.setStyle(ButtonStyle.Primary)
 					.setCustomId("addToQueue")
-					.setLabel("➕"),
+					.setLabel('➕'),
+				new ButtonBuilder()
+					.setStyle(ButtonStyle.Secondary)
+					.setCustomId("toggleTimeSensitive")
+					.setLabel('⏰'),
+				new ButtonBuilder()
+					.setStyle(ButtonStyle.Danger)
+					.setCustomId("removeFromQueue")
+					.setLabel('✖️'),
 				new ButtonBuilder()
 					.setStyle(ButtonStyle.Secondary)
 					.setCustomId("goNext")
-					.setLabel("➡️")
+					.setLabel('➡️')
 			]);
 		
 		if (!this.message) {
+			if (this.initialRendered) return false; // assume that if the stack message had been deleted, we can exit and let the stack go
 			this.message = await (this.channel as SendableChannels).send({components: [container, buttons], flags: MessageFlags.IsComponentsV2});
 			stackStore.set(this.channel.id, this.message.id);
 		} else await this.message.edit({components: [container, buttons], flags: MessageFlags.IsComponentsV2});
@@ -148,23 +157,41 @@ class StackBox {
 				case "goNext":
 					await this.nextInQueue(a);
 					break;
+				case "toggleTimeSensitive":
+					await this.toggleTimeSensitive(a);
+					break;
+				case "removeFromQueue":
+					await this.removeFromQueue(a);
+					break;
 				default:
 					break;
 			}
-		})
+		});
+
+		return true;
 	}
 
-	async run() {
+	async run(): Promise<void> {
 		this.running = true;
 		for (;;) {
 			if (!this.running) break;
 			if (Date.now() - this.lastUpdateUnix >= 30000) await this.update();
-			this.render();
-			await new Promise(r => setTimeout(r, 10000))
+			// if the stack message was deleted running will get unset and we'll break out
+			this.render().then(r =>  this.running = r);
+			await new Promise(r => setTimeout(r, 10000));
 		}
 	}
 	
 	async nextInQueue(interaction: ButtonInteraction) {
+		// does the stack have an owner?
+		const invoker = interaction.guild!.members.cache.get(interaction.user.id)!;
+		if (!this.owner) this.owner = invoker; // now it does
+
+		if (this.owner!.id !== interaction.user.id && invoker.permissionsIn(interaction.channelId).missing(PermissionsBitField.Flags.ManageMessages)) {
+			await interaction.reply({ content: "whoops can't do that", flags: MessageFlags.Ephemeral });
+			return;
+		}
+
 		// simple front to back queue
 		if (this.speakerQueue.length === 0) {
 			interaction.reply({ content: "looks like the stack is empty!", flags: MessageFlags.Ephemeral });
@@ -176,16 +203,32 @@ class StackBox {
 	}
 
 	async addToQueue(interaction: ButtonInteraction) {
-		if (!this.speakerQueue.find((s) => s[0].id == interaction.user.id)) {
+		if (!this.speakerQueue.find(s => s[0].id == interaction.user.id)) {
 			this.speakerQueue.push([interaction.guild!.members.cache.get(interaction.user.id)!, false]);
-			await interaction.reply({content: "added! your entry will be reflected in the stack soon", flags: MessageFlags.Ephemeral});
+			await interaction.reply({ content: "added! your entry will be reflected in the stack soon", flags: MessageFlags.Ephemeral });
 		} else {
-			await interaction.reply({content: "looks like you're already in the stack", flags: MessageFlags.Ephemeral});
+			await interaction.reply({ content: "looks like you're already in the stack", flags: MessageFlags.Ephemeral });
 		}
 	}
 
 	// TODO: do this
-	toggleTimeSensitive(interaction: ButtonInteraction) {
-		throw new Error("not implememted yet - how did this get called?");
+	async toggleTimeSensitive(interaction: ButtonInteraction) {
+		const spot = this.speakerQueue.findIndex(s => s[0].id === interaction.user.id);
+		if (spot === -1) {
+			this.speakerQueue.push([interaction.guild!.members.cache.get(interaction.user.id)!, true]);
+			await interaction.reply({ content: "added as time sensitive! your entry will be reflected in the stack soon", flags: MessageFlags.Ephemeral });
+		} else {
+			this.speakerQueue[spot][1] = !this.speakerQueue[spot][1]; // toggle the time sensitive marker
+			await interaction.reply({ content: "time-sensiitve status toggled", flags: MessageFlags.Ephemeral });
+		}
+	}
+
+	async removeFromQueue(interaction: ButtonInteraction) {
+		const spot = this.speakerQueue.findIndex(s => s[0].id === interaction.user.id);
+		if (spot === -1) await interaction.reply({ content: "you're already not on the stack!", flags: MessageFlags.Ephemeral });
+		else {
+			this.speakerQueue.splice(spot, 1);
+			await interaction.reply({ content:"removed from stack!", flags: MessageFlags.Ephemeral });
+		}
 	}
 }
