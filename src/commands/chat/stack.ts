@@ -219,7 +219,7 @@ class StackBox {
 			await interaction.reply({ content: "added as time sensitive! your entry will be reflected in the stack soon", flags: MessageFlags.Ephemeral });
 		} else {
 			this.speakerQueue[spot][1] = !this.speakerQueue[spot][1]; // toggle the time sensitive marker
-			await interaction.reply({ content: "time-sensiitve status toggled", flags: MessageFlags.Ephemeral });
+			await interaction.reply({ content: "time-sensititve status toggled", flags: MessageFlags.Ephemeral });
 		}
 	}
 
