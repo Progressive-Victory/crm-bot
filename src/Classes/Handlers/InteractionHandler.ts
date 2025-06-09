@@ -2,6 +2,7 @@ import {
 	AnySelectMenuInteraction, ButtonInteraction, Collection,
 	ModalSubmitInteraction
 } from 'discord.js';
+import { stackStore } from '../../features/stackbox.js';
 import { Client } from '../Client/index.js';
 import { Interaction } from '../Interaction.js';
 
@@ -52,6 +53,9 @@ export class InteractionHandler {
 	}
 
 	runButton(interaction: ButtonInteraction) {
+		// if we got a stack button, just let that stack handle it so this doesn't get cluttered
+		if (interaction.customId.startsWith("stack")) stackStore.get(interaction.channelId)?.onButton(interaction);
+
 		const interactionName = this.client.splitCustomIdOn ? interaction.customId.split(this.client.splitCustomIdOn)[0] : interaction.customId;
 		return this.buttons.get(interactionName)?.run(interaction);
 	}

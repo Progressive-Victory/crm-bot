@@ -1,24 +1,23 @@
 import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonInteraction,
-  ButtonStyle,
-  ChatInputCommandInteraction,
-  ComponentType,
-  ContainerBuilder,
-  GuildMember,
-  Message,
-  MessageFlags,
-  PermissionsBitField,
-  SendableChannels,
-  SeparatorBuilder,
-  SeparatorSpacingSize,
-  TextBasedChannel,
-  TextDisplayBuilder,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonInteraction,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	ContainerBuilder,
+	GuildMember,
+	Message,
+	MessageFlags,
+	PermissionsBitField,
+	SendableChannels,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
+	TextBasedChannel,
+	TextDisplayBuilder
 } from "discord.js";
 
 // this probably SUCKS we should find a prettier way to do it
-export const stackStore = new Map<string, string>();
+export const stackStore = new Map<string, StackBox>();
 
 export class StackBox {
   running: boolean = false;
@@ -84,19 +83,19 @@ export class StackBox {
     const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setStyle(ButtonStyle.Primary)
-        .setCustomId("addToQueue")
+        .setCustomId("stack-addToQueue")
         .setLabel("➕"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Secondary)
-        .setCustomId("toggleTimeSensitive")
+        .setCustomId("stack-toggleTimeSensitive")
         .setLabel("⏰"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Danger)
-        .setCustomId("removeFromQueue")
+        .setCustomId("stack-removeFromQueue")
         .setLabel("✖️"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Secondary)
-        .setCustomId("goNext")
+        .setCustomId("stack-goNext")
         .setLabel("➡️"),
     ]);
 
@@ -106,45 +105,12 @@ export class StackBox {
         components: [container, buttons],
         flags: MessageFlags.IsComponentsV2,
       });
-      stackStore.set(this.channel.id, this.message.id);
+      stackStore.set(this.channel.id, this);
     } else
       await this.message.edit({
         components: [container, buttons],
         flags: MessageFlags.IsComponentsV2,
       });
-
-    const collector = this.message.createMessageComponentCollector({
-      componentType: ComponentType.Button,
-      time: 10_000,
-    });
-    collector.on("collect", async (a) => {
-      // first make sure user is in the channel
-      const member = await a.guild!.members.fetch(a.user.id)!;
-      if ((await member.voice.fetch()).channelId !== this.channel.id) {
-        a.reply({
-          content: "you need to be in the voice channel to use its stack",
-          flags: MessageFlags.Ephemeral,
-        });
-        return;
-      }
-
-      switch (a.customId) {
-        case "addToQueue":
-          await this.addToQueue(a);
-          break;
-        case "goNext":
-          await this.nextInQueue(a);
-          break;
-        case "toggleTimeSensitive":
-          await this.toggleTimeSensitive(a);
-          break;
-        case "removeFromQueue":
-          await this.removeFromQueue(a);
-          break;
-        default:
-          break;
-      }
-    });
 
     return true;
   }
@@ -157,6 +123,36 @@ export class StackBox {
       // if the stack message was deleted running will get unset and we'll break out
       this.render().then((r) => (this.running = r));
       await new Promise((r) => setTimeout(r, 10000));
+    }
+  }
+
+  async onButton(interaction: ButtonInteraction) {
+	// first make sure user is in the channel
+    const member = await interaction.guild!.members.fetch(interaction.user.id)!;
+	const voice = await member.voice.fetch().catch(() => { return undefined; });
+    if (!voice || voice.channelId !== interaction.channelId) {
+    	interaction.reply({
+          content: "you need to be in the voice channel to use its stack",
+          flags: MessageFlags.Ephemeral,
+        });
+        return;
+    }
+
+    switch (interaction.customId) {
+        case "stack-addToQueue":
+          await this.addToQueue(interaction);
+          break;
+        case "stack-goNext":
+          await this.nextInQueue(interaction);
+          break;
+        case "stack-toggleTimeSensitive":
+          await this.toggleTimeSensitive(interaction);
+          break;
+        case "stack-removeFromQueue":
+          await this.removeFromQueue(interaction);
+          break;
+        default:
+          break;
     }
   }
 

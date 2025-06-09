@@ -49,12 +49,12 @@ async function run(interaction: ChatInputCommandInteraction<CacheType>) {
 	}
 
 	// no stack?
-	const stackId = stackStore.get(interaction.channelId);
-	if (!stackId) {
+	const theStack = stackStore.get(interaction.channelId);
+	if (!theStack) {
 		await createStack(interaction, invoker);
 	} else { // stack!!
 		try {
-			interaction.channel.messages.fetch(stackId).then(async (msg) => {
+			interaction.channel.messages.fetch(theStack.message!.id).then(async (msg) => {
 				interaction.reply({
 					content: `here it is ${msg.url}`,
 					flags:MessageFlags.Ephemeral
