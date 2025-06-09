@@ -3,27 +3,29 @@ import {
 	ButtonBuilder,
 	ButtonInteraction,
 	ButtonStyle,
-	ChatInputCommandInteraction,
+	ChannelType,
+	Collection,
 	ContainerBuilder,
+	Guild,
 	GuildMember,
+	GuildTextBasedChannel,
+	heading,
 	Message,
 	MessageFlags,
 	PermissionsBitField,
-	SendableChannels,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
 	TextBasedChannel,
 	TextDisplayBuilder
 } from "discord.js";
+import { client } from "../index.js";
 
 // this probably SUCKS we should find a prettier way to do it
-export const stackStore = new Map<string, StackBox>();
+export const stackStore = new Collection<string, StackBox>();
 
 export class StackBox {
   running: boolean = false;
-  owner?: GuildMember;
   speaking?: GuildMember;
-  channel: TextBasedChannel;
   message?: Message;
   speakerQueue: [GuildMember, boolean][] = []; // the member, and whether or not they've been marked time-sensitive
   lastUpdateUnix: number = 0;
@@ -31,18 +33,15 @@ export class StackBox {
   renderLocked: boolean = false;
 
   constructor(
-    interaction: ChatInputCommandInteraction,
-    initialOwner: GuildMember,
+    readonly channel: TextBasedChannel,
+    public owner?: GuildMember,
   ) {
-    this.owner = initialOwner;
-    this.channel = interaction.channel!;
+
   }
 
   async update() {
-    await this.owner?.voice.fetch().then((voice) => {
-      if (voice.channelId !== this.message?.channelId) this.owner = undefined;
-    });
-
+    const voice = await this.owner?.voice.fetch()
+	if (voice?.channelId !== this.message?.channelId) this.owner = undefined;
     this.lastUpdateUnix = Date.now();
   }
 
@@ -50,7 +49,7 @@ export class StackBox {
     const container = new ContainerBuilder()
       .setAccentColor(0x7289da)
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent("im stackin it"),
+        new TextDisplayBuilder().setContent("Im stackin it"),
       )
       .addSeparatorComponents(
         new SeparatorBuilder()
@@ -58,13 +57,11 @@ export class StackBox {
           .setSpacing(SeparatorSpacingSize.Small),
       )
       .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(
-          `# Currently Speaking: ${!this.speaking?.id ? "nobody!" : `<@${this.speaking?.id}>`}`,
-        ),
+        new TextDisplayBuilder().setContent(heading(`Currently Speaking: ${!this.speaking ? "nobody!" : this.speaking.toString()}`)),
       );
     let queueRendered = "Current queue:";
     this.speakerQueue.forEach((m) => {
-      queueRendered += `\n- <@${m[0].id}>`;
+      queueRendered += `\n- ${m[0].toString()}`;
       if (m[1]) queueRendered += " ⏰";
     });
     container
@@ -83,31 +80,33 @@ export class StackBox {
     const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setStyle(ButtonStyle.Primary)
-        .setCustomId("stack-addToQueue")
+        .setCustomId(`stack${client.splitCustomIdOn}addToQueue`)
         .setLabel("➕"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Secondary)
-        .setCustomId("stack-toggleTimeSensitive")
+        .setCustomId(`stack${client.splitCustomIdOn}toggleTimeSensitive`)
         .setLabel("⏰"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Danger)
-        .setCustomId("stack-removeFromQueue")
+        .setCustomId(`stack${client.splitCustomIdOn}removeFromQueue`)
         .setLabel("✖️"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Secondary)
-        .setCustomId("stack-goNext")
+        .setCustomId(`stack${client.splitCustomIdOn}goNext`)
         .setLabel("➡️"),
     ]);
 
     if (!this.message) {
       if (this.initialRendered) return false; // assume that if the stack message had been deleted, we can exit and let the stack go
-      this.message = await (this.channel as SendableChannels).send({
+      if (!this.channel.isSendable()) throw Error('Channel not sendable ')
+	 
+	  this.message = await this.channel.send({
         components: [container, buttons],
         flags: MessageFlags.IsComponentsV2,
       });
       stackStore.set(this.channel.id, this);
     } else
-      await this.message.edit({
+      void this.message.edit({
         components: [container, buttons],
         flags: MessageFlags.IsComponentsV2,
       });
@@ -127,29 +126,44 @@ export class StackBox {
   }
 
   async onButton(interaction: ButtonInteraction) {
+	void interaction.deferReply({flags: MessageFlags.Ephemeral})
+	let guild: Guild | undefined
+	let member: GuildMember
+	let channel: GuildTextBasedChannel 
+	if(interaction.inCachedGuild()) {
+		guild = interaction.guild
+		member = interaction.member
+		channel = interaction.channel ?? await guild.channels.fetch(interaction.channelId) as GuildTextBasedChannel
+	}
+	else if (interaction.inRawGuild()) {
+		guild = await interaction.client.guilds.fetch(interaction.guildId)
+		member = await guild.members.fetch(interaction.user.id)
+		channel = await guild.channels.fetch(interaction.channelId) as GuildTextBasedChannel
+
+	}
+	else throw Error('stack button used outside of guild')
+
 	// first make sure user is in the channel
-    const member = await interaction.guild!.members.fetch(interaction.user.id)!;
-	const voice = await member.voice.fetch().catch(() => { return undefined; });
-    if (!voice || voice.channelId !== interaction.channelId) {
-    	interaction.reply({
-          content: "you need to be in the voice channel to use its stack",
-          flags: MessageFlags.Ephemeral,
+	const voice = member.voice
+    if (voice.channelId !== channel.id && channel.type === ChannelType.GuildVoice) {
+    	interaction.editReply({
+          content: "You need to be in the voice channel to use its stack",
         });
         return;
     }
 
-    switch (interaction.customId) {
-        case "stack-addToQueue":
+    switch (interaction.customId.split(interaction.client.splitCustomIdOn!)[1]) {
+        case "addToQueue":
           await this.addToQueue(interaction);
           break;
-        case "stack-goNext":
+        case "goNext":
           await this.nextInQueue(interaction);
           break;
-        case "stack-toggleTimeSensitive":
+        case "toggleTimeSensitive":
           await this.toggleTimeSensitive(interaction);
           break;
-        case "stack-removeFromQueue":
-          await this.removeFromQueue(interaction);
+        case "removeFromQueue":
+          this.removeFromQueue(interaction);
           break;
         default:
           break;
@@ -157,6 +171,7 @@ export class StackBox {
   }
 
   async nextInQueue(interaction: ButtonInteraction) {
+	void interaction.deferReply({flags: MessageFlags.Ephemeral})
     // does the stack have an owner?
     const invoker = await interaction.guild!.members.fetch(
       interaction.user.id,
@@ -169,45 +184,44 @@ export class StackBox {
         .permissionsIn(interaction.channelId)
         .missing(PermissionsBitField.Flags.ManageMessages)
     ) {
-      await interaction.reply({
+      void interaction.editReply({
         content: "whoops can't do that",
-        flags: MessageFlags.Ephemeral,
       });
       return;
     }
 
     // simple front to back queue
     if (this.speakerQueue.length === 0) {
-      interaction.reply({
-        content: "looks like the stack is empty!",
-        flags: MessageFlags.Ephemeral,
+      void interaction.editReply({
+        content: "Looks like the stack is empty!",
       });
     } else {
       this.speaking = this.speakerQueue.shift()![0]; // this looks so ugly i love it
-      interaction.reply({ content: `<@${this.speaking.id}> is up!` });
+      void interaction.editReply({ content: `${this.speaking.toString()} is up!` });
     }
   }
 
   async addToQueue(interaction: ButtonInteraction) {
+	void interaction.deferReply({flags: MessageFlags.Ephemeral})
+	
     if (!this.speakerQueue.find((s) => s[0].id == interaction.user.id)) {
       this.speakerQueue.push([
         await interaction.guild!.members.fetch(interaction.user.id)!,
         false,
       ]);
-      await interaction.reply({
-        content: "added! your entry will be reflected in the stack soon",
-        flags: MessageFlags.Ephemeral,
+      void interaction.editReply({
+        content: "Added! your entry will be reflected in the stack soon",
       });
     } else {
-      await interaction.reply({
-        content: "looks like you're already in the stack",
-        flags: MessageFlags.Ephemeral,
+      void interaction.editReply({
+        content: "Looks like you're already in the stack",
       });
     }
   }
 
   // TODO: do this
   async toggleTimeSensitive(interaction: ButtonInteraction) {
+	void interaction.deferReply({flags: MessageFlags.Ephemeral})
     const spot = this.speakerQueue.findIndex(
       (s) => s[0].id === interaction.user.id,
     );
@@ -216,33 +230,31 @@ export class StackBox {
         await interaction.guild!.members.fetch(interaction.user.id)!,
         true,
       ]);
-      await interaction.reply({
+      void interaction.editReply({
         content:
-          "added as time sensitive! your entry will be reflected in the stack soon",
-        flags: MessageFlags.Ephemeral,
+          "Added as time sensitive! Your entry will be reflected in the stack soon",
       });
     } else {
       this.speakerQueue[spot][1] = !this.speakerQueue[spot][1]; // toggle the time sensitive marker
-      await interaction.reply({
-        content: "time-sensititve status toggled",
-        flags: MessageFlags.Ephemeral,
+      void interaction.editReply({
+        content: "Time-sensitive status toggled",
       });
     }
   }
 
-  async removeFromQueue(interaction: ButtonInteraction) {
+  removeFromQueue(interaction: ButtonInteraction) {
     const spot = this.speakerQueue.findIndex(
       (s) => s[0].id === interaction.user.id,
     );
     if (spot === -1)
-      await interaction.reply({
-        content: "you're already not on the stack!",
+      void interaction.reply({
+        content: "You're already not on the stack!",
         flags: MessageFlags.Ephemeral,
       });
     else {
       this.speakerQueue.splice(spot, 1);
-      await interaction.reply({
-        content: "removed from stack!",
+      void interaction.reply({
+        content: "Removed from stack!",
         flags: MessageFlags.Ephemeral,
       });
     }

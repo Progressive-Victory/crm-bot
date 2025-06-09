@@ -1,4 +1,4 @@
-import { CacheType, ChannelType, ChatInputCommandInteraction, GuildMember, MessageFlags } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CacheType, ChannelType, ChatInputCommandInteraction, GuildMember, GuildTextBasedChannel, MessageFlags, TextDisplayBuilder } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 import { StackBox, stackStore } from '../../features/stackbox.js';
 
@@ -17,9 +17,19 @@ export default new ChatInputCommand()
  * @param invoker The owner of the interaction
  */
 async function createStack(interaction: ChatInputCommandInteraction, invoker: GuildMember) {
-	const theStack = new StackBox(interaction, invoker);
+	let channel: GuildTextBasedChannel
+	if(interaction.inCachedGuild()) channel = interaction.channel ?? await interaction.guild.channels.fetch(interaction.channelId) as GuildTextBasedChannel
+	else if(interaction.inRawGuild()) {
+		const tc = await (await interaction.client.guilds.fetch(interaction.guildId)).channels.fetch(interaction.channelId)
+		if(!tc) throw Error('channel null')
+		if(!tc.isVoiceBased()) throw Error('channel null')
+		channel = tc
+	}
+	else throw Error('Interaction not in guild')
+
+	const theStack = new StackBox(channel, invoker);
 	theStack.run().then(() => stackStore.delete(interaction.channelId));
-	await interaction.reply({content: "stack created!", flags: MessageFlags.Ephemeral});
+	void interaction.reply({content: "stack created!", flags: MessageFlags.Ephemeral});
 }
 
 /**
@@ -42,7 +52,7 @@ async function run(interaction: ChatInputCommandInteraction<CacheType>) {
 	// const invoker = interaction.guild?.members.cache.get(interaction.member?.user.id as string);
 	if (invoker.voice.channel?.id !== interaction.channelId) {
 		await interaction.reply({
-			content: "you need to be in the voice channel to use its stack",
+			content: "You need to be in the voice channel to use its stack",
 			flags: MessageFlags.Ephemeral
 		});
 		return;
@@ -51,19 +61,26 @@ async function run(interaction: ChatInputCommandInteraction<CacheType>) {
 	// no stack?
 	const theStack = stackStore.get(interaction.channelId);
 	if (!theStack) {
-		await createStack(interaction, invoker);
+		createStack(interaction, invoker);
 	} else { // stack!!
 		try {
-			interaction.channel.messages.fetch(theStack.message!.id).then(async (msg) => {
-				interaction.reply({
-					content: `here it is ${msg.url}`,
-					flags:MessageFlags.Ephemeral
+			void interaction.deferReply({flags:MessageFlags.Ephemeral})
+			void interaction.channel.messages.fetch(theStack.message!.id).then((msg) => {
+				void interaction.editReply({
+					components:[
+						new TextDisplayBuilder({content: 'Stack created'}),
+						new ActionRowBuilder<ButtonBuilder>().addComponents(
+							new ButtonBuilder().setStyle(ButtonStyle.Link)
+							.setLabel('Jump to Stack Message')
+							.setURL(msg.url)
+						)],
+					flags: MessageFlags.IsComponentsV2
 				});
 			});
 		} catch {
 			// stack message was deleted and not accounted for
 			stackStore.delete(interaction.channelId);
-			await createStack(interaction, invoker); // making the new one
+			createStack(interaction, invoker); // making the new one
 		}
 	}
 }
