@@ -1,13 +1,10 @@
 {
 	"recommendations": [
 		"dbaeumer.vscode-eslint",
-		"github.vscode-pull-request-github",
 		"davidanson.vscode-markdownlint",
-		"christian-kohler.path-intellisense",
+		"esbenp.prettier-vscode",
+		"github.vscode-pull-request-github",
 		"macabeus.vscode-fluent",
 		"ms-vsliveshare.vsliveshare",
-		"visualstudioexptteam.vscodeintellicode",
-		"visualstudioexptteam.intellicode-api-usage-examples",
-		"eamodio.gitlens",
 	]
 }

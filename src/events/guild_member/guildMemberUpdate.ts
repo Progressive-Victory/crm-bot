@@ -22,16 +22,16 @@ export const guildMemberUpdate = new Event({
 			
 			const joinedAt = newMember.joinedAt ? newMember.joinedAt : new Date()
 
-			const text = [
+			const mainText = [
 				heading('Member Joined'),
 				`${newMember.toString()} ${newMember.user.username}`,
 				`Joined: ${time(joinedAt,TimestampStyles.RelativeTime)}`,
 			]
 			if(newMember.flags.has(GuildMemberFlags.DidRejoin))
-				text.push('Member previously has joined the server')
+				mainText.push('Member previously has joined the server')
 
-			const display = new TextDisplayBuilder().setContent(text.join('\n'))
-
+			const display = new TextDisplayBuilder().setContent(mainText.join('\n'))
+			// const roles = new TextDisplayBuilder().setContent( 'Roles at Join: ' + newMember.roles.cache.map(r => inlineCode(r.name)).join(', '))
 			const avatarURL = newMember.displayAvatarURL({forceStatic:true})
 			const thumbnail = new ThumbnailBuilder().setURL(avatarURL)
 				.setDescription(`Display Avatar for ${newMember.user.username}`)

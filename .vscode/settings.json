@@ -1,12 +1,13 @@
 {
 	"files.eol": "\n",
 	"files.insertFinalNewline": true,
-	"editor.tabSize": 4,
+	"editor.tabSize": 2,
 	"editor.insertSpaces": false,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.detectIndentation": false,
 	"editor.codeActionsOnSave": {
 		"source.fixAll": "explicit",
-		"source.organizeImports": "explicit"
+		"source.organizeImports": "always"
 	},
 	"eslint.useFlatConfig": true,
 	"eslint.workingDirectories": [
@@ -17,7 +18,4 @@
 	"yaml.schemas": {
 		"https://json.schemastore.org/github-issue-config.json": "/.github/ISSUE_TEMPLATE/config.yml"
 	},
-	"cSpell.words": [
-		"repliable",
-	]
 }

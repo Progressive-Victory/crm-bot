@@ -30,18 +30,18 @@
     "@fluent/bundle": "^0.19.1",
     "discord.js": "^14.19.3",
     "express": "^5.1.0",
-    "mongoose": "^8.15.0"
+    "mongoose": "^8.15.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
-    "@stylistic/eslint-plugin": "^4.2.0",
+    "@eslint/js": "^9.28.0",
+    "@stylistic/eslint-plugin": "^4.4.0",
     "@types/express": "^5.0.2",
-    "@types/node": "^22.15.18",
-    "@typescript-eslint/parser": "^8.32.1",
-    "eslint": "^9.27.0",
-    "eslint-plugin-jsdoc": "^50.6.17",
-    "globals": "^16.1.0",
+    "@types/node": "^22.15.29",
+    "@typescript-eslint/parser": "^8.33.0",
+    "eslint": "^9.28.0",
+    "eslint-plugin-jsdoc": "^50.7.1",
+    "globals": "^16.2.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.32.1"
+    "typescript-eslint": "^8.33.0"
   }
 }
