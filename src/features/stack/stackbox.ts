@@ -4,127 +4,125 @@ import {
 	ButtonInteraction,
 	ButtonStyle,
 	ChannelType,
-	Collection,
 	ContainerBuilder,
 	Guild,
 	GuildMember,
 	GuildTextBasedChannel,
-	heading,
 	Message,
 	MessageFlags,
 	PermissionsBitField,
 	SeparatorBuilder,
 	SeparatorSpacingSize,
-	TextBasedChannel,
-	TextDisplayBuilder
+	TextDisplayBuilder,
+	VoiceBasedChannel
 } from "discord.js";
-import { client } from "../index.js";
 
-// this probably SUCKS we should find a prettier way to do it
-export const stackStore = new Collection<string, StackBox>();
+const containerColor = 0x7289da;
 
 export class StackBox {
   running: boolean = false;
   speaking?: GuildMember;
   message?: Message;
   speakerQueue: [GuildMember, boolean][] = []; // the member, and whether or not they've been marked time-sensitive
-  lastUpdateUnix: number = 0;
-  initialRendered: boolean = false;
-  renderLocked: boolean = false;
+  lastUpdateUnix = new Date();
+  initialRendered = false;
+  renderBatched = false;
+  owner: GuildMember | null
 
   constructor(
-    readonly channel: TextBasedChannel,
-    public owner?: GuildMember,
+    readonly channel: VoiceBasedChannel,
+    owner: GuildMember,
   ) {
-
+	this.owner = owner
   }
 
-  async update() {
-    const voice = await this.owner?.voice.fetch()
-	if (voice?.channelId !== this.message?.channelId) this.owner = undefined;
-    this.lastUpdateUnix = Date.now();
+  async createMessage() {
+	this.message = await this.channel.send({
+		flags: MessageFlags.IsComponentsV2,
+		components: this.render()
+	})
+	return this.message
   }
 
-  async render(): Promise<boolean> {
-    const container = new ContainerBuilder()
-      .setAccentColor(0x7289da)
-      .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent("Im stackin it"),
-      )
-      .addSeparatorComponents(
-        new SeparatorBuilder()
-          .setDivider(true)
-          .setSpacing(SeparatorSpacingSize.Small),
-      )
-      .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(heading(`Currently Speaking: ${!this.speaking ? "nobody!" : this.speaking.toString()}`)),
-      );
-    let queueRendered = "Current queue:";
-    this.speakerQueue.forEach((m) => {
-      queueRendered += `\n- ${m[0].toString()}`;
-      if (m[1]) queueRendered += " ⏰";
-    });
-    container
-      .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(queueRendered),
-      )
-      .addSeparatorComponents(
-        new SeparatorBuilder()
-          .setDivider(true)
-          .setSpacing(SeparatorSpacingSize.Small),
-      )
-      .addTextDisplayComponents(
-        new TextDisplayBuilder().setContent(`stack owner: `),
-      );
+  async editMessage() {
+	if(this.message === undefined) return this.createMessage();
+	
+	// other interactions can change the underlying data but we batch them into one edit
+	// call so discord doesn't come to my house 
+	if (!this.renderBatched) {
+		this.renderBatched = true
+		setTimeout(async () => {
+			this.message = await this.message?.edit({
+				flags: MessageFlags.IsComponentsV2,
+				components: this.render()
+			});
+			this.renderBatched = false;
+		}, 5*1000);
+	}
+	return this.message;
+  }
 
-    const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents([
+
+getSpeakerIndex(member:GuildMember) {
+	return this.speakerQueue.findIndex(
+      (s) => s[0].id === member.id,
+    );
+}
+//   async update() {
+//     const voice = await this.owner?.voice.fetch()
+// 	if (voice?.channelId !== this.message?.channelId) this.owner = undefined;
+//     this.lastUpdateUnix = Date.now();
+//   }
+
+  private render() {
+	const container = new ContainerBuilder()
+		.setAccentColor(containerColor)
+		.addTextDisplayComponents(
+           new TextDisplayBuilder().setContent("Im stackin it"),
+ 		)
+		.addSeparatorComponents(
+			new SeparatorBuilder()
+				.setDivider(true)
+				.setSpacing(SeparatorSpacingSize.Small)
+		)
+		.addTextDisplayComponents(
+			new TextDisplayBuilder()
+				.setContent(`Currently Speaking: ${this.owner?.toString() ?? "nobody!"}`)
+		);
+	let queueRendered = "Current queue:";
+	this.speakerQueue.forEach(q => {
+		queueRendered += `\n- ${q[0].toString()}`;
+		if (q[1]) queueRendered += " ⏰";
+	});
+	container.addTextDisplayComponents(new TextDisplayBuilder({content: queueRendered}));
+
+	const row = new ActionRowBuilder<ButtonBuilder>().addComponents([
       new ButtonBuilder()
         .setStyle(ButtonStyle.Primary)
-        .setCustomId(`stack${client.splitCustomIdOn}addToQueue`)
-        .setLabel("➕"),
+        .setCustomId(this.channel.client.arrayToCustomId('stack','addToQueue'))
+        .setEmoji("➕"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Secondary)
-        .setCustomId(`stack${client.splitCustomIdOn}toggleTimeSensitive`)
-        .setLabel("⏰"),
+        .setCustomId(this.channel.client.arrayToCustomId('stack','toggleTimeSensitive'))
+        .setEmoji("⏰"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Danger)
-        .setCustomId(`stack${client.splitCustomIdOn}removeFromQueue`)
-        .setLabel("✖️"),
+        .setCustomId(this.channel.client.arrayToCustomId('stack','removeFromQueue'))
+        .setEmoji("✖️"),
       new ButtonBuilder()
         .setStyle(ButtonStyle.Secondary)
-        .setCustomId(`stack${client.splitCustomIdOn}goNext`)
-        .setLabel("➡️"),
+        .setCustomId(this.channel.client.arrayToCustomId('stack','goNext'))
+        .setEmoji("➡️"),
     ]);
-
-    if (!this.message) {
-      if (this.initialRendered) return false; // assume that if the stack message had been deleted, we can exit and let the stack go
-      if (!this.channel.isSendable()) throw Error('Channel not sendable ')
-	 
-	  this.message = await this.channel.send({
-        components: [container, buttons],
-        flags: MessageFlags.IsComponentsV2,
-      });
-      stackStore.set(this.channel.id, this);
-    } else
-      void this.message.edit({
-        components: [container, buttons],
-        flags: MessageFlags.IsComponentsV2,
-      });
-
-    return true;
+	return [container, row]
   }
 
-  async run(): Promise<void> {
-    this.running = true;
-    for (;;) {
-      if (!this.running) break;
-      if (Date.now() - this.lastUpdateUnix >= 30000) await this.update();
-      // if the stack message was deleted running will get unset and we'll break out
-      this.render().then((r) => (this.running = r));
-      await new Promise((r) => setTimeout(r, 10000));
-    }
-  }
-
+/**
+ * 
+ * TODO: 
+ * move this to stack button interaction file
+ */
+  
   async onButton(interaction: ButtonInteraction) {
 	void interaction.deferReply({flags: MessageFlags.Ephemeral})
 	let guild: Guild | undefined
@@ -168,6 +166,11 @@ export class StackBox {
         default:
           break;
     }
+
+	// now let's batch the render
+	if (!this.renderBatched) {
+		
+	}
   }
 
   async nextInQueue(interaction: ButtonInteraction) {
@@ -241,22 +244,3 @@ export class StackBox {
       });
     }
   }
-
-  removeFromQueue(interaction: ButtonInteraction) {
-    const spot = this.speakerQueue.findIndex(
-      (s) => s[0].id === interaction.user.id,
-    );
-    if (spot === -1)
-      void interaction.reply({
-        content: "You're already not on the stack!",
-        flags: MessageFlags.Ephemeral,
-      });
-    else {
-      this.speakerQueue.splice(spot, 1);
-      void interaction.reply({
-        content: "Removed from stack!",
-        flags: MessageFlags.Ephemeral,
-      });
-    }
-  }
-}

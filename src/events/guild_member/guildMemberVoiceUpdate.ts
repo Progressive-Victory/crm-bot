@@ -1,5 +1,6 @@
 import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
 import Event from "../../Classes/Event.js";
+import { stacks } from "../../features/stack/index.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
 
@@ -26,14 +27,30 @@ export const guildMemberVoiceUpdate = new Event({
 					embed = vcLogEmbed(member,'Left Stage', `${member} returned to audience in ${newStateChannelMention}`, Colors.Blue)
 				}
 			} else return
-		} else {
-			if (oldState.channel === null && newState.channel !== null) {
-				embed = vcLogEmbed(member, 'Joined Voice Channel',`${member} joined ${newStateChannelMention}`,Colors.Green)
-			} else if (oldState.channel !== null && newState.channel === null) {
-				embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldStateChannelMention}`, Colors.Red)
-			} else {
-				embed = vcLogEmbed(member, 'Switched Voice Channel', `${member} switched from ${oldStateChannelMention} to ${newStateChannelMention}`, Colors.Blue)
+		}
+		// User joined voice channel
+		else if (oldState.channel === null && newState.channel !== null) {
+			embed = vcLogEmbed(member, 'Joined Voice Channel',`${member} joined ${newStateChannelMention}`,Colors.Green)
+		}
+		// User Left voice channel
+		else if (oldState.channel !== null && newState.channel === null) {
+			embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldStateChannelMention}`, Colors.Red)
+			
+			if(stacks.stacks.has(oldState.channelId!)) {
+				const stack = stacks.stacks.get(oldState.channelId!)
+
+				if(oldState.channel.members.size === 0) {
+					stacks.remove(oldState.channel)
+				}
+				else if(stack && stack.owner?.id === member.id){
+					const index = stack.getSpeakerIndex(member)
+					stacks.update(oldState.channel,{owner: null, remove: index})
+				}
 			}
+		} 
+		// User Switched voice channel
+		else {
+			embed = vcLogEmbed(member, 'Switched Voice Channel', `${member} switched from ${oldStateChannelMention} to ${newStateChannelMention}`, Colors.Blue)
 		}
 
 		const settings = await GuildSetting.findOne({guildId: guild.id})

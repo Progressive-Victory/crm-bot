@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CacheType, ChannelType, ChatInputCommandInteraction, GuildMember, GuildTextBasedChannel, MessageFlags, TextDisplayBuilder } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
-import { StackBox, stackStore } from '../../features/stackbox.js';
+import { StackBox, stackStore } from '../../features/stack/stackbox.js';
 
 export default new ChatInputCommand()
 	.setBuilder((builder) => builder
