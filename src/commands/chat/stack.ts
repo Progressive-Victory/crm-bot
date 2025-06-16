@@ -1,6 +1,6 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CacheType, ChannelType, ChatInputCommandInteraction, GuildMember, GuildTextBasedChannel, MessageFlags, TextDisplayBuilder } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CacheType, ChannelType, ChatInputCommandInteraction, GuildMember, GuildTextBasedChannel, MessageFlags, TextDisplayBuilder, VoiceBasedChannel } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
-import { StackBox, stackStore } from '../../features/stack/stackbox.js';
+import { sm } from '../../index.js';
 
 export default new ChatInputCommand()
 	.setBuilder((builder) => builder
@@ -27,8 +27,7 @@ async function createStack(interaction: ChatInputCommandInteraction, invoker: Gu
 	}
 	else throw Error('Interaction not in guild')
 
-	const theStack = new StackBox(channel, invoker);
-	theStack.run().then(() => stackStore.delete(interaction.channelId));
+	sm.create(channel as VoiceBasedChannel, invoker);
 	void interaction.reply({content: "stack created!", flags: MessageFlags.Ephemeral});
 }
 
@@ -59,7 +58,7 @@ async function run(interaction: ChatInputCommandInteraction<CacheType>) {
 	}
 
 	// no stack?
-	const theStack = stackStore.get(interaction.channelId);
+	const theStack = sm.stacks.get(interaction.channelId);
 	if (!theStack) {
 		createStack(interaction, invoker);
 	} else { // stack!!
@@ -68,7 +67,7 @@ async function run(interaction: ChatInputCommandInteraction<CacheType>) {
 			void interaction.channel.messages.fetch(theStack.message!.id).then((msg) => {
 				void interaction.editReply({
 					components:[
-						new TextDisplayBuilder({content: 'Stack created'}),
+						new TextDisplayBuilder({content: "There's already a stack!"}),
 						new ActionRowBuilder<ButtonBuilder>().addComponents(
 							new ButtonBuilder().setStyle(ButtonStyle.Link)
 							.setLabel('Jump to Stack Message')
@@ -79,7 +78,7 @@ async function run(interaction: ChatInputCommandInteraction<CacheType>) {
 			});
 		} catch {
 			// stack message was deleted and not accounted for
-			stackStore.delete(interaction.channelId);
+			sm.remove(interaction.channel as VoiceBasedChannel);
 			createStack(interaction, invoker); // making the new one
 		}
 	}

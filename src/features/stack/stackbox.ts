@@ -16,6 +16,7 @@ import {
 	TextDisplayBuilder,
 	VoiceBasedChannel
 } from "discord.js";
+import { sm } from '../../index.js';
 
 const containerColor = 0x7289da;
 
@@ -166,11 +167,6 @@ getSpeakerIndex(member:GuildMember) {
         default:
           break;
     }
-
-	// now let's batch the render
-	if (!this.renderBatched) {
-		
-	}
   }
 
   async nextInQueue(interaction: ButtonInteraction) {
@@ -208,10 +204,9 @@ getSpeakerIndex(member:GuildMember) {
 	void interaction.deferReply({flags: MessageFlags.Ephemeral})
 	
     if (!this.speakerQueue.find((s) => s[0].id == interaction.user.id)) {
-      this.speakerQueue.push([
-        await interaction.guild!.members.fetch(interaction.user.id)!,
-        false,
-      ]);
+	  sm.update(interaction.channel as VoiceBasedChannel, {
+		add: [await interaction.guild!.members.fetch(interaction.user.id)!, false]
+	  });
       void interaction.editReply({
         content: "Added! your entry will be reflected in the stack soon",
       });
@@ -229,18 +224,38 @@ getSpeakerIndex(member:GuildMember) {
       (s) => s[0].id === interaction.user.id,
     );
     if (spot === -1) {
-      this.speakerQueue.push([
-        await interaction.guild!.members.fetch(interaction.user.id)!,
-        true,
-      ]);
+      sm.update(interaction.channel as VoiceBasedChannel, {
+		add: [await interaction.guild!.members.fetch(interaction.user.id), true]
+	  });
       void interaction.editReply({
         content:
           "Added as time sensitive! Your entry will be reflected in the stack soon",
       });
     } else {
-      this.speakerQueue[spot][1] = !this.speakerQueue[spot][1]; // toggle the time sensitive marker
+      sm.update(interaction.channel as VoiceBasedChannel, {
+		urgent: spot // toggle the time sensitive marker
+	  }); 
       void interaction.editReply({
         content: "Time-sensitive status toggled",
       });
     }
   }
+
+  async removeFromQueue(interaction:ButtonInteraction) {
+	void interaction.deferReply({flags: MessageFlags.Ephemeral});
+	const spot = this.speakerQueue.findIndex(s => s[0].id === interaction.user.id);
+	if (spot === -1) {
+		void interaction.editReply({
+			content: "You're already not on the stack!"
+		});
+	} else {
+		sm.update(interaction.channel as VoiceBasedChannel, {
+			remove: spot
+		});
+		void interaction.editReply({
+			content: "Removed from the stack"
+		});
+	}
+	
+  }
+}

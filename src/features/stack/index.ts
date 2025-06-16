@@ -1,4 +1,4 @@
 import { client } from "../../index.js";
-import { StackManger } from "./stackmanager.js";
+import { StackManager } from "./stackmanager.js";
 
-export const stacks = new StackManger(client)
+export const stacks = new StackManager(client);
