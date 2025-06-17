@@ -1,6 +1,6 @@
 import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
 import Event from "../../Classes/Event.js";
-import { stacks } from "../../features/stack/index.js";
+import { sm } from "../../features/stack/index.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
 
@@ -36,15 +36,15 @@ export const guildMemberVoiceUpdate = new Event({
 		else if (oldState.channel !== null && newState.channel === null) {
 			embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldStateChannelMention}`, Colors.Red)
 			
-			if(stacks.stacks.has(oldState.channelId!)) {
-				const stack = stacks.stacks.get(oldState.channelId!)
+			if(sm.stacks.has(oldState.channelId!)) {
+				const stack = sm.stacks.get(oldState.channelId!)
 
 				if(oldState.channel.members.size === 0) {
-					stacks.remove(oldState.channel)
+					sm.remove(oldState.channel)
 				}
 				else if(stack && stack.owner?.id === member.id){
 					const index = stack.getSpeakerIndex(member)
-					stacks.update(oldState.channel,{owner: null, remove: index})
+					sm.update(oldState.channel,{owner: null, remove: index})
 				}
 			}
 		} 

@@ -16,7 +16,7 @@ import {
 	TextDisplayBuilder,
 	VoiceBasedChannel
 } from "discord.js";
-import { sm } from '../../index.js';
+import { sm } from './index.js';
 
 const containerColor = 0x7289da;
 
@@ -51,6 +51,7 @@ export class StackBox {
 	// other interactions can change the underlying data but we batch them into one edit
 	// call so discord doesn't come to my house 
 	if (!this.renderBatched) {
+		console.log("render now batched");
 		this.renderBatched = true
 		setTimeout(async () => {
 			this.message = await this.message?.edit({
@@ -58,8 +59,9 @@ export class StackBox {
 				components: this.render()
 			});
 			this.renderBatched = false;
+			console.log("batched render complete");
 		}, 5*1000);
-	}
+	} else console.log("render already batched");
 	return this.message;
   }
 
@@ -125,7 +127,7 @@ getSpeakerIndex(member:GuildMember) {
  */
   
   async onButton(interaction: ButtonInteraction) {
-	void interaction.deferReply({flags: MessageFlags.Ephemeral})
+	await interaction.deferReply({flags: MessageFlags.Ephemeral})
 	let guild: Guild | undefined
 	let member: GuildMember
 	let channel: GuildTextBasedChannel 
@@ -170,7 +172,6 @@ getSpeakerIndex(member:GuildMember) {
   }
 
   async nextInQueue(interaction: ButtonInteraction) {
-	void interaction.deferReply({flags: MessageFlags.Ephemeral})
     // does the stack have an owner?
     const invoker = await interaction.guild!.members.fetch(
       interaction.user.id,
@@ -195,14 +196,12 @@ getSpeakerIndex(member:GuildMember) {
         content: "Looks like the stack is empty!",
       });
     } else {
-      this.speaking = this.speakerQueue.shift()![0]; // this looks so ugly i love it
-      void interaction.editReply({ content: `${this.speaking.toString()} is up!` });
+      void interaction.editReply({ content: `${this.speakerQueue[0][0].toString()} is up!` });
+	  sm.update(interaction.channel as VoiceBasedChannel, {next: true});
     }
   }
 
   async addToQueue(interaction: ButtonInteraction) {
-	void interaction.deferReply({flags: MessageFlags.Ephemeral})
-	
     if (!this.speakerQueue.find((s) => s[0].id == interaction.user.id)) {
 	  sm.update(interaction.channel as VoiceBasedChannel, {
 		add: [await interaction.guild!.members.fetch(interaction.user.id)!, false]
@@ -219,7 +218,6 @@ getSpeakerIndex(member:GuildMember) {
 
   // TODO: do this
   async toggleTimeSensitive(interaction: ButtonInteraction) {
-	void interaction.deferReply({flags: MessageFlags.Ephemeral})
     const spot = this.speakerQueue.findIndex(
       (s) => s[0].id === interaction.user.id,
     );
@@ -242,7 +240,6 @@ getSpeakerIndex(member:GuildMember) {
   }
 
   async removeFromQueue(interaction:ButtonInteraction) {
-	void interaction.deferReply({flags: MessageFlags.Ephemeral});
 	const spot = this.speakerQueue.findIndex(s => s[0].id === interaction.user.id);
 	if (spot === -1) {
 		void interaction.editReply({

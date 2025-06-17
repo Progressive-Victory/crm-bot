@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CacheType, ChannelType, ChatInputCommandInteraction, GuildMember, GuildTextBasedChannel, MessageFlags, TextDisplayBuilder, VoiceBasedChannel } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
-import { sm } from '../../index.js';
+import { sm } from '../../features/stack/index.js';
 
 export default new ChatInputCommand()
 	.setBuilder((builder) => builder
@@ -63,7 +63,7 @@ async function run(interaction: ChatInputCommandInteraction<CacheType>) {
 		createStack(interaction, invoker);
 	} else { // stack!!
 		try {
-			void interaction.deferReply({flags:MessageFlags.Ephemeral})
+			await interaction.deferReply({flags:MessageFlags.Ephemeral})
 			void interaction.channel.messages.fetch(theStack.message!.id).then((msg) => {
 				void interaction.editReply({
 					components:[

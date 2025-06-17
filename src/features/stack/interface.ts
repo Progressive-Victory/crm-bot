@@ -5,4 +5,5 @@ export interface UpdateStackOptions {
 	add?: [GuildMember, boolean];
 	urgent?: number;
 	remove?: number;
+	next?: boolean;
 }

@@ -1,15 +1,10 @@
 import { Collection, GuildMember, Snowflake, VoiceBasedChannel, VoiceChannel } from "discord.js";
-import { Client } from "../../Classes/index.js";
 import { UpdateStackOptions } from "./interface.js";
 import { StackBox } from "./stackbox.js";
 
 export class StackManager {
 
 	stacks = new Collection<Snowflake, StackBox>();
-
-	constructor(readonly client:Client) {
-		
-	}
 
 	create(channel: VoiceBasedChannel, member: GuildMember) {
 		const theStack = new StackBox(channel, member);
@@ -29,8 +24,9 @@ export class StackManager {
 		
 		if(options.owner) stack.owner = options.owner;
 		if(options.add) stack.speakerQueue.push(options.add);
-		if(options.urgent) stack.speakerQueue[options.urgent][1] = !stack.speakerQueue[options.urgent][1]
+		if(options.urgent) stack.speakerQueue[options.urgent][1] = !stack.speakerQueue[options.urgent][1];
 		if(options.remove && options.remove >= 0) stack.speakerQueue.splice(options.remove, 1);
+		if(options.next) stack.speakerQueue.shift();
 		
 		this.stacks.set(channel.id,stack);
 
