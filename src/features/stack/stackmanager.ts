@@ -1,14 +1,15 @@
-import { Collection, GuildMember, Snowflake, VoiceBasedChannel, VoiceChannel } from "discord.js";
-import { UpdateStackOptions } from "./interface.js";
-import { StackBox } from "./stackbox.js";
+import { Collection, ContainerBuilder, GuildMember, heading, InteractionReplyOptions, MessageFlags, Snowflake, subtext, TextDisplayBuilder, userMention, VoiceBasedChannel, VoiceChannel } from "discord.js";
+import { row } from "./buttons.js";
+import { VoiceStack } from "./stackbox.js";
+
+const containerColor = 0x7289da;
 
 export class StackManager {
 
-	stacks = new Collection<Snowflake, StackBox>();
+	stacks = new Collection<Snowflake, VoiceStack>();
 
-	create(channel: VoiceBasedChannel, member: GuildMember) {
-		const theStack = new StackBox(channel, member);
-		theStack.createMessage();
+	create(channel: VoiceChannel, member: GuildMember) {
+		const theStack = new VoiceStack(member, channel);
 		this.stacks.set(channel.id, theStack);
 		return theStack;
 	}
@@ -17,26 +18,43 @@ export class StackManager {
 		this.stacks.delete(channel.id);
 		return this;
 	}
-	
-	update(channel: VoiceBasedChannel, options: UpdateStackOptions) {
-		const stack = this.stacks.get(channel.id);
-		if(!stack) throw Error('Stack does not exist');
-		
-		if(options.owner) stack.owner = options.owner;
-		if(options.add) stack.speakerQueue.push(options.add);
-		if(options.urgent) stack.speakerQueue[options.urgent][1] = !stack.speakerQueue[options.urgent][1];
-		if(options.remove && options.remove >= 0) stack.speakerQueue.splice(options.remove, 1);
-		if(options.next) stack.speakerQueue.shift();
-		
-		this.stacks.set(channel.id,stack);
 
-		return stack.editMessage();
-	}
-
-	render(channel: VoiceChannel) {
+	render(channel: VoiceBasedChannel):InteractionReplyOptions {
 		const stack = this.stacks.get(channel.id);
-		if (!stack) throw Error('No stack exists');
-		if(!stack.message) stack.createMessage();
-		else stack.editMessage();
+		if(!stack) throw new Error('Stack does not exist')
+
+		let ownerString: string
+		if(stack.ownerId) ownerString = userMention(stack.ownerId)
+		else ownerString = 'Unowned'
+
+		const bodyArray = [
+				heading(`${channel.name} VC Queue`),
+				'The queue is to help you know who is next up to speak\n',
+				`Current Speaker: ${stack.speakerId ? userMention(stack.speakerId) : 'No Speaker'}\n`,
+			]
+		if (stack.queue.length === 0) {
+			bodyArray.push('- No Other members in queue')
+		} else {
+			const inline = stack.queue.map<string>((qm) => {
+				return `- ${userMention(qm.memberId)}${qm.priority ? ' ⏰' : ''}`
+			})
+			bodyArray.concat(inline)
+		}
+		bodyArray.push('\n' + subtext(`Owner of queue: ${ownerString}`))
+
+		const body = new TextDisplayBuilder().setContent(bodyArray.join('\n'))
+
+		const container = new ContainerBuilder()
+		.setAccentColor(containerColor)
+			.addTextDisplayComponents(body)
+			.addActionRowComponents(row)
+
+		return {
+			components:[
+				container
+			],
+			flags: MessageFlags.IsComponentsV2,
+			allowedMentions: {}
+		}
 	}
 }

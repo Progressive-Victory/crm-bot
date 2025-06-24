@@ -1,5 +1,6 @@
 import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
 import Event from "../../Classes/Event.js";
+import { owner } from "../../features/stack/buttons.js";
 import { sm } from "../../features/stack/index.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
@@ -42,9 +43,20 @@ export const guildMemberVoiceUpdate = new Event({
 				if(oldState.channel.members.size === 0) {
 					sm.remove(oldState.channel)
 				}
-				else if(stack && stack.owner?.id === member.id){
-					const index = stack.getSpeakerIndex(member)
-					sm.update(oldState.channel,{owner: null, remove: index})
+				else if(stack && stack.ownerId === member.id){
+					oldState.channel.send({
+						content: 'The owner for this VC Queue has left the channel',
+						components:[owner]
+					})
+				} else if(stack && stack.speakerId === member.id){
+					stack.setSpeaker(member)
+					sm.stacks.set(oldState.channel.id, stack)
+				} else if(stack) {
+					const index = stack.getMemberIndex(member)
+					if(index >= 0) {
+						stack.queue.splice(index, 1)
+						sm.stacks.set(oldState.channel.id, stack)
+					}
 				}
 			}
 		} 

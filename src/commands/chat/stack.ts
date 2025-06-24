@@ -1,4 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CacheType, ChannelType, ChatInputCommandInteraction, GuildMember, GuildTextBasedChannel, MessageFlags, TextDisplayBuilder, VoiceBasedChannel } from 'discord.js';
+import { ApplicationCommandType, ChannelType, chatInputApplicationCommandMention, ChatInputCommandInteraction, GuildTextBasedChannel, InteractionContextType, MessageFlags, PermissionFlagsBits, subtext, TextDisplayBuilder, VoiceChannel } from 'discord.js';
 import { ChatInputCommand } from '../../Classes/index.js';
 import { sm } from '../../features/stack/index.js';
 
@@ -6,80 +6,108 @@ export default new ChatInputCommand()
 	.setBuilder((builder) => builder
 		.setName("stack")
 		.setDescription("Talking over people wouldn't be very dark woke of you")
+		.setContexts(InteractionContextType.Guild)
+		.setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
+		.addSubcommand(subCommand => subCommand.setName('create')
+			.setDescription('Create VC Stack')
+		)
+		.addSubcommand(subCommand => subCommand.setName('join')
+			.setDescription('Join to the end of the line of the VC stack')
+			.addBooleanOption(option => option.setName('priority')
+				.setDescription('Time sensitive request to speak')
+			)
+		)
+		.addSubcommand(subCommand => subCommand.setName('view')
+			.setDescription('View VC stack')
+			.addBooleanOption(option => option.setName('hide')
+				.setDescription('hide message from other members'))
+		)
+		.addSubcommand(subCommand => subCommand.setName('leave')
+			.setDescription('remove your self from VC stack')
+		)
+		.addSubcommand(subCommand => subCommand.setName('remove')
+			.setDescription('remove a member from the stack')
+			.addUserOption(option => option.setName('member')
+				.setDescription('Mere to remove from queue')
+			)
+		)
 	)
-	.setExecute(run);
+	.setExecute((interaction) => {
+		if(!interaction.inCachedGuild()) return
+		const { channel, channelId, member } = interaction
+		const subCommand = interaction.options.getSubcommand(true)
+		if(!isGuildVoiceChannel(channel))
+			return interaction.reply({
+				content:'Command can only be used in a voice channel',
+				flags: MessageFlags.Ephemeral
+			})
+		if(channelId !== member.voice.channelId)
+			return interaction.reply({
+				content:'Command can only be used in a voice channel that you are in',
+				flags: MessageFlags.Ephemeral
+			})
+		
+		switch (subCommand) {
+			case 'create':
+				create(interaction, channel)
+				break;
+			case 'view':
+				view(interaction, channel)
+				break;
+			case 'join':
 
-
+				break;
+			case 'leave':
+				
+				break;
+			case 'remove':
+				
+				break;
+		
+			default:
+				break;
+		}	
+	});
 
 /**
  *
- * @param interaction The interaction fed to the bot
- * @param invoker The owner of the interaction
+ * @param channel
  */
-async function createStack(interaction: ChatInputCommandInteraction, invoker: GuildMember) {
-	let channel: GuildTextBasedChannel
-	if(interaction.inCachedGuild()) channel = interaction.channel ?? await interaction.guild.channels.fetch(interaction.channelId) as GuildTextBasedChannel
-	else if(interaction.inRawGuild()) {
-		const tc = await (await interaction.client.guilds.fetch(interaction.guildId)).channels.fetch(interaction.channelId)
-		if(!tc) throw Error('channel null')
-		if(!tc.isVoiceBased()) throw Error('channel null')
-		channel = tc
-	}
-	else throw Error('Interaction not in guild')
-
-	sm.create(channel as VoiceBasedChannel, invoker);
-	void interaction.reply({content: "stack created!", flags: MessageFlags.Ephemeral});
+function isGuildVoiceChannel(channel: GuildTextBasedChannel | null): channel is VoiceChannel {
+	return channel?.type === ChannelType.GuildVoice
 }
 
 /**
  *
- * @param interaction The interaction fed to the bot
+ * @param interaction
+ * @param channel
  */
-async function run(interaction: ChatInputCommandInteraction<CacheType>) {
-	const invoker = await interaction.guild!.members.fetch(interaction.user.id);
-
-	// first make sure we're in a voice channel
-	if (interaction.channel?.type !== ChannelType.GuildVoice) {
-		await interaction.reply({
-			content: "use this in a voice channel",
-			flags: MessageFlags.Ephemeral
-		});
-		return;
+function create(interaction: ChatInputCommandInteraction<"cached">, channel: VoiceChannel) {
+	if(sm.stacks.has(channel.id)) {
+		const message = sm.render(channel)
+		message.components = message.components?.toSpliced(0,0, new TextDisplayBuilder({content: subtext('This stack has already been created')}))
+		message.flags = MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral
+		return interaction.reply(message)
 	}
+	sm.create(channel, interaction.member)
+	const message = sm.render(channel)
+	interaction.reply(message)
+}
 
-	// is the user actually in the voice channel
-	// const invoker = interaction.guild?.members.cache.get(interaction.member?.user.id as string);
-	if (invoker.voice.channel?.id !== interaction.channelId) {
-		await interaction.reply({
-			content: "You need to be in the voice channel to use its stack",
-			flags: MessageFlags.Ephemeral
-		});
-		return;
+/**
+ *
+ * @param interaction
+ * @param channel
+ */
+function view(interaction: ChatInputCommandInteraction<"cached">, channel: VoiceChannel) {
+	if(sm.stacks.has(channel.id)) {
+		const hide = interaction.options.getBoolean('hide', false) ?? false
+		const message = sm.render(channel)
+		message.flags = hide ? MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral : message.flags
+		return interaction.reply(message)
 	}
-
-	// no stack?
-	const theStack = sm.stacks.get(interaction.channelId);
-	if (!theStack) {
-		createStack(interaction, invoker);
-	} else { // stack!!
-		try {
-			await interaction.deferReply({flags:MessageFlags.Ephemeral})
-			void interaction.channel.messages.fetch(theStack.message!.id).then((msg) => {
-				void interaction.editReply({
-					components:[
-						new TextDisplayBuilder({content: "There's already a stack!"}),
-						new ActionRowBuilder<ButtonBuilder>().addComponents(
-							new ButtonBuilder().setStyle(ButtonStyle.Link)
-							.setLabel('Jump to Stack Message')
-							.setURL(msg.url)
-						)],
-					flags: MessageFlags.IsComponentsV2
-				});
-			});
-		} catch {
-			// stack message was deleted and not accounted for
-			sm.remove(interaction.channel as VoiceBasedChannel);
-			createStack(interaction, invoker); // making the new one
-		}
-	}
+	interaction.reply({
+		content: `No queue exist. To create one use ${chatInputApplicationCommandMention('stack','create', interaction.client.application.commands.cache.find((cmd) => cmd.type === ApplicationCommandType.ChatInput && cmd.name === 'stack')?.id ?? '')}`,
+		flags: MessageFlags.Ephemeral
+	})
 }
