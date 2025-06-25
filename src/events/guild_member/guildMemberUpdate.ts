@@ -9,6 +9,15 @@ import { getGuildChannel } from "../../util/index.js";
 export const guildMemberUpdate = new Event({
 	name: Events.GuildMemberUpdate,
 	execute: async (oldMember, newMember) => {
+
+		if (oldMember.nickname !== newMember.nickname) {
+			if(newMember.nickname === null) {
+				// send nickname removed
+			} else {
+				// send new nickname
+			}
+		}
+
 		if (oldMember.pending && oldMember.pending !== newMember.pending) {
 			const { guild } = newMember
 			const settings = await GuildSetting.findOne({ guildId: guild.id })
