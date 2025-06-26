@@ -10,7 +10,7 @@ export { interactionCreate } from './interactionCreate.js';
 
 export { guildAuditLogEntryCreate } from './guild_audit_log/guildAuditLogEntryCreate.js';
 
-// export { guildMemberAdd } from './guild_member/guildMemberAdd.js';
+export { guildMemberAdd } from './guild_member/guildMemberAdd.js';
 
 export { GuildMemberRemove } from './guild_member/guildMemberRemove.js';
 
