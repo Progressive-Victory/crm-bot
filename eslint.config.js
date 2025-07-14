@@ -27,6 +27,9 @@ export default tseslint.config(
     extends: [tseslint.configs.disableTypeChecked],
   },
   {
+	ignores:["./dist/**/*"]
+  },
+  {
     plugins: { "@stylistic": stylistic },
     rules: {
       // '@stylistic/array-bracket-spacing': [
