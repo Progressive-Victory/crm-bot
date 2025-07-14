@@ -22,6 +22,10 @@ Date.prototype.toDiscordString = function(style: TimestampStylesString = Timesta
 	return time(this, style);
 };
 
+/**
+ * This redefines relevant interfaces in discord.js to allow us to use
+ * {@link ExtendedClient} wherever discord.js expects {@link Client}.
+ */
 declare module 'discord.js' {
 	interface BaseInteraction {
 		client: ExtendedClient;
