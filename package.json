@@ -21,7 +21,8 @@
     "dev": "node --env-file=.env .",
     "start": "node .",
     "predev": "pnpm build",
-    "lint": "eslint --fix {src}/**/*.{js,ts,jsx,tsx} --no-error-on-unmatched-pattern"
+    "lint": "eslint \"src/**/*.{js,ts,jsx,tsx}\" --no-error-on-unmatched-pattern",
+    "lint:fix": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\" --no-error-on-unmatched-pattern"
   },
   "engines": {
     "node": ">=22.13.0"

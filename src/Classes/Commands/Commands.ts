@@ -5,7 +5,8 @@ import { BaseCommand } from './BaseCommand.js';
 import { AnySlashCommandBuilder } from './types.js';
 
 /**
- * Slash command
+ * Represents a PV Bot command that is invoked via a slash command and provides an interaction interface
+ * using chat input
  */
 export class ChatInputCommand extends BaseCommand<AnySlashCommandBuilder, ChatInputCommandInteraction> {
 
@@ -59,6 +60,9 @@ export class ChatInputCommand extends BaseCommand<AnySlashCommandBuilder, ChatIn
     }
 }
 
+/**
+ * Represents a PV Bot command that is invoked using either a user or message context menu
+ */
 export class ContextMenuCommand<CommandInteraction extends ContextMenuCommandInteraction> extends BaseCommand<ContextMenuCommandBuilder, CommandInteraction> {
     /**
      * Set the Context Menu command builder method
