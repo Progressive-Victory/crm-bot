@@ -11,6 +11,14 @@ import {
 	Locale, LocalizationMap, fluentVariables
 } from './types.js';
 
+/**
+ * Manages localization logic for the PV bot. Includes:
+ * <ul>
+ *     <li>Utilities to manage the set of supported locales</li>
+ *     <li>Utilities to register {@link FluentBundle}s with a locale</li>
+ * </ul>
+ * @see https://projectfluent.org/fluent.js/index.html
+ */
 export class i18n {
 	/**
 	 * the fallback if presented locale is not present
@@ -35,13 +43,15 @@ export class i18n {
         
 	}
 
+	/**
+	 * @returns the fallback {@link Locale}
+	 */
 	get fallbackLocale() {
 		return this._fallbackLocale;
 	}
 
 	/**
-	 * Gets the fall back Locale bundle
-	 * @returns LocaleBundle for the fall back locale
+	 * @returns the {@link LocaleBundle} of the fallback locale
 	 */
 	getFallbackLocale() {
 		if(this._fallbackLocale == undefined) throw Error('fallbackLocale not set');
@@ -50,8 +60,8 @@ export class i18n {
 
 	/**
 	 * Set the global resource file
-	 * @param filePath file path to the file in question
-	 * @returns the i18n object
+	 * @param filePath - file path to the file in question
+	 * @returns the modified {@link i18n} instance
 	 */
 	setGlobalResource(filePath: string) {
 		// get file
@@ -61,6 +71,12 @@ export class i18n {
 		return this;
 	}
 
+	/**
+	 * Sets the locales of the {@link i18n} instance
+	 * @param filePath - the path to the {@link FluentBundle} specifications
+	 * @param locale - the {@link Locale} to register the {@link FluentBundle} specifications with
+	 * @returns the instance of {@link i18n} with the {@link i18n#setGlobalResource} method removed
+	 */
 	setLocale(filePath: string, locale: Locale) {
 		// get files
 		const files = (readdirSync(filePath))
@@ -89,19 +105,8 @@ export class i18n {
 	}
 
 	/**
-	 * set the fallback locale
-	 * @param locale the locale to set
-	 * @returns this
-	 */
-	setFallbackLocale(locale: Locale) {
-		this._fallbackLocale = locale;
-		return this;
-	}
-
-	/**
-	 * Get the localeBundle
-	 * @param locale the locale to get
-	 * @returns LocaleBundle
+	 * @param locale - the {@link Locale} to retrieve the {@link LocaleBundle} for
+	 * @returns the {@link LocaleBundle} corresponding to the specified {@link Locale}
 	 */
 	getLocale(locale: Locale) {
 		const hasLocale = this.locales.has(locale);
@@ -134,11 +139,11 @@ export class i18n {
 	}
 
 	/**
-	 * Translate and formate a key
-	 * @param key key for the message to get
-	 * @param bundleName the bundle where it is located
-	 * @param locale the locale to target
-	 * @param options Additional options
+	 * Translate and format a key
+	 * @param key - key for the message to get
+	 * @param bundleName - the bundle where it is located
+	 * @param locale - the locale to target
+	 * @param options - Additional options
 	 * @returns The translated and formatted string
 	 */
 	t(key: string, bundleName: string, locale: Locale, options?: fluentVariables) {
@@ -147,8 +152,8 @@ export class i18n {
 
 	/**
 	 * For Use with Discord.js command builder to localize commands
-	 * @param key key to resolve
-	 * @param bundleName name of the bundle where the key is
+	 * @param key - key to resolve
+	 * @param bundleName - name of the bundle where the key is
 	 * @returns A map of the with the values of all added locale
 	 * @see {@link https://discord-api-types.dev/api/discord-api-types-payloads/common#LocalizationMap}
 	 */

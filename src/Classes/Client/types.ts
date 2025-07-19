@@ -10,7 +10,7 @@ declare global {
 	interface Date {
 		/**
 		 * Prints date to Discord Timestamp Styles
-		 * @param style Discord TimestampStylesString
+		 * @param style - Discord TimestampStylesString
 		 * @returns date formatted fro a message
 		 * @see {@link https://discord.com/developers/docs/reference#message-formatting-timestamp-styles}
 		 */

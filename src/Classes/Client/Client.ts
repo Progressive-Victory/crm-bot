@@ -16,28 +16,28 @@ export class ExtendedClient extends Client<true> {
 
 	private _interactionHandler = new InteractionHandler(this);
 
-	/// Whether the bot should respond to buttons or select menus
+	// Whether the bot should respond to buttons or select menus
 	readonly receiveMessageComponents: boolean;
 
-	/// Whether the bot should respond to modals
+	// Whether the bot should respond to modals
 	readonly receiveModals: boolean;
 
-	/// Whether the bot should respond to autocomplete
+	// Whether the bot should respond to autocomplete
 	readonly receiveAutocomplete: boolean;
 
-	/// Whether the bot should respond to autocomplete
+	// Whether the bot should respond to autocomplete
 	readonly replyOnError: boolean;
 
-	/// Message for errors in the interactionCreate
+	// Message for errors in the interactionCreate
 	readonly errorMessage: string = 'There was an error while executing this interaction.';
 
-	/// The string that is used to split/join the custom id
+	// The string that is used to split/join the custom id
 	readonly splitCustomIdOn?: string;
 
-	/// Whether the bot should use the provided InteractionCreate event 
+	// Whether the bot should use the provided InteractionCreate event
 	readonly useDefaultInteractionEvent: boolean = true;
 
-	/// Checks if the init function has run
+	// Checks if the init function has run
 	private _hasInitRun = false;
 
 	get loggedIn() {
@@ -57,7 +57,7 @@ export class ExtendedClient extends Client<true> {
 	}
 
 	/**
-	 * @param options Options for the client
+	 * @param options - Options for the client
 	 * @see https://discord.js.org/#/docs/discord.js/main/typedef/ClientOptions
 	 */
 	constructor(options: ExtendedClientOptions) {
@@ -86,7 +86,7 @@ export class ExtendedClient extends Client<true> {
 
 	/**
 	 * Logs the client in, establishing a WebSocket connection to Discord
-	 * @param token The bot's Discord token
+	 * @param token - The bot's Discord token
 	 * @returns token of the account used
 	 * @see https://discord.js.org/docs/packages/discord.js/14.21.0/Client:Class#login
 	 */
@@ -100,10 +100,8 @@ export class ExtendedClient extends Client<true> {
 
 	/**
 	 * Insert the CustomId in between stings in the array
-	 * @param args arguments to be separated
+	 * @param args - arguments to be separated
 	 * @returns string with array elements separated by `splitCustomIdOn`
-	 * @todo I think this can be replaced with {@code return args.join(this.splitCustomIdOn)}
-	 *       after the nullcheck
 	 */
 	public arrayToCustomId(...args: string[]): string {
 

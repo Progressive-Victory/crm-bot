@@ -8,10 +8,10 @@ import { AnySlashCommandBuilder } from './types.js';
  * BaseCommand represents a command that the PV bot can handle. This is a combination of a
  * command type, which is how the command is invoked, and an interaction, which defines the
  * behavior after the command is invoked.
- * @template TypeBuilder is the type of the command builder - either a slash command
- * 						 or a context menu command
- * @template TypeInteraction is the type of the interaction - either a chat input interaction or
- * 							 a context menu interaction
+ * @typeParam TypeBuilder - is the type of the command builder - either a slash command
+ *  						or a context menu command
+ * @typeParam TypeInteraction - is the type of the interaction - either a chat input interaction or
+ * 							    a context menu interaction
  * @see {@link https://discordjs.guide/creating-your-bot/command-deployment.html}
  * @see {@link https://discordjs.guide/slash-commands/response-methods.html}
  */

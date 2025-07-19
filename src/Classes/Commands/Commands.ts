@@ -12,7 +12,7 @@ export class ChatInputCommand extends BaseCommand<AnySlashCommandBuilder, ChatIn
 
     /**
      * Runs when client receives and Autocomplete interaction
-     * @param interaction Autocomplete interaction received by the client
+     * @param interaction - Autocomplete interaction received by the client
      */
     protected _autocomplete?: (interaction: AutocompleteInteraction) => void;
 
@@ -27,7 +27,7 @@ export class ChatInputCommand extends BaseCommand<AnySlashCommandBuilder, ChatIn
     
     /**
      * Set the command builder method
-     * @param input Slash command builder or callback
+     * @param input - Slash command builder or callback
      * @returns The modified object
      */
     setBuilder(input: SlashCommandBuilder | ((commandBuilder: SlashCommandBuilder) => AnySlashCommandBuilder)): this {
@@ -42,7 +42,7 @@ export class ChatInputCommand extends BaseCommand<AnySlashCommandBuilder, ChatIn
 
     /**
      * Set Autocomplete method
-     * @param autocomplete autocomplete function
+     * @param autocomplete - autocomplete function
      * @returns The modified object
      */
     public setAutocomplete(autocomplete: (interaction: AutocompleteInteraction) => void) {
@@ -52,7 +52,7 @@ export class ChatInputCommand extends BaseCommand<AnySlashCommandBuilder, ChatIn
 
     /**
      * Represents Slash command
-     * @param options partial object 
+     * @param options - partial object
      */
     constructor(options?: Partial<ChatInputCommand>) {
         super(options);
@@ -66,7 +66,7 @@ export class ChatInputCommand extends BaseCommand<AnySlashCommandBuilder, ChatIn
 export class ContextMenuCommand<CommandInteraction extends ContextMenuCommandInteraction> extends BaseCommand<ContextMenuCommandBuilder, CommandInteraction> {
     /**
      * Set the Context Menu command builder method
-     * @param input Context Menu command builder or callback
+     * @param input - Context Menu command builder or callback
      * @returns The modified object
      */
     public setBuilder(input: ContextMenuCommandBuilder | ((subcommandBuilder: ContextMenuCommandBuilder) => ContextMenuCommandBuilder)): this {

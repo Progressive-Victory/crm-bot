@@ -35,9 +35,8 @@ export class Event<Key extends keyof ClientEvents = any> {
     }
 
     /**
-     * Set the once flag
-     * @param input value to set
-     * @returns The modified object
+     * @param input - the new value for {@link Event#once}
+     * @returns The modified {@link Event} object
      */
     public setOnce(input: boolean) {
         this._once = input;
@@ -45,9 +44,8 @@ export class Event<Key extends keyof ClientEvents = any> {
     }
 
     /**
-     * Set the name of the event
-     * @param input value to set
-     * @returns The modified object
+     * @param input - the new value for {@link Event#name}
+     * @returns The modified {@link Event} object
      */
     public setName(input: Key) {
         this._name = input;
@@ -55,9 +53,9 @@ export class Event<Key extends keyof ClientEvents = any> {
     }
 
     /**
-     * Set the execute method
-     * @param execute function passed in
-     * @returns The modified object
+     * Updates the event handler of the {@link Event} object
+     * @param execute - the new event handler to be stored in {@link Event#handler}
+     * @returns The modified {@link Event} object
      */
     public setExecute(execute: (...args: ClientEvents[Key]) => void) {
         this._execute = execute;

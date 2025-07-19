@@ -23,7 +23,7 @@
     "predev": "pnpm build",
     "lint": "eslint \"src/**/*.{js,ts,jsx,tsx}\" --no-error-on-unmatched-pattern",
     "lint:fix": "eslint --fix \"src/**/*.{js,ts,jsx,tsx}\" --no-error-on-unmatched-pattern",
-	"doc": "typedoc src/**/*.{ts,tsx}"
+    "doc": "typedoc src/**/*.{ts,tsx}"
   },
   "engines": {
     "node": ">=22.13.0"
@@ -41,7 +41,7 @@
     "@types/node": "^22.15.18",
     "@typescript-eslint/parser": "^8.32.1",
     "eslint": "^9.27.0",
-    "eslint-plugin-jsdoc": "^50.6.17",
+    "eslint-plugin-tsdoc": "^0.4.0",
     "globals": "^16.1.0",
     "typedoc": "^0.28.7",
     "typescript": "^5.8.3",

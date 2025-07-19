@@ -150,7 +150,8 @@ export class CommandHandler {
 
     /**
      * Deregister commands for one or more guilds
-     * @param guildId optional Id to only remove commands from on guild
+     * @param guildId - If `undefined`, deregisters commands for all guilds. Else,
+     *                  deregisters all commands for the specified guild
      */
     async deregisterGuildCommands(guildId?: string) {
         try {
@@ -189,40 +190,39 @@ export class CommandHandler {
     }
 
     /**
-     * Run function for a chat command in handler
-     * @param interaction received interaction
+     * Run the registered chat input interaction handler
+     * @param interaction - the {@link ChatInputCommandInteraction} received from the Discord WebSocket
      */
     runChatCommand(interaction: ChatInputCommandInteraction) {
         this.chatCommands.get(interaction.commandName)?.execute(interaction);
     }
 
     /**
-     * Run function for an autocomplete interaction in handler
-     * @param interaction received interaction
+     * Run the registered autocomplete interaction handler
+     * @param interaction - the {@link AutocompleteInteraction} received from the Discord WebSocket
      */
     runAutocomplete(interaction: AutocompleteInteraction) {
         this.chatCommands.get(interaction.commandName)?.autocomplete(interaction);
     }
 
     /**
-     * Run function for a user context command in handler
-     * @param interaction received interaction
+     * Run the registered user context menu interaction handler
+     * @param interaction - the {@link UserContextMenuCommandInteraction} received from the Discord WebSocket
      */
     runUserContextMenus(interaction: UserContextMenuCommandInteraction) {
         this._userContextMenus.get(interaction.commandName)?.execute(interaction);
     }
 
     /**
-     * Run function for a message context command in handler
-     * @param interaction received interaction
+     * Run the registered message context menu interaction handler
+     * @param interaction - the {@link MessageContextMenuCommandInteraction} received from the Discord WebSocket
      */
     runMessageContextMenus(interaction: MessageContextMenuCommandInteraction) {
         this._messageContextMenus.get(interaction.commandName)?.execute(interaction);
     }
 
     /**
-     * create a command handler
-     * @param client parent client
+     * @param client - parent client
      */
     constructor(client: Client) {
         this.client = client;

@@ -21,7 +21,6 @@ export class Interaction<E extends DiscordInteraction> {
         return this._run;
     }
 
-    // eslint-disable-next-line jsdoc/require-returns
     /**
      * @deprecated Use `customId`
      */
@@ -29,7 +28,6 @@ export class Interaction<E extends DiscordInteraction> {
         return this.customIdPrefix;
     }
 
-    // eslint-disable-next-line jsdoc/require-returns
     /**
      * @deprecated Use `run`
      */
@@ -45,7 +43,7 @@ export class Interaction<E extends DiscordInteraction> {
     /**
      * Set the name of the interaction
      * @deprecated Use `setCustomId`
-     * @param name Name of interaction
+     * @param name - Name of interaction
      * @returns The modified object
      */
     public setName(name: string) {
@@ -55,7 +53,7 @@ export class Interaction<E extends DiscordInteraction> {
 
     /**
      * Set the name of the interaction
-     * @param customId Name of interaction
+     * @param customId - Name of interaction
      * @returns The modified object
      */
     public setCustomIdPrefix(customId: string) {
@@ -66,7 +64,7 @@ export class Interaction<E extends DiscordInteraction> {
     /**
      * Set the execute method
      * @deprecated Use `setRun`
-     * @param execute function passed in
+     * @param execute - function passed in
      * @returns The modified object
      */
     public setExecute(execute: (interaction: E) => void) {
@@ -76,7 +74,7 @@ export class Interaction<E extends DiscordInteraction> {
 
     /**
      * Set the execute method
-     * @param run function passed in
+     * @param run - function passed in
      * @returns The modified object
      */
     public setRun(run: (interaction: E) => void) {

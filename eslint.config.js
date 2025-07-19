@@ -1,15 +1,20 @@
 import pluginJs from "@eslint/js";
 import stylistic from "@stylistic/eslint-plugin";
 import parserTs from "@typescript-eslint/parser";
-import jsdoc from "eslint-plugin-jsdoc";
+import tsdoc from 'eslint-plugin-tsdoc';
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
   pluginJs.configs.recommended,
   tseslint.configs.recommended,
-  //tseslint.configs.stylisticTypeChecked,
-  jsdoc.configs["flat/recommended-typescript"],
+  {
+    files: ["**/*.ts", "**/*.tsx"],
+    plugins: { tsdoc },
+    rules: {
+      'tsdoc/syntax': 'warn',
+    }
+  },
   {
     languageOptions: {
       globals: globals.node,

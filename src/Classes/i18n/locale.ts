@@ -29,8 +29,8 @@ export class LocaleBundle {
 
 	/**
 	 * 
-	 * @param i18n Host i18n object
-	 * @param locale The locale of this object
+	 * @param i18n - Host {@link i18n} object
+	 * @param locale - The {@link Locale} of the {@link LocaleBundle} instance
 	 */
 	constructor(i18n: i18n, locale: Locale) {
 		this.locale = locale;
@@ -42,10 +42,10 @@ export class LocaleBundle {
 	}
 
 	/**
-	 * Add a fluent bundle to the locale bundle
-	 * @param name The name of the bundle
-	 * @param bundle The bundle you wish to add
-	 * @returns The LocaleBundle
+	 * Adds a {@link FluentBundle} to the {@link LocaleBundle}
+	 * @param name - The name of the bundle
+	 * @param bundle - The bundle you wish to add
+	 * @returns The modified {@link LocaleBundle} instance
 	 */
 	addBundle(name: string, bundle: FluentBundle) {
 		this.bundles.set(name, bundle);
@@ -53,9 +53,9 @@ export class LocaleBundle {
 	}
 
 	/**
-	 * Add a fluent bundle as a common bundle
-	 * @param bundle The bundle you wish to add
-	 * @returns The LocaleBundle
+	 * Adds a {@link FluentBundle} as a common bundle
+	 * @param bundle - The {@link FluentBundle} you wish to add
+	 * @returns The modified {@link LocaleBundle} instance
 	 */
 	setCommonBundle(bundle: FluentBundle) {
 		this.bundles.set(common, bundle);
@@ -72,9 +72,9 @@ export class LocaleBundle {
 	}
 
 	/**
-	 * get a message from  bundle
-	 * @param key the key of the message
-	 * @param bundleName The name of the bundle where the message should be retrieved from
+	 * Gets a {@link Message} from  bundle
+	 * @param key - the key of the {@link Message} to retrieve
+	 * @param bundleName - The name of the bundle where the message should be retrieved from
 	 * @returns Fluent message
 	 */
 	private getMessageBundle(key: string, bundleName: string): { bundle: FluentBundle, message: Message } {
@@ -112,18 +112,17 @@ export class LocaleBundle {
 	}
 
 	/**
-	 * Check if bundle is present
-	 * @param bundleName Name of the bundle to check
-	 * @returns `true` or `false`
+	 * Check if the {@link FluentBundle} with name `bundleName` is registered with the {@link LocaleBundle}
+	 * @param bundleName - Name of the {@link FluentBundle} to check
+	 * @returns whether the bundle is registered with the {@link LocaleBundle}
 	 */
 	has(bundleName: string) {
 		return this.bundles.has(bundleName);
 	}
 
 	/**
-	 * Gets bundle
-	 * @param bundleName Name of the bundle to get
-	 * @returns FluentBundle
+	 * @param bundleName - Name of the bundle to get
+	 * @returns the {@link FluentBundle} with the name `bundleName`
 	 */
 	get(bundleName: string) {
 		return this.bundles.get(bundleName);
@@ -131,9 +130,9 @@ export class LocaleBundle {
 
 	/**
 	 * Resolve bundle key and variables
-	 * @param key key of message to be resolved
-	 * @param bundleName name of the bundle which to pull from
-	 * @param options variables to be resolved
+	 * @param key - key of message to be resolved
+	 * @param bundleName - name of the bundle which to pull from
+	 * @param options - variables to be resolved
 	 * @returns the resolved message as a string
 	 */
 	t(key: string, bundleName: string, options?: fluentVariables) {
