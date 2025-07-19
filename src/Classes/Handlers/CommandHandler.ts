@@ -11,37 +11,53 @@ import {
 import { Client } from '../Client/index.js';
 import { ChatInputCommand, ContextMenuCommand } from '../Commands/index.js';
 
-
+/**
+ * Manages all chat and context menu commands that the PV bot supports. The {@link CommandHandler}:
+ * <ul>
+ *   <li>Allows registration of commands with the PV bot</li>
+ *   <li>Handles the registration of global/guild-scoped commands with Discord via discord.js</li>
+ *   <li>Dispatches interaction events from Discord to the appropriate interaction handler based on the event name</li>
+ * </ul>
+ */
 export class CommandHandler {
 
-    // Parent client of the handler
     readonly client: Client;
-
-    // Slash commands in the handler
     protected _chatCommands = new Collection<string, ChatInputCommand>();
-
-    // User context commands in the handler
     protected _userContextMenus = new Collection<string, ContextMenuCommand<UserContextMenuCommandInteraction>>();
-
-    // Message context commands in the handler
     protected _messageContextMenus = new Collection<string, ContextMenuCommand<MessageContextMenuCommandInteraction>>();
 
+	/**
+	 * @returns the {@link Collection} of user context menu commands maintained by the {@link CommandHandler} instance
+	 */
     get userContextMenus() {
         return this._userContextMenus;
     }
 
+	/**
+	 * @returns the {@link Collection} of chat input commands maintained by the {@link CommandHandler} instance
+	 */
     get chatCommands() {
         return this._chatCommands;
     }
 
+	/**
+	 * @returns the {@link Collection} of message context menu commands maintained by the {@link CommandHandler} instance
+	 */
+	get messageContextMenus() {
+		return this._messageContextMenus;
+	}
+
+	/**
+	 * @returns a reference to the underlying {@link Client}'s REST API handler
+	 */
     get rest() {
         return this.client.rest;
     }
 
     /**
-     * Add command to command handler
-     * @param command Command to add
-     * @returns the command handler
+     * Register command with the {@link CommandHandler} instance
+     * @param command - the chat input or context menu command to register with the {@link CommandHandler} instance
+     * @returns the {@link CommandHandler} instance
      */
     add(command: ChatInputCommand | ContextMenuCommand<MessageContextMenuCommandInteraction> | ContextMenuCommand<UserContextMenuCommandInteraction>) {
         const { type, name } = command;
@@ -58,42 +74,6 @@ export class CommandHandler {
                 break;
             default:
                 break;
-        }
-        return this;
-    }
-
-    /**
-     * Add a collection of chat commands to the handler
-     * @param commands Collections of chat commands
-     * @returns The command handler
-     */
-    addChatCommands(commands: Collection<string, ChatInputCommand>) {
-        for (const [ name, command ] of commands) {
-            this._chatCommands.set(name, command);
-        }
-        return this;
-    }
-
-    /**
-     * Add a collection of user context commands to the handler
-     * @param commands Collections of user context commands
-     * @returns The command handler
-     */
-    addUserContextMenus(commands: Collection<string, ContextMenuCommand<UserContextMenuCommandInteraction>>) {
-        for (const [ name, command ] of commands) {
-            this._userContextMenus.set(name, command);
-        }
-        return this;
-    }
-
-    /**
-     * Add a collection of message context commands to the handler
-     * @param commands Collections of message context commands
-     * @returns the command handler
-     */
-    addMessageContextMenus(commands: Collection<string, ContextMenuCommand<MessageContextMenuCommandInteraction>>) {
-        for (const [ name, command ] of commands) {
-            this._messageContextMenus.set(name, command);
         }
         return this;
     }
@@ -131,7 +111,7 @@ export class CommandHandler {
             });
 
         });
-        // Get guild context
+        // Get guild context menu commands
         this._userContextMenus.filter((f) => !f.isGlobal).map((m) => {
             const json = m.toJSON();
             m.guildIds.forEach((guildId) => {
@@ -159,7 +139,7 @@ export class CommandHandler {
                 
             });
         });
-        // Deploys commands buy guild
+        // Deploys commands by guild
         for (const [ guildIds, json ] of guildCommandData) {
             await this.client.application.commands.set(json, guildIds);
         }
@@ -167,6 +147,7 @@ export class CommandHandler {
         this.client.emit(Events.Debug, `Deployed commands to ${guildCommandData.size.toString()} guilds`);
         this.client.emit(Events.Debug, 'Commands registered');
     }
+
     /**
      * Deregister commands for one or more guilds
      * @param guildId optional Id to only remove commands from on guild
