@@ -3,6 +3,10 @@ import Event from "../../Classes/Event.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
 
+/**
+ * `guildMemberVoiceUpdate` handles the {@link Events#VoiceStateUpdate} {@link Event}.
+ * If an audit logging channel is configured for voice chat leave/join events, a message is sent there.
+ */
 export const guildMemberVoiceUpdate = new Event({
 	name: Events.VoiceStateUpdate,
 	execute: async (oldState, newState) => {

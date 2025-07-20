@@ -6,6 +6,16 @@ import { GuildSetting } from "../../models/Setting.js";
 import { footer } from "../../util/components.js";
 import { getGuildChannel } from "../../util/index.js";
 
+/**
+ * `guildMemberUpdate` handles the {@link Events#GuildMemberUpdate} {@link Event}. There are two cases:
+ * <ul>
+ *     <li>If an audit logging channel is configured for member joins, then a message is sent there
+ *     once a new member accepts the terms. If the member has rejoined the server, that will be
+ *     noted in the audit log.</li>
+ *     <li>If the member update is triggered by a nickname change, the audit log is instead sent to
+ *     the nickname update audit logging channel.</li>
+ * </ul>
+ */
 export const guildMemberUpdate = new Event({
 	name: Events.GuildMemberUpdate,
 	execute: async (oldMember, newMember) => {

@@ -4,6 +4,10 @@ import { GuildSetting } from "../../models/Setting.js";
 import { footer } from "../../util/components.js";
 import { getGuildChannel } from "../../util/index.js";
 
+/**
+ * `GuildMemberRemove` handles the {@link Events#GuildMemberRemove} {@link Event}.
+ * If an audit logging channel is configured for members leaving the server, a message is sent there.
+ */
 export const GuildMemberRemove = new Event({
 	name: Events.GuildMemberRemove,
 	execute: async (member) => {
