@@ -77,10 +77,10 @@ export function warnIssueUpdateEmbed(record: WarningRecord, target: GuildMember)
 
 /**
  * Embed set to recipient of a warning over dm
- * @param record document of a warning
+ * @param record - document of a warning
  * @param records
  * @param count
- * @param guild guild where warning was issued
+ * @param guild - guild where warning was issued
  * @returns embedBuilder
  */
 export function newWarningDmEmbed(record:WarningRecord, count:number, guild:Guild) {
@@ -124,9 +124,9 @@ export function newWarningLogEmbed(record: WarningRecord, moderator: GuildMember
 
 /**
  * Render records to an array of embed
- * @param records Array of Warn documents from search
- * @param isMod flag for if request is from a mod
- * @param start The idex location of were to start
+ * @param records - Array of Warn documents from search
+ * @param isMod - flag for if request is from a mod
+ * @param start - The idex location of were to start
  * @returns Array of EmbedBuilders
  */
 export async function viewWarningEmbeds(records: WarningRecord[], isMod:boolean, start:number = 0) {
@@ -155,10 +155,10 @@ export async function viewWarningEmbeds(records: WarningRecord[], isMod:boolean,
 
 /**
  * Render warning embed
- * @param warn Warning document
+ * @param warn - Warning document
  * @param record
  * @param isMod
- * @param embedColor color of the embed
+ * @param embedColor - color of the embed
  * @returns EmbedBuilder or undefined
  */
 export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, embedColor: ColorResolvable = WarnEmbedColor.updated) {
@@ -221,7 +221,7 @@ export async function viewWarningEmbed(record: WarningRecord, isMod:boolean, emb
 
 /**
  * Text for footed of embed 
- * @param record Warning record
+ * @param record - Warning record
  * @returns footer option
  */
 export function documentIdFooter(record: WarningRecord): EmbedFooterOptions {
@@ -307,8 +307,8 @@ function activeWarningCountField(count:number, inline: boolean = false): APIEmbe
 
 /**
  * get the URL for the avatar of a guild member
- * @param member the member to get the avatar of
- * @param imageOptions additional options for the image
+ * @param member - the member to get the avatar of
+ * @param imageOptions - additional options for the image
  * @returns URL of the image
  */
 export function getAuthorOptions(member:GuildMember, imageOptions: ImageURLOptions = {forceStatic: true}): EmbedAuthorOptions  {

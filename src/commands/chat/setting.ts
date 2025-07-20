@@ -15,6 +15,16 @@ const channel = new SlashCommandChannelOption()
 // 	.setDescription('target role')
 // 	.setRequired(true)
 
+/**
+ * The `settings` command allows guild managers to configure the PV bot settings.
+ * The configuration is persisted in MongoDB. The command supports:
+ * <ul>
+ *     <li>Setting the log and appeal channels for warnings</li>
+ *     <li>Setting the welcome channel</li>
+ *     <li>Setting the channel for report logs</li>
+ *     <li>Setting the channels for various other logs</li>
+ * </ul>
+ */
 export const settings = new ChatInputCommand({
 	builder: new SlashCommandBuilder()
 		.setName('settings')

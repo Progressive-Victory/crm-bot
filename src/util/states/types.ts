@@ -131,8 +131,8 @@ export const statesConfig = states
 
 
 /**
- *
- * @param a
+ * @param a - the abbreviation to check
+ * @returns whether `a` is a valid state abbreviation
  */
 export function isStateAbbreviations(a:string): a is StateAbbreviation {
 	if(a.length !==2) return false

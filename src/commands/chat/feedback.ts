@@ -7,6 +7,12 @@ import { localize } from '../../i18n.js';
 
 export const ns = 'feedback';
 
+/**
+ * The `feedback` command is used to inform the caller how to submit feedback on the
+ * PV bot. It displays a button that links to the GitHub issues page.
+ * @see https://github.com/Progressive-Victory/crm-bot/issues
+ * @see {@link ChatInputCommand}
+ */
 export default new ChatInputCommand()
 	.setBuilder((builder) => builder
 		.setName('feedback')

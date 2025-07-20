@@ -33,6 +33,11 @@ const durationText = {
 
 type dTime = '3' | '10' | '30' | '60' | '360' | '1440'
 
+/**
+ * The `mute` chat command allows users with the appropriate permissions
+ * to mute guild members for a specified reason and duration. The command will also
+ * log the mute and send a notification to a voice channel that the user has been muted.
+ */
 export const mute = new ChatInputCommand({
 	builder: new SlashCommandBuilder()
 		.setName('mute')
@@ -120,10 +125,10 @@ export const mute = new ChatInputCommand({
 
 /**
  * log the mute in specified logging server
- * @param targetMember The member who was muted
- * @param mutingMember The member who muted targetMember
- * @param durationMinutes number representing the number minutes targetMember is muted for
- * @param reason Why the targetMember was muted
+ * @param targetMember - The member who was muted
+ * @param mutingMember - The member who muted targetMember
+ * @param durationMinutes - number representing the number minutes targetMember is muted for
+ * @param reason - Why the targetMember was muted
  */
 async function logMessage(targetMember:GuildMember, mutingMember:GuildMember, durationMinutes:number, reason:string ){
 
@@ -156,7 +161,7 @@ async function logMessage(targetMember:GuildMember, mutingMember:GuildMember, du
 
 // /**
 //  * send a dm to the user informing them of why they were muted
-//  * @param interaction command interaction from user
+//  * @param interaction - command interaction from user
 //  * @param mutedMember
 //  * @param durationMinutes
 //  */
@@ -169,9 +174,9 @@ async function logMessage(targetMember:GuildMember, mutingMember:GuildMember, du
 
 /**
  * send a notification to the voice chat for the current voice server
- * @param targetMember The member who was muted
- * @param mutingMember The member who muted targetMember
- * @param durationMinutes number representing the number minutes targetMember is muted for
+ * @param targetMember - The member who was muted
+ * @param mutingMember - The member who muted targetMember
+ * @param durationMinutes - number representing the number minutes targetMember is muted for
  */
 function vcMessage(targetMember:GuildMember, mutingMember:GuildMember, durationMinutes:number){
 	// check if member is connected to channel

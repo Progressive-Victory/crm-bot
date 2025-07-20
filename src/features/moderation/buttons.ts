@@ -7,7 +7,7 @@ import { numberOfWarnEmbedsOnPage, WarnButtonsPrefixes } from "./types.js";
 
 /**
  * Create move left button for viewing warnings
- * @param searchRecord Warning Search document
+ * @param searchRecord - Warning Search document
  * @returns ButtonBuilder for the move left button
  */
 export function leftButton(searchRecord:HydratedDocument<IWarnSearch>) {
@@ -20,8 +20,8 @@ export function leftButton(searchRecord:HydratedDocument<IWarnSearch>) {
 
 /**
  * Create move right button for viewing warnings
- * @param searchRecord Warning Search document
- * @param records Array of warn documents
+ * @param searchRecord - Warning Search document
+ * @param records - Array of warn documents
  * @returns ButtonBuilder
  */
 export function rightButton(searchRecord:HydratedDocument<IWarnSearch>, records:HydratedDocument<IWarn>[]) {
@@ -37,8 +37,8 @@ export function rightButton(searchRecord:HydratedDocument<IWarnSearch>, records:
 
 /**
  * Creates button for viewing page number
- * @param searchRecord warn search document
- * @param records Array of warn documents
+ * @param searchRecord - warn search document
+ * @param records - Array of warn documents
  * @returns ButtonBuilder
  */
 export function pageNumber(searchRecord:HydratedDocument<IWarnSearch>, records:HydratedDocument<IWarn>[]) {
@@ -57,7 +57,7 @@ export function pageNumber(searchRecord:HydratedDocument<IWarnSearch>, records:H
 
 /**
  * Button to view the warnings of the target
- * @param targetId user to view
+ * @param targetId - user to view
  * @returns ButtonBuilder object
  */
 export function modViewWarningHistory(targetId:Snowflake) {
@@ -102,7 +102,7 @@ function viewWarnHistory() {
 
 /**
  * Button to update a Warning
- * @param record the warning object witch to update
+ * @param record - the warning object witch to update
  * @returns ButtonBuilder object
  */
 export function warnUpdateFromIssue(record:WarningRecord) {
@@ -111,7 +111,7 @@ export function warnUpdateFromIssue(record:WarningRecord) {
 
 /**
  * Button to update a Warning
- * @param record the warning object witch to update
+ * @param record - the warning object witch to update
  * @returns ButtonBuilder object
  */
 export function warnUpdateFromLog(record:WarningRecord) {
@@ -135,7 +135,7 @@ function updateWarn(record: WarningRecord, code: WarnButtonsPrefixes) {
 
 /**
  * provide dm button for users to appeal warns
- * @param record record of the warning
+ * @param record - record of the warning
  * @returns ButtonBuilder
  */
 export function appealWarn(record: WarningRecord) {

@@ -26,7 +26,9 @@ const durationText = {
 }
 type durationValue = '60' | '300' | '600' | '1800' | '3600' | '7200' | '21600' | '43200' | '86400' | '259200' | '604800'
 
-
+/**
+ * The `timeout` mod command allows moderators to time out a member for a specified duration
+ */
 export const timeout = new ChatInputCommand()
 	.setBuilder((builder) => builder
 		.setName('timeout')

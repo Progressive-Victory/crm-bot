@@ -3,7 +3,13 @@ import { ChatInputCommand } from '../../Classes/index.js';
 import { States } from '../../models/State.js';
 import { isStateAbbreviations, stateNames, states } from '../../util/states/types.js';
 
-
+/**
+ * The `state-admin` allows a guild manager to configure the state system:
+ * <ul>
+ *     <li>Set the channel for a state</li>
+ *     <li>Correlate a role to a state</li>
+ * </ul>
+ */
 export const stateAdmin = new ChatInputCommand()
 	.setBuilder(builder => builder
 		.setName('state-admin')

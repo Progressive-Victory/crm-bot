@@ -3,7 +3,6 @@ import { Snowflake, subtext, TextDisplayBuilder } from "discord.js";
 /**
  *
  * @param userId
- * @param joinedAt
  * @param id
  * @returns
  */

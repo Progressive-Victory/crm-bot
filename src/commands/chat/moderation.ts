@@ -19,6 +19,17 @@ const idOptions = new SlashCommandStringOption()
 	.setMinLength(24)
 	.setMaxLength(24)
 	.setRequired(true)
+
+/**
+ * The `warn` mod command allows an admin to issue a warning to a guild member. It exposes
+ * the following subcommands:
+ * <ul>
+ *     <li>`create` - create a warning for the specified guild member for the </li>
+ *     <li>`update` - update a warning</li>
+ *     <li>`remove` - remove a warning</li>
+ *     <li>`view` - view warnings, optionally filtering by the recipient, issuer, or the time scope</li>
+ * </ul>
+ */
 export const warn = new ChatInputCommand({
 	builder: new SlashCommandBuilder()
 		.setName('warn')
@@ -120,8 +131,8 @@ export const warn = new ChatInputCommand({
 })
 
 /**
- * Send model to add warning to user
- * @param interaction command interaction from user
+ * Send modal to add warning to user
+ * @param interaction - command interaction from user
  */
 function chatAdd(interaction: ChatInputCommandInteraction) {
 	const target = interaction.options.getMember('member');
@@ -162,7 +173,7 @@ function chatAdd(interaction: ChatInputCommandInteraction) {
 
 /**
  * view warning(s)
- * @param interaction command interaction from user
+ * @param interaction - command interaction from user
  */
 async function viewWarning(interaction: ChatInputCommandInteraction) {
 
@@ -233,8 +244,8 @@ async function viewWarning(interaction: ChatInputCommandInteraction) {
 }
 
 /**
- *
- * @param interaction
+ * Update a warning
+ * @param interaction - command interaction from user
  */
 async function update(interaction: ChatInputCommandInteraction) {
 	const warnId = interaction.options.getString('id', true)
@@ -257,8 +268,8 @@ async function update(interaction: ChatInputCommandInteraction) {
 }
 
 /**
- *
- * @param interaction
+ * Remove a warning
+ * @param interaction - command interaction from user
  */
 async function remove(interaction: ChatInputCommandInteraction) {
 	const warnId = interaction.options.getString('id', true)

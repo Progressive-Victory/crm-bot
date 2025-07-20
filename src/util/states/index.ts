@@ -5,7 +5,7 @@ import { statesConfig } from './types.js';
 
 /**
  * Get states from a member
- * @param member target member
+ * @param member - target member
  * @returns array of states
  */
 export function getStatesFromMember(member: GuildMember) {
@@ -19,7 +19,7 @@ export function getStatesFromMember(member: GuildMember) {
 
 /**
  * Get a state from a channel
- * @param channel target text channel
+ * @param channel - target text channel
  * @returns A state
  */
 export function getStateFromChannel(channel: GuildTextBasedChannel){
@@ -31,7 +31,7 @@ export function getStateFromChannel(channel: GuildTextBasedChannel){
 
 /**
  * Get a state from a role
- * @param role target role to get state from
+ * @param role - target role to get state from
  * @returns A state
  */
 export function getStateFromRole(role: Role) {

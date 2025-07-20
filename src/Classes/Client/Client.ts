@@ -99,7 +99,7 @@ export class ExtendedClient extends Client<true> {
 	}
 
 	/**
-	 * Insert the CustomId in between stings in the array
+	 * Insert the CustomId in between strings in the array
 	 * @param args - arguments to be separated
 	 * @returns string with array elements separated by `splitCustomIdOn`
 	 */

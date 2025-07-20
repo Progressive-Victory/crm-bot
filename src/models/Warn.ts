@@ -52,10 +52,10 @@ const warn = new Schema<IWarn, WarnModel>(
         statics: {
 			/**
 			 * Create new warning 
-			 * @param target guild member targeted for warn
-			 * @param officer moderator issuing the warn
-			 * @param reason of the warn
-			 * @param days time the warn will last
+			 * @param target - guild member targeted for warn
+			 * @param officer - moderator issuing the warn
+			 * @param reason - of the warn
+			 * @param days - time the warn will last
 			 * @returns the record of the warn
 			 */
             createWarning(target:GuildMember, officer:GuildMember, reason: string, days?: number) {
@@ -81,7 +81,7 @@ export const Warn = model<IWarn, WarnModel>('warn', warn, 'warnings');
 
 /**
  *
- * @param days number of days to set the date
+ * @param days - number of days to set the date
  * @returns New Date
  */
 export function setDate(days:number = defaultNumberOfDaysBeforeExpiration) {

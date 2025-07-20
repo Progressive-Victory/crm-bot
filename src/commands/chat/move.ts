@@ -13,6 +13,10 @@ import { getMember } from '../../util/index.js';
 export const ns = 'move';
 
 
+/**
+ * The `move` chat command allows users with the permission to move members to move
+ * specific/all members in a voice channel to another.
+ */
 export default new ChatInputCommand()
 	.setBuilder((builder) => builder
 		.setName('move')

@@ -7,6 +7,13 @@ import { states } from '../../util/states/types.js';
 
 export const ns = 'state';
 
+/**
+ * The `state` command allows state leads to perform various actions:
+ * <ul>
+ *     <li>Ping a state role</li>
+ *     <li>Export users with a state role to a CSV</li>
+ * </ul>
+ */
 export default new ChatInputCommand()
 	.setBuilder((builder) => builder
 		.setName('state')

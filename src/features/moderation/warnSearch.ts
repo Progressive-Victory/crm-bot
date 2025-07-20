@@ -8,10 +8,10 @@ import { numberOfWarnEmbedsOnPage } from "./types.js";
 
 /**
  * Render message for search of warnings
- * @param record warning search document or document Id as a string
+ * @param record - warning search document or document Id as a string
  * @param isMod
- * @param isRightMove was the right move button pressed
- * @param isStart is this the initiation of a search
+ * @param isRightMove - was the right move button pressed
+ * @param isStart - is this the initiation of a search
  * @returns partial message object compatible with Interaction reply and update
  */
 export async function warnSearch(record: WarnSearch  | string, isMod:boolean, isRightMove: boolean = false, isStart:boolean = false) {

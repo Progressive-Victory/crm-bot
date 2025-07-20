@@ -3,6 +3,9 @@ import { ContextMenuCommand } from '../../Classes/index.js';
 import { reportModalPrefix, reportModel } from '../../features/report.js';
 import { AddSplitCustomId } from '../../util/index.js';
 
+/**
+ * The `Report User` context menu command allows a user to report another non-bot user
+ */
 export const reportUser = new ContextMenuCommand<UserContextMenuCommandInteraction>({
 	builder: new ContextMenuCommandBuilder()
 		.setName('Report User')
@@ -30,13 +33,16 @@ export const reportUser = new ContextMenuCommand<UserContextMenuCommandInteracti
 	}
 })
 
+/**
+ * The `Report Message` context menu command allows a user to report another non-bot message
+ */
 export const reportMessage = new ContextMenuCommand<MessageContextMenuCommandInteraction>({
 	builder: new ContextMenuCommandBuilder()
 		.setName('Report Message')
 		.setContexts(InteractionContextType.Guild)
 		.setType(ApplicationCommandType.Message),
 	execute: (interaction) => {
-		
+
 		if(interaction.targetMessage.author.bot) {
 			interaction.reply({
 				flags:MessageFlags.Ephemeral,

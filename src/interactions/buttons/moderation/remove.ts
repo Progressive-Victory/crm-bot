@@ -149,7 +149,7 @@ export const deleteWarnNo = new Interaction<ButtonInteraction>({
 
 /**
  * 
- * @param interaction button interaction
+ * @param interaction - button interaction
  * @returns warn document or undefined
  */
 async function getWarnRecord(interaction:ButtonInteraction) {

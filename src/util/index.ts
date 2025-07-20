@@ -6,7 +6,7 @@ import { DiscordAPIErrorCodes } from './discord/DiscordAPIErrorCodes.js';
 
 /**
  * Check is full GuildMember object is present
- * @param data object to test
+ * @param data - object to test
  * @returns If data is a GuildMember or no
  */
 export function isGuildMember(data: GuildMember | APIInteractionDataResolvedGuildMember | null): data is GuildMember {
@@ -14,7 +14,7 @@ export function isGuildMember(data: GuildMember | APIInteractionDataResolvedGuil
 }
 /**
  * Check is full GuildMember object is present
- * @param data object to test
+ * @param data - object to test
  * @returns If data is a GuildMember or no
  */
 export function isRole(data: Role | APIRole | null): data is Role {
@@ -23,7 +23,7 @@ export function isRole(data: Role | APIRole | null): data is Role {
 
 /**
  * 
- * @param args strings 
+ * @param args - strings 
  * @returns string with arguments separated by client.splitCustomIdOn
  */
 export function AddSplitCustomId(...args: (string | number | boolean | Types.ObjectId)[]) {
@@ -39,8 +39,8 @@ export function AddSplitCustomId(...args: (string | number | boolean | Types.Obj
 
 /**
  * Get member from user Resolvable object
- * @param guild guild to find from
- * @param member user resolvable object
+ * @param guild - guild to find from
+ * @param member - user resolvable object
  * @returns Guild Member
  */
 export async function getMember(guild:Guild, member:GuildMemberResolvable) {
