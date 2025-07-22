@@ -1,7 +1,6 @@
-import { APIInteractionDataResolvedGuildMember, APIRole, DiscordAPIError, Guild, GuildChannelResolvable, GuildMember, GuildMemberResolvable, Role } from 'discord.js';
+import { APIInteractionDataResolvedGuildMember, APIRole, DiscordAPIError, Guild, GuildChannelResolvable, GuildMember, GuildMemberResolvable, RESTJSONErrorCodes, Role } from 'discord.js';
 import { Types } from 'mongoose';
 import { client } from '../index.js';
-import { DiscordAPIErrorCodes } from './discord/DiscordAPIErrorCodes.js';
 
 
 /**
@@ -49,7 +48,7 @@ export async function getMember(guild:Guild, member:GuildMemberResolvable) {
 		if (member instanceof GuildMember) return member.fetch();
 		return guild.members.resolve(member) ?? await guild?.members.fetch(member)
 	} catch (error) {
-		if (error instanceof DiscordAPIError && error.code === DiscordAPIErrorCodes.UnknownMember) {
+		if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownMember) {
 			return undefined
 	  }
 	  throw error
@@ -73,7 +72,7 @@ export async function getGuildChannel(guild:Guild, channel:GuildChannelResolvabl
 		}
 		
 	} catch (error) {
-		if (error instanceof DiscordAPIError && error.code === DiscordAPIErrorCodes.UnknownChannel) {
+		if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.UnknownChannel) {
 			return undefined
 	  }
 	  throw error

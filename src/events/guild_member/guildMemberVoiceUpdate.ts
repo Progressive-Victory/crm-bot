@@ -1,5 +1,7 @@
 import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
 import Event from "../../Classes/Event.js";
+import { owner } from "../../features/stack/buttons.js";
+import { sm } from "../../features/stack/index.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
 
@@ -26,14 +28,41 @@ export const guildMemberVoiceUpdate = new Event({
 					embed = vcLogEmbed(member,'Left Stage', `${member} returned to audience in ${newStateChannelMention}`, Colors.Blue)
 				}
 			} else return
-		} else {
-			if (oldState.channel === null && newState.channel !== null) {
-				embed = vcLogEmbed(member, 'Joined Voice Channel',`${member} joined ${newStateChannelMention}`,Colors.Green)
-			} else if (oldState.channel !== null && newState.channel === null) {
-				embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldStateChannelMention}`, Colors.Red)
-			} else {
-				embed = vcLogEmbed(member, 'Switched Voice Channel', `${member} switched from ${oldStateChannelMention} to ${newStateChannelMention}`, Colors.Blue)
+		}
+		// User joined voice channel
+		else if (oldState.channel === null && newState.channel !== null) {
+			embed = vcLogEmbed(member, 'Joined Voice Channel',`${member} joined ${newStateChannelMention}`,Colors.Green)
+		}
+		// User Left voice channel
+		else if (oldState.channel !== null && newState.channel === null) {
+			embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldStateChannelMention}`, Colors.Red)
+			
+			if(sm.stacks.has(oldState.channelId!)) {
+				const stack = sm.stacks.get(oldState.channelId!)
+
+				if(oldState.channel.members.size === 0) {
+					sm.remove(oldState.channel)
+				}
+				else if(stack && stack.ownerId === member.id){
+					oldState.channel.send({
+						content: 'The owner for this VC Queue has left the channel',
+						components:[owner]
+					})
+				} else if(stack && stack.speakerId === member.id){
+					stack.setSpeaker(member)
+					sm.stacks.set(oldState.channel.id, stack)
+				} else if(stack) {
+					const index = stack.getMemberIndex(member)
+					if(index >= 0) {
+						stack.queue.splice(index, 1)
+						sm.stacks.set(oldState.channel.id, stack)
+					}
+				}
 			}
+		} 
+		// User Switched voice channel
+		else {
+			embed = vcLogEmbed(member, 'Switched Voice Channel', `${member} switched from ${oldStateChannelMention} to ${newStateChannelMention}`, Colors.Blue)
 		}
 
 		const settings = await GuildSetting.findOne({guildId: guild.id})
