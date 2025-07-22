@@ -58,9 +58,9 @@ export async function getMember(guild:Guild, member:GuildMemberResolvable) {
 }
 
 /**
- *
- * @param guild
- * @param channel
+ * @param guild - The guild to retrieve the channel from
+ * @param channel - The identifier of the channel to retrieve
+ * @returns `undefined` if the channel ID doesn't exist
  */
 export async function getGuildChannel(guild:Guild, channel:GuildChannelResolvable) {
 	let resolvedChannel = guild.channels.resolve(channel) ?? null

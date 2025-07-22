@@ -4,6 +4,11 @@ import { legacyStateMessageCreate, stateMessageCreate, statePingReply } from "..
 import { States } from "../../models/State.js";
 import { isStateAbbreviations } from "../../util/states/types.js";
 
+/**
+ * `statePing` is a modal interaction that provides state leads an interface
+ * to send a message to their state's channel. It checks whether a channel is configured
+ * for a given state, and if it does, sends the message to the channel.
+ */
 export const statePing = new Interaction<ModalSubmitInteraction>({
 	customIdPrefix: 'sp',
 	run: async (interaction) => {

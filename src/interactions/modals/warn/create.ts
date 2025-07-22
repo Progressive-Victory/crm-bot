@@ -7,6 +7,15 @@ import { GuildSetting } from "../../../models/Setting.js";
 import { Warn } from "../../../models/Warn.js";
 import { getGuildChannel, isGuildMember } from "../../../util/index.js";
 
+/**
+ * `warnCreate` is a modal interaction which allows mods to send warnings to guild members. It:
+ * <ul>
+ *     <li>Persists the warnings for a user in MongoDB</li>
+ *     <li>Sends the warned user a notification</li>
+ *     <li>Notifies the mod that the warning has been issued</li>
+ *     <li>If there is a channel for warning audit logs, logs the event</li>
+ * </ul>
+ */
 export const warnCreate = new Interaction<ModalSubmitInteraction>({
 	customIdPrefix: WarnModalPrefixes.createWarning,
 	run: async (interaction: ModalSubmitInteraction) => {

@@ -5,7 +5,7 @@ import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
 
 /**
- * `guildAuditLogEntryCreate` handles the {@link Events#GuildAuditLogEntryCreate} {@link Event}
+ * `guildAuditLogEntryCreate` handles the {@link Events.GuildAuditLogEntryCreate} {@link Event}
  * by sending an audit log to the timeout logging channel when a guild member is timed out.
  */
 export const guildAuditLogEntryCreate = new Event({

@@ -9,7 +9,7 @@ import { numberOfWarnEmbedsOnPage } from "./types.js";
 /**
  * Render message for search of warnings
  * @param record - warning search document or document Id as a string
- * @param isMod
+ * @param isMod - Whether the invoker was a mod
  * @param isRightMove - was the right move button pressed
  * @param isStart - is this the initiation of a search
  * @returns partial message object compatible with Interaction reply and update

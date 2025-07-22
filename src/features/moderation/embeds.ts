@@ -5,11 +5,11 @@ import { getMember } from "../../util/index.js";
 import { numberOfWarnEmbedsOnPage, WarnEmbedColor } from "./types.js";
 
 /**
- *
- * @param record
- * @param moderator
- * @param target
- * @returns
+ * Utility to create an embed for a moderator creating a new warning
+ * @param record - The {@link WarningRecord} corresponding to the newly created warning
+ * @param moderator - The metadata for the mod
+ * @param target - The metadata for the user being warned
+ * @returns the created new warning {@link EmbedBuilder}
  */
 export function newWarnModEmbed(record: WarningRecord, moderator: GuildMember, target: GuildMember) {
 	const embed = new EmbedBuilder()
@@ -27,12 +27,12 @@ export function newWarnModEmbed(record: WarningRecord, moderator: GuildMember, t
 }
 
 /**
- *
- * @param record
- * @param moderator
- * @param target
- * @param updater
- * @returns
+ * Utility to create an embed for a user updating warning
+ * @param record - The {@link WarningRecord} corresponding to the warning being updated
+ * @param moderator - The metadata for the mod who created the warning
+ * @param target - The metadata for the user being warned
+ * @param updater - The metadata for the user updating the warning
+ * @returns the created warning update {@link EmbedBuilder}
  */
 export function warnLogUpdateEmbed(record: WarningRecord, moderator: GuildMember, target: GuildMember, updater: GuildMember) {
 	const embed = new EmbedBuilder()
@@ -54,11 +54,10 @@ export function warnLogUpdateEmbed(record: WarningRecord, moderator: GuildMember
 }
 
 /**
- *
- * @param record
- * @param moderator
- * @param target
- * @returns
+ * Utility to create an embed when a warning is updated
+ * @param record - the {@link WarningRecord} corresponding to the updated warning
+ * @param target - the {@link GuildMember} to whom the warning was issued
+ * @returns the created {@link EmbedBuilder}
  */
 export function warnIssueUpdateEmbed(record: WarningRecord, target: GuildMember) {
 	const embed = new EmbedBuilder()
@@ -76,12 +75,11 @@ export function warnIssueUpdateEmbed(record: WarningRecord, target: GuildMember)
 }
 
 /**
- * Embed set to recipient of a warning over dm
+ * Embed sent to recipient of a warning over DM
  * @param record - document of a warning
- * @param records
- * @param count
+ * @param count - the number of active warnings
  * @param guild - guild where warning was issued
- * @returns embedBuilder
+ * @returns the created {@link EmbedBuilder}
  */
 export function newWarningDmEmbed(record:WarningRecord, count:number, guild:Guild) {
 	return new EmbedBuilder()
@@ -99,11 +97,10 @@ export function newWarningDmEmbed(record:WarningRecord, count:number, guild:Guil
 }
 
 /**
- *
- * @param record
- * @param moderator
- * @param target
- * @returns
+ * @param record - The {@link WarningRecord} for the newly created warning
+ * @param moderator - The moderator who authored the warning
+ * @param target - The target of the warning
+ * @returns an {@link EmbedBuilder} that acts as a notification that the warning was created
  */
 export function newWarningLogEmbed(record: WarningRecord, moderator: GuildMember, target: GuildMember) {
 	const embed = new EmbedBuilder()
@@ -155,9 +152,8 @@ export async function viewWarningEmbeds(records: WarningRecord[], isMod:boolean,
 
 /**
  * Render warning embed
- * @param warn - Warning document
- * @param record
- * @param isMod
+ * @param record - Warning document
+ * @param isMod - whether
  * @param embedColor - color of the embed
  * @returns EmbedBuilder or undefined
  */
@@ -229,10 +225,9 @@ export function documentIdFooter(record: WarningRecord): EmbedFooterOptions {
 }
 
 /**
- *
- * @param record
- * @param inline
- * @returns
+ * @param record - Warning document
+ * @param inline - whether the embed field is inline
+ * @returns an embed field showing the time until a warning expires
  */
 export function expireAtField(record: WarningRecord, inline:boolean = false): APIEmbedField {
 	return {
@@ -244,25 +239,10 @@ export function expireAtField(record: WarningRecord, inline:boolean = false): AP
 }
 
 /**
- *
- * @param record
- * @param inline
- * @returns
- */
-// function createdAtField(record: WarningRecord, inline:boolean = false): APIEmbedField {
-// 	return {
-// 		name: 'Created At',
-// 		value: `Issued ${record.createdAt.toDiscordString(TimestampStyles.RelativeTime)} On ${record.createdAt.toDiscordString(TimestampStyles.LongDate)}`,
-// 		inline
-// 	}
-// }
-
-/**
- *
- * @param user
- * @param name
- * @param inline
- * @returns
+ * @param user - a Discord user
+ * @param name - a name for the user, typically their role (Moderator, Member)
+ * @param inline - whether the embed field should be inline
+ * @returns an embed field containing information about the user
  */
 export function userField(name:string, user:User | string, inline:boolean = true): APIEmbedField {
 	let value:string
@@ -275,12 +255,12 @@ export function userField(name:string, user:User | string, inline:boolean = true
 
 	return {name, value, inline}
 }
+
 /**
- *
- * @param reason
- * @param title
- * @param inline
- * @returns
+ * @param reason - the reason for the warning
+ * @param title - the title of the embed field
+ * @param inline - whether the embed field should be inlined
+ * @returns an embed field containing information about the reason for a warning
  */
 export function reasonField(reason:string, title?:string, inline:boolean = false): APIEmbedField {
 	return {
@@ -291,10 +271,9 @@ export function reasonField(reason:string, title?:string, inline:boolean = false
 }
 
 /**
- *
- * @param count
- * @param inline
- * @returns
+ * @param count - the number of active warnings
+ * @param inline - whether the embed field should be inlined
+ * @returns an embed field containing information about the number of active warnings
  */
 function activeWarningCountField(count:number, inline: boolean = false): APIEmbedField {
 	return {

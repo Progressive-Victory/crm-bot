@@ -2,12 +2,12 @@ import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from
 import { defaultNumberOfDaysBeforeExpiration } from "./types.js"
 
 /**
- * Create Modal for creating or updated warn
- * @param customId
- * @param title
- * @param reason
- * @param day
- * @returns
+ * Create Modal for creating or updating warn
+ * @param customId - The custom ID for the modal
+ * @param title - The title of the modal
+ * @param reason - The reason for issuing the warning
+ * @param day - The duration of the warning in days
+ * @returns a modal representing the creation/update of a warn
  */
 export function warnModal(customId:string, title: string, reason?:string, day?: number) {
 

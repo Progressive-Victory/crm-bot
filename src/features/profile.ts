@@ -2,10 +2,9 @@ import { codeBlock, ColorResolvable, EmbedBuilder, GuildMember, TimestampStyles 
 import { getAuthorOptions } from "./moderation/embeds.js";
 
 /**
- *
- * @param member
- * @param colors
- * @returns
+ * @param member - The member to display the information of
+ * @param colors - The color of the embed
+ * @returns an embed that displays information about the member
  */
 export function memberInspectEmbed(member:GuildMember, colors: ColorResolvable) {
     const iconURL = member.displayAvatarURL();

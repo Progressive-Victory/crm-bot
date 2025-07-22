@@ -118,15 +118,12 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
 }
 
 /**
- *
- * @param channel
- * @param guild
- * @param stateRoleId
- * @param member
- * @param authorId
- * @param message
- * @param title
- * @returns
+ * @param stateRoleId - The ID of the state role
+ * @param authorId - The author of the message
+ * @param message - The contents of the message container
+ * @param title - The title of the message container
+ * @returns a {@link ContainerBuilder} used to format the message the state lead is sending
+ * to the guild members with the `stateRoleId` role
  */
 export function stateMessageCreate(stateRoleId:Snowflake, authorId: Snowflake, message:string, title:string): MessageCreateOptions {
 	
@@ -154,12 +151,7 @@ export function stateMessageCreate(stateRoleId:Snowflake, authorId: Snowflake, m
 }
 
 /**
- *
- * @param stateRoleId
- * @param authorId
- * @param message
- * @param title
- * @returns
+ * @deprecated use {@link stateMessageCreate}
  */
 export function legacyStateMessageCreate(stateRoleId:Snowflake, authorId: Snowflake, message:string, title:string): MessageCreateOptions {
 
@@ -175,9 +167,8 @@ export function legacyStateMessageCreate(stateRoleId:Snowflake, authorId: Snowfl
 }
 
 /**
- *
- * @param interaction
- * @param message
+ * @param interaction - the interaction to reply to
+ * @param message - the message to send
  * @returns
  */
 export async function statePingReply(interaction:ModalSubmitInteraction | ChatInputCommandInteraction, message:Message<true>) {

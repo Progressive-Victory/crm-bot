@@ -7,6 +7,14 @@ import { GuildSetting } from "../../../models/Setting.js";
 import { setDate, Warn } from "../../../models/Warn.js";
 import { getGuildChannel, getMember } from "../../../util/index.js";
 
+/**
+ * `warnUpdatedById` is a modal interaction which allows mods to update a warning by ID. It:
+ * <ul>
+ *     <li>Updates the warning in MongoDB</li>
+ *     <li>Notifies the mod that the warning has been updated via an embed</li>
+ *     <li>If there is a channel for warning audit logs, logs the event</li>
+ * </ul>
+ */
 export const warnUpdatedById = new Interaction<ModalSubmitInteraction>({
 	customIdPrefix: WarnModalPrefixes.updateById,
 

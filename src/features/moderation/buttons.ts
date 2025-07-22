@@ -56,9 +56,9 @@ export function pageNumber(searchRecord:HydratedDocument<IWarnSearch>, records:H
 }
 
 /**
- * Button to view the warnings of the target
- * @param targetId - user to view
- * @returns ButtonBuilder object
+ * Provide a button to allow mods to view the warn history of another guild member
+ * @param targetId - the Discord ID of the guild member to view the history of
+ * @returns a {@link ButtonBuilder} containing the configuration for the warn history button
  */
 export function modViewWarningHistory(targetId:Snowflake) {
 	return viewWarnHistory()
@@ -71,10 +71,10 @@ export function modViewWarningHistory(targetId:Snowflake) {
 }
 
 /**
- *
- * @param targetId
- * @param guild
- * @returns
+ * Provide a button to allow users to view the warn history of another guild member
+ * @param targetId - the Discord ID of the guild member to view the history of
+ * @param guild - the guild in which the target user is a member
+ * @returns a {@link ButtonBuilder} containing the configuration for the warn history button
  */
 export function userViewWarnHistory(targetId:Snowflake, guild:Guild) {
 	return viewWarnHistory()
@@ -86,10 +86,7 @@ export function userViewWarnHistory(targetId:Snowflake, guild:Guild) {
 		)
 }
 /**
- *
- * @param targetId
- * @param code
- * @returns
+ * @returns a button used to trigger the event to view a user's warn history
  */
 function viewWarnHistory() {
 
@@ -103,7 +100,7 @@ function viewWarnHistory() {
 /**
  * Button to update a Warning
  * @param record - the warning object witch to update
- * @returns ButtonBuilder object
+ * @returns {@link ButtonBuilder} object
  */
 export function warnUpdateFromIssue(record:WarningRecord) {
     return updateWarn(record, WarnButtonsPrefixes.updateWarnById)
@@ -112,7 +109,7 @@ export function warnUpdateFromIssue(record:WarningRecord) {
 /**
  * Button to update a Warning
  * @param record - the warning object witch to update
- * @returns ButtonBuilder object
+ * @returns {@link ButtonBuilder} object
  */
 export function warnUpdateFromLog(record:WarningRecord) {
     return updateWarn(record, WarnButtonsPrefixes.updateWarnById)
@@ -120,10 +117,9 @@ export function warnUpdateFromLog(record:WarningRecord) {
 
 
 /**
- *
- * @param record
- * @param code
- * @returns
+ * @param record - The {@link WarningRecord} corresponding to the warning to update
+ * @param code - The {@link WarnButtonsPrefixes} denoting the type of update to perform
+ * @returns a button used to trigger the event to update a user's warning
  */
 function updateWarn(record: WarningRecord, code: WarnButtonsPrefixes) {
 	return new ButtonBuilder()
@@ -160,9 +156,9 @@ export function appealDmSubmitted() {
 }
 
 /**
- *
- * @param record
- * @returns
+ * Provides a button used to denote the updating of a warning by ID
+ * @param record - The {@link WarningRecord} that contains the information of the warning to update
+ * @returns a {@link ButtonBuilder} instance that can be used to construct an update-warn-by-ID button
  */
 export function updateWarnById(record: WarningRecord){
 	return new ButtonBuilder()

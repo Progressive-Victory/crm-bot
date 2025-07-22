@@ -2,7 +2,7 @@ import { Events } from "discord.js";
 import Event from "../../Classes/Event.js";
 
 /**
- * `guildMemberAdd` handles the {@link Events#GuildMemberAdd} {@link Event}. Currently,
+ * `guildMemberAdd` handles the {@link Events.GuildMemberAdd} {@link Event}. Currently,
  * it simply emits DEBUG logs about the new member
  */
 export const guildMemberAdd = new Event({

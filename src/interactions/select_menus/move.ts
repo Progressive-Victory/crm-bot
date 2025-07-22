@@ -4,6 +4,10 @@ import { ns } from '../../commands/chat/move.js';
 import { localize } from '../../i18n.js';
 import { client } from '../../index.js';
 
+/**
+ * `usermove` is a modal interaction that allows one user to move another from one voice
+ * channel to another
+ */
 export const usermove = new Interaction<UserSelectMenuInteraction>()
 	.setCustomIdPrefix('usermove')
 	.setRun(async (interaction: UserSelectMenuInteraction) => {
@@ -21,7 +25,7 @@ export const usermove = new Interaction<UserSelectMenuInteraction>()
 		const selectedMembers = source.members.filter(member => values.includes(member.id));
 		
 		// filter members in VC with those selected
-		for (const [ , member ] of selectedMembers) 
+		for (const [ , member ] of selectedMembers)
 			await member.voice.setChannel(destination, `Moved by ${user.username} using bot command`);
 		
 		// updated message that move has been competed

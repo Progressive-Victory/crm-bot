@@ -7,7 +7,7 @@ import { footer } from "../../util/components.js";
 import { getGuildChannel } from "../../util/index.js";
 
 /**
- * `guildMemberUpdate` handles the {@link Events#GuildMemberUpdate} {@link Event}. There are two cases:
+ * `guildMemberUpdate` handles the {@link Events.GuildMemberUpdate} {@link Event}. There are two cases:
  * <ul>
  *     <li>If an audit logging channel is configured for member joins, then a message is sent there
  *     once a new member accepts the terms. If the member has rejoined the server, that will be

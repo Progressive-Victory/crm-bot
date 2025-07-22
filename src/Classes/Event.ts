@@ -14,15 +14,24 @@ export class Event<Key extends keyof ClientEvents = any> {
     // Method to be run when the event occurs
     private _execute?: (...args: ClientEvents[Key]) => void;
 
+    /**
+     * @returns the name of the event
+     */
     get name() {
         if(this._name === undefined) throw Error('Invalid or missing event name.')
         return this._name;
     }
 
+    /**
+     * @returns whether the event only runs once
+     */
     get once() {
         return this._once;
     }
 
+    /**
+     * @returns the event handler
+     */
     get execute() {
         if(this._execute === undefined) throw Error('Invalid or missing execute function.')
         return this._execute;
@@ -54,7 +63,7 @@ export class Event<Key extends keyof ClientEvents = any> {
 
     /**
      * Updates the event handler of the {@link Event} object
-     * @param execute - the new event handler to be stored in {@link Event#handler}
+     * @param execute - the new event handler to be stored in {@link Event#execute}
      * @returns The modified {@link Event} object
      */
     public setExecute(execute: (...args: ClientEvents[Key]) => void) {

@@ -6,10 +6,9 @@ export interface IUser {
 }
 
 /**
- *
- * @param required
- * @param immutable
- * @returns
+ * @param required - {@link SchemaTypeOptions.required}
+ * @param immutable - {@link SchemaTypeOptions.immutable}
+ * @returns an {@link IUser} for use with MongoDB operations
  */
 export function user(required:boolean = false, immutable:boolean = false) {
 	return {

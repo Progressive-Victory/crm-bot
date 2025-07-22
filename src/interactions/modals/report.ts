@@ -5,6 +5,13 @@ import { messageReportColor, reportModalPrefix, userReportColor } from "../../fe
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel, getMember } from "../../util/index.js";
 
+/**
+ * `userReport` is a modal interaction which allows users to report other users. It:
+ * <ul>
+ *     <li>Sends an audit log to the report audit logging channel if one exists</li>
+ *     <li>Notifies the reporter that their report has been received</li>
+ * </ul>
+ */
 export const userReport = new Interaction<ModalSubmitInteraction>({
 	customIdPrefix: reportModalPrefix.userReport,
 
@@ -52,6 +59,13 @@ export const userReport = new Interaction<ModalSubmitInteraction>({
 	}
 })
 
+/**
+ * `userReport` is a modal interaction which allows users to report messages. It:
+ * <ul>
+ *     <li>Sends an audit log to the report audit logging channel if one exists</li>
+ *     <li>Notifies the reporter that their report has been received</li>
+ * </ul>
+ */
 export const messageReport = new Interaction<ModalSubmitInteraction>({
 	customIdPrefix: reportModalPrefix.messageReport,
 
