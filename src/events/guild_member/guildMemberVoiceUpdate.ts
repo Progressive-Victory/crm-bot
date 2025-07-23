@@ -1,7 +1,9 @@
 import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
 import Event from "../../Classes/Event.js";
+import { IScheduledEvent, ScheduledEvent } from "../../models/ScheduledEvent.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
+import dbConnect from "../../util/libmongo.js";
 
 export const guildMemberVoiceUpdate = new Event({
 	name: Events.VoiceStateUpdate,
@@ -28,11 +30,15 @@ export const guildMemberVoiceUpdate = new Event({
 			} else return
 		} else {
 			if (oldState.channel === null && newState.channel !== null) {
+				if (newState.channelId)
+					markAttendance(newState.channelId, member)
 				embed = vcLogEmbed(member, 'Joined Voice Channel',`${member} joined ${newStateChannelMention}`,Colors.Green)
 			} else if (oldState.channel !== null && newState.channel === null) {
 				embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldStateChannelMention}`, Colors.Red)
 			} else {
 				embed = vcLogEmbed(member, 'Switched Voice Channel', `${member} switched from ${oldStateChannelMention} to ${newStateChannelMention}`, Colors.Blue)
+				if (newState.channelId)
+					markAttendance(newState.channelId, member)
 			}
 		}
 
@@ -67,4 +73,20 @@ function vcLogEmbed(member:GuildMember, title:string, description:string, color:
 		.setFooter({text:`User ID: ${member.id}`})
 		.setColor(color)
 
+}
+
+/**
+ *
+ * @param channelId
+ * @param member
+ */
+async function markAttendance(channelId: string, member: GuildMember){
+	await dbConnect()
+	const res: IScheduledEvent = (await ScheduledEvent.findOne({ channelId: channelId, status: 2 }).exec()) as IScheduledEvent
+	if(!res)
+		return
+	if(res.attendees.find(x => (x === member.id)))
+		return
+	res.attendees.push(member.id)
+	await res.save()
 }
