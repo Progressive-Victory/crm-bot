@@ -14,7 +14,7 @@ export const guildScheduledEventUpdate = new Event({
 		
 		if(!res){
 			res = await ScheduledEvent.insertOne({
-				thumbnailUrl: ev.coverImageURL() ?? "https://media.discordapp.net/attachments/1384194259766476841/1397633657946112210/1669652277019.jpeg?ex=68826f46&is=68811dc6&hm=dff46371daebc1d85c8cb4fb4532ce63cfc5c9b08102961f06f35ead34dae35f&=&format=webp&width=300&height=300",
+				thumbnailUrl: ev.coverImageURL() ?? 'attachment://image.jpg',
 				eventUrl: ev.url,
 				recurrence: ev.recurrenceRule ? true : false,
 				guildId: ev.guildId,
