@@ -66,7 +66,9 @@ async function logContainer(event: IScheduledEvent) {
 	const attendees = await wrapper.attendees()
 	const attendeesCount = attendees.length
 	const attendeesStr = attendees.length > 0 ? attendees.map((usr) => {return `\n- ${usr.toString()}`}).toString() : ""
-	const separator = new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true)
+	const separator = new SeparatorBuilder()
+		.setSpacing(SeparatorSpacingSize.Small)
+		.setDivider(true)
 	return new ContainerBuilder()
 		.setAccentColor(0x57f387)
 		.addSectionComponents(
