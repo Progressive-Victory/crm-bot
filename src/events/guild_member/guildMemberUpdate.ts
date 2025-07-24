@@ -49,7 +49,7 @@ export const guildMemberUpdate = new Event({
 				.addActionRowComponents(row)
 				.setAccentColor(welcomeColors.Unwelcomed)
 
-			joinChannel.send({flags: MessageFlags.IsComponentsV2, components:[container], allowedMentions: {}})
+			joinChannel.send({flags: MessageFlags.IsComponentsV2, components:[container]})
       
 		if (oldMember.nickname !== newMember.nickname) {
 			const { guild } = newMember
