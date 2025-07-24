@@ -1,4 +1,4 @@
-import { ButtonBuilder, ButtonStyle, ChannelType, ContainerBuilder, DiscordAPIError, Guild, MessageFlags, RESTJSONErrorCodes, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder } from "discord.js";
+import { AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ContainerBuilder, DiscordAPIError, Guild, MessageFlags, RESTJSONErrorCodes, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder } from "discord.js";
 import { client } from "../../index.js";
 import { IScheduledEvent } from "../../models/ScheduledEvent.js";
 import { GuildSetting } from "../../models/Setting.js";
@@ -46,11 +46,20 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 		})
 	} else {
 		const container = logContainer(event)
-		
-		const post = await logChannel.send({
-			components:[await container],
-			flags: MessageFlags.IsComponentsV2
-		})
+		let post
+		if(event.eventUrl === 'attachment://image.jpg') {
+			const file = new AttachmentBuilder('../../assets/image.jpg')
+			post = await logChannel.send({
+				components:[await container],
+				files: [file],
+				flags: MessageFlags.IsComponentsV2
+			})
+		} else {
+			post = await logChannel.send({
+				components:[await container],
+				flags: MessageFlags.IsComponentsV2
+			})
+		}
 		await dbConnect()
 		event.logMessageId = post.id
 		await event.save()
