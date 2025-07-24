@@ -16,11 +16,12 @@ export interface ISettings {
 		roleId?: Snowflake
 	},
 	logging: {
-		timeoutChannelId?: Snowflake,
+		timeoutChannelId?: Snowflake
 		leaveChannelId?: Snowflake
 		channelUpdatesChannelId?: Snowflake
-		voiceUpdatesChannelId?: Snowflake,
+		voiceUpdatesChannelId?: Snowflake
 		nicknameUpdatesChannelId?: Snowflake
+		eventLogChannelId?: Snowflake
 	}
 }
 
@@ -69,6 +70,9 @@ const settings = new Schema<ISettings>({
 		},
 		nicknameUpdatesChannelId:{
 			type:String
+		},
+		eventLogChannelId: {
+			type: String
 		}
 
 	}

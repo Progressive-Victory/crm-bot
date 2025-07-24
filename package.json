@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@fluent/bundle": "^0.19.1",
-    "discord.js": "^14.19.3",
+    "discord.js": "^14.21.0",
     "express": "^5.1.0",
     "mongoose": "^8.15.0"
   },

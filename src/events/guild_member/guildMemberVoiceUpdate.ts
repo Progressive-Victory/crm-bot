@@ -1,7 +1,9 @@
-import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember } from "discord.js";
+import { channelMention, ColorResolvable, Colors, EmbedBuilder, Events, GuildMember, inlineCode } from "discord.js";
 import Event from "../../Classes/Event.js";
+import { IScheduledEvent, ScheduledEvent } from "../../models/ScheduledEvent.js";
 import { GuildSetting } from "../../models/Setting.js";
 import { getGuildChannel } from "../../util/index.js";
+import dbConnect from "../../util/libmongo.js";
 
 export const guildMemberVoiceUpdate = new Event({
 	name: Events.VoiceStateUpdate,
@@ -20,19 +22,22 @@ export const guildMemberVoiceUpdate = new Event({
 		if (oldState.channelId === newState.channelId) {
 			if (newState.channelId && oldState.suppress !== newState.suppress) {
 				if (!newState.suppress) {
-					embed = vcLogEmbed(member, 'Speaking on Stage', `${member} is now speaking on ${newStateChannelMention}`, Colors.Orange)
+					embed = vcLogEmbed(member, 'Speaking on Stage', `${member}${inlineCode(member.displayName)} is now speaking on ${newStateChannelMention}`, Colors.Orange)
 				}
 				else {
-					embed = vcLogEmbed(member,'Left Stage', `${member} returned to audience in ${newStateChannelMention}`, Colors.Blue)
+					embed = vcLogEmbed(member,'Left Stage', `${member}${inlineCode(member.displayName)} returned to audience in ${newStateChannelMention}`, Colors.Blue)
 				}
 			} else return
 		} else {
-			if (oldState.channel === null && newState.channel !== null) {
-				embed = vcLogEmbed(member, 'Joined Voice Channel',`${member} joined ${newStateChannelMention}`,Colors.Green)
-			} else if (oldState.channel !== null && newState.channel === null) {
-				embed = vcLogEmbed(member, 'Left Voice Channel',`${member} left ${oldStateChannelMention}`, Colors.Red)
+			if (oldState.channelId === null && newState.channelId !== null) {
+				markAttendance(newState.channelId, member)
+				embed = vcLogEmbed(member, 'Joined Voice Channel',`${member}${inlineCode(member.displayName)} joined ${newStateChannelMention}`,Colors.Green)
+			} else if (oldState.channelId !== null && newState.channelId === null) {
+				embed = vcLogEmbed(member, 'Left Voice Channel',`${member}${inlineCode(member.displayName)} left ${oldStateChannelMention}`, Colors.Red)
 			} else {
-				embed = vcLogEmbed(member, 'Switched Voice Channel', `${member} switched from ${oldStateChannelMention} to ${newStateChannelMention}`, Colors.Blue)
+				embed = vcLogEmbed(member, 'Switched Voice Channel', `${member}${inlineCode(member.displayName)} switched from ${oldStateChannelMention} to ${newStateChannelMention}`, Colors.Blue)
+				if (newState.channelId)
+					markAttendance(newState.channelId, member)
 			}
 		}
 
@@ -67,4 +72,20 @@ function vcLogEmbed(member:GuildMember, title:string, description:string, color:
 		.setFooter({text:`User ID: ${member.id}`})
 		.setColor(color)
 
+}
+
+/**
+ *
+ * @param channelId
+ * @param member
+ */
+async function markAttendance(channelId: string, member: GuildMember){
+	await dbConnect()
+	const res: IScheduledEvent = (await ScheduledEvent.findOne({ channelId: channelId, status: 2 }).exec()) as IScheduledEvent
+	if(!res)
+		return
+	if(res.attendees.find(x => (x === member.id)))
+		return
+	res.attendees.push(member.id)
+	await res.save()
 }
