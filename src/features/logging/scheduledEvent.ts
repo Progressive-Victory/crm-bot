@@ -47,8 +47,8 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 	} else {
 		const container = logContainer(event)
 		let post
-		if(event.eventUrl === 'attachment://image.jpg') {
-			const file = new AttachmentBuilder('../../assets/image.jpg')
+		if(event.thumbnailUrl === 'attachment://image.jpg') {
+			const file = new AttachmentBuilder('./assets/image.jpg')
 			post = await logChannel.send({
 				components:[await container],
 				files: [file],
