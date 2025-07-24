@@ -85,6 +85,8 @@ export const settings = new ChatInputCommand({
 						{name: 'channel updates', value: 'logging.channelUpdatesChannelId'},
 						{name: 'vc updates', value: 'logging.voiceUpdatesChannelId'},
 						{name: 'nickname updates', value: 'logging.nicknameUpdatesChannelId'},
+						{name: 'event logs', value: 'logging.eventLogChannelId'},
+
 					)
 					.setRequired(true)
 				)
