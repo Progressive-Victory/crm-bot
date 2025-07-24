@@ -1,4 +1,4 @@
-import { AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ContainerBuilder, DiscordAPIError, Guild, MessageFlags, RESTJSONErrorCodes, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder } from "discord.js";
+import { AttachmentBuilder, ButtonBuilder, ButtonStyle, ChannelType, ContainerBuilder, DiscordAPIError, Guild, heading, HeadingLevel, MessageFlags, RESTJSONErrorCodes, SectionBuilder, SeparatorBuilder, SeparatorSpacingSize, TextDisplayBuilder, ThumbnailBuilder } from "discord.js";
 import { client } from "../../index.js";
 import { IScheduledEvent } from "../../models/ScheduledEvent.js";
 import { GuildSetting } from "../../models/Setting.js";
@@ -74,9 +74,12 @@ async function logContainer(event: IScheduledEvent) {
 	const wrapper = new ScheduledEventWrapper(event)
 	const attendees = await wrapper.attendees()
 	const attendeesCount = attendees.length
-	const attendeesStr = attendees.length > 0 ? attendees.map((usr) => {return `\n- <@${usr.id}>`}).toString() : ""
+	const attendeesStr = attendees.length > 0 ? attendees.map((usr) => {return `\n- ${usr.toString()}`}).toString() : ""
+	const separator = new SeparatorBuilder()
+		.setSpacing(SeparatorSpacingSize.Small)
+		.setDivider(true)
 	return new ContainerBuilder()
-		.setAccentColor(5763719)
+		.setAccentColor(0x57f387)
 		.addSectionComponents(
 			new SectionBuilder()
 				.setThumbnailAccessory(
@@ -84,23 +87,17 @@ async function logContainer(event: IScheduledEvent) {
 						.setURL(wrapper.thumbnail())
 				)
 				.addTextDisplayComponents(
-					new TextDisplayBuilder().setContent("### " + wrapper.name()),
+					new TextDisplayBuilder().setContent(heading(wrapper.name(),HeadingLevel.Three)),
 					new TextDisplayBuilder().setContent("Date: " + wrapper.startDate()),
 					new TextDisplayBuilder().setContent(`Time: ${wrapper.startTime()} - ${wrapper.endTime()}`),
 				),
 		)
-		.addSeparatorComponents(
-			new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true),
-		)
+		.addSeparatorComponents(separator)
 		.addTextDisplayComponents(
 			new TextDisplayBuilder().setContent("Description:\n" + wrapper.description()),
+			new TextDisplayBuilder().setContent("Attendees: " + attendeesStr)
 		)
-		.addTextDisplayComponents(
-			new TextDisplayBuilder().setContent("Attendees: " + attendeesStr),
-		)
-		.addSeparatorComponents(
-			new SeparatorBuilder().setSpacing(SeparatorSpacingSize.Small).setDivider(true),
-		)
+		.addSeparatorComponents(separator)
 		.addSectionComponents(
 			new SectionBuilder()
 				.setButtonAccessory(
