@@ -16,7 +16,6 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 	const settings = await GuildSetting.findOne({ guildId: guild.id }).exec()
 
 	const logChannelId = settings?.logging.eventLogChannelId
-	console.log(logChannelId)
 	if(!logChannelId)
 		return
 	let logChannel = guild.channels.cache.get(logChannelId)
@@ -60,7 +59,6 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 				flags: MessageFlags.IsComponentsV2
 			})
 		}
-		await dbConnect()
 		event.logMessageId = post.id
 		await event.save()
 	}
