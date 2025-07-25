@@ -45,10 +45,10 @@ const scheduledEventSchema = new Schema<IScheduledEvent>({
 })
 
 scheduledEventSchema.post('save', (doc: Document<IScheduledEvent>, next) => {
-	setTimeout(() => {
+	setTimeout(async () => {
 		const event: IScheduledEvent = doc as IScheduledEvent
 		if (event.status !== 1)
-			logScheduledEvent(event)
+			await logScheduledEvent(event)
 		next()
 	}, 10)
 })
