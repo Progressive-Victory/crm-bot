@@ -11,13 +11,12 @@ export const guildScheduledEventUpdate = new Event({
 		if (!oldEvent) return
 		await dbConnect()
 
-		let _new = false
 		let res
 
 		if(oldEvent.isScheduled() && newEvent.isActive()) {
 			console.log("starting event")
+			await new Promise(r => setTimeout(r, 2000));
 			const evChannel = (await newEvent.channel?.fetch()) as VoiceBasedChannel
-			_new = true
 			res = await ScheduledEvent.insertOne({
 				thumbnailUrl: newEvent.coverImageURL() ?? 'attachment://image.jpg',
 				eventUrl: newEvent.url,
@@ -36,7 +35,7 @@ export const guildScheduledEventUpdate = new Event({
 				attendees: evChannel.members.map((usr) => {return usr.id})
 			}) as IScheduledEvent
 		} else {
-			res = await ScheduledEvent.findOne({ eventId: newEvent.id }, {}, { sort: {'started_at' : -1}}).exec() as IScheduledEvent
+			res = (await ScheduledEvent.find({ eventId: newEvent.id }).sort({ '_id': -1 }).exec())[0] as IScheduledEvent
 			if(!res){
 				res = await ScheduledEvent.insertOne({
 					thumbnailUrl: newEvent.coverImageURL() ?? 'attachment://image.jpg',
@@ -80,6 +79,6 @@ export const guildScheduledEventUpdate = new Event({
 
 		await res.save()
 
-		await logScheduledEvent(res, _new)
+		await logScheduledEvent(res)
 	}
 })

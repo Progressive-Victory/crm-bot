@@ -11,7 +11,7 @@ import { ScheduledEventWrapper } from "../../util/scheduledEventWrapper.js";
  * @param guild
  * @param forceNew
  */
-export async function logScheduledEvent(event: IScheduledEvent, forceNew = false) {
+export async function logScheduledEvent(event: IScheduledEvent) {
 	await dbConnect()
 	const guild: Guild = await client.guilds.fetch(event.guildId)
 	const settings = await GuildSetting.findOne({ guildId: guild.id }).exec()
@@ -26,7 +26,8 @@ export async function logScheduledEvent(event: IScheduledEvent, forceNew = false
 	
 	if (logChannel?.type !== ChannelType.GuildText) return
 	let existingPost = undefined
-	if(event.logMessageId && !forceNew) {
+	if(event.logMessageId) {
+		console.log("finding existing post")
 		existingPost = logChannel.messages.cache.get(event.logMessageId)
 		if (!existingPost) {
 			existingPost = await logChannel.messages.fetch(event.logMessageId).catch(e => {
@@ -38,7 +39,12 @@ export async function logScheduledEvent(event: IScheduledEvent, forceNew = false
 		}
 	}
 
+	console.log("fetched post")
+	console.log(existingPost)
+
 	if(existingPost) {
+		console.log("editing existing post...")
+		console.log("event ended at: " + event.endedAt)
 		const container = logContainer(event)
 		await existingPost.edit({
 			components:[await container],
@@ -61,6 +67,7 @@ export async function logScheduledEvent(event: IScheduledEvent, forceNew = false
 			})
 		}
 		event.logMessageId = post.id
+		console.log("event log message id: " + event.logMessageId)
 		await event.save()
 	}
 }
