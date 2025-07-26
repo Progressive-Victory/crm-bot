@@ -36,7 +36,7 @@ export const guildScheduledEventUpdate = new Event({
 				attendees: evChannel.members.map((usr) => {return usr.id})
 			}) as IScheduledEvent
 		} else {
-			res = await ScheduledEvent.findOne({ eventId: newEvent.id }).exec() as IScheduledEvent
+			res = await ScheduledEvent.findOne({ eventId: newEvent.id }, {}, { sort: {'started_at' : -1}}).exec() as IScheduledEvent
 			if(!res){
 				res = await ScheduledEvent.insertOne({
 					thumbnailUrl: newEvent.coverImageURL() ?? 'attachment://image.jpg',
@@ -67,13 +67,15 @@ export const guildScheduledEventUpdate = new Event({
 		}
 
 		if(!res.recurrence) {
-			if(oldEvent.isActive() && newEvent.isCompleted())
+			if(oldEvent.isActive() && newEvent.isCompleted()){
 				console.log("ending one time event")
 				res.endedAt = new Date(Date.now())
+			}
 		} else {
-			if(oldEvent.isActive() && newEvent.isScheduled())
+			if(oldEvent.isActive() && newEvent.isScheduled()){
 				console.log("ending recurring event")
 				res.endedAt = new Date(Date.now())
+			}
 		}
 
 		await res.save()
