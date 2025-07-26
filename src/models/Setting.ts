@@ -29,21 +29,21 @@ export type SettingRecord = HydratedDocument<ISettings>;
 
 const settings = new Schema<ISettings>({
 	guildId: {
-		type:String,
+		type: String,
 		required: true,
 		immutable: true
 	},
 	guildName: {
-		type:String,
+		type: String,
 		required: true,
 		immutable: false
 	},
 	warn: {
 		logChannelId: {
-			type:String,
+			type: String,
 		},
 		appealChannelId: {
-			type:String,
+			type: String,
 		},
 	},
 	report: {
@@ -57,22 +57,24 @@ const settings = new Schema<ISettings>({
 	},
 	logging: {
 		timeoutChannelId: {
-			type:String
+			type: String
 		},
 		leaveChannelId: {
-			type:String
+			type: String
 		},
 		channelUpdatesChannelId: {
-			type:String
+			type: String
 		},
 		voiceUpdatesChannelId: {
-			type:String
+			type: String
 		},
-		nicknameUpdatesChannelId:{
-			type:String
+		nicknameUpdatesChannelId: {
+			type: String
 		},
 		eventLogChannelId: {
 			type: String
 		}
+	}
+});
 
 export const GuildSetting = model<ISettings>("setting", settings, "settings");
