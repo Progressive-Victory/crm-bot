@@ -43,15 +43,6 @@ const scheduledEventSchema = new Schema<IScheduledEvent>({
 	logMessageId: { type: String }
 })
 
-/*scheduledEventSchema.post('save', (doc: Document<IScheduledEvent>, next) => {
-	setTimeout(async () => {
-		const event: IScheduledEvent = doc as IScheduledEvent
-		if (event.status !== 1)
-			await logScheduledEvent(event)
-		next()
-	}, 10000)
-})*/
-
 const modelName = 'ScheduledEvent'
 
 export const ScheduledEvent: Model<IScheduledEvent> = 
