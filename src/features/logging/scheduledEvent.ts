@@ -10,7 +10,7 @@ import { ScheduledEventWrapper } from "../../util/scheduledEventWrapper.js";
  * @param event
  * @param guild
  */
-export async function logScheduledEvent(event: IScheduledEvent) {
+export async function logScheduledEvent(event: IScheduledEvent, forceNew = false) {
 	await dbConnect()
 	const guild: Guild = await client.guilds.fetch(event.guildId)
 	const settings = await GuildSetting.findOne({ guildId: guild.id }).exec()
@@ -25,7 +25,7 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 	
 	if (logChannel?.type !== ChannelType.GuildText) return
 	let existingPost = undefined
-	if(event.logMessageId) {
+	if(event.logMessageId && !forceNew) {
 		existingPost = logChannel.messages.cache.get(event.logMessageId)
 		if (!existingPost) {
 			existingPost = await logChannel.messages.fetch(event.logMessageId).catch(e => {
