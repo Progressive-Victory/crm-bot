@@ -10,12 +10,14 @@ import { numberOfWarnEmbedsOnPage, WarnButtonsPrefixes } from "./types.js";
  * @param searchRecord - Warning Search document
  * @returns ButtonBuilder for the move left button
  */
-export function leftButton(searchRecord:HydratedDocument<IWarnSearch>) {
-    return new ButtonBuilder()
-        .setCustomId(AddSplitCustomId(WarnButtonsPrefixes.viewWarningsLeft, searchRecord.id))
-        .setEmoji('⬅️')
-        .setStyle(ButtonStyle.Secondary)
-        .setDisabled(searchRecord.pageStart === 0);
+export function leftButton(searchRecord: HydratedDocument<IWarnSearch>) {
+  return new ButtonBuilder()
+    .setCustomId(
+      AddSplitCustomId(WarnButtonsPrefixes.viewWarningsLeft, searchRecord.id),
+    )
+    .setEmoji("⬅️")
+    .setStyle(ButtonStyle.Secondary)
+    .setDisabled(searchRecord.pageStart === 0);
 }
 
 /**
@@ -24,15 +26,20 @@ export function leftButton(searchRecord:HydratedDocument<IWarnSearch>) {
  * @param records - Array of warn documents
  * @returns ButtonBuilder
  */
-export function rightButton(searchRecord:HydratedDocument<IWarnSearch>, records:HydratedDocument<IWarn>[]) {
-	
-	// button is disabled if the start page plus the number of warn embeds on page is greater than the number of records
-	const isDisabled = searchRecord.pageStart + numberOfWarnEmbedsOnPage >= records.length
-    return new ButtonBuilder()
-        .setCustomId(AddSplitCustomId(WarnButtonsPrefixes.viewWarningsRight, searchRecord.id))
-        .setEmoji('➡️')
-        .setStyle(ButtonStyle.Secondary)
-        .setDisabled(isDisabled);
+export function rightButton(
+  searchRecord: HydratedDocument<IWarnSearch>,
+  records: HydratedDocument<IWarn>[],
+) {
+  // button is disabled if the start page plus the number of warn embeds on page is greater than the number of records
+  const isDisabled =
+    searchRecord.pageStart + numberOfWarnEmbedsOnPage >= records.length;
+  return new ButtonBuilder()
+    .setCustomId(
+      AddSplitCustomId(WarnButtonsPrefixes.viewWarningsRight, searchRecord.id),
+    )
+    .setEmoji("➡️")
+    .setStyle(ButtonStyle.Secondary)
+    .setDisabled(isDisabled);
 }
 
 /**
@@ -41,18 +48,22 @@ export function rightButton(searchRecord:HydratedDocument<IWarnSearch>, records:
  * @param records - Array of warn documents
  * @returns ButtonBuilder
  */
-export function pageNumber(searchRecord:HydratedDocument<IWarnSearch>, records:HydratedDocument<IWarn>[]) {
-	
-	const currentPage = (searchRecord.pageStart+numberOfWarnEmbedsOnPage)/numberOfWarnEmbedsOnPage
+export function pageNumber(
+  searchRecord: HydratedDocument<IWarnSearch>,
+  records: HydratedDocument<IWarn>[],
+) {
+  const currentPage =
+    (searchRecord.pageStart + numberOfWarnEmbedsOnPage) /
+    numberOfWarnEmbedsOnPage;
 
-	// round up the record length divided by the number of warn embeds on page
-	const totalPages = Math.ceil(records.length/numberOfWarnEmbedsOnPage)
-	
-	return new ButtonBuilder()
-		.setDisabled(true)
-		.setCustomId('Button does not use ID')
-		.setLabel(`${currentPage}/${totalPages}`)
-		.setStyle(ButtonStyle.Primary)
+  // round up the record length divided by the number of warn embeds on page
+  const totalPages = Math.ceil(records.length / numberOfWarnEmbedsOnPage);
+
+  return new ButtonBuilder()
+    .setDisabled(true)
+    .setCustomId("Button does not use ID")
+    .setLabel(`${currentPage}/${totalPages}`)
+    .setStyle(ButtonStyle.Primary);
 }
 
 /**
@@ -60,14 +71,10 @@ export function pageNumber(searchRecord:HydratedDocument<IWarnSearch>, records:H
  * @param targetId - the Discord ID of the guild member to view the history of
  * @returns a {@link ButtonBuilder} containing the configuration for the warn history button
  */
-export function modViewWarningHistory(targetId:Snowflake) {
-	return viewWarnHistory()
-		.setCustomId(
-			AddSplitCustomId(WarnButtonsPrefixes.modViewWarningHistory,
-				targetId
-			)
-		)
-
+export function modViewWarningHistory(targetId: Snowflake) {
+  return viewWarnHistory().setCustomId(
+    AddSplitCustomId(WarnButtonsPrefixes.modViewWarningHistory, targetId),
+  );
 }
 
 /**
@@ -76,34 +83,23 @@ export function modViewWarningHistory(targetId:Snowflake) {
  * @param guild - the guild in which the target user is a member
  * @returns a {@link ButtonBuilder} containing the configuration for the warn history button
  */
-export function userViewWarnHistory(targetId:Snowflake, guild:Guild) {
-	return viewWarnHistory()
-		.setCustomId(
-			AddSplitCustomId(WarnButtonsPrefixes.userViewWarningHistory,
-				targetId,
-				guild.id
-			)
-		)
+export function userViewWarnHistory(targetId: Snowflake, guild: Guild) {
+  return viewWarnHistory().setCustomId(
+    AddSplitCustomId(
+      WarnButtonsPrefixes.userViewWarningHistory,
+      targetId,
+      guild.id,
+    ),
+  );
 }
 /**
  * @returns a button used to trigger the event to view a user's warn history
  */
 function viewWarnHistory() {
-
-	return new ButtonBuilder()
-		.setEmoji('🔎')
-        .setLabel('View Warning History')
-        .setStyle(ButtonStyle.Secondary)
-}
-
-
-/**
- * Button to update a Warning
- * @param record - the warning object witch to update
- * @returns {@link ButtonBuilder} object
- */
-export function warnUpdateFromIssue(record:WarningRecord) {
-    return updateWarn(record, WarnButtonsPrefixes.updateWarnById)
+  return new ButtonBuilder()
+    .setEmoji("🔎")
+    .setLabel("View Warning History")
+    .setStyle(ButtonStyle.Secondary);
 }
 
 /**
@@ -111,10 +107,18 @@ export function warnUpdateFromIssue(record:WarningRecord) {
  * @param record - the warning object witch to update
  * @returns {@link ButtonBuilder} object
  */
-export function warnUpdateFromLog(record:WarningRecord) {
-    return updateWarn(record, WarnButtonsPrefixes.updateWarnById)
+export function warnUpdateFromIssue(record: WarningRecord) {
+  return updateWarn(record, WarnButtonsPrefixes.updateWarnById);
 }
 
+/**
+ * Button to update a Warning
+ * @param record - the warning object witch to update
+ * @returns {@link ButtonBuilder} object
+ */
+export function warnUpdateFromLog(record: WarningRecord) {
+  return updateWarn(record, WarnButtonsPrefixes.updateWarnById);
+}
 
 /**
  * @param record - The {@link WarningRecord} corresponding to the warning to update
@@ -122,11 +126,11 @@ export function warnUpdateFromLog(record:WarningRecord) {
  * @returns a button used to trigger the event to update a user's warning
  */
 function updateWarn(record: WarningRecord, code: WarnButtonsPrefixes) {
-	return new ButtonBuilder()
-		.setCustomId(AddSplitCustomId(code, record.id))
-		.setEmoji('📝')
-		.setLabel('Update Reason')
-		.setStyle(ButtonStyle.Secondary);
+  return new ButtonBuilder()
+    .setCustomId(AddSplitCustomId(code, record.id))
+    .setEmoji("📝")
+    .setLabel("Update Reason")
+    .setStyle(ButtonStyle.Secondary);
 }
 
 /**
@@ -135,11 +139,11 @@ function updateWarn(record: WarningRecord, code: WarnButtonsPrefixes) {
  * @returns ButtonBuilder
  */
 export function appealWarn(record: WarningRecord) {
-	return new ButtonBuilder()
-		.setCustomId(AddSplitCustomId(WarnButtonsPrefixes.appealWarn, record.id))
-		.setLabel('Appeal')
-		.setEmoji('📜')
-		.setStyle(ButtonStyle.Danger)
+  return new ButtonBuilder()
+    .setCustomId(AddSplitCustomId(WarnButtonsPrefixes.appealWarn, record.id))
+    .setLabel("Appeal")
+    .setEmoji("📜")
+    .setStyle(ButtonStyle.Danger);
 }
 
 /**
@@ -147,12 +151,12 @@ export function appealWarn(record: WarningRecord) {
  * @returns ButtonBuilder
  */
 export function appealDmSubmitted() {
-	return new ButtonBuilder()
-		.setCustomId('Button does not use ID')
-		.setLabel('Appeal Submitted')
-		.setEmoji('📫')
-		.setDisabled(true)
-		.setStyle(ButtonStyle.Success)
+  return new ButtonBuilder()
+    .setCustomId("Button does not use ID")
+    .setLabel("Appeal Submitted")
+    .setEmoji("📫")
+    .setDisabled(true)
+    .setStyle(ButtonStyle.Success);
 }
 
 /**
@@ -160,10 +164,12 @@ export function appealDmSubmitted() {
  * @param record - The {@link WarningRecord} that contains the information of the warning to update
  * @returns a {@link ButtonBuilder} instance that can be used to construct an update-warn-by-ID button
  */
-export function updateWarnById(record: WarningRecord){
-	return new ButtonBuilder()
-		.setCustomId(AddSplitCustomId(WarnButtonsPrefixes.updateWarnById, record.id))
-		.setLabel('Update Warning')
-		.setEmoji('📝')
-		.setStyle(ButtonStyle.Secondary)
+export function updateWarnById(record: WarningRecord) {
+  return new ButtonBuilder()
+    .setCustomId(
+      AddSplitCustomId(WarnButtonsPrefixes.updateWarnById, record.id),
+    )
+    .setLabel("Update Warning")
+    .setEmoji("📝")
+    .setStyle(ButtonStyle.Secondary);
 }

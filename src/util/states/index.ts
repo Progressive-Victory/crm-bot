@@ -1,7 +1,5 @@
-import {
-	GuildMember, GuildTextBasedChannel, Role
-} from 'discord.js';
-import { statesConfig } from './types.js';
+import { GuildMember, GuildTextBasedChannel, Role } from "discord.js";
+import { statesConfig } from "./types.js";
 
 /**
  * Get states from a member
@@ -9,12 +7,10 @@ import { statesConfig } from './types.js';
  * @returns array of states
  */
 export function getStatesFromMember(member: GuildMember) {
-	const { roles } = member;
-	return statesConfig.filter((s) => 
-		roles.cache.filter((r) => 
-			r.name.toLowerCase() === s.abbreviation
-		)
-	);
+  const { roles } = member;
+  return statesConfig.filter((s) =>
+    roles.cache.filter((r) => r.name.toLowerCase() === s.abbreviation),
+  );
 }
 
 /**
@@ -22,11 +18,11 @@ export function getStatesFromMember(member: GuildMember) {
  * @param channel - target text channel
  * @returns A state
  */
-export function getStateFromChannel(channel: GuildTextBasedChannel){
-	const { name } = channel;
-	return statesConfig.find((s) => 
-		s.name.toLowerCase().replace(' ','-') === name
-	);
+export function getStateFromChannel(channel: GuildTextBasedChannel) {
+  const { name } = channel;
+  return statesConfig.find(
+    (s) => s.name.toLowerCase().replace(" ", "-") === name,
+  );
 }
 
 /**
@@ -35,6 +31,6 @@ export function getStateFromChannel(channel: GuildTextBasedChannel){
  * @returns A state
  */
 export function getStateFromRole(role: Role) {
-	const { name } = role;
-	return statesConfig.find(s => s.abbreviation === name.toLowerCase());
+  const { name } = role;
+  return statesConfig.find((s) => s.abbreviation === name.toLowerCase());
 }

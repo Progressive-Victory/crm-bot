@@ -1,5 +1,10 @@
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle } from "discord.js"
-import { defaultNumberOfDaysBeforeExpiration } from "./types.js"
+import {
+  ActionRowBuilder,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
+} from "discord.js";
+import { defaultNumberOfDaysBeforeExpiration } from "./types.js";
 
 /**
  * Create Modal for creating or updating warn
@@ -9,38 +14,41 @@ import { defaultNumberOfDaysBeforeExpiration } from "./types.js"
  * @param day - The duration of the warning in days
  * @returns a modal representing the creation/update of a warn
  */
-export function warnModal(customId:string, title: string, reason?:string, day?: number) {
+export function warnModal(
+  customId: string,
+  title: string,
+  reason?: string,
+  day?: number,
+) {
+  const reasonInput = new TextInputBuilder()
+    .setCustomId("reason")
+    .setLabel("Reason for issuing this warning")
+    .setStyle(TextInputStyle.Paragraph)
+    .setRequired(true);
 
-	const reasonInput = new TextInputBuilder()
-		.setCustomId('reason')
-		.setLabel('Reason for issuing this warning')
-		.setStyle(TextInputStyle.Paragraph)
-		.setRequired(true)
-	
-	const durationInput = new TextInputBuilder()
-		.setCustomId('duration')
-		.setLabel('Number of days till warning expires')
-		.setPlaceholder(defaultNumberOfDaysBeforeExpiration.toString())
-		.setMinLength(1)
-		.setMaxLength(3)
-		.setStyle(TextInputStyle.Short)
-		.setRequired(false)
+  const durationInput = new TextInputBuilder()
+    .setCustomId("duration")
+    .setLabel("Number of days till warning expires")
+    .setPlaceholder(defaultNumberOfDaysBeforeExpiration.toString())
+    .setMinLength(1)
+    .setMaxLength(3)
+    .setStyle(TextInputStyle.Short)
+    .setRequired(false);
 
-	if(reason)
-		reasonInput.setValue(reason)
+  if (reason) reasonInput.setValue(reason);
 
-	if(day)
-		durationInput.setValue(day.toString())
+  if (day) durationInput.setValue(day.toString());
 
-	const firstActionRow = new ActionRowBuilder<TextInputBuilder>()
-		.addComponents(reasonInput)
-	const secondActionRow = new ActionRowBuilder<TextInputBuilder>()
-		.addComponents(durationInput)
+  const firstActionRow = new ActionRowBuilder<TextInputBuilder>().addComponents(
+    reasonInput,
+  );
+  const secondActionRow =
+    new ActionRowBuilder<TextInputBuilder>().addComponents(durationInput);
 
-	const modal = new ModalBuilder()
-		.setTitle(title)
-		.setCustomId(customId)
-		.addComponents(firstActionRow,secondActionRow)
+  const modal = new ModalBuilder()
+    .setTitle(title)
+    .setCustomId(customId)
+    .addComponents(firstActionRow, secondActionRow);
 
-	return modal
+  return modal;
 }

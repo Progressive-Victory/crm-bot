@@ -15,19 +15,19 @@ Additionally, you may want to group commands together. This is done with `Subcom
   - `description` - A description of what the command does
   - Localization configuration
 - `execute` - The function that will run on the command invocation
-- *Optional* `guildIds` - An array of server IDs. *Only use if the command will be exclusive to a set of servers*.
-- *Optional* `autoComplete` - function to run on uses of option [autocomplete](https://discordjs.guide/slash-commands/autocomplete.html)
+- _Optional_ `guildIds` - An array of server IDs. _Only use if the command will be exclusive to a set of servers_.
+- _Optional_ `autoComplete` - function to run on uses of option [autocomplete](https://discordjs.guide/slash-commands/autocomplete.html)
 
 ```ts
 // src/commands/chat/ping.ts
-import { ChatInputCommand } from '../../Classes/index.js';
+import { ChatInputCommand } from "../../Classes/index.js";
 
 export default new ChatInputCommand()
-  .setBuilder((builder) => builder
-    .setName('ping')
-    .setDescription('The bot will reply with pong'))
+  .setBuilder((builder) =>
+    builder.setName("ping").setDescription("The bot will reply with pong"),
+  )
   .setExecute(async (interaction) => {
-    interaction.reply('🏓 Pong');
+    interaction.reply("🏓 Pong");
   });
 ```
 
@@ -35,18 +35,18 @@ export default new ChatInputCommand()
 
 ```ts
 // src/commands/index.ts
-export { default as ping } from './chat/ping.js';
+export { default as ping } from "./chat/ping.js";
 ```
 
 3. Register the commands with the client in the root [`index.ts`](../../index.ts).
 
 ```ts
 // src/index.ts
-import { Client } from './Classes/index.js';
-import * as commands from './commands/index.js';
+import { Client } from "./Classes/index.js";
+import * as commands from "./commands/index.js";
 
 const client = new Client();
 
-// Load commands 
+// Load commands
 for (const command of Object.values(commands)) client.commands.add(command);
 ```
