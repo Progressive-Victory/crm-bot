@@ -12,7 +12,7 @@ export class ScheduledEventWrapper {
 			if (!this.event.endedAt) {
 				return "N/A"
 			} else {
-				return (new Date(this.event.endedAt.getTime() - this.event.startedAt.getTime())).getMinutes()
+				return Math.round((this.event.endedAt.getTime() - this.event.startedAt.getTime())/216000)
 			}
 		}
 	}

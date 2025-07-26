@@ -1,11 +1,13 @@
 import { Events, VoiceBasedChannel } from 'discord.js';
 import { Event } from '../../Classes/Event.js';
+import { logScheduledEvent } from '../../features/logging/scheduledEvent.js';
 import { IScheduledEvent, ScheduledEvent } from '../../models/ScheduledEvent.js';
 import dbConnect from '../../util/libmongo.js';
 
 export const guildScheduledEventUpdate = new Event({
 	name: Events.GuildScheduledEventUpdate,
 	execute: async (event) => {
+		console.log("updating")
 		if (!event) return
 		const ev = await event.fetch() //for some reason the argument version is always outdated
 		await dbConnect()
@@ -52,5 +54,7 @@ export const guildScheduledEventUpdate = new Event({
 		res.userCount = ev.userCount ?? undefined
 
 		await res.save()
+
+		await logScheduledEvent(res)
 	}
 })
