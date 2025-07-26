@@ -53,6 +53,16 @@ export const guildScheduledEventUpdate = new Event({
 					name: newEvent.name,
 					status: newEvent.status
 				}) as IScheduledEvent
+			} else {
+				res.recurrence = newEvent.recurrenceRule ? true : false
+				res.thumbnailUrl = newEvent.coverImageURL() ?? 'attachment://image.jpg'
+				res.channelId = newEvent.channelId ?? undefined
+				res.name = newEvent.name
+				res.description = newEvent.description ?? ""
+				res.scheduledEnd = newEvent.scheduledEndAt ?? undefined
+				res.scheduledStart = newEvent.scheduledStartAt ?? undefined
+				res.status = newEvent.status
+				res.userCount = newEvent.userCount ?? undefined
 			}
 		}
 
@@ -65,16 +75,6 @@ export const guildScheduledEventUpdate = new Event({
 				console.log("ending recurring event")
 				res.endedAt = new Date(Date.now())
 		}
-
-		res.recurrence = newEvent.recurrenceRule ? true : false
-		res.thumbnailUrl = newEvent.coverImageURL() ?? 'attachment://image.jpg'
-		res.channelId = newEvent.channelId ?? undefined
-		res.name = newEvent.name
-		res.description = newEvent.description ?? ""
-		res.scheduledEnd = newEvent.scheduledEndAt ?? undefined
-		res.scheduledStart = newEvent.scheduledStartAt ?? undefined
-		res.status = newEvent.status
-		res.userCount = newEvent.userCount ?? undefined
 
 		await res.save()
 
