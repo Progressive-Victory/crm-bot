@@ -9,6 +9,7 @@ import { ScheduledEventWrapper } from "../../util/scheduledEventWrapper.js";
  *
  * @param event
  * @param guild
+ * @param forceNew
  */
 export async function logScheduledEvent(event: IScheduledEvent, forceNew = false) {
 	await dbConnect()
