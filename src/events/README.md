@@ -1,4 +1,3 @@
-
 # Events
 
 Client Events are how the bot interacts with Discord. The PV bot has a built-in event handler provided by `discord.js`. For each event we want the PV bot to handle, we need to register a corresponding event handler. The following is an example of how to add the `messageCreate` event to the bot:
@@ -11,15 +10,15 @@ Client Events are how the bot interacts with Discord. The PV bot has a built-in 
 
 ```ts
 // src/events/messageCreate.ts
-import { Events, Message } from 'discord.js';
-import { Client, Event } from '../Classes/index.js';
+import { Events, Message } from "discord.js";
+import { Client, Event } from "../Classes/index.js";
 
 export default new Event({
- name: Events.MessageCreate,
- once: false,
- execute: (message:Message) => {
-  /* Some Code*/
- },
+  name: Events.MessageCreate,
+  once: false,
+  execute: (message: Message) => {
+    /* Some Code*/
+  },
 });
 ```
 
@@ -27,15 +26,15 @@ export default new Event({
 
 ```ts
 // src/events/index.ts
-export { default as messageCreate } from './messageCreate.js'
+export { default as messageCreate } from "./messageCreate.js";
 ```
 
 3. In the entry point (`src/index.ts`) make sure the following is present. This registers the event handlers with the client:
 
 ```ts
 // src/index.ts
-import { Client } from './Classes/index.js';
-import * as events from './events/index.js';
+import { Client } from "./Classes/index.js";
+import * as events from "./events/index.js";
 
 export const client = new Client();
 

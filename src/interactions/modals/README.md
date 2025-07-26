@@ -13,14 +13,14 @@ Interactions start with the bot [sending the modal](https://discordjs.guide/inte
 
 ```ts
 // src/interactions/modals/modal.ts
-import { ModalSubmitInteraction } from 'discord.js';
-import { Interaction } from '../../../Classes/index.js';
+import { ModalSubmitInteraction } from "discord.js";
+import { Interaction } from "../../../Classes/index.js";
 
 export default new Interaction<ModalSubmitInteraction>({
-  customIdPrefix:'modal',
+  customIdPrefix: "modal",
   run: async (interaction) => {
     /* Some Code */
-  }
+  },
 });
 ```
 
@@ -28,20 +28,20 @@ export default new Interaction<ModalSubmitInteraction>({
 
 ```ts
 // src/interactions/modals/index.ts
-export { default as string } from './modal.js'
+export { default as string } from "./modal.js";
 ```
 
 3. In the root [`index.ts`](../../index.ts), make sure the following is present:
 
 ```ts
 // src/index.ts
-import { Client } from './Classes/index.js';
-import * as modals from './interactions/modals/index.js'
+import { Client } from "./Classes/index.js";
+import * as modals from "./interactions/modals/index.js";
 
 export const client = new Client({
   receiveMessageComponents: true, // enables the usage of message components
-  splitCustomIDOn: '_', // allows the inclusion of additional information in a custom ID
-                        // `prefix_arg1_arg2` is converted to [prefix, arg1, arg2]
+  splitCustomIDOn: "_", // allows the inclusion of additional information in a custom ID
+  // `prefix_arg1_arg2` is converted to [prefix, arg1, arg2]
 });
 
 // Load modals

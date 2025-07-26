@@ -25,7 +25,7 @@ export interface ISettings {
 	}
 }
 
-export type SettingRecord = HydratedDocument<ISettings>
+export type SettingRecord = HydratedDocument<ISettings>;
 
 const settings = new Schema<ISettings>({
 	guildId: {
@@ -75,14 +75,4 @@ const settings = new Schema<ISettings>({
 			type: String
 		}
 
-	}
-
-},
-{
-	timestamps:{
-		createdAt: true,
-		updatedAt: true
-	}
-})
-
-export const GuildSetting = model<ISettings>('setting', settings, 'settings')
+export const GuildSetting = model<ISettings>("setting", settings, "settings");
