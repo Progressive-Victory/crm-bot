@@ -9,8 +9,11 @@ import { ScheduledEventWrapper } from "../../util/scheduledEventWrapper.js";
  *
  * @param event
  * @param guild
+ * @param forceNew
  */
 export async function logScheduledEvent(event: IScheduledEvent, forceNew = false) {
+
+	console.log("force new: " + forceNew)
 	await dbConnect()
 	const guild: Guild = await client.guilds.fetch(event.guildId)
 	const settings = await GuildSetting.findOne({ guildId: guild.id }).exec()
