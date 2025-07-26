@@ -11,9 +11,13 @@ export const guildScheduledEventUpdate = new Event({
 		if (!oldEvent) return
 		await dbConnect()
 
-		let res = await ScheduledEvent.findOne({ eventId: newEvent.id }).exec() as IScheduledEvent
-		
-		if(!res){
+		let _new = false
+		let res
+
+		if(oldEvent.isScheduled() && newEvent.isActive()) {
+			console.log("starting event")
+			const evChannel = (await newEvent.channel?.fetch()) as VoiceBasedChannel
+			_new = true
 			res = await ScheduledEvent.insertOne({
 				thumbnailUrl: newEvent.coverImageURL() ?? 'attachment://image.jpg',
 				eventUrl: newEvent.url,
@@ -22,27 +26,43 @@ export const guildScheduledEventUpdate = new Event({
 				eventId: newEvent.id,
 				channelId: newEvent.channelId,
 				createdAt: newEvent.createdAt,
+				startedAt: new Date(Date.now()),
 				description: newEvent.description,
 				creatorId: newEvent.creatorId,
 				scheduledEnd: newEvent.scheduledEndAt,
 				scheduledStart: newEvent.scheduledStartAt,
 				name: newEvent.name,
-				status: newEvent.status
+				status: newEvent.status,
+				attendees: evChannel.members.map((usr) => {return usr.id})
 			}) as IScheduledEvent
-		}
-
-		if(oldEvent.isScheduled() && newEvent.isActive()) {
-			const evChannel: VoiceBasedChannel = newEvent.channel as VoiceBasedChannel
-			const members = evChannel.members.values().toArray()
-			members.map((usr) => res.attendees.push(usr.id))
-			res.startedAt = new Date(Date.now())
+		} else {
+			res = await ScheduledEvent.findOne({ eventId: newEvent.id }).exec() as IScheduledEvent
+			if(!res){
+				res = await ScheduledEvent.insertOne({
+					thumbnailUrl: newEvent.coverImageURL() ?? 'attachment://image.jpg',
+					eventUrl: newEvent.url,
+					recurrence: newEvent.recurrenceRule ? true : false,
+					guildId: newEvent.guildId,
+					eventId: newEvent.id,
+					channelId: newEvent.channelId,
+					createdAt: newEvent.createdAt,
+					description: newEvent.description,
+					creatorId: newEvent.creatorId,
+					scheduledEnd: newEvent.scheduledEndAt,
+					scheduledStart: newEvent.scheduledStartAt,
+					name: newEvent.name,
+					status: newEvent.status
+				}) as IScheduledEvent
+			}
 		}
 
 		if(!res.recurrence) {
 			if(oldEvent.isActive() && newEvent.isCompleted())
+				console.log("ending one time event")
 				res.endedAt = new Date(Date.now())
 		} else {
 			if(oldEvent.isActive() && newEvent.isScheduled())
+				console.log("ending recurring event")
 				res.endedAt = new Date(Date.now())
 		}
 
@@ -58,6 +78,6 @@ export const guildScheduledEventUpdate = new Event({
 
 		await res.save()
 
-		await logScheduledEvent(res)
+		await logScheduledEvent(res, _new)
 	}
 })
