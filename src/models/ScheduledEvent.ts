@@ -50,7 +50,7 @@ scheduledEventSchema.post('save', (doc: Document<IScheduledEvent>, next) => {
 		if (event.status !== 1)
 			await logScheduledEvent(event)
 		next()
-	}, 10)
+	}, 10000)
 })
 
 const modelName = 'ScheduledEvent'
