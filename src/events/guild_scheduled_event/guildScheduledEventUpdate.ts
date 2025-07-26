@@ -6,52 +6,55 @@ import dbConnect from '../../util/libmongo.js';
 
 export const guildScheduledEventUpdate = new Event({
 	name: Events.GuildScheduledEventUpdate,
-	execute: async (event) => {
+	execute: async (oldEvent, newEvent) => {
 		console.log("updating")
-		if (!event) return
-		const ev = await event.fetch() //for some reason the argument version is always outdated
+		if (!oldEvent) return
 		await dbConnect()
 
-		let res = await ScheduledEvent.findOne({ eventId: event.id }).exec() as IScheduledEvent
+		let res = await ScheduledEvent.findOne({ eventId: newEvent.id }).exec() as IScheduledEvent
 		
 		if(!res){
 			res = await ScheduledEvent.insertOne({
-				thumbnailUrl: ev.coverImageURL() ?? 'attachment://image.jpg',
-				eventUrl: ev.url,
-				recurrence: ev.recurrenceRule ? true : false,
-				guildId: ev.guildId,
-				eventId: ev.id,
-				channelId: ev.channelId,
-				createdAt: ev.createdAt,
-				description: ev.description,
-				creatorId: ev.creatorId,
-				scheduledEnd: ev.scheduledEndAt,
-				scheduledStart: ev.scheduledStartAt,
-				name: ev.name,
-				status: ev.status
+				thumbnailUrl: newEvent.coverImageURL() ?? 'attachment://image.jpg',
+				eventUrl: newEvent.url,
+				recurrence: newEvent.recurrenceRule ? true : false,
+				guildId: newEvent.guildId,
+				eventId: newEvent.id,
+				channelId: newEvent.channelId,
+				createdAt: newEvent.createdAt,
+				description: newEvent.description,
+				creatorId: newEvent.creatorId,
+				scheduledEnd: newEvent.scheduledEndAt,
+				scheduledStart: newEvent.scheduledStartAt,
+				name: newEvent.name,
+				status: newEvent.status
 			}) as IScheduledEvent
 		}
 
-		if(ev.isActive()) {
-			const evChannel: VoiceBasedChannel = ev.channel as VoiceBasedChannel
+		if(oldEvent.isScheduled() && newEvent.isActive()) {
+			const evChannel: VoiceBasedChannel = newEvent.channel as VoiceBasedChannel
 			const members = evChannel.members.values().toArray()
 			members.map((usr) => res.attendees.push(usr.id))
 			res.startedAt = new Date(Date.now())
 		}
 
-		if(ev.isCompleted()) {
-			res.endedAt = new Date(Date.now())
+		if(!res.recurrence) {
+			if(oldEvent.isActive() && newEvent.isCompleted())
+				res.endedAt = new Date(Date.now())
+		} else {
+			if(oldEvent.isActive() && newEvent.isScheduled())
+				res.endedAt = new Date(Date.now())
 		}
 
-		res.recurrence = ev.recurrenceRule ? true : false
-		res.thumbnailUrl = ev.coverImageURL() ?? 'attachment://image.jpg'
-		res.channelId = ev.channelId ?? undefined
-		res.name = ev.name
-		res.description = ev.description ?? ""
-		res.scheduledEnd = ev.scheduledEndAt ?? undefined
-		res.scheduledStart = ev.scheduledStartAt ?? undefined
-		res.status = ev.status
-		res.userCount = ev.userCount ?? undefined
+		res.recurrence = newEvent.recurrenceRule ? true : false
+		res.thumbnailUrl = newEvent.coverImageURL() ?? 'attachment://image.jpg'
+		res.channelId = newEvent.channelId ?? undefined
+		res.name = newEvent.name
+		res.description = newEvent.description ?? ""
+		res.scheduledEnd = newEvent.scheduledEndAt ?? undefined
+		res.scheduledStart = newEvent.scheduledStartAt ?? undefined
+		res.status = newEvent.status
+		res.userCount = newEvent.userCount ?? undefined
 
 		await res.save()
 
