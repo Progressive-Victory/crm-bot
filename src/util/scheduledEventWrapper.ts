@@ -3,114 +3,149 @@ import { client } from "../index.js";
 import { IScheduledEvent } from "../models/ScheduledEvent.js";
 
 export class ScheduledEventWrapper {
-	event: IScheduledEvent
+  event: IScheduledEvent;
 
-	duration = () => {
-		if (!this.event.startedAt) {
-			return "N/A"
-		} else {
-			if (!this.event.endedAt) {
-				return "N/A"
-			} else {
-				return Math.round((this.event.endedAt.getTime() - this.event.startedAt.getTime())/60000)
-			}
-		}
-	}
+  statusColor = () => {
+    let color: number;
+    switch (this.event.status) {
+      case 1:
+        color = 0x0000ff;
+        break;
+      case 2:
+        color = 0x00ff00;
+        break;
+      case 3:
+        color = 0x0000ff;
+        break;
+      case 4:
+        color = 0xff0000;
+        break;
+      default:
+        color = 0xffffff;
+    }
 
-	guild = async () => {
-		return await client.guilds.fetch(this.event.guildId)
-	}
+    return color;
+  };
 
-	guildEvent = async () => {
-		return await (await this.guild()).scheduledEvents.fetch(this.event.id)
-	}
+  duration = () => {
+    if (!this.event.startedAt) {
+      return "N/A";
+    } else {
+      if (!this.event.endedAt) {
+        return "N/A";
+      } else {
+        return Math.round(
+          (this.event.endedAt.getTime() - this.event.startedAt.getTime()) /
+            60000,
+        );
+      }
+    }
+  };
 
-	channel = async () => {
-		return this.event.channelId ? await (await this.guild()).channels.fetch(this.event.channelId) : null
-	}
-	
-	createdAt = () => {
-		return time(this.event.createdAt)
-	}
+  guild = async () => {
+    return await client.guilds.fetch(this.event.guildId);
+  };
 
-	description = () => {
-		return this.event.description ? this.event.description : "None"
-	}
+  guildEvent = async () => {
+    return await (await this.guild()).scheduledEvents.fetch(this.event.id);
+  };
 
-	creator = async () => {
-		return (await (this.guild())).members.fetch(this.event.creatorId)
-	}
+  channel = async () => {
+    return this.event.channelId
+      ? await (await this.guild()).channels.fetch(this.event.channelId)
+      : null;
+  };
 
-	scheduledEnd = () => {
-		return this.event.scheduledEnd ? time(this.event.scheduledEnd) : "None"
-	}
+  createdAt = () => {
+    return time(this.event.createdAt);
+  };
 
-	scheduledStart = () => {
-		return this.event.scheduledStart ? time(this.event.scheduledStart) : "None"
-	}
+  description = () => {
+    return this.event.description ? this.event.description : "None";
+  };
 
-	scheduledStartDate = () => {
-		return this.event.scheduledStart ? time(this.event.scheduledStart, 'D') : "None"
-	}
+  creator = async () => {
+    return (await this.guild()).members.fetch(this.event.creatorId);
+  };
 
-	scheduledStartTime = () => {
-		return this.event.scheduledStart ? time(this.event.scheduledStart, 't') : "None"
-	}
+  scheduledEnd = () => {
+    return this.event.scheduledEnd ? time(this.event.scheduledEnd) : "None";
+  };
 
-	scheduledEndTime = () => {
-		return this.event.scheduledEnd ? time(this.event.scheduledEnd, 't') : "None"
-	}
+  scheduledStart = () => {
+    return this.event.scheduledStart ? time(this.event.scheduledStart) : "None";
+  };
 
-	startDate = () => {
-		return this.event.startedAt ? time(this.event.startedAt, 'D') : "None"
-	}
+  scheduledStartDate = () => {
+    return this.event.scheduledStart
+      ? time(this.event.scheduledStart, "D")
+      : "None";
+  };
 
-	startTime = () => {
-		return this.event.startedAt ? time(this.event.startedAt, 't') : "None"
-	}
+  scheduledStartTime = () => {
+    return this.event.scheduledStart
+      ? time(this.event.scheduledStart, "t")
+      : "None";
+  };
 
-	endTime = () => {
-		return this.event.endedAt ? time(this.event.endedAt, 't') : "None"
-	}
+  scheduledEndTime = () => {
+    return this.event.scheduledEnd
+      ? time(this.event.scheduledEnd, "t")
+      : "None";
+  };
 
-	name = () => {
-		return this.event.name
-	}
+  startDate = () => {
+    return this.event.startedAt ? time(this.event.startedAt, "D") : "None";
+  };
 
-	status = () => {
-		return GuildScheduledEventStatus[this.event.status]
-	}
+  startTime = () => {
+    return this.event.startedAt ? time(this.event.startedAt, "t") : "None";
+  };
 
-	startedAt = () => {
-		return this.event.startedAt ? time(this.event.startedAt) : "N/A"
-	}
+  endTime = () => {
+    return this.event.endedAt ? time(this.event.endedAt, "t") : "None";
+  };
 
-	endedAt = () => {
-		return this.event.endedAt ? time(this.event.endedAt) : "N/A"
-	}
+  name = () => {
+    return this.event.name;
+  };
 
-	attendees = async () => {
-		const users = await (await this.guild()).members.fetch({ user: this.event.attendees, withPresences: true})
-		return users.values().toArray()
-	}
+  status = () => {
+    return GuildScheduledEventStatus[this.event.status];
+  };
 
-	userCount = () => {
-		return this.event.userCount
-	}
+  startedAt = () => {
+    return this.event.startedAt ? time(this.event.startedAt) : "N/A";
+  };
 
-	recurrence = () => {
-		return this.event.recurrence ? "Recurring" : "One Time"
-	}
+  endedAt = () => {
+    return this.event.endedAt ? time(this.event.endedAt) : "N/A";
+  };
 
-	thumbnail = () => {
-		return this.event.thumbnailUrl
-	}
+  attendees = async () => {
+    const users = await (
+      await this.guild()
+    ).members.fetch({ user: this.event.attendees, withPresences: true });
+    return users.values().toArray();
+  };
 
-	eventLink = () => {
-		return this.event.eventUrl
-	}
+  userCount = () => {
+    return this.event.userCount;
+  };
 
-	constructor(ev: IScheduledEvent){
-		this.event = ev
-	}
+  recurrence = () => {
+    return this.event.recurrence ? "Recurring" : "One Time";
+  };
+
+  thumbnail = () => {
+    return this.event.thumbnailUrl;
+  };
+
+  eventLink = () => {
+    return this.event.eventUrl;
+  };
+
+  constructor(ev: IScheduledEvent) {
+    this.event = ev;
+  }
 }
