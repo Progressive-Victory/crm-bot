@@ -9,6 +9,7 @@ import { ScheduledEventWrapper } from "../../util/scheduledEventWrapper.js";
  *
  * @param event
  * @param guild
+ * @param forceNew
  */
 export async function logScheduledEvent(event: IScheduledEvent) {
 	await dbConnect()
@@ -26,6 +27,7 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 	if (logChannel?.type !== ChannelType.GuildText) return
 	let existingPost = undefined
 	if(event.logMessageId) {
+		console.log("finding existing post")
 		existingPost = logChannel.messages.cache.get(event.logMessageId)
 		if (!existingPost) {
 			existingPost = await logChannel.messages.fetch(event.logMessageId).catch(e => {
@@ -37,7 +39,12 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 		}
 	}
 
+	console.log("fetched post")
+	console.log(existingPost)
+
 	if(existingPost) {
+		console.log("editing existing post...")
+		console.log("event ended at: " + event.endedAt)
 		const container = logContainer(event)
 		await existingPost.edit({
 			components:[await container],
@@ -60,6 +67,7 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 			})
 		}
 		event.logMessageId = post.id
+		console.log("event log message id: " + event.logMessageId)
 		await event.save()
 	}
 }

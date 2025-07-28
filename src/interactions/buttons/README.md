@@ -13,14 +13,14 @@ Interactions start with the bot [sending the button](https://discordjs.guide/int
 
 ```ts
 // src/interactions/button/button.ts
-import { ButtonInteraction } from 'discord.js';
-import { Interaction } from '../../../Classes/index.js';
+import { ButtonInteraction } from "discord.js";
+import { Interaction } from "../../../Classes/index.js";
 
 export default new Interaction<ButtonInteraction>({
-  customIdPrefix:'button',
+  customIdPrefix: "button",
   run: async (interaction) => {
     /* Some Code */
-  }
+  },
 });
 ```
 
@@ -28,22 +28,23 @@ export default new Interaction<ButtonInteraction>({
 
 ```ts
 // src/interactions/button/index.ts
-export { default as string } from './button.js'
+export { default as string } from "./button.js";
 ```
 
 3. In the root [`index.ts`](../../index.ts), make sure the following is present:
 
 ```ts
 // src/index.ts
-import { Client } from './Classes/index.js';
-import * as buttons from './interactions/buttons/index.js'
+import { Client } from "./Classes/index.js";
+import * as buttons from "./interactions/buttons/index.js";
 
 export const client = new Client({
   receiveMessageComponents: true, // enables the usage of message components
-  splitCustomIDOn: '_', // allows the inclusion of additional information in a custom ID
-                        // `prefix_arg1_arg2` is converted to [prefix, arg1, arg2]
+  splitCustomIDOn: "_", // allows the inclusion of additional information in a custom ID
+  // `prefix_arg1_arg2` is converted to [prefix, arg1, arg2]
 });
 
 // Load buttons
-for (const button of Object.values(buttons)) client.interactions.addButton(button);
+for (const button of Object.values(buttons))
+  client.interactions.addButton(button);
 ```

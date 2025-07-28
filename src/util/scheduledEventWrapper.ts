@@ -12,7 +12,7 @@ export class ScheduledEventWrapper {
 			if (!this.event.endedAt) {
 				return "N/A"
 			} else {
-				return Math.round((this.event.endedAt.getTime() - this.event.startedAt.getTime())/216000)
+				return Math.round((this.event.endedAt.getTime() - this.event.startedAt.getTime())/60000)
 			}
 		}
 	}
