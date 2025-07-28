@@ -34,96 +34,118 @@ const channel = new SlashCommandChannelOption()
  * </ul>
  */
 export const settings = new ChatInputCommand({
-	builder: new SlashCommandBuilder()
-		.setName('settings')
-		.setDescription('settings for the bot')
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-		.setContexts(InteractionContextType.Guild)
-		.addSubcommandGroup(subcommandGroup => subcommandGroup
-			.setName('warn')
-			.setDescription('configure wanning system')
-			.addSubcommand(subCommand => subCommand
-				.setName('channels')
-				.setDescription('configure channels for warn system')
-				.addStringOption(option => option
-					.setName('setting')
-					.setDescription('Setting to edit')
-					.setChoices(
-						{ name: 'log', value: 'warn.logChannelId' },
-						// { name: 'appeal', value: 'warn.appealChannelId' },
-					)
-					.setRequired(true)
-				)
-				.addChannelOption(channel)
-			)
-		)
-		.addSubcommandGroup(subcommandGroup => subcommandGroup
-			.setName('report')
-			.setDescription('Config user report')
-			.addSubcommand(subCommand => subCommand
-				.setName('channels')
-				.setDescription('configure channels for report system')
-				.addStringOption(option => option
-					.setName('setting')
-					.setDescription('Setting to edit')
-					.setChoices(
-						{name: 'log', value: 'report.logChannelId'},
-					)
-					.setRequired(true)
-				)
-				.addChannelOption(channel)
-			)
-		)
-		.addSubcommandGroup(subcommandGroup => subcommandGroup
-			.setName('welcome')
-			.setDescription('Config welcome settings')
-			.addSubcommand(subCommand => subCommand
-				.setName('channel')
-				.setDescription('configure channels for log system')
-				.addChannelOption(channel)
-			)
-			// .addSubcommand(subCommand => subCommand
-			// 	.setName('role')
-			// 	.setDescription('configure channels for log system')
-			// 	.addRoleOption(role)
-			// )
-		)
-		.addSubcommandGroup(subcommandGroup => subcommandGroup
-			.setName('logging')
-			.setDescription('Config logs')
-			.addSubcommand(subCommand => subCommand
-				.setName('channels')
-				.setDescription('configure channels for log system')
-				.addStringOption(option => option
-					.setName('setting')
-					.setDescription('Setting to edit')
-					.setChoices(
-						{name: 'timeouts', value: 'logging.timeoutChannelId'},
-						{name: 'leaves', value: 'logging.leaveChannelId'},
-						{name: 'channel updates', value: 'logging.channelUpdatesChannelId'},
-						{name: 'vc updates', value: 'logging.voiceUpdatesChannelId'},
-						{name: 'nickname updates', value: 'logging.nicknameUpdatesChannelId'},
-						{name: 'event logs', value: 'logging.eventLogChannelId'},
-
-					)
-					.setRequired(true)
-				)
-				.addChannelOption(channel)
-			)
-		),
-	execute: async (interaction) => {
-
-		const subcommandGroup = interaction.options.getSubcommandGroup(true)
-		const subCommand = interaction.options.getSubcommand(true)
-		const reply:InteractionReplyOptions = {flags: MessageFlags.Ephemeral}
-		// console.log(subcommandGroup, subCommand)
-		if(subcommandGroup === 'welcome') {
-
-			if (subCommand === 'channel') {
-				const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText, ChannelType.PublicThread])
-				await GuildSetting.findOneAndUpdate({guildId: interaction.guildId}, {"welcome.channelId": channel.id})
-				reply.content = `welcome channel set to ${channel}`
-			}
+  builder: new SlashCommandBuilder()
+    .setName("settings")
+    .setDescription("settings for the bot")
+    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+    .setContexts(InteractionContextType.Guild)
+    .addSubcommandGroup((subcommandGroup) =>
+      subcommandGroup
+        .setName("warn")
+        .setDescription("configure wanning system")
+        .addSubcommand((subCommand) =>
+          subCommand
+            .setName("channels")
+            .setDescription("configure channels for warn system")
+            .addStringOption((option) =>
+              option
+                .setName("setting")
+                .setDescription("Setting to edit")
+                .setChoices(
+                  { name: "log", value: "warn.logChannelId" },
+                  // { name: 'appeal', value: 'warn.appealChannelId' },
+                )
+                .setRequired(true),
+            )
+            .addChannelOption(channel),
+        ),
+    )
+    .addSubcommandGroup((subcommandGroup) =>
+      subcommandGroup
+        .setName("report")
+        .setDescription("Config user report")
+        .addSubcommand((subCommand) =>
+          subCommand
+            .setName("channels")
+            .setDescription("configure channels for report system")
+            .addStringOption((option) =>
+              option
+                .setName("setting")
+                .setDescription("Setting to edit")
+                .setChoices({ name: "log", value: "report.logChannelId" })
+                .setRequired(true),
+            )
+            .addChannelOption(channel),
+        ),
+    )
+    .addSubcommandGroup(
+      (subcommandGroup) =>
+        subcommandGroup
+          .setName("welcome")
+          .setDescription("Config welcome settings")
+          .addSubcommand((subCommand) =>
+            subCommand
+              .setName("channel")
+              .setDescription("configure channels for log system")
+              .addChannelOption(channel),
+          ),
+      // .addSubcommand(subCommand => subCommand
+      // 	.setName('role')
+      // 	.setDescription('configure channels for log system')
+      // 	.addRoleOption(role)
+      // )
+    )
+    .addSubcommandGroup((subcommandGroup) =>
+      subcommandGroup
+        .setName("logging")
+        .setDescription("Config logs")
+        .addSubcommand((subCommand) =>
+          subCommand
+            .setName("channels")
+            .setDescription("configure channels for log system")
+            .addStringOption((option) =>
+              option
+                .setName("setting")
+                .setDescription("Setting to edit")
+                .setChoices(
+                  { name: "timeouts", value: "logging.timeoutChannelId" },
+                  { name: "leaves", value: "logging.leaveChannelId" },
+                  {
+                    name: "channel updates",
+                    value: "logging.channelUpdatesChannelId",
+                  },
+                  {
+                    name: "vc updates",
+                    value: "logging.voiceUpdatesChannelId",
+                  },
+                  {
+                    name: "nickname updates",
+                    value: "logging.nicknameUpdatesChannelId",
+                  },
+                  { name: "event logs", value: "logging.eventLogChannelId" },
+                )
+                .setRequired(true),
+            )
+            .addChannelOption(channel),
+        ),
+    ),
+  execute: async (interaction) => {
+    const subcommandGroup = interaction.options.getSubcommandGroup(true);
+    const subCommand = interaction.options.getSubcommand(true);
+    const reply: InteractionReplyOptions = { flags: MessageFlags.Ephemeral };
+    // console.log(subcommandGroup, subCommand)
+    if (subcommandGroup === "welcome") {
+      if (subCommand === "channel") {
+        const channel = interaction.options.getChannel("channel", true, [
+          ChannelType.GuildText,
+          ChannelType.PublicThread,
+        ]);
+        await GuildSetting.findOneAndUpdate(
+          { guildId: interaction.guildId },
+          { "welcome.channelId": channel.id },
+        );
+        reply.content = `welcome channel set to ${channel}`;
+      }
 
       // else if (subCommand === 'role') {
       // 	const role = interaction.options.getRole('role', true)
