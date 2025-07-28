@@ -85,7 +85,6 @@ export const guildMemberUpdate = new Event({
       joinChannel.send({
         flags: MessageFlags.IsComponentsV2,
         components: [container],
-        allowedMentions: {},
       });
 
       if (oldMember.nickname !== newMember.nickname) {
@@ -96,11 +95,11 @@ export const guildMemberUpdate = new Event({
           settings?.logging.nicknameUpdatesChannelId;
         if (!nicknameUpdatesChannelId) return;
 
-			joinChannel.send({flags: MessageFlags.IsComponentsV2, components:[container]})
-      
-		if (oldMember.nickname !== newMember.nickname) {
-			const { guild } = newMember
-			const settings = await GuildSetting.findOne({ guildId: guild.id })
+        const nicknameLogChannel = await getGuildChannel(
+          guild,
+          nicknameUpdatesChannelId,
+        ).catch(console.error);
+        if (!nicknameLogChannel?.isSendable()) return;
 
         const title = `Nickname Changed`;
         const description = `${newMember} ${newMember.user.username} changed their nickname from ${oldMember.nickname ?? oldMember.displayName} to ${newMember.nickname ?? newMember.displayName}`;
