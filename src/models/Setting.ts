@@ -74,5 +74,7 @@ const settings = new Schema<ISettings>({
 		eventLogChannelId: {
 			type: String
 		}
+	}
+})
 
 export const GuildSetting = model<ISettings>("setting", settings, "settings");
