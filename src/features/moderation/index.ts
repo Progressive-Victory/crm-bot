@@ -1,6 +1,8 @@
 // milliseconds in a day
 const _MS_PER_DAY = 1000 * 60 * 60 * 24;
 
+export const WARN_MAX_CHAR = 2000
+
 /**
  * Find the difference in days between two date Objects
  * @param a - smaller date

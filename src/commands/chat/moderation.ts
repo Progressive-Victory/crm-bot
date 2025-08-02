@@ -1,31 +1,31 @@
 import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ChatInputCommandInteraction,
-  inlineCode,
-  InteractionContextType,
-  InteractionReplyOptions,
-  MessageFlags,
-  PermissionFlagsBits,
-  SlashCommandBuilder,
-  SlashCommandStringOption,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	inlineCode,
+	InteractionContextType,
+	InteractionReplyOptions,
+	MessageFlags,
+	PermissionFlagsBits,
+	SlashCommandBuilder,
+	SlashCommandStringOption,
 } from "discord.js";
 import { FilterQuery } from "mongoose";
 import { ChatInputCommand } from "../../Classes/index.js";
 import {
-  modViewWarningHistory,
-  updateWarnById,
+	modViewWarningHistory,
+	updateWarnById,
 } from "../../features/moderation/buttons.js";
 import {
-  viewWarningEmbed,
-  viewWarningEmbeds,
+	viewWarningEmbed,
+	viewWarningEmbeds,
 } from "../../features/moderation/embeds.js";
-import { dateDiffInDays } from "../../features/moderation/index.js";
+import { dateDiffInDays, WARN_MAX_CHAR } from "../../features/moderation/index.js";
 import { warnModal } from "../../features/moderation/modals.js";
 import {
-  WarnButtonsPrefixes,
-  WarnModalPrefixes,
+	WarnButtonsPrefixes,
+	WarnModalPrefixes,
 } from "../../features/moderation/types.js";
 import { warnSearch } from "../../features/moderation/warnSearch.js";
 import { Warn, WarningRecord } from "../../models/Warn.js";
@@ -71,6 +71,7 @@ export const warn = new ChatInputCommand({
           option
             .setName("reason")
             .setDescription("Add reason for the warning")
+			.setMaxLength(WARN_MAX_CHAR)
             .setRequired(false),
         )
         .addIntegerOption((option) =>
