@@ -55,9 +55,9 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
   } else {
     throw Error("ping not in guild");
   }
-  const stateAbbreviation = options.getString("state", true);
+  const stateAbbreviation = options.getString("state", true).toLowerCase();
 
-  if (!isStateAbbreviations(stateAbbreviation)) return;
+  if (!isStateAbbreviations(stateAbbreviation)) return; // this should return a specific error
 
   const state = await States.findOne({
     guildId: interaction.guildId,
