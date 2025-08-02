@@ -55,9 +55,13 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
   } else {
     throw Error("ping not in guild");
   }
-  const stateAbbreviation = options.getString("state", true);
+  const stateAbbreviation = options.getString("state", true).toLowerCase();
 
-  if (!isStateAbbreviations(stateAbbreviation)) return;
+  if (!isStateAbbreviations(stateAbbreviation))
+    return interaction.reply({
+      content: "Given state is not a State Abbreviation, please retry",
+      flags: MessageFlags.Ephemeral,
+    });
 
   const state = await States.findOne({
     guildId: interaction.guildId,
@@ -174,9 +178,6 @@ export function stateMessageCreate(
   };
 }
 
-/**
- * @deprecated use {@link stateMessageCreate}
- */
 export function legacyStateMessageCreate(
   stateRoleId: Snowflake,
   authorId: Snowflake,
