@@ -1,24 +1,24 @@
 import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ChatInputCommandInteraction,
-  ContainerBuilder,
-  Guild,
-  GuildMember,
-  heading,
-  Message,
-  MessageCreateOptions,
-  MessageFlags,
-  ModalBuilder,
-  ModalSubmitInteraction,
-  roleMention,
-  SeparatorSpacingSize,
-  Snowflake,
-  subtext,
-  TextInputBuilder,
-  TextInputStyle,
-  userMention,
+	ActionRowBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ChatInputCommandInteraction,
+	ContainerBuilder,
+	Guild,
+	GuildMember,
+	heading,
+	Message,
+	MessageCreateOptions,
+	MessageFlags,
+	ModalBuilder,
+	ModalSubmitInteraction,
+	roleMention,
+	SeparatorSpacingSize,
+	Snowflake,
+	subtext,
+	TextInputBuilder,
+	TextInputStyle,
+	userMention,
 } from "discord.js";
 import { States } from "../../models/State.js";
 import { AddSplitCustomId, getGuildChannel } from "../../util/index.js";
@@ -57,7 +57,11 @@ export default async function ping(interaction: ChatInputCommandInteraction) {
   }
   const stateAbbreviation = options.getString("state", true).toLowerCase();
 
-  if (!isStateAbbreviations(stateAbbreviation)) return; // this should return a specific error
+  if (!isStateAbbreviations(stateAbbreviation))
+	return interaction.reply({
+		content: 'Given state is not a State Abbreviation, please retry',
+		flags: MessageFlags.Ephemeral
+	});
 
   const state = await States.findOne({
     guildId: interaction.guildId,
@@ -174,9 +178,6 @@ export function stateMessageCreate(
   };
 }
 
-/**
- * @deprecated use {@link stateMessageCreate}
- */
 export function legacyStateMessageCreate(
   stateRoleId: Snowflake,
   authorId: Snowflake,
