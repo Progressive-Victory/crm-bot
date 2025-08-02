@@ -9,16 +9,16 @@ export class ScheduledEventWrapper {
     let color: number;
     switch (this.event.status) {
       case 1: // scheduled = completed = blue
-        color = 0x3498DB;
+        color = 0x3498db;
         break;
       case 2: // active = green
-        color = 0x57F386;
+        color = 0x57f386;
         break;
       case 3: // completed = blue
-        color = 0x3498DB;
+        color = 0x3498db;
         break;
       case 4: // cancelled = red
-        color = 0xED4245;
+        color = 0xed4245;
         break;
       default: // undefined = white
         color = 0xffffff;
