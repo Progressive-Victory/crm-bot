@@ -1,9 +1,10 @@
 import {
-  ActionRowBuilder,
-  ModalBuilder,
-  TextInputBuilder,
-  TextInputStyle,
+	ActionRowBuilder,
+	ModalBuilder,
+	TextInputBuilder,
+	TextInputStyle,
 } from "discord.js";
+import { WARN_MAX_CHAR } from "./index.js";
 import { defaultNumberOfDaysBeforeExpiration } from "./types.js";
 
 /**
@@ -23,6 +24,7 @@ export function warnModal(
   const reasonInput = new TextInputBuilder()
     .setCustomId("reason")
     .setLabel("Reason for issuing this warning")
+	.setMaxLength(WARN_MAX_CHAR)
     .setStyle(TextInputStyle.Paragraph)
     .setRequired(true);
 
