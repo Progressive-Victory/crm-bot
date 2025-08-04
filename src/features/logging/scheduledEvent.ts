@@ -80,11 +80,13 @@ export async function logScheduledEvent(event: IScheduledEvent) {
         components: [await container],
         files: [file],
         flags: MessageFlags.IsComponentsV2,
+        allowedMentions: { parse: [] },
       });
     } else {
       post = await logChannel.send({
         components: [await container],
         flags: MessageFlags.IsComponentsV2,
+        allowedMentions: { parse: [] },
       });
     }
     event.logMessageId = post.id;

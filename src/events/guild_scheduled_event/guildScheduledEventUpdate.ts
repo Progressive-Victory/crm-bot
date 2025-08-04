@@ -39,6 +39,8 @@ export const guildScheduledEventUpdate = new Event({
           return usr.id;
         }),
       })) as IScheduledEvent;
+
+      await logScheduledEvent(res);
     } else {
       res = (
         await ScheduledEvent.find({ eventId: newEvent.id })
