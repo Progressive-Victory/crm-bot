@@ -1,20 +1,20 @@
 import {
-  AttachmentBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  ChannelType,
-  ContainerBuilder,
-  DiscordAPIError,
-  Guild,
-  heading,
-  HeadingLevel,
-  MessageFlags,
-  RESTJSONErrorCodes,
-  SectionBuilder,
-  SeparatorBuilder,
-  SeparatorSpacingSize,
-  TextDisplayBuilder,
-  ThumbnailBuilder,
+	AttachmentBuilder,
+	ButtonBuilder,
+	ButtonStyle,
+	ChannelType,
+	ContainerBuilder,
+	DiscordAPIError,
+	Guild,
+	heading,
+	HeadingLevel,
+	MessageFlags,
+	RESTJSONErrorCodes,
+	SectionBuilder,
+	SeparatorBuilder,
+	SeparatorSpacingSize,
+	TextDisplayBuilder,
+	ThumbnailBuilder,
 } from "discord.js";
 import { client } from "../../index.js";
 import { IScheduledEvent } from "../../models/ScheduledEvent.js";
@@ -70,6 +70,7 @@ export async function logScheduledEvent(event: IScheduledEvent) {
     await existingPost.edit({
       components: [await container],
       flags: MessageFlags.IsComponentsV2,
+      allowedMentions: { parse: [] },
     });
   } else {
     const container = logContainer(event);
@@ -80,11 +81,13 @@ export async function logScheduledEvent(event: IScheduledEvent) {
         components: [await container],
         files: [file],
         flags: MessageFlags.IsComponentsV2,
+        allowedMentions: { parse: [] },
       });
     } else {
       post = await logChannel.send({
         components: [await container],
         flags: MessageFlags.IsComponentsV2,
+        allowedMentions: { parse: [] },
       });
     }
     event.logMessageId = post.id;
@@ -105,7 +108,7 @@ async function logContainer(event: IScheduledEvent) {
     attendees.length > 0
       ? attendees
           .map((usr) => {
-            return `\n- ${usr.toString()}`;
+            return `\n- ${usr}`;
           })
           .toString()
       : "";

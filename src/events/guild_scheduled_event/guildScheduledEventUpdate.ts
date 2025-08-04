@@ -39,6 +39,8 @@ export const guildScheduledEventUpdate = new Event({
           return usr.id;
         }),
       })) as IScheduledEvent;
+
+      await logScheduledEvent(res);
     } else {
       res = (
         await ScheduledEvent.find({ eventId: newEvent.id })
@@ -78,16 +80,18 @@ export const guildScheduledEventUpdate = new Event({
       if (oldEvent.isActive() && newEvent.isCompleted()) {
         console.log("ending one time event");
         res.endedAt = new Date(Date.now());
+
+        await logScheduledEvent(res);
       }
     } else {
       if (oldEvent.isActive() && newEvent.isScheduled()) {
         console.log("ending recurring event");
         res.endedAt = new Date(Date.now());
+
+        await logScheduledEvent(res);
       }
     }
 
     await res.save();
-
-    await logScheduledEvent(res);
   },
 });
