@@ -123,10 +123,10 @@ export class ScheduledEventWrapper {
   };
 
   attendees = async () => {
-    const users = await (
-      await this.guild()
-    ).members.fetch({ user: this.event.attendees, withPresences: true });
-    return users.values().toArray();
+    const users = this.event.attendees.map((usr) => {
+      return `<@${usr}>`;
+    });
+    return users;
   };
 
   userCount = () => {
