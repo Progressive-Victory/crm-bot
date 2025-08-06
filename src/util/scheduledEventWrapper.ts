@@ -145,7 +145,41 @@ export class ScheduledEventWrapper {
     return this.event.eventUrl;
   };
 
+  attendeesNames = async () => {
+    return await this.getAttendeeNames(this.event.attendees);
+  };
+
   constructor(ev: IScheduledEvent) {
     this.event = ev;
+  }
+
+  private async getAttendeeNames(ids: string[]) {
+    const buffer = [];
+    let names: string[] = [];
+    for (let i = 0; i < Math.ceil(ids.length / 100); i++) {
+      const slice = ids.slice(
+        i * 100,
+        i * 100 + (ids.length - i * 100 > 0 ? 100 : ids.length - i * 100),
+      );
+      buffer.push(slice);
+    }
+
+    const guild = await this.guild();
+    console.log(`buffer = ${buffer}`);
+
+    for (let i = 0; i < buffer.length; i++) {
+      const res = (await guild.members.fetch({ user: buffer[i] }))
+        .values()
+        .toArray();
+      console.log(`res: ${res}`);
+      const out = res.map((usr) => {
+        return usr.displayName;
+      });
+      names = [...names, ...out];
+    }
+
+    console.log(`names = ${names}`);
+
+    return names;
   }
 }
