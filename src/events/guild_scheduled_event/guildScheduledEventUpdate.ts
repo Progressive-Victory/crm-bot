@@ -62,7 +62,7 @@ export const guildScheduledEventUpdate = new Event({
           scheduledStart: newEvent.scheduledStartAt,
           name: newEvent.name,
           status: newEvent.status,
-        })) as IScheduledEvent;
+        })) as IScheduledEvent; //maybe this should return null
       } else {
         res.recurrence = newEvent.recurrenceRule ? true : false;
         res.thumbnailUrl = newEvent.coverImageURL() ?? "attachment://image.jpg";
