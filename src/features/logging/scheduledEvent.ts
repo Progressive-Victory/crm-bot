@@ -45,7 +45,7 @@ export async function logScheduledEvent(event: IScheduledEvent) {
   if (logChannel?.type !== ChannelType.GuildText) return;
   let existingPost = undefined;
   if (event.logMessageId) {
-    console.log("finding existing post");
+    //console.log("finding existing post");
     existingPost = logChannel.messages.cache.get(event.logMessageId);
     if (!existingPost) {
       existingPost = await logChannel.messages
@@ -62,12 +62,12 @@ export async function logScheduledEvent(event: IScheduledEvent) {
     }
   }
 
-  console.log("fetched post");
-  console.log(existingPost);
+  //console.log("fetched post");
+  //console.log(existingPost);
 
   if (existingPost) {
-    console.log("editing existing post...");
-    console.log("event ended at: " + event.endedAt);
+    //console.log("editing existing post...");
+    //console.log("event ended at: " + event.endedAt);
     const { fileOut, cont } = await logContainer(event);
     const files = [];
     if (event.thumbnailUrl === "attachment://image.jpg")
@@ -94,7 +94,7 @@ export async function logScheduledEvent(event: IScheduledEvent) {
       allowedMentions: { parse: [] },
     });
     event.logMessageId = post.id;
-    console.log("event log message id: " + event.logMessageId);
+    //console.log("event log message id: " + event.logMessageId);
     await event.save();
   }
 }
@@ -106,7 +106,6 @@ export async function logScheduledEvent(event: IScheduledEvent) {
 async function logContainer(event: IScheduledEvent) {
   const wrapper = new ScheduledEventWrapper(event);
   let attendees = await wrapper.attendees();
-  console.log(attendees);
   let fileOut = false;
   if (attendees.length > 30) {
     attendees = await wrapper.attendeesNames();

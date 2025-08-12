@@ -128,12 +128,16 @@ function vcLogEmbed(
  * @param member
  */
 async function markAttendance(channelId: string, member: GuildMember) {
+  console.log("Marking Attendance");
   await dbConnect();
   const res: IScheduledEvent = (await ScheduledEvent.findOne({
     channelId: channelId,
     status: 2,
-  }).exec()) as IScheduledEvent;
-  if (!res) return;
+  })
+    .sort({ _id: -1 })
+    .exec()) as IScheduledEvent;
+  if (!res) throw Error(`Could not find event with channel Id: ${channelId}`);
+  console.log(res);
   if (res.attendees.find((x) => x === member.id)) return;
   res.attendees.push(member.id);
   await res.save();
